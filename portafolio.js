@@ -1,28 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializa los iconos de Lucide
     lucide.createIcons();
 
-    // --- LÓGICA PARA EL SCROLL SUAVE (ARREGLO PARA GOOGLE SITES) ---
-    // Selecciona todos los enlaces que apuntan a una sección (href="#...")
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            // 1. Previene el comportamiento por defecto del enlace
-            e.preventDefault();
-
-            // 2. Obtiene el ID de la sección de destino
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-
-            // 3. Si la sección existe, se desplaza suavemente hacia ella
-            if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // --- LÓGICA DEL MENÚ MÓVIL ---
     const menuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
     const menuIcon = document.getElementById('menu-icon');
@@ -35,17 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.toggle('menu-open');
     };
     menuButton.addEventListener('click', toggleMenu);
-    // Cierra el menú también al hacer clic en un enlace
-    mobileNavLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            // Asegúrate de que el menú se cierre antes de intentar el scroll
-            if (!mobileMenu.classList.contains('hidden')) {
-                toggleMenu();
-            }
-        });
-    });
+    mobileNavLinks.forEach(link => link.addEventListener('click', toggleMenu));
 
-    // --- LÓGICA DEL MODO OSCURO/CLARO ---
     const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
     const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
     const themeToggleBtn = document.getElementById('theme-toggle');
@@ -65,7 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
     });
 
-    // --- LÓGICA PARA RESALTAR EL ENLACE ACTIVO EN EL NAV ---
+    document.getElementById('hero-projects-button').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+
     const navLinks = document.querySelectorAll('header nav .nav-link');
     const sections = document.querySelectorAll('main section[id]');
     const scrollObserver = new IntersectionObserver(entries => {
@@ -119,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextBtn = document.getElementById('next-btn');
 
     function renderProjects(filter = 'all') {
-        if (!carouselContainer) return;
         carouselContainer.innerHTML = '';
         
         let projectsToShow = projectData;
@@ -143,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.innerHTML = `
                 <div class="bg-white dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col overflow-hidden h-full min-h-[320px] cursor-pointer">
                     <div class="aspect-[16/10] bg-slate-100 dark:bg-slate-800">
-                        <img src="${project.images[0]}" alt="Vista previa de ${project.title}" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/800x450/e0e0e0/333333?text=Imagen+no+disponible';">
+                        <img src="${project.images[0]}" alt="Vista previa de ${project.title}" class="w-full h-full object-cover">
                     </div>
                     <div class="p-4 flex flex-col flex-grow">
                         <h3 class="text-base font-bold mb-2 text-slate-800 dark:text-white">${project.title}</h3>
@@ -170,10 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
         showImage(currentImageIndex);
     }
 
-    if(modalPrevBtn) modalPrevBtn.addEventListener('click', () => navigateImages(-1));
-    if(modalNextBtn) modalNextBtn.addEventListener('click', () => navigateImages(1));
-    if(fullscreenPrevBtn) fullscreenPrevBtn.addEventListener('click', () => navigateImages(-1));
-    if(fullscreenNextBtn) fullscreenNextBtn.addEventListener('click', () => navigateImages(1));
+    modalPrevBtn.addEventListener('click', () => navigateImages(-1));
+    modalNextBtn.addEventListener('click', () => navigateImages(1));
+    fullscreenPrevBtn.addEventListener('click', () => navigateImages(-1));
+    fullscreenNextBtn.addEventListener('click', () => navigateImages(1));
     
     function openModal(project) {
         modalTitle.textContent = project.title;
@@ -221,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
     
-    if(modalExpandBtn) modalExpandBtn.addEventListener('click', () => {
+    modalExpandBtn.addEventListener('click', () => {
         fullscreenImage.src = modalImage.src;
         fullscreenModal.classList.remove('hidden');
          if (currentProjectImages.length > 1) {
@@ -232,19 +206,19 @@ document.addEventListener('DOMContentLoaded', () => {
             fullscreenNextBtn.classList.add('hidden');
         }
     });
-    if(fullscreenCloseBtn) fullscreenCloseBtn.addEventListener('click', () => {
+    fullscreenCloseBtn.addEventListener('click', () => {
         fullscreenModal.classList.add('hidden');
     });
 
 
-    if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
-    if(projectModal) projectModal.addEventListener('click', (e) => {
+    modalCloseBtn.addEventListener('click', closeModal);
+    projectModal.addEventListener('click', (e) => {
         if (e.target === projectModal) {
             closeModal();
         }
     });
 
-    if(filterButtons) filterButtons.forEach(button => {
+    filterButtons.forEach(button => {
         button.addEventListener('click', () => {
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
@@ -253,42 +227,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- Lógica para tamaño aleatorio de logos ---
+    document.querySelectorAll('#hero-logos .logo-bg').forEach(logo => {
+        logo.addEventListener('animationiteration', () => {
+            const newSize = Math.random() * 80 + 40; // Tamaño entre 40px y 120px
+            logo.style.width = `${newSize}px`;
+            logo.style.height = `${newSize}px`;
+        });
+    });
+    
     // --- Lógica del Carrusel ---
-    if (carouselContainer) {
-        let isDown = false;
-        let startX;
-        let scrollLeft;
+    let isDown = false;
+    let startX;
+    let scrollLeft;
 
-        carouselContainer.addEventListener('mousedown', (e) => {
-            isDown = true;
-            carouselContainer.classList.add('cursor-grabbing');
-            startX = e.pageX - carouselContainer.offsetLeft;
-            scrollLeft = carouselContainer.scrollLeft;
-        });
-        carouselContainer.addEventListener('mouseleave', () => {
-            isDown = false;
-            carouselContainer.classList.remove('cursor-grabbing');
-        });
-        carouselContainer.addEventListener('mouseup', () => {
-            isDown = false;
-            carouselContainer.classList.remove('cursor-grabbing');
-        });
-        carouselContainer.addEventListener('mousemove', (e) => {
-            if(!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - carouselContainer.offsetLeft;
-            const walk = (x - startX) * 2;
-            carouselContainer.scrollLeft = scrollLeft - walk;
-        });
+    carouselContainer.addEventListener('mousedown', (e) => {
+        isDown = true;
+        carouselContainer.classList.add('cursor-grabbing');
+        startX = e.pageX - carouselContainer.offsetLeft;
+        scrollLeft = carouselContainer.scrollLeft;
+    });
+    carouselContainer.addEventListener('mouseleave', () => {
+        isDown = false;
+        carouselContainer.classList.remove('cursor-grabbing');
+    });
+    carouselContainer.addEventListener('mouseup', () => {
+        isDown = false;
+        carouselContainer.classList.remove('cursor-grabbing');
+    });
+    carouselContainer.addEventListener('mousemove', (e) => {
+        if(!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - carouselContainer.offsetLeft;
+        const walk = (x - startX) * 2; // Multiplicador para mayor velocidad de scroll
+        carouselContainer.scrollLeft = scrollLeft - walk;
+    });
 
-        if(nextBtn) nextBtn.addEventListener('click', () => {
-            carouselContainer.scrollBy({ left: carouselContainer.clientWidth / 2, behavior: 'smooth' });
-        });
-        if(prevBtn) prevBtn.addEventListener('click', () => {
-            carouselContainer.scrollBy({ left: -carouselContainer.clientWidth / 2, behavior: 'smooth' });
-        });
-    }
+    nextBtn.addEventListener('click', () => {
+        carouselContainer.scrollBy({ left: carouselContainer.clientWidth / 2, behavior: 'smooth' });
+    });
+    prevBtn.addEventListener('click', () => {
+        carouselContainer.scrollBy({ left: -carouselContainer.clientWidth / 2, behavior: 'smooth' });
+    });
 
-    // Renderiza los proyectos iniciales
+
     renderProjects('all');
 });
