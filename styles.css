@@ -17,7 +17,7 @@ body {
 /* --- Hero Section --- */
 .hero-main {
   position: relative;
-  height: 90vh;
+  height: 90vh; 
   background-size: cover;
   background-position: center;
   display: flex;
@@ -113,11 +113,6 @@ body {
   backdrop-filter: blur(5px);
 }
 
-.static-nav {
-  position: static;
-  background-color: #002655;
-}
-
 .nav-container {
   max-width: 1200px;
   margin: auto;
@@ -181,13 +176,6 @@ body {
   font-family: 'Roboto', sans-serif;
   color: #003c8f;
   margin-bottom: 1rem;
-}
-
-.subtitle {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #6c757d;
-  margin-bottom: 3rem;
 }
 
 .card-grid {
@@ -310,6 +298,10 @@ body {
 
 /* --- Responsive --- */
 @media (max-width: 768px) {
+  .hero-main {
+    height: auto; /* Altura automática en móviles */
+    min-height: 80vh;
+  }
   .hero-text h1 {
     font-size: 2.5rem;
   }
