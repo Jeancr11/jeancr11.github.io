@@ -1,6 +1,9 @@
-/* --- Base Reset & Fonts --- */
+/* ==========================================================================
+   1. Base y Configuración Global
+   ========================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Source+Sans+Pro:wght@400;600;700&display=swap');
 
+/* Reseteo básico para consistencia entre navegadores */
 * {
   margin: 0;
   padding: 0;
@@ -14,40 +17,131 @@ body {
   line-height: 1.6;
 }
 
-/* --- Hero Section --- */
-.hero-main {
-  position: relative;
-  height: 90vh; 
-  display: flex;
-  flex-direction: column;
-  color: white;
-  overflow: hidden; /* Crucial para contener el video */
+/* ==========================================================================
+   2. Componentes de Layout Principales (Navbar, Footer)
+   ========================================================================== */
+
+/* --- Barra de Navegación --- */
+.navbar {
+  width: 100%;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
 }
 
-#hero-video {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  z-index: -100; /* Detrás de todo */
-  transform: translateX(-50%) translateY(-50%);
-  object-fit: cover; /* Asegura que el video cubra el área sin distorsionarse */
-}
-
-.hero-overlay {
+/* Estilo para la navbar sobre el video/hero */
+.navbar.navbar-blur {
   position: absolute;
   top: 0;
   left: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+/* Estilo para la navbar en páginas interiores */
+.navbar.static-nav {
+  position: static;
+  background-color: #002655;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  color: white;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 1.5rem;
+  font-family: 'Roboto', sans-serif;
+}
+
+.nav-menu {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-menu li a {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem;
+  transition: color 0.3s ease;
+  font-weight: 600;
+}
+
+.nav-menu li a:hover,
+.nav-menu li a.active {
+  color: #00aaff;
+}
+
+.menu-toggle {
+  display: none; /* Oculto en escritorio */
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.menu-toggle .bar {
+  height: 3px;
+  width: 25px;
+  background-color: white;
+  margin: 4px 0;
+}
+
+/* --- Pie de Página --- */
+.footer {
+  background-color: #002655;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+  margin-top: 4rem;
+}
+
+/* ==========================================================================
+   3. Estilos de la Página de Inicio (Hero Section)
+   ========================================================================== */
+.hero-main {
+  display: grid;
+  place-items: center;
+  min-height: 90vh;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Apila todos los hijos directos del hero en la misma celda de la cuadrícula */
+.hero-main > * {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+}
+
+#hero-video {
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 38, 85, 0.7); /* Capa oscura sobre el video */
+  object-fit: cover;
+  z-index: 1;
+}
+
+.hero-overlay {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 38, 85, 0.7);
+  z-index: 2;
+}
+
+.hero-content-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 3;
 }
 
 .hero-text {
-  position: relative; /* Para que esté sobre el overlay */
   text-align: center;
   margin: auto;
   padding: 2rem;
@@ -96,68 +190,9 @@ body {
   font-size: 1.2rem;
 }
 
-/* --- Navbar --- */
-.navbar {
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  transition: background-color 0.3s ease;
-}
-
-.navbar-blur {
-  background-color: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(5px);
-}
-
-.nav-container {
-  max-width: 1200px;
-  margin: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  color: white;
-}
-
-.logo {
-  font-weight: bold;
-  font-size: 1.5rem;
-  font-family: 'Roboto', sans-serif;
-}
-
-.nav-menu {
-  list-style: none;
-  display: flex;
-  gap: 1.5rem;
-}
-
-.nav-menu li a {
-  color: white;
-  text-decoration: none;
-  padding: 0.5rem;
-  transition: color 0.3s ease;
-}
-
-.nav-menu li a:hover {
-  color: #00aaff;
-}
-
-.menu-toggle {
-  display: none;
-  flex-direction: column;
-  cursor: pointer;
-}
-
-.menu-toggle .bar {
-  height: 3px;
-  width: 25px;
-  background-color: white;
-  margin: 4px 0;
-}
-
-/* --- Main Content & Cards --- */
+/* ==========================================================================
+   4. Estilos de Contenido Común (Contenedores, Títulos, Tarjetas)
+   ========================================================================== */
 .main-container {
   padding: 4rem 1rem;
   max-width: 1200px;
@@ -174,6 +209,13 @@ body {
   font-family: 'Roboto', sans-serif;
   color: #003c8f;
   margin-bottom: 1rem;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #6c757d;
+  margin-bottom: 3rem;
 }
 
 .card-grid {
@@ -197,6 +239,7 @@ body {
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
 
+/* Tarjetas con íconos (Página de Inicio) */
 .icon-card {
   text-align: center;
 }
@@ -217,14 +260,152 @@ body {
   font-weight: bold;
 }
 
-/* --- Dashboard & Filters --- */
+/* ==========================================================================
+   5. Estilos Específicos por Página
+   ========================================================================== */
+
+/* --- Página de Indicadores --- */
+.themed-section {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  border: 1px solid #e9ecef;
+}
+.themed-section h3 {
+  color: #003c8f;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.data-card h4 {
+  color: #003c8f;
+}
+.data-card p {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+.card-footer {
+  margin-top: auto; /* Empuja el footer hacia abajo */
+  text-align: right;
+  padding-top: 1rem;
+}
+.card-footer a {
+  margin-left: 1rem;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* --- Página de Dashboards y Filtros --- */
 .dashboard-interactive-container {
   background: #ffffff;
   padding: 2rem;
   border-radius: 8px;
   border: 1px solid #dee2e6;
 }
+.filters-section {
+  background: #ffffff;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-end;
+  border: 1px solid #dee2e6;
+}
+.filters-section.compact {
+  padding: 0;
+  margin-bottom: 1.5rem;
+  border: none;
+}
+.filter-group {
+  flex: 1 1 200px;
+}
+.filters-section label {
+  font-weight: 600;
+  color: #495057;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.filters-section select {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+.chart-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  height: 400px;
+}
+.chart-container h3 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #003c8f;
+}
 
+/* --- Página de Análisis --- */
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+.analysis-card {
+    text-align: center;
+}
+.analysis-card i {
+  color: #007bff;
+  margin-bottom: 1rem;
+}
+.analysis-card h3 {
+  color: #003c8f;
+  margin-bottom: 0.5rem;
+}
+
+/* --- Página de Datos Abiertos (Tabla) --- */
+.data-table-container {
+    overflow-x: auto;
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+th, td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+th {
+    background-color: #e9ecef;
+    font-weight: 600;
+    color: #495057;
+}
+.download-btn {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+.download-btn i {
+    margin-right: 0.5rem;
+}
+
+/* ==========================================================================
+   6. Botones y Elementos de UI
+   ========================================================================== */
 .cta-button {
   display: inline-block;
   background-color: #007bff;
@@ -244,62 +425,10 @@ body {
   padding: 0.5rem 1.5rem;
 }
 
-.filters-section.compact {
-  padding: 0;
-  margin-bottom: 1.5rem;
-  border: none;
-}
-
-.filters-section {
-  background: #ffffff;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  border-radius: 8px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  align-items: flex-end;
-  border: 1px solid #dee2e6;
-}
-.filter-group {
-  flex: 1 1 200px;
-}
-.filters-section label {
-  font-weight: 600;
-  color: #495057;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-.filters-section select {
-  width: 100%;
-  padding: 0.5rem;
-  border-radius: 5px;
-  border: 1px solid #ced4da;
-}
-
-.chart-container {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-  height: 400px;
-}
-
-/* --- Footer --- */
-.footer {
-  background-color: #002655;
-  color: white;
-  text-align: center;
-  padding: 1.5rem;
-  margin-top: 4rem;
-}
-
-/* --- Responsive --- */
+/* ==========================================================================
+   7. Media Queries para Responsividad
+   ========================================================================== */
 @media (max-width: 768px) {
-  .hero-main {
-    height: auto;
-    min-height: 80vh;
-  }
   .hero-text h1 {
     font-size: 2.5rem;
   }
@@ -311,7 +440,7 @@ body {
     flex-direction: column;
     background-color: rgba(0, 38, 85, 0.95);
     position: absolute;
-    top: 60px;
+    top: 60px; /* Ajusta según la altura de tu navbar */
     right: 0;
     width: 100%;
     padding: 1rem;
@@ -319,5 +448,8 @@ body {
   }
   .nav-menu.show {
     display: flex;
+  }
+  .dashboard-grid {
+    grid-template-columns: 1fr;
   }
 }
