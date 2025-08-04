@@ -3,6 +3,7 @@
    ========================================================================== */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Source+Sans+Pro:wght@400;600;700&display=swap');
 
+/* Reseteo básico para consistencia entre navegadores */
 * {
   margin: 0;
   padding: 0;
@@ -27,6 +28,7 @@ body {
   transition: background-color 0.3s ease;
 }
 
+/* Estilo para la navbar sobre el video/hero */
 .navbar.navbar-blur {
   position: absolute;
   top: 0;
@@ -35,6 +37,7 @@ body {
   backdrop-filter: blur(5px);
 }
 
+/* Estilo para la navbar en páginas interiores */
 .navbar.static-nav {
   position: static;
   background-color: #002655;
@@ -77,7 +80,7 @@ body {
 }
 
 .menu-toggle {
-  display: none;
+  display: none; /* Oculto en escritorio */
   flex-direction: column;
   cursor: pointer;
 }
@@ -99,7 +102,7 @@ body {
 }
 
 /* ==========================================================================
-   3. Estilos de la Página de Inicio (Hero Section) - NUEVO CAMBIO
+   3. Estilos de la Página de Inicio (Hero Section) - CAMBIOS APLICADOS
    ========================================================================== */
 .hero-main {
   position: relative; /* Contexto para posicionar elementos internos */
@@ -208,6 +211,13 @@ body {
   margin-bottom: 1rem;
 }
 
+.subtitle {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #6c757d;
+  margin-bottom: 3rem;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -260,6 +270,51 @@ body {
   border-radius: 8px;
   border: 1px solid #dee2e6;
 }
+.filters-section {
+  background: #ffffff;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-end;
+  border: 1px solid #dee2e6;
+}
+.filters-section.compact {
+  padding: 0;
+  margin-bottom: 1.5rem;
+  border: none;
+}
+.filter-group {
+  flex: 1 1 200px;
+}
+.filters-section label {
+  font-weight: 600;
+  color: #495057;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.filters-section select {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+}
+.chart-container {
+  position: relative;
+  height: 350px;
+  width: 100%;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+.chart-container h3 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #003c8f;
+}
 
 /* --- Tabla de Datos Abiertos --- */
 .data-table-container {
@@ -293,7 +348,29 @@ th {
 }
 
 /* ==========================================================================
-   6. Media Queries para Responsividad
+   6. Botones y Elementos de UI
+   ========================================================================== */
+.cta-button {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  border: none;
+  cursor: pointer;
+}
+.cta-button:hover {
+  background-color: #0056b3;
+}
+.cta-button.small {
+  padding: 0.5rem 1.5rem;
+}
+
+/* ==========================================================================
+   7. Media Queries para Responsividad
    ========================================================================== */
 @media (max-width: 768px) {
   .hero-text h1 {
@@ -307,7 +384,7 @@ th {
     flex-direction: column;
     background-color: rgba(0, 38, 85, 0.95);
     position: absolute;
-    top: 60px;
+    top: 60px; /* Ajusta según la altura de tu navbar */
     right: 0;
     width: 100%;
     padding: 1rem;
