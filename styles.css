@@ -107,13 +107,14 @@ body {
 .hero-main {
   display: grid;
   place-items: center;
-  min-height: 90vh;
+  /* ESTA ES LA VERSIÓN PARA DESARROLLO NORMAL */
+  min-height: 90vh; 
   color: white;
   position: relative;
   overflow: hidden;
 }
 
-/* Apila todos los hijos directos del hero en la misma celda de la cuadrícula */
+/* Apila todos los hijos directos del hero en la misma cuadrícula */
 .hero-main > * {
   grid-column: 1 / -1;
   grid-row: 1 / -1;
@@ -239,7 +240,6 @@ body {
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
 
-/* Tarjetas con íconos (Página de Inicio) */
 .icon-card {
   text-align: center;
 }
@@ -287,7 +287,7 @@ body {
   margin-bottom: 1rem;
 }
 .card-footer {
-  margin-top: auto; /* Empuja el footer hacia abajo */
+  margin-top: auto;
   text-align: right;
   padding-top: 1rem;
 }
