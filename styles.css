@@ -18,8 +18,6 @@ body {
 .hero-main {
   position: relative;
   height: 90vh; 
-  background-size: cover;
-  background-position: center;
   display: flex;
   flex-direction: column;
   color: white;
@@ -34,9 +32,9 @@ body {
   min-height: 100%;
   width: auto;
   height: auto;
-  z-index: -100; /* Lo pone detrás de todo */
+  z-index: -100; /* Detrás de todo */
   transform: translateX(-50%) translateY(-50%);
-  background-size: cover;
+  object-fit: cover; /* Asegura que el video cubra el área sin distorsionarse */
 }
 
 .hero-overlay {
@@ -212,7 +210,7 @@ body {
 }
 .icon-card a {
   display: inline-block;
-  margin-top: auto; /* Empuja el enlace hacia abajo */
+  margin-top: auto;
   padding-top: 1rem;
   color: #007bff;
   text-decoration: none;
@@ -284,7 +282,7 @@ body {
   padding: 1.5rem;
   border-radius: 8px;
   border: 1px solid #e9ecef;
-  height: 400px; /* Altura fija para el contenedor del gráfico */
+  height: 400px;
 }
 
 /* --- Footer --- */
@@ -299,7 +297,7 @@ body {
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .hero-main {
-    height: auto; /* Altura automática en móviles */
+    height: auto;
     min-height: 80vh;
   }
   .hero-text h1 {
@@ -313,7 +311,7 @@ body {
     flex-direction: column;
     background-color: rgba(0, 38, 85, 0.95);
     position: absolute;
-    top: 60px; /* Ajusta según la altura de tu navbar */
+    top: 60px;
     right: 0;
     width: 100%;
     padding: 1rem;
