@@ -18,12 +18,25 @@ body {
 .hero-main {
   position: relative;
   height: 90vh;
-  background-image: url('https://placehold.co/1920x1080/005bea/FFFFFF?text=VisorData+RD');
   background-size: cover;
   background-position: center;
   display: flex;
   flex-direction: column;
   color: white;
+  overflow: hidden; /* Crucial para contener el video */
+}
+
+#hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -100; /* Lo pone detrás de todo */
+  transform: translateX(-50%) translateY(-50%);
+  background-size: cover;
 }
 
 .hero-overlay {
@@ -32,11 +45,11 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 38, 85, 0.7);
+  background-color: rgba(0, 38, 85, 0.7); /* Capa oscura sobre el video */
 }
 
 .hero-text {
-  position: relative;
+  position: relative; /* Para que esté sobre el overlay */
   text-align: center;
   margin: auto;
   padding: 2rem;
@@ -189,6 +202,8 @@ body {
   border-radius: 8px;
   border: 1px solid #dee2e6;
   transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
 }
 
 .card:hover {
@@ -209,41 +224,21 @@ body {
 }
 .icon-card a {
   display: inline-block;
-  margin-top: 1rem;
-  color: #007bff;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.data-card h4 {
-  color: #003c8f;
-}
-.data-card p {
-  font-size: 0.9rem;
-  color: #6c757d;
-}
-.card-footer {
-  margin-top: 1rem;
-  text-align: right;
-}
-.card-footer a {
-  margin-left: 1rem;
+  margin-top: auto; /* Empuja el enlace hacia abajo */
+  padding-top: 1rem;
   color: #007bff;
   text-decoration: none;
   font-weight: bold;
 }
 
 /* --- Dashboard & Filters --- */
-.dashboard-preview {
-  background: white;
+.dashboard-interactive-container {
+  background: #ffffff;
   padding: 2rem;
   border-radius: 8px;
-  text-align: center;
   border: 1px solid #dee2e6;
 }
-.dashboard-preview p {
-  margin-bottom: 1.5rem;
-}
+
 .cta-button {
   display: inline-block;
   background-color: #007bff;
@@ -253,12 +248,20 @@ body {
   text-decoration: none;
   font-weight: bold;
   transition: background-color 0.3s;
+  border: none;
+  cursor: pointer;
 }
 .cta-button:hover {
   background-color: #0056b3;
 }
 .cta-button.small {
   padding: 0.5rem 1.5rem;
+}
+
+.filters-section.compact {
+  padding: 0;
+  margin-bottom: 1.5rem;
+  border: none;
 }
 
 .filters-section {
@@ -288,70 +291,12 @@ body {
   border: 1px solid #ced4da;
 }
 
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
 .chart-container {
   background: white;
   padding: 1.5rem;
   border-radius: 8px;
-  border: 1px solid #dee2e6;
-}
-.chart-container h3 {
-  text-align: center;
-  margin-bottom: 1rem;
-  color: #003c8f;
-}
-
-/* --- Analysis & Data Pages --- */
-.themed-section {
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 8px;
-  margin-bottom: 2rem;
-}
-.themed-section h3 {
-  color: #003c8f;
-  border-bottom: 2px solid #007bff;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-.analysis-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-.analysis-card {
-    text-align: center;
-}
-.data-table-container {
-    overflow-x: auto;
-    background: white;
-    padding: 1rem;
-    border-radius: 8px;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-}
-th, td {
-    padding: 0.8rem 1rem;
-    border-bottom: 1px solid #dee2e6;
-}
-th {
-    background-color: #e9ecef;
-    font-weight: 600;
-}
-.download-btn {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: bold;
-}
-.download-btn i {
-    margin-right: 0.5rem;
+  border: 1px solid #e9ecef;
+  height: 400px; /* Altura fija para el contenedor del gráfico */
 }
 
 /* --- Footer --- */
@@ -376,15 +321,13 @@ th {
     flex-direction: column;
     background-color: rgba(0, 38, 85, 0.95);
     position: absolute;
-    top: 60px;
+    top: 60px; /* Ajusta según la altura de tu navbar */
     right: 0;
     width: 100%;
     padding: 1rem;
+    text-align: center;
   }
   .nav-menu.show {
     display: flex;
-  }
-  .dashboard-grid {
-    grid-template-columns: 1fr;
   }
 }
