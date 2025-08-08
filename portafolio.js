@@ -188,23 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
             liveUrl: null
         },
         {
-            title: 'VisorData RD - Observatorio de Datos Públicos (En Desarrollo)',
-            // ***** INICIO DEL CAMBIO *****
-            status: 'development', // Se añade el estado del proyecto
-            // ***** FIN DEL CAMBIO *****
-            desc: 'Plataforma de datos que centraliza, analiza y visualiza indicadores públicos y sociales de la República Dominicana.',
-            longDesc: '<p>Este proyecto representa una oportunidad para unificar y aplicar mis conocimientos en <strong>ciencia de datos</strong>, <strong>machine learning con Python</strong>, gestión de bases de datos con <strong>SQL</strong> y desarrollo web front-end con <strong>HTML, CSS y JavaScript</strong>.</p><p>VisorData RD es un proyecto de ciencia e ingeniería de datos concebido para democratizar el acceso a la información pública en la República Dominicana. El objetivo es transformar datos crudos de fuentes oficiales en un recurso interactivo, comprensible y valioso para ciudadanos, periodistas, estudiantes e investigadores.</p>',
-            categories: ['python', 'sql', 'web', 'data science'],
-            tags: ['Python', 'SQL', 'Web', 'JavaScript', 'ETL', 'Machine Learning','UI/UX'],
-            media: [
-                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336596/virsorrs-inciio_iemnk3.png' },
-                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336597/virsorrs-inciio-1_ncqr2g.png' },
-                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336596/virsorrs-dashboards_zbfndz.png' }
-            ],
-            githubUrl: null,
-            liveUrl: 'https://www.jeancarlosrosario.org/visordata-rd'
-        }, 
-        {
             title: 'Dashboard de Análisis de Ventas',
             desc: 'Dashboard en Power BI que analiza la estacionalidad y el detalle de órdenes para la empresa de libros PANDIL, utilizando medidas avanzadas en DAX.',
             longDesc: `
@@ -1247,16 +1230,24 @@ document.addEventListener('DOMContentLoaded', () => {
             ],
             githubUrl: null,
             liveUrl: null
+        },
+        {
+            title: 'VisorData RD - Observatorio de Datos Públicos (En Desarrollo)',
+            // ***** INICIO DEL CAMBIO *****
+            status: 'development', // Se añade el estado del proyecto
+            // ***** FIN DEL CAMBIO *****
+            desc: 'Plataforma de datos que centraliza, analiza y visualiza indicadores públicos y sociales de la República Dominicana.',
+            longDesc: '<p>Este proyecto representa una oportunidad para unificar y aplicar mis conocimientos en <strong>ciencia de datos</strong>, <strong>machine learning con Python</strong>, gestión de bases de datos con <strong>SQL</strong> y desarrollo web front-end con <strong>HTML, CSS y JavaScript</strong>.</p><p>VisorData RD es un proyecto de ciencia e ingeniería de datos concebido para democratizar el acceso a la información pública en la República Dominicana. El objetivo es transformar datos crudos de fuentes oficiales en un recurso interactivo, comprensible y valioso para ciudadanos, periodistas, estudiantes e investigadores.</p>',
+            categories: ['python', 'sql', 'web', 'data science'],
+            tags: ['Python', 'SQL', 'Web', 'JavaScript', 'ETL', 'Machine Learning','UI/UX'],
+            media: [
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336596/virsorrs-inciio_iemnk3.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336597/virsorrs-inciio-1_ncqr2g.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336596/virsorrs-dashboards_zbfndz.png' }
+            ],
+            githubUrl: null,
+            liveUrl: 'https://www.jeancarlosrosario.org/visordata-rd'
         }
-
-
-
-
-
-
-
-
-
     ];
 
     const filterButtonsContainer = document.getElementById('project-filters');
