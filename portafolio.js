@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
 
-    // --- Lógica del menú y tema (sin cambios) ---
+    // --- Lógica del menú y tema ---
     const menuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
     const menuIcon = document.getElementById('menu-icon');
@@ -18,19 +18,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
     const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
     const themeToggleBtn = document.getElementById('theme-toggle');
-    if (localStorage.getItem('color-theme') === 'dark') {
+
+    // ***** INICIO DEL CAMBIO: Lógica para establecer el tema oscuro por defecto *****
+    // Comprueba si el tema guardado es 'light'. Si no lo es (es decir, es 'dark' o no está definido),
+    // se aplicará el modo oscuro por defecto en la primera visita.
+    if (localStorage.getItem('color-theme') === 'light') {
+        // Si está explícitamente guardado como 'light', se aplica el tema claro.
+        document.documentElement.classList.remove('dark');
+        themeToggleLightIcon.classList.remove('hidden');
+    } else {
+        // Para la primera visita (localStorage es null) o si está guardado como 'dark', se aplica el tema oscuro.
         document.documentElement.classList.add('dark');
         themeToggleDarkIcon.classList.remove('hidden');
-    } else {
-        document.documentElement.classList.remove('light');
-        themeToggleLightIcon.classList.remove('hidden');
     }
+    // ***** FIN DEL CAMBIO *****
+
     themeToggleBtn.addEventListener('click', function() {
         themeToggleDarkIcon.classList.toggle('hidden');
         themeToggleLightIcon.classList.toggle('hidden');
+        // Simplemente alterna la clase 'dark' y guarda la preferencia.
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
     });
+
     const navLinks = document.querySelectorAll('header nav .nav-link');
     const sections = document.querySelectorAll('main section[id]');
     const scrollObserver = new IntersectionObserver(entries => {
