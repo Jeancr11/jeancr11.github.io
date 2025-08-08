@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jean Carlos Rosario | Científico de Datos</title>
+
+    <!-- =================== ETIQUETAS SEO Y CANÓNICA =================== -->
+    <!-- Descripción de la página para los motores de búsqueda -->
+    <meta name="description" content="Portafolio de Jean Carlos Rosario, Ingeniero de Sistemas y Científico de Datos. Muestro mis proyectos, experiencia y habilidades en análisis de datos, machine learning y desarrollo web.">
+    <!-- Palabras clave relevantes para tu perfil -->
+    <meta name="keywords" content="Jean Carlos Rosario, Científico de Datos, Ingeniero de Sistemas, Analista de Datos, Portafolio, Proyectos, Python, Power BI, SQL, Machine Learning">
+    <!-- Autor de la página -->
+    <meta name="author" content="Jean Carlos Rosario">
+    <!-- Etiqueta Canónica: Le indica a Google cuál es la URL principal para evitar contenido duplicado -->
+    <link rel="canonical" href="https://www.jeancarlosrosario.org/" />
+
+    <!-- =================== FIN DE ETIQUETAS SEO =================== -->
+    
+    <!-- Dependencias Externas -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Dependencias Internas (mi css) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jeancr11/portafolio/portafolio.css">
+
+    <script>
+        // Configuración de Tailwind CSS para modo oscuro
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 transition-colors duration-300">
+
+    <!-- =================== ENCABEZADO =================== -->
+    <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm fixed top-0 w-full z-50 border-b border-gray-200 dark:border-slate-800">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a onclick="document.getElementById('hero').scrollIntoView({behavior: 'smooth'})" class="text-2xl font-bold font-mono text-blue-600 dark:text-blue-400 z-50">JCR</a>
+            
+            <div class="hidden md:flex items-center space-x-8">
+                <a onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors nav-link">Sobre Mí</a>
+                <a onclick="document.getElementById('experience').scrollIntoView({behavior: 'smooth'})" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors nav-link">Experiencia</a>
+                <a onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors nav-link">Proyectos</a>
+                <a onclick="document.getElementById('certifications').scrollIntoView({behavior: 'smooth'})" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors nav-link">Certificaciones</a>
+                <a onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors nav-link">Contacto</a>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                 <button id="theme-toggle" type="button" class="text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none rounded-lg text-sm p-2.5">
+                     <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                     <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                 </button>
+                 <div class="md:hidden z-50">
+                     <button id="mobile-menu-button" aria-label="Abrir menú">
+                         <i data-lucide="menu" id="menu-icon" class="text-blue-600 dark:text-blue-400"></i>
+                         <i data-lucide="x" id="close-icon" class="text-blue-600 dark:text-blue-400 hidden"></i>
+                     </button>
+                 </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- =================== MENÚ MÓVIL =================== -->
+    <div id="mobile-menu" class="hidden md:hidden fixed inset-0 bg-white/95 dark:bg-slate-900/95 z-40">
+        <div class="flex flex-col items-center justify-center h-full space-y-8 text-2xl">
+            <a onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors mobile-nav-link">Sobre Mí</a>
+            <a onclick="document.getElementById('experience').scrollIntoView({behavior: 'smooth'})" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors mobile-nav-link">Experiencia</a>
+            <a onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors mobile-nav-link">Proyectos</a>
+            <a onclick="document.getElementById('certifications').scrollIntoView({behavior: 'smooth'})" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors mobile-nav-link">Certificaciones</a>
+            <a onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors mobile-nav-link">Contacto</a>
+        </div>
+    </div>
+
+    <!-- ================ CONTENIDO PRINCIPAL =============== -->
+    <main class="w-full">
+        <!-- SECCIÓN HERO -->
+        <section id="hero" class="min-h-screen flex items-center pt-20 relative overflow-hidden">
+             <ul id="hero-logos">
+                 <li class="logo-bg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Microsoft_Office_Excel_%282019%E2%80%93present%29.svg/250px-Microsoft_Office_Excel_%282019%E2%80%93present%29.svg.png" alt="Logo de Excel"></li>
+                 <li class="logo-bg"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Logo de Python"></li>
+                 <li class="logo-bg"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg" alt="Logo de Pandas"></li>
+                 <li class="logo-bg"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968364.png" alt="Logo de SQL Server"></li>
+                 <li class="logo-bg"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/r/r-original.svg" alt="Logo de R"></li>
+                 <li class="logo-bg"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original-wordmark.svg" alt="Logo de Jupyter Notebook"></li>
+                 <li class="logo-bg"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/matplotlib/matplotlib-original.svg" alt="Logo de Matplotlib"></li>
+                 <li class="logo-bg"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg" alt="Logo de Numpy"></li>
+                 <li class="logo-bg"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="Logo de MySQL"></li>
+                 <li class="logo-bg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/GitHub_Invertocat_Logo.svg/270px-GitHub_Invertocat_Logo.svg.png" alt="Logo de Github"></li>
+                 <li class="logo-bg"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="Logo de HTML5"></li>
+                 <li class="logo-bg"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="Logo de CSS3"></li>
+                 <li class="logo-bg"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="Logo de JavaScript"></li>
+                 <li class="logo-bg"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/New_Power_BI_Logo.svg/900px-New_Power_BI_Logo.svg.png?20210102182532" alt="Logo de Power BI"></li>
+                 <li class="logo-bg"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg" alt="Logo de Scikit-learn"></li>
+                 <li class="logo-bg"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Logo de Git"></li>
+             </ul>
+            <div class="container mx-auto px-6 flex justify-center relative z-10">
+                <div class="flex flex-col md:flex-row items-center justify-center gap-8 lg:gap-16 max-w-6xl">
+                    <div class="w-full md:w-3/5 text-center md:text-left">
+                        <p class="text-blue-600 dark:text-blue-400 font-mono mb-2">JEAN CARLOS ROSARIO</p>
+                        <h1 class="text-4xl lg:text-6xl font-extrabold text-slate-800 dark:text-white leading-tight">Científico de Datos & Ingeniero de Sistemas</h1>
+                        <p class="max-w-xl mt-6 text-slate-600 dark:text-slate-400">
+                            Transformo datos en decisiones y desarrollo soluciones web, combinando análisis, ciencia de datos e ingeniería de sistemas.
+                        </p>
+                        <a id="hero-projects-button" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})" class="border-2 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 font-bold px-8 py-3 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-400 hover:text-white dark:hover:text-slate-900 transition-colors mt-8 inline-block">
+                            Ver Proyectos
+                        </a>
+                    </div>
+                     <div class="w-full md:w-2/5 flex justify-center">
+                         <div class="w-72 h-72 lg:w-80 lg:h-80 rounded-full bg-slate-200 dark:bg-slate-800 relative group overflow-hidden shadow-2xl">
+                             <img src="https://placehold.co/400x400/e0e0e0/333333?text=JCR" alt="Foto de Jean Carlos Rosario" class="w-full h-full object-cover">
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="container mx-auto px-6">
+            
+            <!-- SECCIÓN SOBRE MÍ -->
+            <section id="about" class="py-24">
+                <div class="max-w-5xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 text-slate-800 dark:text-white"><span class="text-blue-600 dark:text-blue-400 font-mono mr-3">#</span>Sobre Mí</h2>
+                    <div class="grid md:grid-cols-2 gap-10 items-start">
+                        <div class="text-slate-600 dark:text-slate-400 space-y-4 text-lg">
+                            <p>Ingeniero en Sistemas, Científico de Datos, altamente capacitado en el uso de <strong class="text-slate-800 dark:text-white">herramientas ETL</strong> y en la implementación de soluciones avanzadas para el procesamiento y creación de <strong class="text-slate-800 dark:text-white">visualizaciones de datos</strong> complejas. Formado en una maestría centrada en <strong class="text-slate-800 dark:text-white">machine learning</strong>, donde adquirió habilidades en el manejo avanzado de datos utilizando <strong class="text-slate-800 dark:text-white">Python. </strong>Su perfil se extiende al <strong class="text-slate-800 dark:text-white">desarrollo web</strong>, permitiéndole no solo modelar datos, sino también construir las aplicaciones y plataformas que dan vida a las soluciones tecnológicas.</p>
+                            <p class="font-semibold text-slate-800 dark:text-white mt-6">Tecnologías principales:</p>
+                             <ul class="grid grid-cols-2 sm:grid-cols-2 gap-2 font-mono text-sm">
+                                 <li class="flex items-center"><i data-lucide="check-circle-2" class="w-4 h-4 text-blue-500 mr-2"></i>Python</li>
+                                 <li class="flex items-center"><i data-lucide="check-circle-2" class="w-4 h-4 text-blue-500 mr-2"></i>Power BI & DAX</li>
+                                 <li class="flex items-center"><i data-lucide="check-circle-2" class="w-4 h-4 text-blue-500 mr-2"></i>SQL (MySQL, T-SQL)</li>
+                                 <li class="flex items-center"><i data-lucide="check-circle-2" class="w-4 h-4 text-blue-500 mr-2"></i>Desarrollo Web</li>
+                                 <li class="flex items-center"><i data-lucide="check-circle-2" class="w-4 h-4 text-blue-500 mr-2"></i>Excel</li>
+                                 <li class="flex items-center"><i data-lucide="check-circle-2" class="w-4 h-4 text-blue-500 mr-2"></i>Procesos ETL</li>
+                             </ul>
+                        </div>
+                        <div class="bg-slate-100 dark:bg-slate-800/50 p-6 rounded-lg">
+                              <h3 class="font-semibold text-slate-800 dark:text-white mb-4">Formación Académica</h3>
+                              <ul class="space-y-4">
+                                  <li class="flex items-start">
+                                      <i data-lucide="graduation-cap" class="w-5 h-5 text-blue-500 mr-3 mt-1"></i>
+                                      <div>
+                                          <p class="font-bold">Máster en Data Science Management</p>
+                                          <p class="text-sm text-slate-500 dark:text-slate-400">TECH Universidad Tecnológica (2023-2024)</p>
+                                      </div>
+                                  </li>
+                                  <li class="flex items-start">
+                                      <i data-lucide="graduation-cap" class="w-5 h-5 text-blue-500 mr-3 mt-1"></i>
+                                      <div>
+                                          <p class="font-bold">Ingeniería en Sistemas y Computación</p>
+                                          <p class="text-sm text-slate-500 dark:text-slate-400">Universidad Dominicana O&M (2018-2022)</p>
+                                      </div>
+                                  </li>
+                                  <li class="flex items-start">
+                                      <i data-lucide="graduation-cap" class="w-5 h-5 text-blue-500 mr-3 mt-1"></i>
+                                      <div>
+                                          <p class="font-bold">Técnico en Informática</p>
+                                          <p class="text-sm text-slate-500 dark:text-slate-400">Instituto Politécnico Ángeles Custodios (2013-2017)</p>
+                                      </div>
+                                  </li>
+                              </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN EXPERIENCIA -->
+            <section id="experience" class="py-24">
+                <div class="max-w-5xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-12 text-slate-800 dark:text-white"><span class="text-blue-600 dark:text-blue-400 font-mono mr-3">#</span>Experiencia Profesional</h2>
+                    <div class="timeline-item border-slate-200 dark:border-slate-700">
+                        <div class="timeline-dot bg-white dark:bg-slate-900 border-blue-600 dark:border-blue-400"></div>
+                        <h3 class="text-xl font-bold text-slate-800 dark:text-white">Analista de Datos <span class="text-blue-600 dark:text-blue-400">@ CHC - CORAL HOSPITALITY CORP</span></h3>
+                        <p class="font-mono text-sm text-slate-500 dark:text-slate-500 mb-4">Ene. 2024 - Actualidad</p>
+                        <ul class="space-y-2 text-slate-600 dark:text-slate-400 list-disc list-inside">
+                            <li>Automaticé tareas repetitivas agregando una solución a la carga manual, aumentando la presición en el manejo de datos.</li>
+                            <li>Preparé Dashboard’s donde monitoreé cumplimientos de objetivos financieros, proyecciones de ingresos mensuales y analicé liquidaciones de comisiones.</li>
+                            <li>Optimicé consultas de SQL y colaboré con el equipo de desarrollo de Software para definir criterios y medidas de los datos.</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item border-slate-200 dark:border-slate-700">
+                        <div class="timeline-dot bg-white dark:bg-slate-900 border-blue-600 dark:border-blue-400"></div>
+                        <h3 class="text-xl font-bold text-slate-800 dark:text-white">Analista de Datos <span class="text-blue-600 dark:text-blue-400">@ BDC SERRALLES</span></h3>
+                        <p class="font-mono text-sm text-slate-500 dark:text-slate-500 mb-4">May. 2021 - Ene. 2024</p>
+                         <ul class="space-y-2 text-slate-600 dark:text-slate-400 list-disc list-inside">
+                            <li>Desarrollé informes y vizualizaciones de datos. Colaboré con el departamento de Ventas para llegar a desiciones mas informadas basadas en datos.</li>
+                            <li>Limpié y corregí datos resolviendo problemáticas.</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item border-slate-200 dark:border-slate-700">
+                        <div class="timeline-dot bg-white dark:bg-slate-900 border-blue-600 dark:border-blue-400"></div>
+                        <h3 class="text-xl font-bold text-slate-800 dark:text-white">Gestor Web y Marketing Digital <span class="text-blue-600 dark:text-blue-400">@ BDC SERRALLES</span></h3>
+                        <p class="font-mono text-sm text-slate-500 dark:text-slate-500 mb-4">Oct. 2017 - May. 2021</p>
+                        <ul class="space-y-2 text-slate-600 dark:text-slate-400 list-disc list-inside">
+                            <li>Desarrollé parte de la Página Web y me encargué de la misma.</li>
+                            <li>Implementé estrategias SEO en la Web y desarrollé otras para el Marketing Digital.</li>
+                            <li>Analicé los datos provenientes de la Página Web, Redes Sociales y Encuentas realizadas.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN PROYECTOS -->
+            <section id="projects" class="py-24">
+                 <div class="max-w-6xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-8 text-slate-800 dark:text-white text-center"><span class="text-blue-600 dark:text-blue-400 font-mono mr-3">#</span>Proyectos</h2>
+                    
+                    <!-- Contenedor de Filtros -->
+                    <div id="project-filters" class="flex justify-center flex-wrap items-center gap-2 md:gap-4 mb-8">
+                        <!-- Los botones de categoría y el dropdown se generarán aquí -->
+                    </div>
+                    
+                    <div class="text-center text-slate-500 dark:text-slate-400 mb-6">
+                        <p class="flex items-center justify-center gap-2 font-mono text-sm animate-pulse">
+                            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                            Desliza para ver más
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </p>
+                    </div>
+                    
+                    <!-- Contenedor Flex para alinear flechas y carrusel -->
+                    <div class="flex items-center gap-2 md:gap-4">
+                        <!-- Botón Izquierda -->
+                        <button id="prev-btn" class="bg-white/80 dark:bg-slate-800/80 p-2 rounded-full shadow-md hover:scale-110 transition-transform hidden sm:block z-20 flex-shrink-0">
+                            <i data-lucide="chevron-left" class="w-8 h-8"></i>
+                        </button>
+                
+                        <!-- Wrapper para el carrusel para que no se desborde -->
+                        <div class="flex-grow overflow-x-hidden">
+                            <div id="carousel-container" class="overflow-x-auto snap-x snap-mandatory scroll-p-6 flex gap-6 pb-6">
+                                <!-- Los proyectos se insertarán aquí dinámicamente -->
+                            </div>
+                        </div>
+                
+                        <!-- Botón Derecha -->
+                        <button id="next-btn" class="bg-white/80 dark:bg-slate-800/80 p-2 rounded-full shadow-md hover:scale-110 transition-transform hidden sm:block z-20 flex-shrink-0">
+                            <i data-lucide="chevron-right" class="w-8 h-8"></i>
+                        </button>
+                    </div>
+                </div>
+           </section>
+
+            <!-- SECCIÓN DE CERTIFICACIONES -->
+            <section id="certifications" class="py-24">
+                <div class="max-w-5xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-12 text-slate-800 dark:text-white"><span class="text-blue-600 dark:text-blue-400 font-mono mr-3">#</span>Certificaciones</h2>
+                    <div id="certifications-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Las certificaciones se insertarán aquí dinámicamente -->
+                    </div>
+                    <div class="text-center mt-8">
+                        <a href="https://www.linkedin.com/in/jeancarlosrosario11/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center border-2 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 font-bold px-8 py-3 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-400 hover:text-white dark:hover:text-slate-900 transition-colors">
+                            Ver más en LinkedIn
+                            <i data-lucide="arrow-up-right" class="inline-block ml-2 w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN CONTACTO -->
+            <section id="contact" class="py-24">
+                <div class="max-w-5xl mx-auto text-center bg-slate-100 dark:bg-slate-800/50 p-10 rounded-lg">
+                    <h2 class="text-3xl font-bold mb-8 text-slate-800 dark:text-white text-center"><span class="text-blue-600 dark:text-blue-400 font-mono mr-3">#</span>Contacto</h2>
+                    
+                    <h2 class="text-blue-600 dark:text-blue-400 font-mono">¿Hablamos?</h2>
+                    <h3 class="text-4xl font-bold mt-4 text-slate-800 dark:text-white">Disponible para Nuevos Retos</h3>
+                    <p class="text-slate-600 dark:text-slate-400 mt-6 mb-8 max-w-xl mx-auto">Estoy abierto a nuevas oportunidades y listo para aportar valor. Si tienes un proyecto en mente o simplemente quieres conectar, no dudes en contactarme.</p>
+                    <a href="mailto:Jeancarlosrosario11@outlook.com" class="bg-blue-600 dark:bg-blue-500 text-white dark:text-slate-900 font-bold px-10 py-4 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-400 transition-colors inline-block">Enviar Mensaje</a>
+                </div>
+            </section>
+        </div>
+    </main>
+ 
+    <!-- ================= PIE DE PÁGINA ================== -->
+    <footer class="py-10 text-center border-t border-gray-200 dark:border-slate-800 mt-12">
+        <div class="flex items-center justify-center space-x-6 mb-4">
+            <a href="https://github.com/jeancr11" class="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"><i data-lucide="github" class="w-6 h-6"></i></a>
+            <a href="https://www.linkedin.com/in/jeancarlosrosario11/" class="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"><i data-lucide="linkedin" class="w-6 h-6"></i></a>
+            <a href="mailto:Jeancarlosrosario11@outlook.com" class="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"><i data-lucide="mail" class="w-6 h-6"></i></a>
+        </div>
+        <p class="font-mono text-xs text-slate-500 dark:text-slate-500">Diseñado y construido por Jean Carlos Rosario © 2025</p>
+    </footer>
+    
+    <!-- ===================== MODALES ==================== -->
+    <!-- Modal de Proyecto -->
+    <div id="project-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+        <div id="modal-content-box" class="bg-white dark:bg-slate-900 border border-slate-700 rounded-lg max-w-2xl md:max-w-3xl lg:max-w-4xl w-full max-h-[90vh] flex flex-col scale-95 opacity-0 transition-all duration-300">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                <h3 id="modal-title" class="text-lg font-bold text-slate-800 dark:text-white"></h3>
+                <button id="modal-close-btn" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <!-- CAMBIO: Contenedor para multimedia (video o imagen) -->
+                <div class="relative mb-4 group">
+                    <div id="modal-media-container" class="aspect-video bg-slate-200 dark:bg-slate-800 rounded-md overflow-hidden flex justify-center items-center">
+                        <!-- El contenido (img o video) se insertará aquí con JS -->
+                    </div>
+                    <button id="modal-expand-btn" class="absolute top-2 right-2 bg-black/50 text-white p-1.5 rounded-full hover:bg-black/75 transition-colors opacity-0 group-hover:opacity-100">
+                        <i data-lucide="expand" class="w-5 h-5"></i>
+                    </button>
+                    <button id="modal-prev-btn" class="hidden absolute top-1/2 left-2 -translate-y-1/2 bg-black/50 text-white p-1 rounded-full hover:bg-black/75 transition-colors">
+                        <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                    </button>
+                    <button id="modal-next-btn" class="hidden absolute top-1/2 right-2 -translate-y-1/2 bg-black/50 text-white p-1 rounded-full hover:bg-black/75 transition-colors">
+                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <!-- FIN DEL CAMBIO -->
+                <div class="flex justify-between items-start mb-4">
+                    <p id="modal-desc" class="text-slate-600 dark:text-slate-400 pr-4"></p>
+                    <div id="modal-links" class="flex items-center gap-4 shrink-0">
+                        <a id="modal-live-link" href="#" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-blue-400 transition-colors hidden" title="Ver proyecto en vivo">
+                            <i data-lucide="external-link" class="w-6 h-6"></i>
+                        </a>
+                        <a id="modal-github-link" href="#" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-blue-400 transition-colors hidden" title="Ver código en GitHub">
+                            <i data-lucide="github" class="w-6 h-6"></i>
+                        </a>
+                    </div>
+                </div>
+                <div id="modal-tags" class="flex flex-wrap gap-2 font-mono text-xs"></div>
+                <div id="modal-long-desc" class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Pantalla Completa -->
+    <div id="fullscreen-modal" class="hidden fixed inset-0 bg-black/90 z-[110] flex items-center justify-center p-4">
+        <button id="fullscreen-prev-btn" class="hidden absolute top-1/2 left-4 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/75 transition-colors">
+            <i data-lucide="chevron-left" class="w-8 h-8"></i>
+        </button>
+        <div id="fullscreen-media-container" class="flex justify-center items-center max-w-[90vw] max-h-[90vh]">
+             <!-- El contenido (img o video) se insertará aquí con JS -->
+        </div>
+        <button id="fullscreen-next-btn" class="hidden absolute top-1/2 right-4 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/75 transition-colors">
+            <i data-lucide="chevron-right" class="w-8 h-8"></i>
+        </button>
+        <button id="fullscreen-close-btn" class="absolute top-4 right-4 text-white hover:text-slate-300">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+    </div>
+
+    <!-- Modal de Certificación -->
+    <div id="certification-modal" class="hidden fixed inset-0 bg-black/90 z-[110] flex items-center justify-center p-4">
+        <button id="cert-prev-btn" class="hidden absolute top-1/2 left-4 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/75 transition-colors">
+            <i data-lucide="chevron-left" class="w-8 h-8"></i>
+        </button>
+        <img id="certification-image" src="" class="max-w-[90vw] max-h-[90vh] object-contain">
+        <button id="cert-next-btn" class="hidden absolute top-1/2 right-4 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/75 transition-colors">
+            <i data-lucide="chevron-right" class="w-8 h-8"></i>
+        </button>
+        <button id="certification-close-btn" class="absolute top-4 right-4 text-white hover:text-slate-300">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/jeancr11/portafolio/portafolio.js"></script>
+</body>
+</html>
