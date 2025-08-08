@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // ***** INICIO DEL CAMBIO: Lógica para establecer el tema oscuro por defecto *****
     // Comprueba si el tema guardado es 'light'. Si no lo es (es decir, es 'dark' o no está definido),
     // se aplicará el modo oscuro por defecto en la primera visita.
-    if (localStorage.getItem('color-theme') === 'dark') {
+    if (localStorage.getItem('color-theme') === 'light') {
         // Si está explícitamente guardado como 'light', se aplica el tema claro.
-        document.documentElement.classList.remove('light');
+        document.documentElement.classList.remove('dark');
         themeToggleLightIcon.classList.remove('hidden');
     } else {
         // Para la primera visita (localStorage es null) o si está guardado como 'dark', se aplica el tema oscuro.
@@ -1633,4 +1633,5 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProjects('all');
     renderCertifications();
 });
+
 
