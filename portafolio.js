@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Este proyecto consiste en la construcción de un dashboard completo en <strong>Power BI</strong> para analizar los datos de ventas de un restaurante. El proceso abarcó desde la limpieza y transformación de los datos en <strong>Power Query</strong>, donde se consolidaron encabezados y se calcularon nuevas columnas como la propina por orden.</p>
                 <p>En el área de visualización, se crearon gráficos interactivos, un <strong>Bubble Chart</strong> para análisis multivariable y <strong>KPIs</strong> con metas de ventas para monitorear el rendimiento. Se implementaron medidas <strong>DAX</strong> avanzadas, utilizando funciones como <strong>SUMMARIZE</strong> y <strong>SUMX</strong> para obtener métricas complejas como el promedio de ítems por orden y comparativas temporales (mes vs. mes, acumulados anuales).</p>
                 
-                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Para Qué Podemos Usar Esto en la Vida Real?</h4>
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
                 <p>Un dashboard de análisis para un restaurante es una herramienta poderosa para la gestión diaria y estratégica. Permite a los dueños y gerentes:</p>
                 <ul class='list-disc list-inside mt-2 space-y-2'>
                     <li><strong>Optimizar el menú:</strong> Identificar qué platos son los más vendidos (y los más rentables) para destacarlos en el menú o eliminar los que no tienen buen rendimiento.</li>
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `,
-            categories: ['power bi', 'dax', 'UI/UX'],
+            categories: ['power bi', 'dax', 'UI/UX', 'KPIs'],
             tags: ['Power BI', 'DAX', 'Power Query', 'Análisis de Ventas', 'KPIs','UI/UX'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1754666297/Grabaci%C3%B3n_2025-08-08_111934_vn5dvn.mp4' },
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Este proyecto es un dashboard de análisis de ventas desarrollado en <strong>Power BI</strong> como respuesta a un examen de nivel Black Belt. El objetivo fue analizar la data de la empresa de libros "PANDIL" para descubrir insights sobre la <strong>estacionalidad</strong> y el comportamiento de las órdenes.</p>
                 <p>Puse especial atención en el <strong>diseño y la experiencia de usuario (UI/UX)</strong>, creándolo desde cero para asegurar que la visualización fuera intuitiva. Utilizando <strong>Medidas DAX</strong> avanzadas, el dashboard ofrece una visión interactiva que permite a la gerencia entender el impacto de las temporadas clave y la efectividad de las estrategias de descuento.</p>
 
-                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Para Qué Podemos Usar Esto en la Vida Real?</h4>
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
                 <p>Un dashboard de ventas es una herramienta esencial para cualquier negocio, ya que permite a los líderes y equipos comerciales:</p>
                 <ul class='list-disc list-inside mt-2 space-y-2'>
                     <li><strong>Entender la estacionalidad:</strong> Identificar patrones de compra durante el año (como Navidad o Regreso a Clases) para planificar campañas de marketing y gestionar el inventario de forma proactiva.</li>
@@ -460,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `,
-            categories: ['power bi', 'dax', 'business intelligence', 'UI/UX'],
+            categories: ['power bi', 'dax', 'UI/UX', 'KPIs', 'business intelligence'],
             tags: ['Power BI', 'DAX', 'UI/UX', 'Business Intelligence', 'Análisis de Ventas'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1754340404/Dashboard_pandil_nc6w8g.mp4' },
@@ -473,7 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title: 'J&O Punta Cana Transfer - Sitio Web de Reservas',
             desc: 'Sitio web completo para una empresa de transporte turístico, enfocado en la experiencia de usuario y la captación de reservas.',
             longDesc: '<p>Desarrollo integral del sitio web para <strong>J&O Punta Cana Transfer</strong>, una empresa de transporte privado en República Dominicana. El proyecto fue construido desde cero, abarcando desde el diseño del logo y la identidad visual hasta la implementación completa de la plataforma.</p><p>La web cuenta con un sistema de reservas dinámico que permite a los usuarios cotizar y solicitar traslados fácilmente. Se utilizó <strong>HTML</strong> semántico, <strong>CSS</strong> para un diseño moderno y totalmente responsivo, y <strong>JavaScript</strong> para gestionar la interactividad, incluyendo el menú de navegación, el slider de destinos, y los formularios de contacto y reserva que se conectan directamente con WhatsApp.</p>',
-            categories: ['web'],
+            categories: ['web','UI/UX'],
             tags: ['Web', 'HTML', 'CSS', 'JavaScript', 'Diseño Web', 'Reservas', 'UI/UX'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1754577756/pagina_web_jyopuntacanatrasfer_nvivzy.mp4' }
@@ -488,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>¿Qué haces cuando toda la información que necesitas está atrapada en una única columna de texto, sin estructura alguna? Este proyecto responde a esa pregunta, demostrando cómo se puede usar exclusivamente <strong>SQL</strong> para llevar a cabo un proceso completo de <strong>ingeniería de datos</strong>.</p>
                 <p>El punto de partida fue una tabla con datos de reseñas de Disney en un formato desestructurado. El reto consistió en <strong>extraer, limpiar, estandarizar y estructurar</strong> cada pieza de información en una tabla relacional limpia, lista para el análisis.</p>
                 
-                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Para Qué Podemos Usar Esto en la Vida Real?</h4>
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
                 <p>Esta habilidad es crucial en muchos escenarios del mundo real donde los datos no siempre vienen en un formato ordenado. Por ejemplo:</p>
                 <ul class='list-disc list-inside mt-2 space-y-2'>
                     <li><strong>Análisis de feedback de clientes:</strong> Extraer temas, productos mencionados y sentimiento de miles de comentarios de un formulario de "caja de texto libre".</li>
@@ -635,7 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Este proyecto es un dashboard comprensivo para la gestión de inventarios en un almacén de madera, creado como parte de una competencia de análisis de datos. El objetivo fue desarrollar un sistema en <strong>Power Pivot y Power BI</strong> para calcular métricas clave de calidad y operativas a lo largo del tiempo.</p>
                 <p>Puse especial atención en el <strong>diseño y la experiencia de usuario (UI/UX)</strong>, la visualización final, es de mi completa autoría.</p>
                 
-                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Para Qué Podemos Usar Esto en la Vida Real?</h4>
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
                 <p>Un dashboard de inventario como este es una herramienta vital para cualquier negocio que maneje productos físicos. Permite a los gerentes:</p>
                 <ul class='list-disc list-inside mt-2 space-y-2'>
                     <li><strong>Evitar la falta de stock:</strong> Identificar rápidamente los productos que se están agotando para reponerlos a tiempo y no perder ventas.</li>
@@ -891,7 +891,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `,
-            categories: ['power bi', 'dax', 'UI/UX'],
+            categories: ['power bi', 'dax', 'UI/UX', 'KPIs'],
             tags: ['Power BI', 'DAX', 'Power Pivot', 'Gestión de Inventario', 'UI/UX'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1754598637/Grabaci%C3%B3n_2025-08-07_162723_mdkunl.mp4' },
@@ -930,7 +930,7 @@ document.addEventListener('DOMContentLoaded', () => {
             title: 'Portafolio Personal',
             desc: 'El propio sitio web que estás viendo. Un proyecto personal para centralizar mi experiencia, habilidades y proyectos en un solo lugar.',
             longDesc: '<p>Este portafolio es en sí mismo un proyecto clave, desarrollado para servir como mi carta de presentación digital. Fue construido desde cero utilizando <strong>HTML</strong>, <strong>CSS con Tailwind CSS</strong> y <strong>JavaScript</strong> puro para asegurar un rendimiento óptimo y un control total sobre el diseño y la interactividad.</p><p>El objetivo era crear una experiencia de usuario limpia, moderna y totalmente responsiva, donde la navegación fuera intuitiva. Todas las funcionalidades, desde los filtros dinámicos de proyectos y el carrusel, hasta los modales interactivos y el cambio de tema (claro/oscuro), fueron implementadas con JavaScript para demostrar mis habilidades en el desarrollo front-end.</p>',
-            categories: ['web'],
+            categories: ['web', 'UI/UX'],
             tags: ['Web', 'HTML', 'CSS', 'JavaScript', 'Tailwind CSS', 'UI/UX'],
             media: [
                 { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754601382/potafolio_persnal_meix1a.png' }
@@ -944,7 +944,7 @@ document.addEventListener('DOMContentLoaded', () => {
             longDesc: `
                 <p>Este proyecto demuestra cómo utilizar <strong>SQL</strong> para analizar los resultados de diferentes tipos de experimentos (A/B tests). A partir de una tabla de datos sin procesar, se aplican diversas consultas para agregar y comparar el rendimiento entre grupos de control y variantes.</p>
 
-                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Para Qué Podemos Usar Esto en la Vida Real?</h4>
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
                 <p>El A/B testing es fundamental para tomar decisiones basadas en datos. Por ejemplo, una empresa podría usarlo para:</p>
                 <ul class='list-disc list-inside mt-2 space-y-2'>
                     <li><strong>Decidir el diseño de una página web:</strong> Probar si un botón de 'Comprar ahora' de color verde (variante A) genera más clics que uno de color azul (variante B).</li>
@@ -1118,13 +1118,342 @@ document.addEventListener('DOMContentLoaded', () => {
             githubUrl: null,
             liveUrl: null
         },
+        
+        {
+            title: 'Análisis de Tendencias con SQL',
+            desc: 'Proyecto que demuestra cómo analizar datos de series temporales utilizando exclusivamente SQL para descubrir tendencias de ventas, comparar períodos y calcular métricas clave.',
+            longDesc: `
+                <p>Este proyecto es una guía práctica sobre cómo realizar un <strong>análisis de tendencias</strong> complejo utilizando únicamente <strong>SQL</strong>. A partir de datos de ventas minoristas, se aplican diversas técnicas de manipulación de fechas y funciones de ventana para extraer insights valiosos sobre el comportamiento del mercado a lo largo del tiempo.</p>
+                
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>El análisis de tendencias es una de las tareas más importantes en cualquier negocio. Estas técnicas de SQL permiten a una empresa:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>Prever la demanda futura:</strong> Analizar las ventas históricas para estimar cuánto se venderá en los próximos meses o años, optimizando así la producción y el inventario.</li>
+                    <li><strong>Identificar la estacionalidad:</strong> Descubrir si ciertos productos se venden más en épocas específicas (como ropa de mujer en verano) para planificar campañas de marketing y promociones.</li>
+                    <li><strong>Medir el crecimiento del negocio:</strong> Comparar las ventas de un período contra otro (mes vs. mes, año vs. año) para evaluar si la empresa está creciendo y a qué ritmo.</li>
+                    <li><strong>Evaluar el rendimiento de categorías:</strong> Comparar el crecimiento de diferentes líneas de productos (libros vs. juguetes) para decidir dónde invertir más recursos.</li>
+                </ul>
+                <p class='mt-2'>Dominar estas consultas SQL transforma datos brutos de ventas en una hoja de ruta estratégica para el crecimiento del negocio.</p>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Ejemplo de los Datos Utilizados</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: RETAIL_SALES</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        sales_id | sales_month | kind_of_business                  | sales
+        ---------|-------------|-----------------------------------|--------
+        1        | 1992-01-01  | Motor vehicle and parts dealers   | 29811
+        2        | 1992-01-01  | Automobile dealers                | 25800
+        3        | 1992-01-01  | Women's clothing stores           | 1602
+        4        | 1992-01-01  | Men's clothing stores             | 729
+        ...      | ...         | ...                               | ...</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Técnicas y Consultas Clave</h4>
+                <div class='dax-accordion'>
+                    
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>1. Tendencias Básicas</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Extrae las ventas mensuales o las agrupa anualmente para una categoría de negocio específica. Arroja una vista simple del rendimiento a lo largo del tiempo.</p>
+                            <pre><code>
+        -- Ventas mensuales
+        SELECT
+            sales_month,
+            sales
+        FROM
+            retail_sales
+        WHERE
+            kind_of_business = "Retail and Food Services sales, Total";
+
+        -- Ventas anuales
+        SELECT
+            EXTRACT(YEAR FROM sales_month) as ventas_anuales,
+            SUM(sales) as ventas
+        FROM
+            retail_sales
+        WHERE
+            kind_of_business = "Retail and Food Services sales, Total"
+        GROUP BY 1;</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>2. Tendencia Compuesta</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Compara las ventas anuales de múltiples categorías de negocio en una sola consulta. Arroja las ventas totales por año para cada categoría seleccionada.</p>
+                            <pre><code>
+        SELECT
+            EXTRACT(YEAR FROM sales_month) as venta_anual,
+            kind_of_business,
+            SUM(sales) as ventas
+        FROM
+            retail_sales
+        WHERE kind_of_business IN ("Book Stores","Sporting goods stores","Hobby, toy, and game stores")
+        GROUP BY 1,2;</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>3. Comparación entre Categorías</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Pivota los datos para comparar directamente las ventas entre dos categorías (ropa de mujer vs. hombre). Arroja la diferencia absoluta, la tasa o el porcentaje de ventas entre ambas categorías por año.</p>
+                            <pre><code>
+        -- Diferencia Absoluta
+        SELECT
+            Venta_anual,
+            ventas_mujeres - ventas_hombres AS mujeres_menos_hombres
+        FROM(
+                SELECT
+                    EXTRACT(YEAR FROM sales_month) AS Venta_anual,
+                    SUM(CASE WHEN kind_of_business = "Women's clothing stores" THEN sales END) as ventas_mujeres,
+                    SUM(CASE WHEN kind_of_business = "Men's clothing stores" THEN sales END) as ventas_hombres
+                FROM
+                    retail_sales
+                WHERE kind_of_business IN ("Men's clothing stores","Women's clothing stores")
+                GROUP BY 1) AS a;
+
+        -- Tasa o Ratio
+        SELECT
+            Venta_anual,
+            ventas_mujeres / ventas_hombres AS tasa_mujeres_hombres
+        FROM(
+                SELECT
+                    EXTRACT(YEAR FROM sales_month) AS Venta_anual,
+                    SUM(CASE WHEN kind_of_business = "Women's clothing stores" THEN sales END) as ventas_mujeres,
+                    SUM(CASE WHEN kind_of_business = "Men's clothing stores" THEN sales END) as ventas_hombres
+                FROM
+                    retail_sales
+                WHERE kind_of_business IN ("Men's clothing stores","Women's clothing stores")
+                GROUP BY 1) AS a;</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>4. Porcentaje del Total</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Calcula qué porcentaje de las ventas totales (mensuales o anuales) corresponde a cada categoría. Arroja el porcentaje de contribución de cada categoría al total.</p>
+                            <pre><code>
+        -- Porcentaje del total mensual
+        SELECT
+            sales_month,
+            kind_of_business,
+            sales,
+            SUM(sales) OVER (PARTITION BY sales_month) AS ventas_totales,
+            sales * 100 / SUM(sales) OVER (PARTITION BY sales_month) AS pct_del_total
+        FROM retail_sales
+        WHERE kind_of_business IN ("Men's clothing stores","Women's clothing stores");
+
+        -- Porcentaje del total anual
+        SELECT
+            sales_month,
+            kind_of_business,
+            sales,
+            SUM(sales) OVER (PARTITION BY EXTRACT(YEAR FROM sales_month), kind_of_business) AS ventas_anuales,
+            sales * 100 / SUM(sales) OVER (PARTITION BY EXTRACT(YEAR FROM sales_month), kind_of_business) AS pct_anual
+        FROM retail_sales
+        WHERE kind_of_business IN ("Men's clothing stores","Women's clothing stores")
+        ORDER BY 1,2;</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>5. Cambio Porcentual Indexado</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Mide el crecimiento de las ventas a lo largo del tiempo en relación con un punto de partida (el primer año). Arroja un índice que muestra el crecimiento acumulado desde el inicio.</p>
+                            <pre><code>
+        SELECT
+            ano_de_venta,
+            kind_of_business,
+            ventas,
+            (ventas/FIRST_VALUE(ventas) OVER (PARTITION BY kind_of_business ORDER BY ano_de_venta)-1)*100 AS indice_ventas
+        FROM(
+                SELECT
+                    EXTRACT(YEAR FROM sales_month) AS ano_de_venta,
+                    kind_of_business,
+                    SUM(sales) as ventas
+                FROM
+                    retail_sales
+                WHERE kind_of_business IN ("Men's clothing stores","Women's clothing stores")
+                GROUP BY 1,2) AS a;</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>6. Ventanas Móviles</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Calcula una métrica (como el promedio) sobre un período de tiempo que "se mueve" con cada registro, suavizando las fluctuaciones. Arroja el promedio móvil de ventas para los últimos 12 meses.</p>
+                            <pre><code>-- Con Window Function
+        SELECT
+            sales_month,
+            AVG(sales) OVER (ORDER BY sales_month ROWS BETWEEN 11 PRECEDING AND CURRENT ROW) AS promedio_movil_ventas,
+            COUNT(sales) OVER (ORDER BY sales_month ROWS BETWEEN 11 PRECEDING AND CURRENT ROW) AS numero_registros
+        FROM retail_sales
+        WHERE kind_of_business = "Women's clothing stores" ;</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>7. Acumulado (YTD)</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Suma las ventas desde el inicio del año hasta la fecha actual. Arroja las ventas del mes y el total acumulado del año hasta ese mes.</p>
+                            <pre><code>
+        SELECT
+            date(sales_month) AS mes_venta,
+            sales AS ventas,
+            SUM(sales) OVER (PARTITION BY EXTRACT(YEAR FROM sales_month) ORDER BY sales_month) AS ventas_ytd
+        FROm retail_sales
+        WHERE kind_of_business = "Women's clothing stores";</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>8. Periodo vs. Periodo Anterior (Lag)</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Compara las ventas de un período (mes o año) con las del período inmediatamente anterior. Arroja las ventas actuales, las del período previo y el porcentaje de crecimiento.</p>
+                            <pre><code>
+        -- Crecimiento Mes vs Mes Anterior
+        SELECT
+            kind_of_business,
+            sales_month,
+            sales AS ventas,
+            LAG(sales) OVER (PARTITION BY kind_of_business ORDER BY sales_month) AS ventas_mes_previo,
+            (sales / LAG(sales) OVER (PARTITION BY kind_of_business ORDER BY sales_month) - 1 ) * 100 AS pct_crecimiento
+        FROM retail_sales
+        WHERE kind_of_business = "Book Stores";
+
+        -- Crecimiento Año vs Año Anterior
+        SELECT
+            ano_ventas,
+            ventas_anuales,
+            LAG(ventas_anuales) OVER (ORDER BY ano_ventas) AS ventas_ano_previo,
+            (ventas_anuales / LAG(ventas_anuales) OVER (ORDER BY ano_ventas) - 1) * 100 AS pct_crecimiento
+        FROM(
+                SELECT
+                    EXTRACT(YEAR FROM sales_month) AS ano_ventas,
+                    SUM(sales) AS ventas_anuales
+                FROM
+                    retail_sales
+                WHERE
+                    kind_of_business = "Book stores"
+                GROUP BY 1) AS a;</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>9. Mismo Mes, Año Anterior</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Compara las ventas de un mes con las del mismo mes del año pasado (ej. Enero 2024 vs Enero 2023). Arroja las ventas actuales, las del mismo mes del año previo y la diferencia porcentual.</p>
+                            <pre><code>
+        SELECT
+            sales_month,
+            sales,
+            LAG(sales) OVER (PARTITION BY EXTRACT(MONTH FROM sales_month) ORDER BY sales_month) AS ventas_mismo_mes_ano_previo,
+            (sales / LAG(sales) OVER (PARTITION BY EXTRACT(MONTH FROM sales_month) ORDER BY sales_month) - 1) * 100 AS pct_diferencia
+        FROM retail_sales
+        WHERE kind_of_business = "Book stores";</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>10. Comparación con Múltiples Periodos Previos</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Compara las ventas de un período con el promedio de varios períodos anteriores. Arroja el porcentaje de las ventas actuales en comparación con el promedio de los 3 meses anteriores.</p>
+                            <pre><code>
+        SELECT
+            sales_month,
+            Sales As ventas,
+            sales / AVG(sales) OVER (PARTITION BY EXTRACT(MONTH FROM sales_month) ORDER BY sales_month ROWS BETWEEN 3 PRECEDING AND 1 PRECEDING) AS pct_vs_promedio_3_meses
+        FROM retail_sales
+        WHERE kind_of_business = "Book stores";</code></pre>
+                        </div>
+                    </div>
+
+                </div>
+            `,
+            categories: ['sql', 'data analysis', 'time series'],
+            tags: ['SQL', 'Análisis de Tendencias', 'Dashboard en Excel', 'Visualización de Datos'],
+            media: [
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755110360/1._Tendencias_B%C3%A1sicas_mgyjtl.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755110359/1._Tendencias_B%C3%A1sicas_-_Excel_kfv6x5.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755110359/2._Tendencia_Compuesta_rtznwk.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755110614/2._Tendencia_Compuesta_-_Excel_uv4cvd.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755112219/3._Comparaci%C3%B3n_entre_Categor%C3%ADas_kuazlj.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755110360/4._Porcentaje_del_Total_ag805w.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755114058/4._Porcentaje_del_Total_-_Excel_2_jp14lb.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755114057/4._Porcentaje_del_Total_-_Excel_1_jzoiyt.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755110361/5._Cambio_Porcentual_Indexado_awvpku.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755114485/5._Cambio_Porcentual_Indexado_-_Excel_iczs41.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755110361/6._Ventanas_M%C3%B3viles_iltw44.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755115067/6._Ventanas_M%C3%B3viles_-_Excel_kbf9r7.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755110361/7._Acumulado_YTD_rqa1ty.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755110362/8._Periodo_vs._Periodo_Anterior_Lag_clkyge.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755110361/8._Periodo_vs._Periodo_Anterior_Lag_-_Excel_wul79e.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755110362/9._Mismo_Mes_A%C3%B1o_Anterior_bqjeih.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755110362/9._Mismo_Mes_A%C3%B1o_Anterior_-_Excel_tqlbvb.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755110362/10._Comparaci%C3%B3n_con_M%C3%BAltiples_Periodos_Previos_gioxiq.jpg' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        {
+            title: 'VisorData RD - Observatorio de Datos Públicos (En Desarrollo)',
+            status: 'development', 
+            desc: 'Plataforma de datos que centraliza, analiza y visualiza indicadores públicos y sociales de la República Dominicana.',
+            longDesc: '<p>Este proyecto representa una oportunidad para unificar y aplicar mis conocimientos en <strong>ciencia de datos</strong>, <strong>machine learning con Python</strong>, gestión de bases de datos con <strong>SQL</strong> y desarrollo web front-end con <strong>HTML, CSS y JavaScript</strong>.</p><p>VisorData RD es un proyecto de ciencia e ingeniería de datos concebido para democratizar el acceso a la información pública en la República Dominicana. El objetivo es transformar datos crudos de fuentes oficiales en un recurso interactivo, comprensible y valioso para ciudadanos, periodistas, estudiantes e investigadores.</p>',
+            categories: ['python', 'sql', 'web', 'data science'],
+            tags: ['Python', 'SQL', 'Web', 'JavaScript', 'ETL', 'Machine Learning','UI/UX'],
+            media: [
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336596/virsorrs-inciio_iemnk3.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336597/virsorrs-inciio-1_ncqr2g.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336596/virsorrs-dashboards_zbfndz.png' }
+            ],
+            githubUrl: null,
+            liveUrl: 'https://www.jeancarlosrosario.org/visordata-rd'
+        },
         {
             title: 'Análisis de Cohorte con SQL',
             desc: 'Proyecto de análisis de datos en SQL para entender el comportamiento de cohortes de clientes y legisladores, midiendo retención, supervivencia y valor.',
             longDesc: `
                 <p>Este proyecto es un análisis profundo de cohortes utilizando <strong>SQL</strong> para entender patrones de comportamiento a lo largo del tiempo. Se aplicaron varias técnicas avanzadas de análisis generacional a dos conjuntos de datos distintos: una supertienda y legisladores de EE. UU.</p>
 
-                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Para Qué Podemos Usar Esto en la Vida Real?</h4>
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
                 <p>Imagina que tienes una <strong>tienda online</strong>. Con un análisis de cohorte, puedes responder preguntas cruciales como:</p>
                 <ul class='list-disc list-inside mt-2 space-y-2'>
                     <li><strong>¿Los clientes que atraemos con la campaña de Navidad gastan más a largo plazo que los que llegan por la campaña de verano?</strong> Esto te ayuda a optimizar tu presupuesto de marketing.</li>
@@ -1242,21 +1571,652 @@ document.addEventListener('DOMContentLoaded', () => {
             liveUrl: null
         },
         {
-            title: 'VisorData RD - Observatorio de Datos Públicos (En Desarrollo)',
-            // ***** INICIO DEL CAMBIO *****
-            status: 'development', // Se añade el estado del proyecto
-            // ***** FIN DEL CAMBIO *****
-            desc: 'Plataforma de datos que centraliza, analiza y visualiza indicadores públicos y sociales de la República Dominicana.',
-            longDesc: '<p>Este proyecto representa una oportunidad para unificar y aplicar mis conocimientos en <strong>ciencia de datos</strong>, <strong>machine learning con Python</strong>, gestión de bases de datos con <strong>SQL</strong> y desarrollo web front-end con <strong>HTML, CSS y JavaScript</strong>.</p><p>VisorData RD es un proyecto de ciencia e ingeniería de datos concebido para democratizar el acceso a la información pública en la República Dominicana. El objetivo es transformar datos crudos de fuentes oficiales en un recurso interactivo, comprensible y valioso para ciudadanos, periodistas, estudiantes e investigadores.</p>',
-            categories: ['python', 'sql', 'web', 'data science'],
-            tags: ['Python', 'SQL', 'Web', 'JavaScript', 'ETL', 'Machine Learning','UI/UX'],
+            title: 'ContactAgro: Plataforma para el Sector Agropecuario',
+            desc: 'Sitio web para ContactAgro, una plataforma diseñada para conectar, informar e impulsar el futuro del sector agropecuario en la República Dominicana.',
+            longDesc: `
+                <p>Este proyecto consistió en la creación del sitio web para <strong>ContactAgro</strong>, una iniciativa para fortalecer la producción agropecuaria dominicana. La plataforma fue desarrollada en <strong>Canva Sites</strong>, enfocándose en una presentación clara y accesible para productores de todos los niveles.</p>
+                <p>Mi rol fue integral en la conceptualización y ejecución visual del proyecto. El <strong>logo de ContactAgro es de mi completa autoría</strong>, diseñado para reflejar la fusión entre tradición y tecnología. Además, estuve a cargo del <strong>diseño de secciones clave</strong> de la web, la <strong>edición e integración de los videos</strong>, y la <strong>curación fotográfica para la sección de noticias</strong>, asegurando una identidad visual coherente y profesional en toda la plataforma.</p>
+            `,
+            categories: ['web', 'UI/UX', 'branding'],
+            tags: ['Web', 'Canva Sites', 'Diseño de Marca', 'UI/UX', 'AgroTech', 'Edición de Video e Imagen'],
             media: [
-                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336596/virsorrs-inciio_iemnk3.png' },
-                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336597/virsorrs-inciio-1_ncqr2g.png' },
-                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336596/virsorrs-dashboards_zbfndz.png' }
+                { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755118783/Grabaci%C3%B3n_2025-08-13_170103_xcxivt.mp4' }
             ],
             githubUrl: null,
-            liveUrl: 'https://www.jeancarlosrosario.org/visordata-rd'
+            liveUrl: 'https://contactagro.my.canva.site/'
+        },
+        {
+            title: 'Casos Especiales con Fechas en Power Pivot',
+            desc: 'Proyecto de aprendizaje sobre la manipulación avanzada de fechas en DAX, cubriendo años fiscales, semanas ISO, días laborables y períodos personalizados.',
+            longDesc: `
+                <p>Este proyecto se enfoca en resolver desafíos comunes relacionados con el <strong>análisis de fechas</strong> utilizando <strong>DAX en Power Pivot para Excel</strong>. A menudo, el calendario estándar no es suficiente para las necesidades del negocio, y este proyecto explora cómo crear cálculos personalizados para manejar calendarios fiscales, semanas estandarizadas (ISO), días laborables y períodos de tiempo especiales.</p>
+                <p>Se demuestra la creación de columnas calculadas y medidas DAX para construir una tabla de calendario robusta que sirva como base para cualquier análisis de inteligencia de tiempo.</p>
+                
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>Dominar la manipulación de fechas en DAX permite resolver problemas críticos para la operación y estrategia de un negocio:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>Reportes Financieros Precisos:</strong> Permite a las empresas que no siguen un año calendario (enero-diciembre) generar reportes de ventas y crecimiento (YTD) que se alinean con su <strong>año fiscal</strong>, por ejemplo, de septiembre a agosto.</li>
+                    <li><strong>Análisis de Campañas Específicas:</strong> Facilita la medición del impacto de eventos o campañas que no duran un mes completo (ej. "Venta de Verano" del 15 de julio al 15 de agosto), asignando transacciones a <strong>períodos personalizados</strong>.</li>
+                    <li><strong>Logística y Planificación Internacional:</strong> Estandariza el concepto de "semana" utilizando el <strong>formato de semana ISO</strong>, lo cual es crucial para la coordinación de la cadena de suministro y la comparación de datos entre regiones con diferentes calendarios.</li>
+                    <li><strong>Cálculos Operativos Realistas:</strong> Permite calcular métricas como tiempos de entrega o productividad basándose únicamente en <strong>días laborables</strong>, excluyendo fines de semana y festivos para obtener una visión más precisa de la eficiencia.</li>
+                </ul>
+                <p class='mt-2'>Estas técnicas transforman una simple columna de fechas en una poderosa herramienta para un análisis de negocio detallado y contextualizado.</p>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Medidas y Columnas DAX Implementadas</h4>
+                <div class='dax-accordion'>
+                    
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>1. Agregaciones y Años Fiscales</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Medidas para comparar ventas acumuladas (YTD) tanto en un año calendario normal como en un año fiscal que termina en una fecha específica (ej. 31 de agosto).</p>
+                            <pre><code>//--- Tabla de Ejemplo (Ventas) ---
+        ID Fila | ID Orden | Fecha de Orden      | Cantidad | Ventas
+        --------|----------|---------------------|----------|-------
+        1       | 13       | 13/10/2010 12:00:00 | 62       | 61.54
+        49      | 2293     | 01/10/2012 12:00:00 | 49       | 123.02
+        ...     | ...      | ...                 | ...      | ...
+
+        //--- Medidas para Año Normal ---
+        Ventas Totales:=SUM(Ventas[Ventas])
+        Ventas YTD:=TOTALYTD([Ventas Totales],'Calendar'[Date])
+        Ventas YTD Previo:=CALCULATE([Ventas YTD],DATEADD('Calendar'[Date],-1,YEAR))
+        Diferencia en $$:=[Ventas YTD]-[Ventas YTD Previo]
+        Diferencia en %:=DIVIDE([Diferencia en $$],[Ventas YTD],0)
+
+        //--- Medidas para Año Fiscal (termina el 31/08) ---
+        Ventas Fiscal YTD:=TOTALYTD([Ventas Totales],'Calendar'[Date],"31/08")
+        Ventas Fiscales YTD Previo:=CALCULATE([Ventas Fiscal YTD],DATEADD('Calendar'[Date],-1,YEAR))
+        Diferencia Fiscal en $$:=[Ventas Fiscal YTD]-[Ventas Fiscales YTD Previo]
+        Diferencia Fiscal en %:=DIVIDE([Diferencia Fiscal en $$],[Ventas Fiscal YTD],0)</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>2. Períodos Relativos a Hoy</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Columna calculada que asigna cada fecha a un período especial (ej. "Campaña de Navidad") basado en un rango de fechas definido en una tabla auxiliar.</p>
+                            <pre><code>//--- Tabla de Ejemplo (Calendar) ---
+        day                 | year | month | MMM-YYY
+        --------------------|------|-------|--------
+        01/01/2009 12:00:00 | 2009 | 1     | ene-2009
+        02/01/2009 12:00:00 | 2009 | 1     | ene-2009
+        ...                 | ...  | ...   | ...
+
+        //--- Columna Calculada en 'Calendar' ---
+        Periodo Especial = 
+        CALCULATE(
+            VALUES(PerEspeciales[Periodo]),
+            FILTER(PerEspeciales,
+                AND(PerEspeciales[Fecha inicio]<='Calendar'[Date], PerEspeciales[Fecha Final]>'Calendar'[Date])
+            )
+        )</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>3. Trabajar con Semanas (Calendario vs. ISO)</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Columnas calculadas para determinar el número de semana según el estándar de calendario (la semana 1 inicia el 1 de enero) y el estándar ISO (la semana 1 es la primera con al menos 4 días del año).</p>
+                            <pre><code>//--- Tabla de Ejemplo (Calendar) ---
+        day                 | year | semanacalendario | semanaiso | añoiso
+        --------------------|------|------------------|-----------|-------
+        01/01/2009 12:00:00 | 2009 | 1                | 1         | 2009
+        04/01/2009 12:00:00 | 2009 | 2                | 1         | 2009
+        05/01/2009 12:00:00 | 2009 | 2                | 2         | 2009
+        ...                 | ...  | ...              | ...       | ...
+
+        //--- Columnas Calculadas en 'Calendar' ---
+        Semana Calendario = WEEKNUM('Calendar'[Date],1)
+
+        Semana ISO = WEEKNUM('Calendar'[Date],21)
+
+        Año ISO = 
+        IF(
+            AND(Calendar[Semana ISO]<5, Calendar[Semana Calendario]>50),
+            Calendar[Year]+1,
+            IF(AND(Calendar[Semana ISO]>50, Calendar[Semana Calendario]<5),
+            Calendar[Year]-1,
+            Calendar[Year])
+        )</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>4. Días Trabajables</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Columnas calculadas para identificar si un día es laborable, excluyendo fines de semana y feriados (definidos en una tabla 'Festivos').</p>
+                            <pre><code>//--- Tabla de Ejemplo (Calendar) ---
+        date                | diadelasemana | laborable(semana) | festivo | laborable(general)
+        --------------------|---------------|-------------------|---------|-------------------
+        01/01/2009 12:00:00 | jueves        | 1                 | 0       | 1
+        03/01/2009 12:00:00 | sábado        | 0                 | 0       | 0
+        ...                 | ...           | ...               | ...     | ...
+
+        //--- Columnas Calculadas en 'Calendar' ---
+        Laborable (Semana) = INT(IF(OR(Calendario[Número de día de la semana]=1, Calendario[Número de día de la semana]=7), FALSE, TRUE))
+
+        Festivo = INT(NOT(ISBLANK(RELATED(Festivos[Fecha]))))
+
+        Laborable (General) = IF(AND(Calendario[Laborable(Semana)]=1, Calendario[Festivo]=0), 1, 0)</code></pre>
+                        </div>
+                    </div>
+
+                </div>
+            `,
+            categories: ['power pivot', 'dax', 'excel'],
+            tags: [ 'Excel', 'Power Pivot', 'DAX', 'Time Intelligence', 'Análisis de Fechas'],
+            media: [
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755185533/casos_especiales_con_power_pivot_k3mb9z.png' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        {
+            title: 'Detección de Anomalías con SQL',
+            desc: 'Proyecto que utiliza técnicas de SQL para identificar, analizar y manejar anomalías y valores atípicos en un conjunto de datos de tormentas.',
+            longDesc: `
+                <p>Este proyecto se centra en una tarea fundamental del análisis de datos: la <strong>detección de anomalías</strong>. Utilizando un conjunto de datos sobre tormentas, se demuestra cómo aplicar diversas técnicas de <strong>SQL</strong>, desde simples ordenamientos hasta funciones estadísticas avanzadas como percentiles y Z-score, para encontrar datos que se desvían de la norma.</p>
+                <p>El objetivo es mostrar un flujo de trabajo completo: cómo identificar posibles anomalías, clasificarlas según su naturaleza y, finalmente, aplicar estrategias para manejarlas, como la exclusión, imputación o reescalamiento.</p>
+                
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>La detección de anomalías es crucial para garantizar la calidad y fiabilidad de cualquier análisis de datos. Estas técnicas de SQL ayudan a:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>Garantizar la Calidad de los Datos:</strong> Identificar y corregir errores obvios de entrada de datos (ej. un valor de presión atmosférica imposible) que podrían sesgar los resultados.</li>
+                    <li><strong>Detectar Eventos Extremos o Raros:</strong> Encontrar registros verdaderamente excepcionales, como la tormenta con el viento más fuerte o un año con una cantidad inusual de huracanes, que merecen un análisis más profundo.</li>
+                    <li><strong>Mejorar Modelos Predictivos:</strong> Limpiar los datos de valores atípicos antes de entrenar un modelo de machine learning, ya que estos pueden afectar negativamente su precisión.</li>
+                    <li><strong>Identificar Fraudes o Comportamientos Inusuales:</strong> En otros contextos (como finanzas o ciberseguridad), estas mismas técnicas se usan para detectar transacciones fraudulentas o intrusiones en sistemas que se desvían del comportamiento normal.</li>
+                </ul>
+                <p class='mt-2'>Saber cómo encontrar y manejar anomalías con SQL es una habilidad esencial para cualquier analista que busque generar insights precisos y confiables.</p>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Ejemplo de los Datos Utilizados</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: STORMS</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>storms_id | name      | year | month | day | hour | lat  | long  | status      | category
+        ----------|-----------|------|-------|-----|------|------|-------|-------------|----------
+        1         | AL011852  | 1852 | 8     | 26  | 6    | 30.2 | -88.6 | hurricane   | 3
+        2         | AL031853  | 1853 | 9     | 3   | 12   | 19.7 | -56.2 | hurricane   | 4
+        3         | AL031854  | 1854 | 9     | 7   | 12   | 28.0 | -78.6 | hurricane   | 3
+        ...       | ...       | ...  | ...   | ... | ...  | ...  | ...   | ...         | ...</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Técnicas y Consultas Clave</h4>
+                <div class='dax-accordion'>
+                    
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>1. Detección por Ordenamiento y Frecuencia</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>La forma más simple de encontrar anomalías es contar la frecuencia de los valores. Una categoría con muy pocos registros podría ser un error o un evento raro.</p>
+                            <pre><code>
+        -- Contar tormentas por categoría
+        SELECT
+            category AS Categoria,
+            COUNT(*) AS Tormentas
+        FROM
+            storms
+        GROUP BY 1
+        ORDER BY 2; -- Ordenar por el conteo para ver los menos frecuentes
+
+        -- Calcular el porcentaje del total
+        SELECT
+            category AS categoria,
+            COUNT(*) tormentas,
+            (SELECT COUNT(*) FROM storms WHERE status = "hurricane") AS total,
+            COUNT(*) * 100 / (SELECT COUNT(*) FROM storms WHERE status = "hurricane") AS pct_total
+        FROM
+            Storms
+        WHERE status = "hurricane"
+        GROUP BY 1
+        ORDER BY 1 DESC;</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>2. Detección con Estadísticas Descriptivas</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Uso de funciones de ventana para calcular percentiles, cuartiles (NTILE) y puntajes Z, que miden qué tan lejos está un punto de datos del promedio.</p>
+                            <div style="max-height: 400px; overflow-y: auto;">
+                                <pre><code>
+        -- Calcular percentiles
+        SELECT
+            status,
+            wind,
+            ROUND(percentil,4) as percentil,
+            COUNT(*) AS frecuencia
+        FROM(
+            SELECT
+                name,
+                status,
+                wind,
+                PERCENT_RANK() OVER (PARTITION BY STATUS ORDER BY wind) AS percentil
+            FROM
+                storms
+            WHERE status = "hurricane") a
+        GROUP BY 1,2,3
+        ORDER BY 1,2 DESC;
+
+        -- Dividir en cuartiles (4 grupos)
+        SELECT
+            status,
+            ntiles,
+            MAX(wind) as maximo,
+            MIN(wind) AS minimo
+        FROM(
+            SELECT
+                status,
+                wind,
+                NTILE(4) OVER (PARTITION BY status ORDER BY wind) AS ntiles
+            FROM storms) a
+        WHERE status = "hurricane"
+        GROUP BY 1,2
+        ORDER BY 1,2 DESC;
+
+        -- Calcular Z-Score (cuántas desviaciones estándar del promedio)
+        SELECT
+            MAX(valor_z),
+            MIN(valor_z)
+        FROM(
+            SELECT
+                a.category AS categoria,
+                a.wind AS vel_viento,
+                b.prom_viento AS velocidad,
+                b.std AS desv_estandar,
+                ROUND((a.wind-b.prom_viento)/b.std,4) AS valor_z
+            FROM
+                storms a
+            JOIN(
+            SELECT
+                AVG(wind) AS prom_viento,
+                ROUND(STD(wind),4) AS std
+            FROM
+                storms) AS b ON 1 = 1
+            ORDER BY 2 DESC) AS aa;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>3. Tipos de Anomalías</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Consultas para identificar diferentes tipos de anomalías: valores inesperados en una categoría, frecuencias inusuales en el tiempo o en ubicaciones geográficas.</p>
+                            <pre><code>
+        -- Anomalía de Valores (ej. un 'status' inesperado)
+        SELECT
+            status,
+            COUNT(*) AS cantidad
+        FROM
+            storms
+        GROUP BY 1
+        ORDER BY 1;
+
+        -- Anomalía de Frecuencia por Tiempo
+        SELECT
+            YEAR AS ano,
+            COUNT(*) AS tormentas
+        FROM
+            storms
+        GROUP BY 1
+        ORDER BY 1 DESC;
+
+        -- Anomalía de Frecuencia por Ubicación
+        SELECT
+            CASE WHEN location LIKE "% of %" THEN SUBSTRING_INDEX(location," of ",-1)
+            ELSE location END as Ubicacion,
+            COUNT(*) AS tormentas
+        FROM
+            storms
+        GROUP BY 1
+        ORDER BY 2 DESC;</code></pre>
+                        </div>
+                    </div>
+
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>4. Manejo de Anomalías</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Estrategias para tratar las anomalías una vez identificadas: excluirlas, verificar su impacto en los cálculos, reemplazarlas (imputación) o transformar los datos (reescalamiento).</p>
+                            <pre><code>
+        -- Verificar impacto al excluir una anomalía
+        SELECT
+            AVG(wind) AS prom_vel_original,
+            AVG(CASE WHEN wind NOT IN (32) THEN wind END) AS prom_vel_removiendo_anomalia
+        FROM
+            storms;
+
+        -- Reemplazar valores N/A con el promedio (Imputación)
+        SELECT
+            AVG(diametro_tormenta) AS promedio_diametro
+        FROM(
+            SELECT
+                CAST(CASE WHEN tropicalstorm_force_diameter = "NA" THEN "148.3978" -- Promedio precalculado
+                    ELSE tropicalstorm_force_diameter
+                    END AS DECIMAL) AS diametro_tormenta
+            FROM storms) a;
+
+        -- Reescalar valores con Logaritmo para reducir el impacto de outliers
+        SELECT
+            ROUND(wind,2) AS velocidad,
+            ROUND(LOG(wind),2) AS log_velocidad,
+            COUNT(*) AS tormentas
+        FROM
+            storms
+        GROUP BY 1,2;</code></pre>
+                        </div>
+                    </div>
+
+                </div>
+            `,
+            categories: ['sql', 'data analysis', 'data cleaning'],
+            tags: ['SQL', 'Detección de Anomalías', 'Outliers', 'Estadística', 'Limpieza de Datos', 'Calidad de Datos'],
+            media: [
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755281988/1._Detecci%C3%B3n_por_Ordenamiento_y_Frecuencia_qcwwbd.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755281987/2._Detecci%C3%B3n_con_Estad%C3%ADsticas_Descriptivas_hcgio8.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755281987/3._Tipos_de_Anomal%C3%ADas_hwts8x.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755281987/3._Tipos_de_Anomal%C3%ADas_-_Excel_k6abbv.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755281987/4._Manejo_de_Anomal%C3%ADas_ijorkt.png' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        {
+            title: '[NOMBRE DEL PROYECTO AQUÍ]',
+            desc: 'Proyecto finalizado y pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['próximamente'],
+            tags: ['Próximamente', 'Pendiente de Subir'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 1. SQL: Técnicas Avanzadas
+        {
+            title: 'Técnicas Avanzadas de Manipulación de Datos en SQL',
+            desc: 'Proyecto finalizado sobre CTEs, Grouping Sets y más, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['sql', 'data engineering'],
+            tags: ['SQL', 'CTE', 'Grouping Sets', 'Data Engineering', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 2. Excel/VBA: Generador de Estados de Cuenta
+        {
+            title: 'Generador Automatizado de Estados de Cuenta con VBA',
+            desc: 'Proyecto finalizado de automatización en Excel, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['excel', 'vba'],
+            tags: ['Excel', 'VBA', 'Macros', 'Automatización', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 3. Excel: Dashboard de Contrataciones
+        {
+            title: 'Dashboard de RH: Análisis de Contrataciones y Rotación',
+            desc: 'Dashboard finalizado en Excel sobre métricas de RH, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['excel', 'business intelligence'],
+            tags: ['Excel', 'Dashboards', 'Recursos Humanos', 'KPIs', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 4. Python 1
+        {
+            title: 'Proyecto de Análisis de Datos con Python',
+            desc: 'Proyecto finalizado y pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['python', 'data analysis'],
+            tags: ['Python', 'Pandas', 'Data Analysis', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 5. Excel: Dashboard de Aumento Salarial
+        {
+            title: 'Dashboard de Nómina: Análisis de Aumento Salarial',
+            desc: 'Dashboard finalizado en Excel para comparar escenarios de nómina, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['excel', 'business intelligence'],
+            tags: ['Excel', 'Dashboards', 'Análisis Financiero', 'Nómina', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 6. Excel: Dashboard de Presupuesto
+        {
+            title: 'Dashboard Financiero: Análisis de Presupuesto vs. Real',
+            desc: 'Dashboard finalizado en Excel para el control de presupuestos, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['excel', 'business intelligence'],
+            tags: ['Excel', 'Dashboards', 'Finanzas', 'Presupuesto', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 7. Excel/VBA: Unión de Tablas
+        {
+            title: 'Consolidación de Datos con Macros VBA',
+            desc: 'Proyecto finalizado sobre unión de tablas con VBA, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['excel', 'vba'],
+            tags: ['Excel', 'VBA', 'Macros', 'ETL', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 8. Python 2
+        {
+            title: 'Proyecto de Machine Learning con Python',
+            desc: 'Proyecto finalizado y pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['python', 'machine learning'],
+            tags: ['Python', 'Machine Learning', 'Scikit-learn', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 9. Excel: Dashboard de Ventas en Línea
+        {
+            title: 'Dashboard de E-commerce: Análisis de Ventas y Devoluciones',
+            desc: 'Dashboard finalizado en Excel para un e-commerce, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['excel', 'business intelligence'],
+            tags: ['Excel', 'Dashboards', 'E-commerce', 'Ventas', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 10. Excel: Dashboard de Ski
+        {
+            title: 'Dashboard de Ventas: Análisis de Visitantes en Centro de Ski',
+            desc: 'Dashboard finalizado en Excel sobre ventas en un centro de ski, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['excel', 'business intelligence'],
+            tags: ['Excel', 'Dashboards', 'Ventas', 'Turismo', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 11. Power BI: Análisis de Canasta
+        {
+            title: 'Análisis de Canasta de Mercado en Power BI',
+            desc: 'Dashboard finalizado en Power BI sobre análisis de canasta, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['power bi', 'business intelligence'],
+            tags: ['Power BI', 'DAX', 'Market Basket Analysis', 'Ventas', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 12. Power BI: Recesiones y Desempleo
+        {
+            title: 'Dashboard de Macroeconomía: Recesiones y Tasa de Desempleo',
+            desc: 'Dashboard finalizado en Power BI con visualizaciones dinámicas, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['power bi', 'data analysis'],
+            tags: ['Power BI', 'DAX', 'Visualización de Datos', 'Economía', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 13. Python 3
+        {
+            title: 'Proyecto de Automatización con Python',
+            desc: 'Proyecto finalizado y pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['python', 'automation'],
+            tags: ['Python', 'Automatización', 'Scripts', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 14. Web: Portafolio Creadora de Contenido
+        {
+            title: 'Portafolio Web para Creadora de Contenido',
+            desc: 'Página web tipo portafolio realizada en Canva, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['web', 'UI/UX'],
+            tags: ['Web', 'Canva Sites', 'UI/UX', 'Diseño Web', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 15. Dashboard: Supertienda
+        {
+            title: 'Dashboard de Supertienda: Análisis Integral de Ventas',
+            desc: 'Dashboard finalizado sobre el dataset Supertienda, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['excel', 'business intelligence'],
+            tags: ['Excel', 'Dashboards', 'Ventas', 'Business Intelligence', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
+        // 16. Excel/VBA: Tabla de Amortización
+        {
+            title: 'Generador de Tablas de Amortización con VBA',
+            desc: 'Herramienta automatizada en Excel para crear tablas de amortización, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            longDesc: `
+                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
+                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+            `,
+            categories: ['excel', 'vba'],
+            tags: ['Excel', 'VBA', 'Macros', 'Finanzas', 'Próximamente'],
+            media: [
+                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+            ],
+            githubUrl: null,
+            liveUrl: null
         }
     ];
 
@@ -1633,5 +2593,3 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProjects('all');
     renderCertifications();
 });
-
-
