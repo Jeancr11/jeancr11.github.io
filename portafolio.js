@@ -1445,7 +1445,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336596/virsorrs-dashboards_zbfndz.png' }
             ],
             githubUrl: null,
-            liveUrl: 'https://www.jeancarlosrosario.org/visordata-rd'
+            liveUrl: null
         },
         {
             title: 'Análisis de Cohorte con SQL',
@@ -2593,3 +2593,4 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProjects('all');
     renderCertifications();
 });
+
