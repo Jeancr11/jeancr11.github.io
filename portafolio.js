@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `,
-            categories: ['power bi', 'dax', 'UI/UX', 'KPIs'],
+            categories: ['power bi', 'dax', 'UI/UX', 'KPIs', 'Dashboard'],
             tags: ['Power BI', 'DAX', 'Power Query', 'Análisis de Ventas', 'KPIs','UI/UX'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1754666297/Grabaci%C3%B3n_2025-08-08_111934_vn5dvn.mp4' },
@@ -460,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `,
-            categories: ['power bi', 'dax', 'UI/UX', 'KPIs', 'business intelligence'],
+            categories: ['power bi', 'dax', 'UI/UX', 'KPIs', 'business intelligence','Dashboard'],
             tags: ['Power BI', 'DAX', 'UI/UX', 'Business Intelligence', 'Análisis de Ventas'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1754340404/Dashboard_pandil_nc6w8g.mp4' },
@@ -891,7 +891,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `,
-            categories: ['power bi', 'dax', 'UI/UX', 'KPIs'],
+            categories: ['power bi', 'dax', 'UI/UX', 'KPIs', 'Dashboard'],
             tags: ['Power BI', 'DAX', 'Power Pivot', 'Gestión de Inventario', 'UI/UX'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1754598637/Grabaci%C3%B3n_2025-08-07_162723_mdkunl.mp4' },
@@ -1437,7 +1437,7 @@ document.addEventListener('DOMContentLoaded', () => {
             status: 'development', 
             desc: 'Plataforma de datos que centraliza, analiza y visualiza indicadores públicos y sociales de la República Dominicana.',
             longDesc: '<p>Este proyecto representa una oportunidad para unificar y aplicar mis conocimientos en <strong>ciencia de datos</strong>, <strong>machine learning con Python</strong>, gestión de bases de datos con <strong>SQL</strong> y desarrollo web front-end con <strong>HTML, CSS y JavaScript</strong>.</p><p>VisorData RD es un proyecto de ciencia e ingeniería de datos concebido para democratizar el acceso a la información pública en la República Dominicana. El objetivo es transformar datos crudos de fuentes oficiales en un recurso interactivo, comprensible y valioso para ciudadanos, periodistas, estudiantes e investigadores.</p>',
-            categories: ['python', 'sql', 'web', 'data science'],
+            categories: ['python', 'sql', 'web', 'data science', 'UI/UX', 'Dashboard'],
             tags: ['Python', 'SQL', 'Web', 'JavaScript', 'ETL', 'Machine Learning','UI/UX'],
             media: [
                 { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336596/virsorrs-inciio_iemnk3.png' },
@@ -1445,7 +1445,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754336596/virsorrs-dashboards_zbfndz.png' }
             ],
             githubUrl: null,
-            liveUrl: null
+            liveUrl: 'https://www.jeancarlosrosario.org/visordata-rd'
         },
         {
             title: 'Análisis de Cohorte con SQL',
@@ -1948,64 +1948,512 @@ document.addEventListener('DOMContentLoaded', () => {
             liveUrl: null
         },
         {
-            title: '[NOMBRE DEL PROYECTO AQUÍ]',
-            desc: 'Proyecto finalizado y pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
-            longDesc: `
-                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
-                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
-            `,
-            categories: ['próximamente'],
-            tags: ['Próximamente', 'Pendiente de Subir'],
-            media: [
-                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
-            ],
-            githubUrl: null,
-            liveUrl: null
-        },
-        // 1. SQL: Técnicas Avanzadas
-        {
             title: 'Técnicas Avanzadas de Manipulación de Datos en SQL',
-            desc: 'Proyecto finalizado sobre CTEs, Grouping Sets y más, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            desc: 'Proyecto que explora técnicas avanzadas en SQL como Tablas Temporales, CTEs, Grouping Sets, Muestreo y Anonimización de Datos.',
             longDesc: `
-                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
-                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+                <p>Este proyecto profundiza en varias técnicas avanzadas de <strong>SQL</strong> que van más allá de las consultas básicas. Se demuestra cómo utilizar herramientas como <strong>Tablas Temporales, Expresiones de Tabla Comunes (CTEs), Grouping Sets</strong> y más, para estructurar análisis complejos, manejar grandes volúmenes de datos y proteger la información sensible.</p>
+                
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>Dominar estas técnicas avanzadas de SQL permite a un analista de datos resolver problemas complejos de manera eficiente:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>Simplificar Consultas Complejas:</strong> Usar <strong>CTEs</strong> y <strong>Tablas Temporales</strong> para descomponer problemas grandes en pasos lógicos y legibles, facilitando el mantenimiento y la depuración del código.</li>
+                    <li><strong>Generar Reportes con Subtotales:</strong> Aplicar <strong>Grouping Sets</strong> para crear reportes que incluyan subtotales y totales generales en una sola consulta, evitando la necesidad de múltiples consultas y uniones.</li>
+                    <li><strong>Analizar Grandes Volúmenes de Datos:</strong> Utilizar técnicas de <strong>Muestreo</strong> para realizar análisis exploratorios rápidos sobre un subconjunto de datos, ahorrando tiempo y recursos computacionales.</li>
+                    <li><strong>Proteger la Privacidad de los Datos:</strong> Aplicar métodos de <strong>anonimización</strong> (como el hashing con MD5) para proteger la información personal identificable (PII) en los conjuntos de datos, cumpliendo con las normativas de privacidad.</li>
+                </ul>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Ejemplo de los Datos Utilizados</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: SUPERTIENDA</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        nombre_del_cliente | fecha_de_orden      | ventas
+        -------------------|---------------------|---------
+        Darren Powers      | 2019-01-03 00:00:00 | 16.448
+        Phillina Ober      | 2019-01-04 00:00:00 | 3.54
+        ...                | ...                 | ...</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: SUPERMARKET_SALES</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        customer_type | gender | product_line        | total
+        --------------|--------|---------------------|--------
+        Normal        | Male   | Food and beverages  | 336.55
+        Member        | Female | Health and beauty   | 131.92
+        ...           | ...    | ...                 | ...</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: STORMS</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        storms_id | name
+        ----------|-----------
+        1         | AL011852
+        2         | AL031853
+        ...       | ...</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: DISNEYCLEANN</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        pais_origen      | resenas
+        -----------------|---------
+        United States    | 1000
+        United Kingdom   | 500
+        ...              | ...</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Técnicas y Consultas Clave</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>1. Tablas Temporales</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Crea una tabla temporal que existe solo durante la sesión actual, útil para almacenar resultados intermedios.</p>
+                            <pre><code>
+        CREATE TEMPORARY TABLE Tciudades (
+            ciudad_id INT PRIMARY KEY AUTO_INCREMENT,
+            ciudad VARCHAR(25)
+        );
+
+        INSERT INTO Tciudades(ciudad)
+        SELECT DISTINCT ciudad
+        FROM supertienda;
+
+        SELECT * FROM Tciudades;</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>2. Expresiones de Tabla Comunes (CTE)</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Define un conjunto de resultados con nombre (como una tabla temporal, pero solo para una consulta) para mejorar la legibilidad del código.</p>
+                            <pre><code>
+        WITH primer_compra_tabla AS (
+            SELECT
+                nombre_del_cliente,
+                MIN(fecha_de_orden) AS primera_compra
+            FROM
+                supertienda
+            GROUP BY 1
+        )
+        SELECT
+            TIMESTAMPDIFF(YEAR,a.primera_compra, b.fecha_de_orden) AS periodos,
+            COUNT(DISTINCT(a.nombre_del_cliente)) AS cohorte_retenida
+        FROM
+            primer_compra_tabla AS a
+        JOIN supertienda AS b
+            ON a.nombre_del_cliente = b.nombre_del_cliente
+        GROUP BY 1;</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>3. Grouping Sets</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Genera subtotales y totales generales en una sola consulta utilizando la cláusula <code>WITH ROLLUP</code>.</p>
+                            <pre><code>
+        SELECT
+            customer_type,
+            gender,
+            product_line,
+            ROUND(SUM(total),2) AS venta_total
+        FROM
+            supermarket_sales
+        GROUP BY 1,2,3 WITH ROLLUP
+        ORDER BY 1,2,3;</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>4. Muestreo</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Selecciona un subconjunto de datos (una muestra) utilizando el operador de módulo para análisis rápidos.</p>
+                            <pre><code>
+        SELECT
+            storms_id,
+            name
+        FROM
+            storms
+        WHERE storms_id % 10 = 6; -- Selecciona aprox. el 10% de los datos</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>5. Reducción de Dimensionalidad</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Agrupa categorías con baja frecuencia en una categoría "Otros" para simplificar la visualización y el análisis.</p>
+                            <pre><code>
+        SELECT
+            CASE WHEN b.ranking <= 10 THEN a.pais_origen
+                ELSE "Other"
+                END AS paises_lideres,
+            COUNT(*) AS resenas
+        FROM
+            disneycleann AS a
+        JOIN(
+            SELECT
+                pais_origen,
+                COUNT(*) AS resenas,
+                RANK() OVER (ORDER BY COUNT(*) DESC) AS ranking
+            FROM
+                disneycleann
+            GROUP BY 1) AS b
+                ON a.pais_origen = b.pais_origen
+        GROUP BY 1
+        ORDER BY 2 DESC;</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>6. Anonimización de Datos Personales</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Utiliza funciones de hashing como <code>MD5()</code> para ocultar información personal identificable (PII) mientras se mantiene la capacidad de contar registros únicos.</p>
+                            <pre><code>
+        SELECT
+            MD5(cliente) AS cliente_anonimizado,
+            venta_total
+        FROM(
+            SELECT
+                nombre_del_cliente AS cliente,
+                SUM(ventas) AS venta_total
+            FROM
+                supertienda
+            GROUP BY 1
+            ORDER BY 1) AS a;</code></pre>
+                        </div>
+                    </div>
+                </div>
             `,
             categories: ['sql', 'data engineering'],
-            tags: ['SQL', 'CTE', 'Grouping Sets', 'Data Engineering', 'Próximamente'],
+            tags: ['SQL', 'CTE', 'Grouping Sets', 'Data Engineering', 'Anonymization', 'Data Sampling'],
             media: [
-                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755547982/1._Tablas_Temporales_trfrxq.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755547982/2._Expresiones_de_Tabla_Comunes_CTE_zpzpas.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755547982/3._Grouping_Sets_wnkcbq.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755547982/4._Muestreo_mebvi2.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755547982/5._Reducci%C3%B3n_de_Dimensionalidad_pqc4ov.png' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755547983/6._Anonimizaci%C3%B3n_de_Datos_Personales_rfku8u.png' }
             ],
             githubUrl: null,
             liveUrl: null
         },
-        // 2. Excel/VBA: Generador de Estados de Cuenta
         {
             title: 'Generador Automatizado de Estados de Cuenta con VBA',
-            desc: 'Proyecto finalizado de automatización en Excel, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            desc: 'Herramienta en Excel que automatiza la creación de estados de cuenta trimestrales para clientes de una empresa de bienes raíces, utilizando macros en VBA.',
             longDesc: `
-                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
-                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+                <p>Este proyecto consiste en una solución de automatización desarrollada en <strong>Excel utilizando VBA (Visual Basic for Applications)</strong>. El objetivo fue crear una macro para generar automáticamente estados de cuenta trimestrales para los 30 clientes de una empresa de bienes raíces, eliminando un proceso manual que consumía una gran cantidad de tiempo.</p>
+                
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>Esta herramienta de automatización aborda varios desafíos operativos clave para la empresa:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>Eliminación de Tareas Repetitivas:</strong> Automatiza por completo la tediosa tarea de crear y personalizar más de 30 reportes cada trimestre, liberando horas de trabajo manual.</li>
+                    <li><strong>Reducción de Errores Humanos:</strong> Al automatizar el filtrado y la copia de datos, se minimiza el riesgo de errores por copiar y pegar mal la información, garantizando la precisión de los reportes.</li>
+                    <li><strong>Estandarización y Profesionalismo:</strong> Asegura que todos los clientes reciban un estado de cuenta con un formato consistente y profesional, mejorando la imagen de la empresa.</li>
+                    <li><strong>Escalabilidad del Negocio:</strong> La solución es fácilmente escalable. Se pueden agregar nuevos clientes y propiedades a la base de datos sin necesidad de modificar el código de la macro.</li>
+                    <li><strong>Generación Automática de PDFs:</strong> Al final del proceso, la macro exporta cada estado de cuenta a un archivo PDF individual, listo para ser enviado al cliente.</li>
+                </ul>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Ejemplo de los Datos Utilizados</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: LISTA DE PROPIEDADES</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        REF ID  | Domicilio                               | Dueño        | Ingreso Neto | Trimestre
+        --------|-----------------------------------------|--------------|--------------|-----------
+        BC-2652 | 2652 Crystal Brook Limits, Hasty Corner | Britta Cosio | $2,444.25    | 2
+        BC-2689 | 2689 High Pointe, Cuttyhunk, Utah       | Britta Cosio | $803.93      | 2
+        ...     | ...                                     | ...          | ...          | ...</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: LISTA DE CLIENTES</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        Cliente      | Domicilio                          | Email
+        -------------|------------------------------------|-----------------
+        Britta Cosio | 3742 Little Downs, Chignik, DE     | BC@georgemail.com
+        Ilse Mcwhirt | 9975 Iron Townline, Mohawk, MT     | IM@outblind.com
+        ...          | ...                                | ...</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Código VBA Implementado</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Macro: reporte()</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Macro principal que controla todo el proceso: lee las selecciones del usuario, filtra los datos, copia la plantilla, pega la información y exporta el resultado final a PDF.</p>
+                            <pre><code>
+        Sub reporte()
+
+        '1. -General
+        '1.1. -Declarar las variables
+        Dim carpeta, nombres As String
+        Dim trim As Integer
+
+        '1.2. -Obtener las variables de Direccion (carpeta) y nombre
+        carpeta = Sheets("Portada").Range("C16")
+        nombres = Sheets("Portada").Range("C22")
+
+        '1.3. -Obtener Trimestre
+        With Sheets("Portada")
+            If .OptionButton1 = True Then
+                trim = 2
+            ElseIf .OptionButton2 = True Then
+                trim = 3
+            ElseIf .OptionButton3 = True Then
+                trim = 4
+            End If
+        End With
+
+        '-----------------------------------------------------------------------------
+        '2. -Limpieza y Ajuste
+        '2.1. -Limpiar Filtros Previos
+        Sheets("Lista de Propiedades").Select
+        On Error Resume Next
+            ActiveSheet.ShowAllData
+        On Error GoTo 0
+
+        '2.2. -Aplicar Filtros Nuevos
+        ActiveSheet.ListObjects("Table2").Range.AutoFilter Field:=4, Criteria1:=nombres
+        ActiveSheet.ListObjects("Table2").Range.AutoFilter Field:=10, Criteria1:=trim
+
+        '-----------------------------------------------------------------------------
+        '3. -Preparar el Estado de Cuenta
+        '3.1. -Preparar el Nuevo Reporte
+        Sheets("Edo. Cuenta de Muestra").Copy after:=Sheets(5)
+        Sheets("Edo. Cuenta de Muestra (2)").Select
+        Range("D29:L32").Delete
+
+        '3.2. -Contar Filas
+        With Sheets("Lista de Propiedades")
+            ultimafila = .AutoFilter.Range.Columns(1).SpecialCells(xlCellTypeVisible).Cells.Count - 1
+        End With
+
+        '3.3. -Insertar filas extras si esta muy largo
+        If ultimafila > 25 Then
+            Rows("29:" & 4 + ultimafila).Insert Shift:=xlDown
+        End If
+
+        '3.4. -Copia y pega la tabla
+        Sheets("Lista de Propiedades").Select
+        Range("A1").Select
+        Range(Selection, Selection.End(xlToRight)).Select
+        Range(Selection, Selection.End(xlDown)).Copy Sheets("Edo. Cuenta de Muestra (2)").Range("D29")
+
+        '-----------------------------------------------------------------------------
+        '4. -Datos de Cliente (Titulos)
+        '4.1. -Copiar los datos del cliente
+        Sheets("Lista de Clientes").Select
+        Cells.Find(What:=nombres).Select
+        Selection.Offset(0, 3).Copy Sheets("Edo. Cuenta de Muestra (2)").Range("B15")
+        Selection.Offset(0, 4).Copy Sheets("Edo. Cuenta de Muestra (2)").Range("B16")
+        Selection.Offset(0, 5).Copy Sheets("Edo. Cuenta de Muestra (2)").Range("C16")
+        Selection.Offset(0, 6).Copy Sheets("Edo. Cuenta de Muestra (2)").Range("B17")
+        Selection.Offset(0, 7).Copy Sheets("Edo. Cuenta de Muestra (2)").Range("C17")
+        Selection.Offset(0, 9).Copy Sheets("Edo. Cuenta de Muestra (2)").Range("B19")
+        Selection.Offset(0, 2).Copy Sheets("Edo. Cuenta de Muestra (2)").Range("B20")
+
+        Sheets("Edo. Cuenta de Muestra (2)").Select
+        Range("B14") = nombres
+
+        Sheets("Edo. Cuenta de Muestra").Range("B14:B20").Copy
+        Sheets("Edo. Cuenta de Muestra (2)").Range("B14:C20").PasteSpecial Paste:=xlPasteFormats
+
+        '4.2. -Ajustar los titulos del Trimestre
+        Sheets("Edo. Cuenta de Muestra (2)").Range("J12") = trim
+
+        '4.3. -Exportar como PDF
+        ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:= _
+                carpeta & "\" & nombres & trim & ".pdf" _
+                , Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas _
+                :=False, OpenAfterPublish:=True
+                
+        '4.4. -Eliminar hoja
+        Application.DisplayAlerts = False
+        ActiveWindow.SelectedSheets.Delete
+        Application.DisplayAlerts = True
+
+        End Sub</code></pre>
+                        </div>
+                    </div>
+                </div>
             `,
-            categories: ['excel', 'vba'],
-            tags: ['Excel', 'VBA', 'Macros', 'Automatización', 'Próximamente'],
+            categories: ['excel', 'vba', 'macro'],
+            tags: ['Excel', 'VBA', 'Macros', 'Automatización', 'Bienes Raíces', 'Reportes'],
             media: [
-                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+                { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755695999/Grabaci%C3%B3n_2025-08-20_092136_qdd0fi.mp4' }
             ],
             githubUrl: null,
             liveUrl: null
         },
-        // 3. Excel: Dashboard de Contrataciones
+        {
+            title: 'Dashboard de SuperOficina: Análisis Integral de Ventas',
+            desc: 'Mi primer dashboard en Power BI, enfocado en un diseño visual atractivo para analizar las ventas, ganancias y rendimiento de una supertienda.',
+            longDesc: `
+                <p>Este proyecto representa mi primer dashboard completo desarrollado en <strong>Power BI</strong>. Utilizando el conocido conjunto de datos de la "Supertienda", el objetivo principal fue aplicar mis habilidades de <strong>diseño y experiencia de usuario (UI/UX)</strong> para crear una visualización de datos efectiva y estéticamente agradable. Todo el diseño visual fue creado por mí desde cero.</p>
+                
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>Un dashboard integral como este permite a la gerencia de una empresa minorista tomar decisiones estratégicas al responder preguntas clave como:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>¿Cuáles son nuestras categorías de productos más rentables?</strong> Identificar qué productos generan más ganancias para optimizar el inventario y las estrategias de marketing.</li>
+                    <li><strong>¿En qué ciudades y estados tenemos mejor rendimiento?</strong> Analizar las ventas y ganancias por ubicación para enfocar los esfuerzos de expansión o mejorar las operaciones en áreas de bajo rendimiento.</li>
+                    <li><strong>¿Cómo se comportan nuestras ventas a lo largo del tiempo?</strong> Visualizar tendencias estacionales para planificar promociones y prever la demanda.</li>
+                    <li><strong>¿Qué modo de envío prefieren nuestros clientes?</strong> Entender la logística de envíos para optimizar costos y mejorar la satisfacción del cliente.</li>
+                </ul>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Ejemplo de los Datos Utilizados</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: SUPERTIENDA</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        Categoria      | Ciudad   | Nombre del Cliente | Ventas   | Ganancia
+        ---------------|----------|--------------------|----------|---------
+        Suministros... | Houston  | Darren Powers      | 16.448   | 5.5512
+        Muebles        | Henderson| Maria Etezadi      | 2573.82  | 746.4078
+        Tecnología     | Henderson| Maria Etezadi      | 755.96   | 204.1092
+        ...            | ...      | ...                | ...      | ...</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Visualizaciones Clave Implementadas</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Análisis de Ventas y Ganancias</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>El dashboard incluye una variedad de gráficos para un análisis completo, tales como:</p>
+                            <ul class='list-disc list-inside mt-2 space-y-2'>
+                                <li>Ventas y Ganancias Totales (KPIs)</li>
+                                <li>Ventas y Ganancias por Categoría y Sub-Categoría</li>
+                                <li>Top 10 Ciudades por Ventas</li>
+                                <li>Mapa de Ventas vs. Ganancias por Estado</li>
+                                <li>Análisis de Ventas a lo Largo del Tiempo (Gráfico de Líneas)</li>
+                                <li>Distribución de Ventas por Modo de Envío</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `,
+            categories: ['power bi', 'business intelligence', 'UI/UX', 'Dashboard'],
+            tags: ['Power BI', 'Dashboards', 'Ventas', 'Business Intelligence', 'UI/UX'],
+            media: [
+                { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755697500/Grabaci%C3%B3n_2025-08-20_094700_yhc5e0.mp4' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755697493/relaciondashboardsuperoficina_koegwl.png' }
+            ],
+            githubUrl: null,
+            liveUrl: null
+        },
         {
             title: 'Dashboard de RH: Análisis de Contrataciones y Rotación',
-            desc: 'Dashboard finalizado en Excel sobre métricas de RH, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            desc: 'Dashboard interactivo en Excel para el departamento de RH de SelvaCongo.com, enfocado en monitorear contrataciones, bajas y el índice de rotación de personal.',
             longDesc: `
-                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
-                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+                <p>Este proyecto consiste en la creación de un dashboard interactivo en <strong>Excel</strong> para el departamento de Recursos Humanos de la empresa SelvaCongo.com, utilizando un conjunto de datos de ejemplo. El objetivo fue automatizar y centralizar la información sobre contrataciones y bajas del personal de almacén, reemplazando un proceso manual de reportes en PowerPoint.</p>
+        
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>Este dashboard fue diseñado para proporcionar a más de 100 gerentes y jefes de departamento una herramienta centralizada para:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>Monitorear la Rotación de Personal:</strong> Calcula y muestra el índice de rotación (bajas sobre ingresos), permitiendo a los gerentes identificar tendencias y tomar acciones para reducirlo.</li>
+                    <li><strong>Visualizar el Rendimiento por Ubicación:</strong> Compara la cantidad de contrataciones y bajas por almacén, ayudando a detectar problemas específicos en ciertas localidades.</li>
+                    <li><strong>Analizar Contrataciones por Puesto y Mes:</strong> Ofrece una visión clara de los puestos con más movimiento y los meses con mayor actividad de contratación, facilitando la planificación de recursos.</li>
+                    <li><strong>Ahorrar Tiempo en Reportes:</strong> Elimina la necesidad de crear reportes manuales, permitiendo que los analistas se enfoquen en tareas de mayor valor y que los gerentes tengan acceso a la información en tiempo real.</li>
+                </ul>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Ejemplo de los Datos Utilizados</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla de Contrataciones</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        Nombre             | Area         | Almacén          | Puesto                   | Fecha de Contratación
+        -------------------|--------------|------------------|--------------------------|----------------------
+        Kimberli Okelly    | Videojuegos  | Puebla de...     | Almacenista Nocturno     | 1/23/2017
+        Lavern Fuhrman     | Libros       | Monterrey        | Empacador                | 1/19/2017
+        Ghislaine Bodie    | Libros       | Ciudad de México | Almacenista General      | 1/27/2017
+        ...                | ...          | ...              | ...                      | ...</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Visualizaciones y KPIs Clave</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Indicadores y Gráficos del Dashboard</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>El dashboard se construyó a partir de varias tablas dinámicas para mostrar los siguientes indicadores de forma interactiva:</p>
+                            <ul class='list-disc list-inside mt-2 space-y-2'>
+                                <li><strong>KPIs Principales:</strong> Cantidad total de contratados, bajas, ubicados y liberados.</li>
+                                <li><strong>Índice de Rotación:</strong> Cálculo clave definido como Bajas / Ingresos.</li>
+                                <li><strong>Gráfico de Contrataciones por Mes:</strong> Para visualizar la estacionalidad en la contratación.</li>
+                                <li><strong>Gráfico de Bajas por Mes:</strong> Para identificar patrones en las salidas de personal.</li>
+                                <li><strong>Tabla de Rendimiento por Almacén:</strong> Muestra el número de contratados por ciudad.</li>
+                                <li><strong>Segmentadores (Slicers):</strong> Filtros interactivos por Puesto y Área para un análisis más detallado.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             `,
-            categories: ['excel', 'business intelligence'],
-            tags: ['Excel', 'Dashboards', 'Recursos Humanos', 'KPIs', 'Próximamente'],
+            categories: ['excel', 'business intelligence', 'Dashboard'],
+            tags: ['Excel', 'Dashboards', 'Recursos Humanos', 'KPIs', 'Rotación de Personal'],
             media: [
-                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+                { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755698644/Grabaci%C3%B3n_2025-08-20_100545_rtqxpn.mp4' }
+
             ],
             githubUrl: null,
             liveUrl: null
@@ -2026,50 +2474,222 @@ document.addEventListener('DOMContentLoaded', () => {
             githubUrl: null,
             liveUrl: null
         },
-        // 5. Excel: Dashboard de Aumento Salarial
         {
             title: 'Dashboard de Nómina: Análisis de Aumento Salarial',
-            desc: 'Dashboard finalizado en Excel para comparar escenarios de nómina, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            desc: 'Dashboard interactivo en Excel que compara dos escenarios de aumento salarial para la Gran Empresa de TI, ayudando a la gerencia a tomar una decisión financiera estratégica.',
             longDesc: `
-                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
-                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+                <p>Este proyecto consiste en la creación de un dashboard interactivo en <strong>Excel</strong> para el departamento de nómina de una empresa de tecnología global. El objetivo fue analizar y presentar los costos de dos planes de aumento salarial propuestos: un plan "Mexicano" igualitario y un plan "Americano" basado en el desempeño.</p>
+                
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>Este dashboard fue diseñado para proporcionar a la alta gerencia una herramienta visual y cuantitativa para:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>Facilitar la Toma de Decisiones Estratégicas:</strong> Cuantifica y compara el impacto financiero exacto de dos filosofías de compensación diferentes, permitiendo una decisión basada en datos.</li>
+                    <li><strong>Visualizar la Estructura de Costos Actual:</strong> Muestra claramente cómo se distribuye la nómina actual por área y por calificación de desempeño de los empleados.</li>
+                    <li><strong>Calcular Costos de Liquidación:</strong> El "Plan Americano" incluye despidos, y el dashboard calcula los costos asociados de finiquito según la ley, un factor crucial en la decisión.</li>
+                    <li><strong>Proporcionar Interactividad:</strong> Mediante segmentadores, permite a los gerentes filtrar la información por área y banda salarial para entender el impacto de cada plan en diferentes partes de la organización.</li>
+                </ul>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Ejemplo de los Datos Utilizados</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla de Nómina</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+ Número de Empleado | Area     | Banda Salarial | Calificación | Fecha de Contratación | Suma Total | Indemnización
+--------------------|----------|----------------|--------------|-----------------------|------------|--------------
+L07504              | Software | Banda 16       | 4            | 4/29/2014             | $31,831.50 | $173,580.82
+L08156              | Software | Banda 15       | 2            | 7/10/2011             | $26,130.76 | $191,333.46
+A-7959              | Hardware | Banda 15       | 2            | 11/2/2013             | $16,416.58 | $94,855.07
+...                 | ...      | ...            | ...          | ...                   | ...        | ...</code></pre>
+                </div>
+                    </div>
+                </div>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Visualizaciones y KPIs Clave</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Indicadores y Gráficos del Dashboard</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>El dashboard se construyó a partir de varias tablas dinámicas para mostrar los siguientes indicadores de forma interactiva:</p>
+                            <ul class='list-disc list-inside mt-2 space-y-2'>
+                                <li><strong>KPIs Principales:</strong> Gasto total de la nómina actual y el costo de implementar cada plan (Mexicano y Americano) en dólares y como porcentaje.</li>
+                                <li><strong>Gráfico de Costos por Calificación:</strong> Un gráfico de barras que muestra la distribución del gasto actual de la nómina según la calificación de desempeño de los empleados.</li>
+                                <li><strong>Tabla de Costos por Área:</strong> Detalla el gasto actual por cada departamento, tanto en valor absoluto como en porcentaje del total.</li>
+                                <li><strong>Segmentadores (Slicers):</strong> Filtros interactivos por Banda Salarial y Área para un análisis dinámico y profundo.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             `,
-            categories: ['excel', 'business intelligence'],
-            tags: ['Excel', 'Dashboards', 'Análisis Financiero', 'Nómina', 'Próximamente'],
+            categories: ['excel', 'business intelligence', 'Dashboard'],
+            tags: ['Excel', 'Dashboards', 'Análisis Financiero', 'Nómina', 'Recursos Humanos'],
             media: [
-                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+                { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755701861/Grabaci%C3%B3n_2025-08-20_105911_iolz8c.mp4' }
             ],
             githubUrl: null,
             liveUrl: null
         },
-        // 6. Excel: Dashboard de Presupuesto
         {
             title: 'Dashboard Financiero: Análisis de Presupuesto vs. Real',
-            desc: 'Dashboard finalizado en Excel para el control de presupuestos, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            desc: 'Dashboard interactivo en Excel para analizar y explicar una variación de presupuesto de $1.4M en una empresa, identificando las causas raíz por departamento y proyecto.',
             longDesc: `
-                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
-                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+                <p>Este proyecto consiste en la creación de un dashboard de análisis financiero en <strong>Excel</strong> para una empresa de tecnología de tamaño mediano. El objetivo fue investigar y explicar una desviación presupuestaria de más de $1.4 millones en un solo mes, proporcionando una visión clara para la alta gerencia.</p>
+        
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>Este dashboard fue diseñado para proporcionar a los líderes de la unidad de negocio una herramienta para:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>Explicar Variaciones de Presupuesto:</strong> Proporciona un "puente" detallado que muestra exactamente qué departamentos y proyectos contribuyeron a la desviación del presupuesto, desmintiendo la idea de que un solo proyecto fue el culpable.</li>
+                    <li><strong>Facilitar la Rendición de Cuentas:</strong> Permite a los gerentes de departamento y de proyecto ver su rendimiento financiero de manera clara, comparando los costos reales con los presupuestados.</li>
+                    <li><strong>Monitorear la Salud Financiera:</strong> Ofrece KPIs clave como el costo total mensual, trimestral y anual, así como la diferencia total contra el presupuesto en términos absolutos y porcentuales.</li>
+                    <li><strong>Proporcionar Análisis Interactivo:</strong> A través de segmentadores, los usuarios pueden filtrar la información para analizar los datos desde diferentes perspectivas y llegar a la causa raíz de los problemas de costos.</li>
+                </ul>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Ejemplo de los Datos Utilizados</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: HISTORICO (Costos Reales)</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        RefID   | Proyecto | Departamento | Fecha      | Monto
+        --------|----------|--------------|------------|-----------
+        KO-81817| Rainier  | Labor        | 26-Jan-17  | $9,785.00
+        PP-83943| Orizaba  | Labor        | 24-May-17  | $3,264.00
+        ...     | ...      | ...          | ...        | ...</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: PRESUPUESTO</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        RefID   | Proyecto | Departamento  | Fecha     | Monto
+        --------|----------|---------------|-----------|-----------
+        PP-83631| Rainier  | Adminstracion | 9-Sep-17  | $2,563.00
+        SS080940| Orizaba  | Adminstracion | 26-Sep-17 | $7,918.00
+        ...     | ...      | ...           | ...       | ...</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Visualizaciones y KPIs Clave</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Indicadores y Gráficos del Dashboard</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>El dashboard se construyó a partir de varias tablas dinámicas para mostrar los siguientes indicadores de forma interactiva:</p>
+                            <ul class='list-disc list-inside mt-2 space-y-2'>
+                                <li><strong>KPIs Principales:</strong> Costo total para el mes, trimestre y año; diferencia total contra el presupuesto (en $ y %).</li>
+                                <li><strong>Puente de Mes vs. Presupuesto:</strong> Gráficos tipo "waterfall" o tablas comparativas que desglosan la variación por departamento y por proyecto.</li>
+                                <li><strong>Gráfico de Costos Mensuales:</strong> Para visualizar la tendencia de los costos a lo largo del tiempo.</li>
+                                <li><strong>Segmentadores (Slicers):</strong> Filtros interactivos para un análisis dinámico por proyecto, departamento u otra dimensión relevante.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             `,
             categories: ['excel', 'business intelligence'],
-            tags: ['Excel', 'Dashboards', 'Finanzas', 'Presupuesto', 'Próximamente'],
+            tags: ['Excel', 'Dashboards', 'Análisis Financiero', 'Presupuesto', 'Finanzas'],
             media: [
-                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+                { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755704524/Grabaci%C3%B3n_2025-08-20_113853_l3hrxh.mp4' }
             ],
             githubUrl: null,
             liveUrl: null
         },
-        // 7. Excel/VBA: Unión de Tablas
         {
             title: 'Consolidación de Datos con Macros VBA',
-            desc: 'Proyecto finalizado sobre unión de tablas con VBA, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            desc: 'Proyecto que utiliza una macro simple en VBA para consolidar datos de múltiples hojas de Excel en una tabla maestra, preparando la información para el análisis de rentabilidad.',
             longDesc: `
-                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
-                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+                <p>Este proyecto demuestra cómo resolver un problema muy común en el análisis de datos: la información dispersa en múltiples fuentes. Se desarrolló una macro en <strong>Excel utilizando VBA</strong> para consolidar automáticamente los datos de costos de numerosas hojas de cálculo en una única tabla maestra, eliminando la necesidad de una carga manual.</p>
+                
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>Aunque el código es simple, esta macro es una solución efectiva para varios desafíos empresariales:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>Centralización de Datos Dispersos:</strong> Soluciona el problema de tener datos fragmentados en diferentes pestañas (por ejemplo, por mes, región o departamento), unificándolos para un análisis coherente.</li>
+                    <li><strong>Ahorro de Tiempo y Reducción de Errores:</strong> Automatiza el proceso manual de copiar y pegar, lo que ahorra una cantidad significativa de tiempo y minimiza el riesgo de errores humanos.</li>
+                    <li><strong>Preparación de Datos para el Análisis (ETL Básico):</strong> Actúa como un primer paso en un proceso de ETL (Extraer, Transformar, Cargar), creando un conjunto de datos limpio y consolidado que está listo para ser analizado con Tablas Dinámicas o Power BI.</li>
+                    <li><strong>Manejo de Crecimiento Descontrolado:</strong> Ofrece una solución práctica para empresas en crecimiento caótico donde aún no existen sistemas de información centralizados.</li>
+                </ul>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Ejemplo de los Datos Utilizados</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Múltiples Hojas de Origen</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>El archivo de Excel contenía múltiples hojas (ej. "Enero", "Febrero", "Marzo"), cada una con una estructura similar de datos de costos.</p>
+                            <pre><code>
+        Clave  | Cliente      | Tipo de Vehículo | Fecha    | Tipo de Costo | Costo
+        -------|--------------|------------------|----------|---------------|--------
+        5289-A | Adina Rhoten | 60 ton truck     | 2-Feb-17 | Gasolina      | $417.51
+        5289-A | Adina Rhoten | 60 ton truck     | 2-Feb-17 | Conductor     | $521.88
+        5489-A | Adina Rhoten | 30 ton Truck     | 24-Feb-17| Gasolina      | $124.42
+        ...    | ...          | ...              | ...      | ...           | ...</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Código VBA Implementado</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Macro: costos()</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Esta macro itera a través de todas las pestañas de un archivo de Excel, copiando los datos de cada una y pegándolos en una hoja principal de consolidación. Esto ahorra una cantidad significativa de trabajo manual y previene errores.</p>
+                            <pre><code>
+        Sub costos()
+
+        '1. -Declarar variables
+        Dim ws As Worksheet
+
+        '2. -Armar el ciclo que itera en todas las hojas
+        For Each ws In Worksheets
+            
+            '3. -Revisar que no se trate de la hoja de costos totales
+            If ws.Name = "Costos totales" Then
+                GoTo sigHoja
+            End If
+            
+            '4. -Seleccionar todo el rango
+            ws.Select
+            Range("A2:F2").Select
+            Range(Selection, Selection.End(xlDown)).Copy
+            
+            '5. -Pegar los datos
+            Sheets("Costos totales").Select
+            Range("A" & Rows.Count).End(xlUp).Offset(1).Select 'Selecciona la primera fila vacia
+            ActiveSheet.Paste
+                
+        sigHoja:
+
+        Next ws
+
+        End Sub</code></pre>
+                        </div>
+                    </div>
+                </div>
             `,
-            categories: ['excel', 'vba'],
-            tags: ['Excel', 'VBA', 'Macros', 'ETL', 'Próximamente'],
+            categories: ['excel', 'vba', 'macros'],
+            tags: ['Excel', 'VBA', 'Macros', 'Automatización', 'ETL', 'Consolidación de Datos'],
             media: [
-                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+                { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755706086/0820_qqywdb.mp4' }
             ],
             githubUrl: null,
             liveUrl: null
@@ -2090,18 +2710,95 @@ document.addEventListener('DOMContentLoaded', () => {
             githubUrl: null,
             liveUrl: null
         },
-        // 9. Excel: Dashboard de Ventas en Línea
         {
-            title: 'Dashboard de E-commerce: Análisis de Ventas y Devoluciones',
-            desc: 'Dashboard finalizado en Excel para un e-commerce, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            title: 'Dashboard de E-commerce: Análisis de Rentabilidad y Descuentos',
+            desc: 'Dashboard interactivo en Excel para analizar la viabilidad de una nueva estrategia de descuentos en una tienda de piezas de computadora, evaluando ventas, costos y ganancias de 2018-2019.',
             longDesc: `
-                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
-                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+                <p>Este proyecto consiste en la creación de un dashboard integral en <strong>Excel</strong> para "La Vida Virtual", una cadena de tiendas de piezas de computadora. El objetivo fue analizar las ventas, costos y ganancias de los años 2018 y 2019 para determinar si la implementación de una nueva estrategia de descuentos sería un proyecto viable y rentable.</p>
+                
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>Este dashboard fue diseñado para proporcionar a la gerencia una herramienta completa para:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>Evaluar la Viabilidad de Descuentos:</strong> Calcula con precisión el costo que habría tenido la nueva política de descuentos en años anteriores e identifica cuántas órdenes se habrían vuelto no rentables.</li>
+                    <li><strong>Limpiar y Consolidar Datos:</strong> Aborda el desafío de trabajar con datos sucios y de múltiples fuentes (ventas, costos, distribuidores), aplicando reglas de negocio para corregir errores y unificar la información.</li>
+                    <li><strong>Analizar la Rentabilidad a Fondo:</strong> Desglosa la ganancia neta considerando no solo el costo de compra, sino también costos "ocultos" como garantías extendidas y el impuesto IPVV.</li>
+                    <li><strong>Entender el Rendimiento de Ventas:</strong> Ofrece una visión clara del rendimiento por tipo de producto (Gaming vs. Oficina), categoría y distribuidor, permitiendo identificar los principales motores de ingresos.</li>
+                </ul>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Ejemplo de los Datos Utilizados</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: VENTAS</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+         No. Transacción | Producto                  | Distribuidor     | Tipo    | Monto     | Categoría    | Fecha      | Tienda
+        -----------------|---------------------------|------------------|---------|-----------|--------------|------------|----------
+        LVV-001          | Router D-Link DIR-878...  | Sin Distribuidor | Oficina | $3,305.54 | Conectividad | 4/9/2019   | Querétaro
+        LVV-002          | Micrófono Gamer Yeyian... | Sin Distribuidor | Gaming  | $1,026.00 | Microfonos   | 10/25/2019 | En línea
+        LVV-004          | Diadema Gamer DELL...     | USATECH Master   | Gaming  | $4,309.00 | Diademas     | 5/23/2019  | En línea
+        ...              | ...                       | ...              | ...     | ...       | ...          | ...        | ...</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: COSTOS</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        Venta Correspondiente | Producto                       | Monto     | Fecha
+        ----------------------|--------------------------------|-----------|----------
+        LVV-007               | Cámara Analógica GHIA GCV-003...| $229.19   | 12/1/2017
+        LVV-0031              | Bocina GHIA GSP-15AP...        | $1,668.79 | 12/11/2017
+        ...                   | ...                            | ...       | ...</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: DISTRIBUIDORES</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+          Producto                               | Distribuidor
+        -----------------------------------------|-----------------------
+        Diadema Gamer DELL Alienware AW988...    | USATECH Master
+        Unidad de estado sólido SSD GIGABYTE...  | Ramirez Tech SA
+        Mouse ASUS Óptico USB Gladius II...      | CHINATECH Lord
+        ...                                      | ...</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Visualizaciones y KPIs Clave</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Indicadores y Gráficos del Dashboard</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>El dashboard se construyó a partir de varias tablas dinámicas para mostrar los siguientes indicadores de forma interactiva:</p>
+                            <ul class='list-disc list-inside mt-2 space-y-2'>
+                                <li><strong>KPIs de Ventas:</strong> Tarjetas con Ventas Totales y Órdenes Totales.</li>
+                                <li><strong>Análisis de Descuentos:</strong> Tarjetas con el monto total de descuentos que se habrían otorgado y la cantidad de órdenes con ganancias brutas negativas.</li>
+                                <li><strong>Análisis de Costos:</strong> Tarjetas con Costos de Compra Totales y Costos de Garantías Extendidas.</li>
+                                <li><strong>Gráficos de Distribución:</strong> Gráfica de anillo para ventas por Tipo (Gaming/Oficina) y gráfica de barras para ventas por Categoría.</li>
+                                <li><strong>Gráfico de Tendencia:</strong> Gráfica de línea mostrando el costo del impuesto IPVV por trimestre.</li>
+                                <li><strong>Tabla de Distribuidores:</strong> Ranking de ventas por distribuidor.</li>
+                                <li><strong>Segmentadores (Slicers):</strong> Filtros interactivos por Tienda, Categoría y Tipo.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             `,
-            categories: ['excel', 'business intelligence'],
-            tags: ['Excel', 'Dashboards', 'E-commerce', 'Ventas', 'Próximamente'],
+            categories: ['excel', 'business intelligence', 'Dashboard'],
+            tags: ['Excel', 'Dashboards', 'Análisis de Rentabilidad', 'Ventas', 'E-commerce', 'KPIs'],
             media: [
-                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+                { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755723449/Grabaci%C3%B3n_2025-08-20_165808_vjgllf.mp4' }
             ],
             githubUrl: null,
             liveUrl: null
@@ -2180,22 +2877,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `,
             categories: ['web', 'UI/UX'],
             tags: ['Web', 'Canva Sites', 'UI/UX', 'Diseño Web', 'Próximamente'],
-            media: [
-                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
-            ],
-            githubUrl: null,
-            liveUrl: null
-        },
-        // 15. Dashboard: Supertienda
-        {
-            title: 'Dashboard de Supertienda: Análisis Integral de Ventas',
-            desc: 'Dashboard finalizado sobre el dataset Supertienda, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
-            longDesc: `
-                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
-                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
-            `,
-            categories: ['excel', 'business intelligence'],
-            tags: ['Excel', 'Dashboards', 'Ventas', 'Business Intelligence', 'Próximamente'],
             media: [
                 { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
             ],
@@ -2593,4 +3274,3 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProjects('all');
     renderCertifications();
 });
-
