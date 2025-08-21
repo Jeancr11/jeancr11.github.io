@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `,
-            categories: ['power bi', 'dax', 'UI/UX', 'KPIs', 'Dashboard'],
+            categories: ['power bi', 'DAX', 'UI/UX', 'KPIs', 'Dashboard'],
             tags: ['Power BI', 'DAX', 'Power Query', 'Análisis de Ventas', 'KPIs','UI/UX'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1754666297/Grabaci%C3%B3n_2025-08-08_111934_vn5dvn.mp4' },
@@ -460,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `,
-            categories: ['power bi', 'dax', 'UI/UX', 'KPIs', 'business intelligence','Dashboard'],
+            categories: ['power bi', 'DAX', 'UI/UX', 'KPIs', 'business intelligence','Dashboard'],
             tags: ['Power BI', 'DAX', 'UI/UX', 'Business Intelligence', 'Análisis de Ventas'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1754340404/Dashboard_pandil_nc6w8g.mp4' },
@@ -1715,7 +1715,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 </div>
             `,
-            categories: ['power pivot', 'dax', 'excel'],
+            categories: ['power pivot', 'DAX', 'excel'],
             tags: [ 'Excel', 'Power Pivot', 'DAX', 'Time Intelligence', 'Análisis de Fechas'],
             media: [
                 { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755185533/casos_especiales_con_power_pivot_k3mb9z.png' }
@@ -2385,7 +2385,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `,
-            categories: ['power bi', 'business intelligence', 'UI/UX', 'Dashboard'],
+            categories: ['power bi', 'business intelligence', 'UI/UX', 'Dashboard', 'KPIs'],
             tags: ['Power BI', 'Dashboards', 'Ventas', 'Business Intelligence', 'UI/UX'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755697500/Grabaci%C3%B3n_2025-08-20_094700_yhc5e0.mp4' },
@@ -2449,7 +2449,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `,
-            categories: ['excel', 'business intelligence', 'Dashboard'],
+            categories: ['excel', 'business intelligence', 'Dashboard', 'KPIs'],
             tags: ['Excel', 'Dashboards', 'Recursos Humanos', 'KPIs', 'Rotación de Personal'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755698644/Grabaci%C3%B3n_2025-08-20_100545_rtqxpn.mp4' }
@@ -2527,7 +2527,7 @@ A-7959              | Hardware | Banda 15       | 2            | 11/2/2013      
                     </div>
                 </div>
             `,
-            categories: ['excel', 'business intelligence', 'Dashboard'],
+            categories: ['excel', 'business intelligence', 'Dashboard', 'KPIs'],
             tags: ['Excel', 'Dashboards', 'Análisis Financiero', 'Nómina', 'Recursos Humanos'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755701861/Grabaci%C3%B3n_2025-08-20_105911_iolz8c.mp4' }
@@ -2601,7 +2601,7 @@ A-7959              | Hardware | Banda 15       | 2            | 11/2/2013      
                     </div>
                 </div>
             `,
-            categories: ['excel', 'business intelligence'],
+            categories: ['excel', 'business intelligence', 'KPIs'],
             tags: ['Excel', 'Dashboards', 'Análisis Financiero', 'Presupuesto', 'Finanzas'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755704524/Grabaci%C3%B3n_2025-08-20_113853_l3hrxh.mp4' }
@@ -2795,7 +2795,7 @@ A-7959              | Hardware | Banda 15       | 2            | 11/2/2013      
                     </div>
                 </div>
             `,
-            categories: ['excel', 'business intelligence', 'Dashboard'],
+            categories: ['excel', 'business intelligence', 'Dashboard', 'KPIs'],
             tags: ['Excel', 'Dashboards', 'Análisis de Rentabilidad', 'Ventas', 'E-commerce', 'KPIs'],
             media: [
                 { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755723449/Grabaci%C3%B3n_2025-08-20_165808_vjgllf.mp4' }
@@ -2803,34 +2803,211 @@ A-7959              | Hardware | Banda 15       | 2            | 11/2/2013      
             githubUrl: null,
             liveUrl: null
         },
-        // 10. Excel: Dashboard de Ski
         {
-            title: 'Dashboard de Ventas: Análisis de Visitantes en Centro de Ski',
-            desc: 'Dashboard finalizado en Excel sobre ventas en un centro de ski, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            title: 'Dashboard de Ventas: Análisis de Centro de Ski',
+            desc: 'Dashboard interactivo en Excel para analizar datos complejos de ventas, uso de instalaciones y comisiones de un centro de ski, partiendo de datos desordenados y de múltiples fuentes.',
             longDesc: `
-                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
-                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+                <p>Este proyecto consistió en la creación de un dashboard integral en <strong>Excel</strong> para el centro de ski "Valle Silbador". El desafío principal fue trabajar con datos desordenados provenientes de múltiples fuentes, limpiarlos, unificarlos y crear un reporte interactivo para la gerencia. Para el diseño, adapté la estructura visual de un dashboard anterior, pero todo el análisis y las métricas fueron desarrollados desde cero para responder a las necesidades específicas de este caso.</p>
+                
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>Este dashboard fue diseñado para proporcionar a la gerencia una herramienta centralizada para:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>Limpiar y Consolidar Datos Críticos:</strong> Resuelve el problema de tener información sucia y fragmentada (fechas incorrectas, errores de texto), aplicando reglas de negocio para crear una base de datos confiable.</li>
+                    <li><strong>Analizar la Rentabilidad de los Pases de Temporada:</strong> Calcula las ganancias o pérdidas generadas por los pases de temporada, comparando el precio de venta con el costo de uso de las instalaciones (lifts).</li>
+                    <li><strong>Evaluar Alianzas Estratégicas:</strong> Mide el rendimiento de las ventas por canal, incluyendo las comisiones pagadas a la red de socios "HEROIC" y las ventas generadas por paquetes con hoteles.</li>
+                    <li><strong>Optimizar la Operación de las Instalaciones:</strong> Analiza el uso de los telesquís (lifts) por día de la semana y trimestre, permitiendo una mejor planificación de mantenimiento y personal.</li>
+                </ul>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Ejemplo de los Datos Utilizados</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: VENTAS PASES</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        Momento de Compra | Año  | Fecha Compra | Modo de Compra | Días Visita | Parque Origen    | Precio Venta | Hotel       | Comision
+        ------------------|------|--------------|----------------|-------------|------------------|--------------|-------------|----------
+        Temporada Regular | 2019 | 1/6/2019     | En Línea       | 9           | Valle Silbador   | $1,080.00    |             | $0.00
+        Temporada Regular | 2018 | 11/25/2017   | Paquete        | 7           | Valle Silbador   | $805.00      | Haiit Hotel | $0.00
+        Fuera de Temporada| 2018 | 43396        | Red HEROIC     | 6           | Puente Roto      | $840.00      |             | $12.00
+        ...               | ...  | ...          | ...            | ...         | ...              | ...          | ...         | ...</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: LIFTS (Uso de Telesquís)</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        Fecha      | Hora     | Día de la semana | Telesqui (Lift)   | Número de pase
+        -----------|----------|------------------|-------------------|---------------
+        11/19/2018 | 12:28 PM | Lunes            | Góndola Principal | WSP-12651
+        1/25/2019  | 3:21 AM  | Viernes          | Montaña Negra     | WSP-0386
+        ...        | ...      | ...              | ...               | ...</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Visualizaciones y KPIs Clave</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Indicadores y Gráficos del Dashboard</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>El dashboard se construyó a partir de varias tablas dinámicas para mostrar los siguientes indicadores de forma interactiva:</p>
+                            <ul class='list-disc list-inside mt-2 space-y-2'>
+                                <li><strong>KPIs Principales:</strong> Ventas totales, promedio de días de visita, ventas de pases de temporada, días de regalo totales, y ganancias/pérdidas de pases de temporada.</li>
+                                <li><strong>Análisis de Canales:</strong> Gráfico de anillo mostrando la distribución de visitantes por modo de compra (En Línea, Paquete, etc.).</li>
+                                <li><strong>Rendimiento de Socios:</strong> Gráfico de barras con la cantidad de visitantes por Parque de Origen de la red HEROIC y una tabla con las comisiones a pagar.</li>
+                                <li><strong>Análisis Operativo:</strong> Gráfico que muestra la cantidad de viajes por cada telesquí (lift) desglosado por trimestre.</li>
+                                <li><strong>Ventas por Hotel:</strong> Tabla que detalla el monto total de ventas asociado a cada hotel colaborador.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             `,
-            categories: ['excel', 'business intelligence'],
-            tags: ['Excel', 'Dashboards', 'Ventas', 'Turismo', 'Próximamente'],
+            categories: ['excel', 'business intelligence', 'Dashboard', 'KPIs'],
+            tags: ['Excel', 'Dashboards', 'Análisis de Ventas', 'Limpieza de Datos', 'KPIs'],
             media: [
-                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+                { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755785807/Grabaci%C3%B3n_2025-08-21_101620_rgfps8.mp4' }
             ],
             githubUrl: null,
             liveUrl: null
         },
-        // 11. Power BI: Análisis de Canasta
         {
             title: 'Análisis de Canasta de Mercado en Power BI',
-            desc: 'Dashboard finalizado en Power BI sobre análisis de canasta, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            desc: 'Dashboard en Power BI para AyurvedicEating.Com que analiza la sinergia de productos entre proveedores para apoyar una decisión estratégica de adquisición.',
             longDesc: `
-                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
-                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+                <p>Este proyecto consiste en la creación de un dashboard en <strong>Power BI</strong> para una tienda en línea de productos saludables. El objetivo fue analizar las ventas para determinar qué proveedor externo tiene los productos que mejor se complementan con el catálogo principal de la empresa, proporcionando datos clave para una posible adquisición.</p>
+                
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>Este dashboard fue diseñado para ayudar a la junta directiva a tomar una decisión informada sobre una adquisición, permitiéndoles:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>Apoyar Decisiones Estratégicas de Adquisición:</strong> Proporciona datos para evaluar si es mejor adquirir un proveedor por sus altos ingresos o por la sinergia de sus productos con el catálogo existente.</li>
+                    <li><strong>Identificar Oportunidades de Venta Cruzada:</strong> El núcleo del análisis de canasta, muestra qué productos de proveedores externos se compran frecuentemente junto con los productos más vendidos de la empresa.</li>
+                    <li><strong>Evaluar el Rendimiento de Proveedores:</strong> Compara a los proveedores no solo por sus ingresos totales, sino también por su contribución porcentual a las ventas generales y la popularidad de sus productos.</li>
+                    <li><strong>Optimizar la Oferta de Productos:</strong> Identifica los productos estrella de la empresa y los productos complementarios más exitosos, lo que puede guiar futuras estrategias de marketing y gestión de inventario.</li>
+                </ul>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Ejemplo de los Datos Utilizados</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: DETALLESORDEN</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+         Número de Orden | Nombre del Producto
+        -----------------|-----------------------
+        ORD-001          | Producto A (Propio)
+        ORD-001          | Producto X (Externo)
+        ORD-002          | Producto B (Propio)
+        ...              | ...</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla: LISTAPRODUCTOS</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <pre><code>
+        Nombre del Producto | Proveedor             | Precio
+        --------------------|-----------------------|-------
+        Producto A (Propio) | Ayurvedic Eating      | $10.00
+        Producto X (Externo)| Green Mill Creek      | $5.00
+        ...                 | ...                   | ...</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Medidas DAX Implementadas</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla Calculada: Ordenes</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Crea una tabla virtual que resume cada orden, contando los productos y sumando el precio total.</p>
+                            <pre><code>               
+        Ordenes = SUMMARIZE(DetallesOrden,
+            DetallesOrden[Número de Orden],
+            "Cantidad de Productos", COUNTA(DetallesOrden[Nombre del Producto]),
+            "Ingreso de la Orden", [Ingresos]
+        )</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Ingresos</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Suma los ingresos totales de todas las órdenes.</p>
+                            <pre><code>Ingresos = SUMX(DetallesOrden, RELATED(ListaProductos[Precio]))</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Ingresos Promedio por Orden</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Calcula el valor promedio de cada orden.</p>
+                            <pre><code>Ingresos Promedio por Orden = AVERAGEX(Ordenes, Ordenes[Ingreso de la Orden])</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Ordenes Totales</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Cuenta el número único de órdenes.</p>
+                            <pre><code>Ordenes Totales = DISTINCTCOUNT(DetallesOrden[Número de Orden])</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Productos Promedio por Orden</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Calcula la cantidad promedio de productos por cada orden.</p>
+                            <pre><code>Productos Promedios por Orden = AVERAGEX(Ordenes, Ordenes[Cantidad de Productos])</code></pre>
+                        </div>
+                    </div>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Medida de Segmentación</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Permite al usuario cambiar la visualización de los ingresos de proveedores externos entre valor absoluto ($) y porcentaje (%).</p>
+                            <pre><code>
+        SegmentacionAP = IF(HASONEVALUE(Escala[Escala]),
+            SWITCH(VALUES(Escala[Escala]),
+                "Absoluto", [Ingresos],
+                "Porcentaje", [Porcentaje de AE]
+            ),
+            [Ingresos]
+        )</code></pre>
+                        </div>
+                    </div>
+                </div>
             `,
-            categories: ['power bi', 'business intelligence'],
-            tags: ['Power BI', 'DAX', 'Market Basket Analysis', 'Ventas', 'Próximamente'],
+            categories: ['power bi', 'business intelligence', 'Dashboard', 'KPIs', 'DAX', 'UI/UX'],
+            tags: ['Power BI', 'DAX', 'Market Basket Analysis', 'UI/UX', 'KPIs'],
             media: [
-                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+                { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755787295/dashboardcanasta_fyy9es.mp4' },
+                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1755787291/relacion_tabla_canasta_fzrjpb.png' }
             ],
             githubUrl: null,
             liveUrl: null
@@ -2867,38 +3044,114 @@ A-7959              | Hardware | Banda 15       | 2            | 11/2/2013      
             githubUrl: null,
             liveUrl: null
         },
-        // 14. Web: Portafolio Creadora de Contenido
         {
             title: 'Portafolio Web para Creadora de Contenido',
-            desc: 'Página web tipo portafolio realizada en Canva, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            desc: 'Sitio web tipo portafolio para Luz Soraida Guzmán, una creadora de contenido enfocada en belleza, moda y estilo de vida.',
             longDesc: `
-                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
-                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+                <p>Este proyecto consistió en el diseño y la creación de un portafolio web para <strong>Luz Soraida Guzmán (Sora)</strong>, una creadora de contenido. La plataforma fue desarrollada en <strong>Canva Sites</strong>, con un enfoque en un diseño limpio, femenino y moderno que reflejara su marca personal.</p>
+                <p>Mi rol fue el <strong>diseño completo del sitio web desde cero</strong>. Me encargué de estructurar la información, seleccionar la paleta de colores, tipografías y elementos visuales para crear una experiencia de usuario atractiva e intuitiva que centraliza sus colaboraciones, alcance y contacto en un solo lugar.</p>
             `,
-            categories: ['web', 'UI/UX'],
-            tags: ['Web', 'Canva Sites', 'UI/UX', 'Diseño Web', 'Próximamente'],
+            categories: ['web', 'UI/UX', 'branding'],
+            tags: ['Web', 'Canva Sites', 'Diseño Web', 'UI/UX', 'Marca Personal', 'Lifestyle'],
             media: [
-                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+                { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755791000/Grabaci%C3%B3n_2025-08-21_114509_ovs9sk.mp4' }
             ],
             githubUrl: null,
-            liveUrl: null
+            liveUrl: 'https://luzsoraidaguzman.my.canva.site/'
         },
-        // 16. Excel/VBA: Tabla de Amortización
         {
             title: 'Generador de Tablas de Amortización con VBA',
-            desc: 'Herramienta automatizada en Excel para crear tablas de amortización, pendiente de subir. ¡Pronto encontrarás todos los detalles aquí!',
+            desc: 'Herramienta en Excel que utiliza una macro en VBA para generar automáticamente tablas de amortización de préstamos y exportarlas a un nuevo archivo de Excel.',
             longDesc: `
-                <p>Este proyecto ya está finalizado. Actualmente estoy preparando el material visual y el código (consultas, medidas, etc.) para subirlo al portafolio y presentarlo de la mejor manera posible.</p>
-                <p>Mientras tanto, te invito a explorar los otros proyectos que ya están completos. ¡Vuelve pronto para ver la actualización!</p>
+                <p>Este proyecto consiste en una solución de automatización desarrollada en <strong>Excel utilizando VBA</strong>. El objetivo fue crear una macro que, a partir de datos de entrada como el monto del préstamo, la tasa de interés y el plazo, genera una tabla de amortización completa y la guarda en un nuevo archivo de Excel personalizado para el cliente.</p>
+                
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>¿Qué Problemas Resuelve Este Análisis?</h4>
+                <p>Esta herramienta de automatización aborda varios desafíos comunes en el ámbito financiero y de ventas:</p>
+                <ul class='list-disc list-inside mt-2 space-y-2'>
+                    <li><strong>Automatización de Tareas Repetitivas:</strong> Elimina el proceso manual y propenso a errores de calcular y crear tablas de amortización para cada cliente.</li>
+                    <li><strong>Generación Rápida de Cotizaciones:</strong> Permite a los asesores de ventas generar cotizaciones de préstamos personalizadas en segundos, mejorando la eficiencia y el servicio al cliente.</li>
+                    <li><strong>Precisión en los Cálculos:</strong> Asegura que todos los cálculos de intereses, capital y saldos pendientes sean consistentes y precisos, evitando errores manuales.</li>
+                    <li><strong>Organización de Documentos:</strong> Crea y guarda automáticamente un archivo de Excel limpio para cada cotización, con un nombre de archivo estandarizado para una fácil gestión de registros.</li>
+                </ul>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Ejemplo de los Datos Utilizados</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Tabla de Amortización Generada</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>La macro genera una tabla detallada con la programación de pagos del préstamo.</p>
+                            <pre><code>
+        Plazo | Pago Total | Pago a Intereses | Pago a Capital | Monto por Saldar
+        ------|------------|------------------|----------------|-----------------
+        1     | ($4,490.85)| $2,953.50        | $1,537.35      | $195,362.65
+        2     | ($4,490.85)| $2,930.44        | $1,560.41      | $193,802.24
+        ...   | ...        | ...              | ...            | ...</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class='text-lg font-bold mt-6 mb-2 text-slate-800 dark:text-white'>Código VBA Implementado</h4>
+                <div class='dax-accordion'>
+                    <div class='dax-accordion-item'>
+                        <div class='dax-accordion-header' onclick='this.nextElementSibling.classList.toggle("open")'>
+                            <h4>Macro: amortizacion()</h4>
+                            <i data-lucide='chevron-down'></i>
+                        </div>
+                        <div class='dax-accordion-content'>
+                            <p>Esta macro lee los datos de entrada del préstamo, limpia el área de la tabla, calcula cada fila de la tabla de amortización en un bucle, formatea los números y finalmente, copia la cotización completa a un nuevo libro de Excel que se guarda con el nombre del cliente y el vehículo.</p>
+                            <pre><code>Sub amortizacion()
+
+        Dim plazo As Integer
+
+        Sheets("Machote Amortización").Select
+
+        plazo = Range("E15").Value
+
+        Range("B22").Select
+        Range(Selection, Selection.End(xlToRight)).Select
+        Range(Selection, Selection.End(xlDown)).Select
+        Selection.ClearContents
+
+        For i = 1 To plazo
+            Range("B20").Offset(i - 1, 0).Value = i
+            If i >= 2 Then
+                Range("C21:F21").Copy Range("C20:F20").Offset(i - 1, 0)
+            End If
+        Next i
+
+        End Sub
+
+        Sub copiaypega()
+
+        Dim nombre, carro As String
+
+        Sheets("Machote Amortización").Select
+
+        nombre = Range("E12").Value
+        carro = Range("E13").Value
+
+        Sheets("Machote Amortización").Select
+        Sheets("Machote Amortización").Copy
+        ActiveWorkbook.SaveAs Filename:="C:\Users\DMI\Documents\Cotizacion" & nombre & carro & ".xlsx"
+        ActiveWindow.Close
+
+        End Sub</code></pre>
+                        </div>
+                    </div>
+                </div>
             `,
             categories: ['excel', 'vba'],
-            tags: ['Excel', 'VBA', 'Macros', 'Finanzas', 'Próximamente'],
+            tags: ['Excel', 'VBA', 'Macros', 'Automatización', 'Finanzas', 'Amortización'],
             media: [
-                { type: 'image', src: 'https://placehold.co/600x400/27272a/a1a1aa?text=Pr%C3%B3ximamente' }
+                { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755801537/Grabaci%C3%B3n_2025-08-21_143707_r4nvwj.mp4' }
             ],
             githubUrl: null,
             liveUrl: null
         }
+
     ];
 
     const filterButtonsContainer = document.getElementById('project-filters');
