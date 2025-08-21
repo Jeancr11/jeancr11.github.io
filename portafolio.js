@@ -933,7 +933,7 @@ document.addEventListener('DOMContentLoaded', () => {
             categories: ['web', 'UI/UX'],
             tags: ['Web', 'HTML', 'CSS', 'JavaScript', 'Tailwind CSS', 'UI/UX'],
             media: [
-                { type: 'image', src: 'https://res.cloudinary.com/dlo3r0you/image/upload/v1754601382/potafolio_persnal_meix1a.png' }
+                { type: 'video', src: 'https://res.cloudinary.com/dlo3r0you/video/upload/v1755810867/Grabaci%C3%B3n_2025-08-21_170616_ouqi9e.mp4' }
             ],
             githubUrl: null,
             liveUrl: null
@@ -3528,3 +3528,4 @@ A-7959              | Hardware | Banda 15       | 2            | 11/2/2013      
     renderProjects('all');
     renderCertifications();
 });
+
