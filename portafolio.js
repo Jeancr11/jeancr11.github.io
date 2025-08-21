@@ -3300,6 +3300,7 @@ A-7959              | Hardware | Banda 15       | 2            | 11/2/2013      
         }
         lucide.createIcons();
         renderProjects(filter);
+        carouselContainer.scrollLeft = 0;
     }
 
     // --- RENDERIZADO DE PROYECTOS (ACTUALIZADO) ---
