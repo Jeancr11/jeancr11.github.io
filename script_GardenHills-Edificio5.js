@@ -1,3 +1,22 @@
+/**
+ * app.js (Externo)
+ * VERSIÓN 28.0: Soporte para PDF e Imágenes
+ *
+ * + CAMBIO MAYOR: Lógica del Modal (Popup)
+ * - Se elimina la variable global `modalImage`.
+ * - Se añade la variable `modalLoader` y `modalContent`.
+ * - La función `showModal(imageUrl)` ahora:
+ * 1. Limpia el contenido anterior del modal.
+ * 2. Muestra el spinner de carga.
+ * 3. Revisa la URL. Si termina en ".pdf", crea un <iframe>.
+ * 4. Si no, crea un <img>.
+ * 5. Oculta el spinner cuando el <img> o <iframe> termina de cargar.
+ * - La función `hideModal()` ahora:
+ * 1. Oculta el modal.
+ * 2. Limpia el <img> o <iframe> para la próxima vez.
+ * - El HTML y CSS correspondientes han sido actualizados.
+ */
+
 // --- 1. Configuración de Supabase ---
 const SUPABASE_URL = 'https://orylzbnsgbvsssflvhse.supabase.co'; 
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9yeWx6Ym5zZ2J2c3NzZmx2aHNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE4OTM5NzYsImV4cCI6MjA3NzQ2OTk3Nn0.2Hg9bulkmVcar1xC3kwxnvFYNzAh__w-jFDrQedFCXA';
@@ -642,15 +661,15 @@ function renderizarKPIs(pagos, gastos, kpiPagos) {
 
     container.innerHTML = `
         <div class="kpi">
-            <h3>Total Ingresos</h3>
+            <h3>Total Ingresos (Filtro)</h3>
             <p class="kpi-green">$${totalIngresos.toLocaleString('es-DO')}</p>
         </div>
         <div class="kpi">
-            <h3>Total Gastos</h3>
+            <h3>Total Gastos (Filtro)</h3>
             <p class="kpi-red">$${totalGastos.toLocaleString('es-DO')}</p>
         </div>
         <div class="kpi">
-            <h3>Saldo</h3>
+            <h3>Saldo (Filtro)</h3>
             <p class="kpi-yellow">$${saldoMes.toLocaleString('es-DO')}</p>
         </div>
         <div class="kpi" id="kpi-al-dia">
@@ -746,7 +765,7 @@ function renderizarTotalIngresos(pagos, totalsId) {
     
     totalsBar.innerHTML = `
         <div class="total-item total-ingresos">
-            Total Pagado: <strong>$${totalIngresos.toLocaleString('es-DO')}</strong>
+            Total Pagado (Filtro): <strong>$${totalIngresos.toLocaleString('es-DO')}</strong>
         </div>
     `;
 }
@@ -797,7 +816,7 @@ function renderizarTotalGastos(gastos, totalsId, append = false) {
     
     const html = `
         <div class="total-item total-gastos">
-            Total Gastos: <strong>$${totalGastos.toLocaleString('es-DO')}</strong>
+            Total Gastos (Filtro): <strong>$${totalGastos.toLocaleString('es-DO')}</strong>
         </div>
     `;
 
@@ -1065,5 +1084,4 @@ function setNoData(elementId, message, colspan = 1) {
         }
     }
 }
-
 
