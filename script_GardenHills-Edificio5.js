@@ -91,7 +91,7 @@ function setupModalListeners() {
     const modalOverlay = document.getElementById('modal-overlay');
     const modalContent = document.getElementById('modal-content');
     const modalCloseBtn = document.getElementById('modal-close-btn');
-    const modalLoader = document.getElementById('modal-loader'); // ¡CAMBIO!
+    const modalLoader = document.getElementById('modal-loader'); 
     const appContentContainer = document.getElementById('app-content'); 
 
     if (!modalOverlay || !modalContent || !modalCloseBtn || !modalLoader || !appContentContainer) {
@@ -107,14 +107,13 @@ function setupModalListeners() {
         }
     };
 
-    // ¡¡FUNCIÓN ACTUALIZADA!!
+    // Función para mostrar el modal (Soporta PDF/Imagen)
     const showModal = (imageUrl) => {
-        clearModalContent(); // Limpiar contenido anterior
-        modalLoader.style.display = 'block'; // Mostrar spinner
+        clearModalContent(); 
+        modalLoader.style.display = 'block'; 
         
         let fileViewer;
 
-        // Decidir si es PDF o imagen
         if (imageUrl.toLowerCase().endsWith('.pdf')) {
             // Es PDF: crear un <iframe>
             fileViewer = document.createElement('iframe');
@@ -122,8 +121,8 @@ function setupModalListeners() {
             fileViewer.src = imageUrl;
             
             fileViewer.onload = () => {
-                modalLoader.style.display = 'none'; // Ocultar spinner
-                fileViewer.style.display = 'block'; // Mostrar iframe
+                modalLoader.style.display = 'none'; 
+                fileViewer.style.display = 'block'; 
             };
             fileViewer.onerror = () => {
                 console.error('Error al cargar el PDF.');
@@ -138,8 +137,8 @@ function setupModalListeners() {
             fileViewer.alt = 'Comprobante';
 
             fileViewer.onload = () => {
-                modalLoader.style.display = 'none'; // Ocultar spinner
-                fileViewer.style.display = 'block'; // Mostrar imagen
+                modalLoader.style.display = 'none'; 
+                fileViewer.style.display = 'block'; 
             };
             fileViewer.onerror = () => {
                 console.error('Error al cargar la imagen del comprobante.');
@@ -147,20 +146,17 @@ function setupModalListeners() {
             };
         }
         
-        // Añadir el elemento (oculto por defecto) al modal
         modalContent.appendChild(fileViewer);
-        // Mostrar todo el modal
         modalOverlay.classList.add('visible');
     };
 
-    // ¡¡FUNCIÓN ACTUALIZADA!!
+    // Función para ocultar el modal
     const hideModal = () => {
         modalOverlay.classList.remove('visible');
         
-        // Esperar a la animación antes de limpiar
         setTimeout(() => {
-            clearModalContent(); // Limpiar el <img> o <iframe>
-            modalLoader.style.display = 'block'; // Resetear el spinner para la próxima vez
+            clearModalContent(); 
+            modalLoader.style.display = 'block'; 
         }, 300); 
     };
 
@@ -169,36 +165,21 @@ function setupModalListeners() {
 
     // 2. Clic en el overlay (afuera del contenido)
     modalOverlay.addEventListener('click', (e) => {
-        
-        // Lógica de v27.2 (robusta)
-        
-        // `e.target` es el elemento exacto donde se hizo clic.
-        
-        // Primero, verificamos si el clic fue en un botón de "Ver".
-        // Si es así, no hacemos NADA. El otro listener se encargará.
         if (e.target.closest('.btn-comprobante')) {
             return;
         }
-
-        // Segundo, verificamos si el clic fue DENTRO del contenido del modal
-        // (p.ej., en la imagen o en el padding).
-        // Si es así, no hacemos NADA.
         if (modalContent.contains(e.target)) {
             return;
         }
-
-        // Si el clic no fue en un botón "Ver" Y no fue dentro del contenido,
-        // significa que fue en el fondo (overlay). Cerramos el modal.
         hideModal();
     });
 
     // 3. (CLAVE) Event Delegation en el contenedor principal
     appContentContainer.addEventListener('click', (e) => {
-        // .closest() busca el botón, incluso si se hizo clic en el texto "Ver"
         const comprobanteBtn = e.target.closest('.btn-comprobante');
         
         if (comprobanteBtn) {
-            e.preventDefault(); // Prevenir que el <a> abra una nueva pestaña
+            e.preventDefault(); 
             
             const imageUrl = comprobanteBtn.href;
             if (imageUrl) {
@@ -227,21 +208,24 @@ function renderDashboardView() {
                 <div class="filters-container" id="dashboard-filters-container">
                     ${createFiltersHTML('dashboard')}
                 </div>
-                <div class="table-container">
-                    <table id="tabla-residentes-dash">
-                        <thead>
-                            <tr>
-                                <th>Residente</th>
-                                <th>Apt.</th>
-                                <th>Fecha de Pago</th>
-                                <th>Estado</th>
-                                <th>Comprobante</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-cuerpo-dash">
-                            ${getLoadingHTML('table', 5)} <!-- BUGFIX: Colspan 5 -->
-                        </tbody>
-                    </table>
+                <!-- ¡¡CAMBIO v29.0!! -->
+                <div class="table-wrapper">
+                    <div class="table-container">
+                        <table id="tabla-residentes-dash">
+                            <thead>
+                                <tr>
+                                    <th>Residente</th>
+                                    <th>Apt.</th>
+                                    <th>Fecha de Pago</th>
+                                    <th>Estado</th>
+                                    <th>Comprobante</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-cuerpo-dash">
+                                ${getLoadingHTML('table', 5)} 
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -260,7 +244,6 @@ function renderDashboardView() {
 
     setupFilterListeners('dashboard', currentYear, currentMonth);
     
-    // Llamamos a la función de carga única del dashboard
     fetchAndRenderDashboardData(
         currentYear, 
         currentMonth, 
@@ -283,22 +266,25 @@ function renderResidentesView() {
             <div class="totals-bar" id="residentes-totals-bar">
                 ${getLoadingHTML('totals')}
             </div>
-            <div class="table-container">
-                <table id="tabla-residentes-full">
-                    <thead>
-                        <tr>
-                            <th>Residente</th>
-                            <th>Apt.</th>
-                            <th>Fecha de Pago</th>
-                            <th>Estado</th>
-                            <th>Monto</th>
-                            <th>Comprobante</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-cuerpo-residentes">
-                        ${getLoadingHTML('table', 6)} <!-- BUGFIX: Colspan 6 -->
-                    </tbody>
-                </table>
+            <!-- ¡¡CAMBIO v29.0!! -->
+            <div class="table-wrapper">
+                <div class="table-container">
+                    <table id="tabla-residentes-full">
+                        <thead>
+                            <tr>
+                                <th>Residente</th>
+                                <th>Apt.</th>
+                                <th>Fecha de Pago</th>
+                                <th>Estado</th>
+                                <th>Monto</th>
+                                <th>Comprobante</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-cuerpo-residentes">
+                            ${getLoadingHTML('table', 6)} 
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     `;
@@ -320,21 +306,24 @@ function renderGastosView() {
             <div class="totals-bar" id="gastos-totals-bar">
                 ${getLoadingHTML('totals')}
             </div>
-            <div class="table-container">
-                <table id="tabla-gastos-full">
-                    <thead>
-                        <tr>
-                            <th>Tipo de Gasto</th>
-                            <th>Fecha</th>
-                            <th>Monto</th>
-                            <th>Estado</th>
-                            <th>Comprobante</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-cuerpo-gastos">
-                        ${getLoadingHTML('table', 5)} <!-- BUGFIX: Colspan 5 -->
-                    </tbody>
-                </table>
+            <!-- ¡¡CAMBIO v29.0!! -->
+            <div class="table-wrapper">
+                <div class="table-container">
+                    <table id="tabla-gastos-full">
+                        <thead>
+                            <tr>
+                                <th>Tipo de Gasto</th>
+                                <th>Fecha</th>
+                                <th>Monto</th>
+                                <th>Estado</th>
+                                <th>Comprobante</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-cuerpo-gastos">
+                            ${getLoadingHTML('table', 5)} 
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     `;
@@ -401,18 +390,24 @@ function setupFilterListeners(pagePrefix, defaultYear, defaultMonth) {
     const monthSelect = document.getElementById(`${pagePrefix}-month-select`);
     const resetBtn = document.getElementById(`${pagePrefix}-reset-filter`);
 
+    // Comprobación de existencia de elementos
+    if (!yearSelect || !monthSelect || !resetBtn) {
+        console.warn(`Faltan elementos de filtro para: ${pagePrefix}`);
+        return;
+    }
+
     yearSelect.value = defaultYear;
     monthSelect.value = defaultMonth;
 
     const updateFunction = () => {
+        // Obtenemos los valores *dentro* de la función
         const selectedYear = getFilterValue(yearSelect);
         const selectedMonth = getFilterValue(monthSelect);
 
         if (pagePrefix === 'dashboard') {
             const debtorsCheck = document.getElementById('dashboard-debtors-check');
-            const showDebtors = debtorsCheck.checked;
+            const showDebtors = debtorsCheck ? debtorsCheck.checked : false;
             
-            // Los KPIs fijos (Residentes al Día) siempre usan el mes actual
             const today = new Date();
             const kpiYear = today.getFullYear();
             const kpiMonth = today.getMonth() + 1;
@@ -433,26 +428,28 @@ function setupFilterListeners(pagePrefix, defaultYear, defaultMonth) {
     yearSelect.addEventListener('change', updateFunction);
     monthSelect.addEventListener('change', updateFunction);
 
-    if (pagePrefix === 'dashboard') {
-        document.getElementById('dashboard-debtors-check').addEventListener('change', updateFunction);
-    } else if (pagePrefix === 'residentes') {
-        document.getElementById('residentes-name-filter').addEventListener('input', updateFunction);
-        document.getElementById('residentes-apt-filter').addEventListener('input', updateFunction);
-    } else if (pagePrefix === 'gastos') {
-        document.getElementById('gastos-tipo-select').addEventListener('change', updateFunction);
-    }
+    // Listeners específicos
+    const debtorsCheck = document.getElementById('dashboard-debtors-check');
+    if (debtorsCheck) debtorsCheck.addEventListener('change', updateFunction);
+
+    const nameFilter = document.getElementById('residentes-name-filter');
+    if (nameFilter) nameFilter.addEventListener('input', updateFunction);
+
+    const aptFilter = document.getElementById('residentes-apt-filter');
+    if (aptFilter) aptFilter.addEventListener('input', updateFunction);
+
+    const tipoSelect = document.getElementById('gastos-tipo-select');
+    if (tipoSelect) tipoSelect.addEventListener('change', updateFunction);
 
     resetBtn.addEventListener('click', () => {
         yearSelect.value = 'all';
         monthSelect.value = 'all';
-        if (pagePrefix === 'dashboard') {
-            document.getElementById('dashboard-debtors-check').checked = false;
-        } else if (pagePrefix === 'residentes') {
-            document.getElementById('residentes-name-filter').value = '';
-            document.getElementById('residentes-apt-filter').value = '';
-        } else if (pagePrefix === 'gastos') {
-            document.getElementById('gastos-tipo-select').value = 'all';
-        }
+        
+        if (debtorsCheck) debtorsCheck.checked = false;
+        if (nameFilter) nameFilter.value = '';
+        if (aptFilter) aptFilter.value = '';
+        if (tipoSelect) tipoSelect.value = 'all';
+        
         updateFunction();
     });
 }
@@ -481,12 +478,10 @@ function applyDateFilters(query, year, month) {
     return query;
 }
 
-/** ¡¡VERSIÓN 26.1!! FETCH: DASHBOARD (Corrección de Gráfico) */
 async function fetchAndRenderDashboardData(year, month, showDebtors, kpiYear, kpiMonth) {
-    console.log('Iniciando fetchAndRenderDashboardData (v26.1) con:', year, month, showDebtors);
+    console.log('Iniciando fetchAndRenderDashboardData con:', year, month, showDebtors);
     
-    // 1. Mostrar indicadores de carga
-    setLoading('tabla-cuerpo-dash', getLoadingHTML('table', 5)); // BUGFIX: Colspan 5
+    setLoading('tabla-cuerpo-dash', getLoadingHTML('table', 5)); 
     setLoading('kpi-container', getLoadingHTML('kpis'));
     setLoading('chart-container-parent', getLoadingHTML('chart'));
     
@@ -498,8 +493,6 @@ async function fetchAndRenderDashboardData(year, month, showDebtors, kpiYear, kp
         
         const { data: pagosData, error: pagosError } = await pagosQuery;
         if (pagosError) throw new Error(`Error en Pagos: ${pagosError.message}`);
-        console.log('Fetch de Pagos (Dashboard) exitoso:', pagosData);
-
 
         // --- 3. Consulta de Gastos (para Gráfico y KPIs dinámicos) ---
         let gastosQuery = clienteSupabase.from('gastos_condominio').select('*');
@@ -508,8 +501,6 @@ async function fetchAndRenderDashboardData(year, month, showDebtors, kpiYear, kp
 
         const { data: gastosData, error: gastosError } = await gastosQuery;
         if (gastosError) throw new Error(`Error en Gastos: ${gastosError.message}`);
-        console.log('Fetch de Gastos (Dashboard) exitoso:', gastosData);
-
 
         // --- 4. Consulta de Pagos (para KPI Fijo "Residentes al Día") ---
         let kpiQuery = clienteSupabase.from('pagos_residentes').select('*');
@@ -518,8 +509,6 @@ async function fetchAndRenderDashboardData(year, month, showDebtors, kpiYear, kp
 
         const { data: kpiPagosData, error: kpiError } = await kpiQuery;
         if (kpiError) throw new Error(`Error en KPI Pagos: ${kpiError.message}`);
-        console.log('Fetch de kpiPagos (Dashboard) exitoso:', kpiPagosData);
-
 
         // --- 5. Aplicar filtros de JS ---
         const pagosFiltrados = showDebtors
@@ -533,16 +522,14 @@ async function fetchAndRenderDashboardData(year, month, showDebtors, kpiYear, kp
             });
         }
 
-
         // --- 6. Renderizar todo ---
         renderizarKPIs(pagosData, gastosData, kpiPagosData);
         renderizarTablaDashboard(pagosFiltrados);
-        renderizarGrafico(gastosData); // Esta función ahora crea el canvas
+        renderizarGrafico(gastosData); 
 
     } catch (error) {
-        console.error('Error fetching dashboard data (v26.1):', error.message);
+        console.error('Error fetching dashboard data:', error.message);
         
-        // Escribe el error en todas las secciones
         const errorMessage = `Error al cargar: ${error.message}`;
         setError('tabla-cuerpo-dash', errorMessage);
         setError('kpi-container', errorMessage);
@@ -551,9 +538,8 @@ async function fetchAndRenderDashboardData(year, month, showDebtors, kpiYear, kp
 }
 
 
-/** FETCH: RESIDENTES (Página completa - Lógica separada) */
 async function fetchAndRenderResidentesData(year, month, name, apt) {
-    setLoading('tabla-cuerpo-residentes', getLoadingHTML('table', 6)); // BUGFIX: Colspan 6
+    setLoading('tabla-cuerpo-residentes', getLoadingHTML('table', 6)); 
     setLoading('residentes-totals-bar', getLoadingHTML('totals'));
 
     try {
@@ -572,7 +558,6 @@ async function fetchAndRenderResidentesData(year, month, name, apt) {
         const { data: pagos, error } = await query;
         if (error) throw error;
         
-        // Renderiza en los IDs correctos
         renderizarTablaResidentesFull(pagos, 'tabla-cuerpo-residentes');
         renderizarTotalIngresos(pagos, 'residentes-totals-bar');
 
@@ -583,9 +568,8 @@ async function fetchAndRenderResidentesData(year, month, name, apt) {
     }
 }
 
-/** FETCH: GASTOS (Página completa - Lógica separada) */
 async function fetchAndRenderGastosData(year, month, tipo) {
-    setLoading('tabla-cuerpo-gastos', getLoadingHTML('table', 5)); // BUGFIX: Colspan 5
+    setLoading('tabla-cuerpo-gastos', getLoadingHTML('table', 5)); 
     setLoading('gastos-totals-bar', getLoadingHTML('totals'));
 
     try {
@@ -601,7 +585,6 @@ async function fetchAndRenderGastosData(year, month, tipo) {
         const { data: gastos, error } = await query;
         if (error) throw error;
         
-        // Renderiza en los IDs correctos
         renderizarTablaGastosFull(gastos, 'tabla-cuerpo-gastos');
         renderizarTotalGastos(gastos, 'gastos-totals-bar', false);
 
@@ -615,18 +598,14 @@ async function fetchAndRenderGastosData(year, month, tipo) {
 
 // --- 9. Funciones de Renderizado de Datos (Componentes) ---
 
-/** Renderiza los 4 KPIs del Dashboard */
 function renderizarKPIs(pagos, gastos, kpiPagos) {
     const container = document.getElementById('kpi-container');
     if (!container) return;
 
-    // --- ¡¡BLINDAJE!! ---
     const pagosSeguro = Array.isArray(pagos) ? pagos : [];
     const gastosSeguro = Array.isArray(gastos) ? gastos : [];
     const kpiPagosSeguro = Array.isArray(kpiPagos) ? kpiPagos : [];
-    // --- FIN BLINDAJE ---
 
-    // Calcular KPIs dinámicos (basados en filtros)
     const totalIngresos = pagosSeguro
         .filter(p => p.estado === 'Pagado')
         .reduce((sum, p) => sum + (p.monto || 0), 0);
@@ -635,7 +614,6 @@ function renderizarKPIs(pagos, gastos, kpiPagos) {
     
     const saldoMes = totalIngresos - totalGastos;
     
-    // Calcular KPI Fijo (basado en kpiPagos)
     const totalResidentes = kpiPagosSeguro.length;
     const residentesAlDia = kpiPagosSeguro.filter(p => p.estado === 'Pagado').length;
 
@@ -660,7 +638,6 @@ function renderizarKPIs(pagos, gastos, kpiPagos) {
     `;
 }
 
-/** Renderiza la tabla del Dashboard (v27.3) */
 function renderizarTablaDashboard(pagos) {
     const cuerpoTabla = document.getElementById('tabla-cuerpo-dash');
     if (!cuerpoTabla) return;
@@ -668,7 +645,7 @@ function renderizarTablaDashboard(pagos) {
     const pagosSeguro = Array.isArray(pagos) ? pagos : [];
 
     if (pagosSeguro.length === 0) {
-        setNoData('tabla-cuerpo-dash', 'No se encontraron pagos con esos filtros.', 5); // Colspan 5
+        setNoData('tabla-cuerpo-dash', 'No se encontraron pagos con esos filtros.', 5); 
         return;
     }
 
@@ -677,14 +654,11 @@ function renderizarTablaDashboard(pagos) {
         const fila = document.createElement('tr');
         const estadoClass = getEstadoClass(pago.estado);
 
-        // --- ¡¡INICIO CORRECCIÓN v27.3!! ---
-        // Verificamos que la URL exista Y no sea una cadena vacía
         const hasUrl = pago.comprobante_url && pago.comprobante_url.trim() !== '';
         
         const btnComprobante = hasUrl
             ? `<a href="${pago.comprobante_url}" class="btn btn-secondary btn-sm btn-comprobante">Ver</a>`
             : `<button class="btn btn-secondary btn-sm" disabled>N/A</button>`;
-        // --- ¡¡FIN CORRECCIÓN v27.3!! ---
         
         fila.innerHTML = `
             <td>${pago.nombre}</td>
@@ -697,7 +671,6 @@ function renderizarTablaDashboard(pagos) {
     });
 }
 
-/** Renderiza la tabla de Residentes (Página) (v27.3) */
 function renderizarTablaResidentesFull(pagos, tableId) {
     const cuerpoTabla = document.getElementById(tableId);
     if (!cuerpoTabla) return;
@@ -705,7 +678,7 @@ function renderizarTablaResidentesFull(pagos, tableId) {
     const pagosSeguro = Array.isArray(pagos) ? pagos : [];
 
     if (pagosSeguro.length === 0) {
-        setNoData(tableId, 'No se encontraron pagos con esos filtros.', 6); // Colspan 6
+        setNoData(tableId, 'No se encontraron pagos con esos filtros.', 6); 
         return;
     }
     
@@ -714,13 +687,11 @@ function renderizarTablaResidentesFull(pagos, tableId) {
         const fila = document.createElement('tr');
         const estadoClass = getEstadoClass(pago.estado);
         
-        // --- ¡¡INICIO CORRECCIÓN v27.3!! ---
         const hasUrl = pago.comprobante_url && pago.comprobante_url.trim() !== '';
         
         const btnComprobante = hasUrl
             ? `<a href="${pago.comprobante_url}" class="btn btn-secondary btn-sm btn-comprobante">Ver</a>`
             : `<button class="btn btn-secondary btn-sm" disabled>N/A</button>`;
-        // --- ¡¡FIN CORRECCIÓN v27.3!! ---
         
         fila.innerHTML = `
             <td>${pago.nombre}</td>
@@ -734,7 +705,6 @@ function renderizarTablaResidentesFull(pagos, tableId) {
     });
 }
 
-/** Renderiza el total de Ingresos (Página) */
 function renderizarTotalIngresos(pagos, totalsId) {
     const totalsBar = document.getElementById(totalsId);
     if (!totalsBar) return;
@@ -751,7 +721,6 @@ function renderizarTotalIngresos(pagos, totalsId) {
     `;
 }
 
-/** Renderiza la tabla de Gastos (Página) (v27.3) */
 function renderizarTablaGastosFull(gastos, tableId) {
     const cuerpoTabla = document.getElementById(tableId);
     if (!cuerpoTabla) return;
@@ -759,7 +728,7 @@ function renderizarTablaGastosFull(gastos, tableId) {
     const gastosSeguro = Array.isArray(gastos) ? gastos : [];
 
     if (gastosSeguro.length === 0) {
-        setNoData(tableId, 'No se encontraron gastos con esos filtros.', 5); // Colspan 5
+        setNoData(tableId, 'No se encontraron gastos con esos filtros.', 5); 
         return;
     }
 
@@ -768,13 +737,11 @@ function renderizarTablaGastosFull(gastos, tableId) {
         const fila = document.createElement('tr');
         const estadoClass = getEstadoClass(fact.estado);
         
-        // --- ¡¡INICIO CORRECCIÓN v27.3!! ---
         const hasUrl = fact.comprobante_url && fact.comprobante_url.trim() !== '';
 
         const btnComprobante = hasUrl
             ? `<a href="${fact.comprobante_url}" class="btn btn-secondary btn-sm btn-comprobante">Ver</a>`
             : `<button class="btn btn-secondary btn-sm" disabled>N/A</button>`;
-        // --- ¡¡FIN CORRECCIÓN v27.3!! ---
         
         fila.innerHTML = `
             <td>${fact.tipo}</td>
@@ -787,7 +754,6 @@ function renderizarTablaGastosFull(gastos, tableId) {
     });
 }
 
-/** Renderiza el total de Gastos (Página) */
 function renderizarTotalGastos(gastos, totalsId, append = false) {
     const totalsBar = document.getElementById(totalsId);
     if (!totalsBar) return;
@@ -802,18 +768,14 @@ function renderizarTotalGastos(gastos, totalsId, append = false) {
     `;
 
     if (append) {
-        // No se usa en v26.0
+        totalsBar.innerHTML += html;
     } else {
-        totalsBar.innerHTML = html; // Reemplaza
+        totalsBar.innerHTML = html; 
     }
 }
 
-
-/** ¡CAMBIO 3! Esta función ahora crea el canvas */
 function renderizarGrafico(gastos) {
-    // const canvas = document.getElementById('grafico-gastos'); // <-- Ya no se busca
     const container = document.getElementById('chart-container-parent');
-    // if (!canvas || !container) return; // <-- Se cambia por:
     if (!container) return;
     
     const gastosSeguro = Array.isArray(gastos) ? gastos : [];
@@ -833,22 +795,14 @@ function renderizarGrafico(gastos) {
     const colores = ['#FF6384', '#FF9F40', '#4BC0C0', '#9966FF', '#36A2EB', '#FFCD56'];
 
     if (labels.length === 0) {
-        // Si no hay datos, muestra error (esto ya limpiará el shimmer)
         setError(container.id, 'No hay datos de gastos para mostrar en el gráfico.');
         return;
     }
 
-    // --- INICIO DE CORRECCIÓN (v26.1) ---
-    // 1. Limpiamos el 'loading shimmer' que puso fetchAndRenderDashboardData
     container.innerHTML = ''; 
-
-    // 2. Creamos el canvas dinámicamente AHORA
     const canvas = document.createElement('canvas');
     canvas.id = 'grafico-gastos';
-    
-    // 3. Lo añadimos al contenedor ANTES de usarlo
     container.appendChild(canvas);
-    // --- FIN DE CORRECCIÓN ---
 
     const ctx = canvas.getContext('2d');
     if (miGraficoDeGastos) miGraficoDeGastos.destroy();
@@ -903,6 +857,8 @@ function renderizarGrafico(gastos) {
 // --- 10. Lógica del Tema (Modo Oscuro) ---
 function setupThemeToggle() {
     const themeToggle = document.getElementById('theme-toggle');
+    if (!themeToggle) return;
+    
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
     const currentTheme = localStorage.getItem('theme');
@@ -932,6 +888,7 @@ function setupThemeToggle() {
         }
         localStorage.setItem('theme', newTheme);
         
+        // Actualizar gráfico si existe
         if (miGraficoDeGastos) {
              const temaActual = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
              const colorTexto = (temaActual === 'dark') ? '#a0a0b5' : '#667';
@@ -949,6 +906,7 @@ function setupThemeToggle() {
                 document.body.classList.remove('dark-mode');
                 themeToggle.checked = false;
             }
+            // Actualizar gráfico si existe
             if (miGraficoDeGastos) {
                  const isDark = document.body.classList.contains('dark-mode');
                  const colorTexto = isDark ? '#a0a0b5' : '#667';
@@ -976,10 +934,8 @@ function getEstadoClass(estado) {
 
 // --- 12. Helpers de Carga y Error (NUEVOS) ---
 
-// ¡BUGFIX! Se añade parámetro colspan
-function getLoadingHTML(type, colspan = 5) { // default 5
+function getLoadingHTML(type, colspan = 5) { 
     if (type === 'table') {
-        // Se elimina la lógica anterior, ahora usamos el parámetro
         return `
             <tr><td colspan="${colspan}"><div class="loading-shimmer" style="height: 20px; width: 90%;"></div></td></tr>
             <tr><td colspan="${colspan}"><div class="loading-shimmer" style="height: 20px; width: 70%;"></div></td></tr>
@@ -1040,14 +996,12 @@ function setLoading(elementId, html) {
 function setError(elementId, message) {
     const element = document.getElementById(elementId);
     if (element) {
-        // Colspan dinámico
-        const table = element.closest('table');
         let colspan = 1;
-        if (table) {
-            colspan = table.querySelector('thead th')?.length || 1;
-        }
-        
         if (element.tagName === 'TBODY') {
+            const table = element.closest('table');
+            if (table) {
+                colspan = table.querySelector('thead th')?.length || 1;
+            }
             element.innerHTML = `<tr><td colspan="${colspan}"><div class="error-text">${message}</div></td></tr>`;
         } else {
             element.innerHTML = `<div class="error-text">${message}</div>`;
@@ -1065,5 +1019,3 @@ function setNoData(elementId, message, colspan = 1) {
         }
     }
 }
-
-

@@ -260,13 +260,20 @@ body.sidebar-open .menu-overlay {
 .kpi-yellow { color: var(--accent-yellow); } /* REQ 3 (v10.0): KPI Saldo */
 
 /* --- 8. Estilos de Tabla --- */
+/* ¡¡CAMBIO v29.0!!: Se añade .table-wrapper */
+.table-wrapper {
+    position: relative;
+}
+
 .table-container { 
     overflow-x: auto; 
     /* REQ 19: Para asegurar que la tabla no colapse */
     max-height: 400px; /* Altura máxima para la tabla del dash */
     overflow-y: auto;
+    /* Habilitar scroll táctil suave en iOS */
+    -webkit-overflow-scrolling: touch; 
 }
-.card > .table-container {
+.card > .table-wrapper > .table-container {
     max-height: none; /* Quitamos la altura máxima para tablas en Residentes/Gastos */
 }
 table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -511,11 +518,7 @@ body.dark-mode .btn:disabled {
 
 
 /* --- 11. ESTILOS DEL MODAL (POPUP) --- */
-/* ¡¡CAMBIOS!!
-  - Se eliminan estilos de #modal-image
-  - Se añaden estilos para #modal-loader y .modal-spinner
-  - Se añaden estilos para la nueva clase .modal-file-viewer
-*/
+/* (Soporte para PDF/Imagen - v28.0) */
 #modal-overlay {
     position: fixed;
     top: 0;
@@ -576,7 +579,7 @@ body.dark-mode .btn:disabled {
     color: var(--heading-color);
 }
 
-/* NUEVO: Clase para el <img> o <iframe> dinámico */
+/* Clase para el <img> o <iframe> dinámico */
 .modal-file-viewer {
     width: 100%;
     height: 100%;
@@ -590,7 +593,7 @@ body.dark-mode .btn:disabled {
     border: none;
 }
 
-/* NUEVO: Estilo para el spinner de carga */
+/* Estilo para el spinner de carga */
 .modal-spinner {
     width: 50px;
     height: 50px;
@@ -776,5 +779,64 @@ body.dark-mode .modal-spinner {
         order: 3;
         width: 100%;
     }
-}
 
+
+    /* --- INICIO CAMBIOS v29.0: Indicador de Scroll --- */
+
+    /* Animación de "pulso" para la flecha.
+      La añadimos aquí para que solo se anime en móviles.
+    */
+    @keyframes pulse-horizontal {
+        0% {
+            transform: translateY(-50%) scale(1);
+            opacity: 0.7;
+        }
+        50% {
+            transform: translateY(-50%) scale(1.1) translateX(3px);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-50%) scale(1);
+            opacity: 0.7;
+        }
+    }
+
+    .table-wrapper::after {
+        content: '›'; /* Flecha simple */
+        font-family: monospace;
+        font-size: 1.8rem; /* Tamaño de la flecha interna */
+        font-weight: bold;
+        color: white; /* Color de la flecha */
+        
+        position: absolute;
+        top: 50%;
+        right: 8px; /* Separación del borde */
+        transform: translateY(-50%);
+        
+        background: var(--accent-blue); /* Círculo azul */
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 0; /* Ajuste para centrar la flecha */
+
+        pointer-events: none; /* Permite hacer scroll "a través" de ella */
+        
+        /* Aplicar la animación */
+        animation: pulse-horizontal 1.5s infinite ease-in-out;
+    }
+    
+    /* Añadimos un pequeño padding al contenedor de la tabla
+      para que el contenido no quede *debajo* de la flecha flotante.
+    */
+    .table-wrapper .table-container {
+         padding-right: 20px;
+    }
+    
+    /* --- FIN CAMBIOS v29.0 --- */
+
+}
