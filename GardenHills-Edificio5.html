@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Condominio</title>
+    
+    <!-- Importamos Chart.js para los gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- ¡¡IMPORTANTE!! LIBRERÍA DE SUPABASE AÑADIDA -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Enlace a la hoja de estilos externa -->
+    <link rel="stylesheet" href="style_GardenHills-Edificio5.css">
+</head>
+
+<body> 
+
+    <!-- NAVEGACIÓN LATERAL (SIDEBAR) -->
+    <nav class="sidebar">
+        <!-- ... (contenido del sidebar sin cambios) ... -->
+        <div class="sidebar-header">
+            <h3>Edificio 5</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li id="nav-dashboard" class="active">
+                <a href="#">
+                    <!-- Icono de Dashboard (Layout) -->
+                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li id="nav-residentes">
+                <a href="#">
+                    <!-- Icono de Residentes (Users) -->
+                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span>Residentes</span>
+                </a>
+            </li>
+            <li id="nav-gastos">
+                <a href="#">
+                    <!-- Icono de Gastos (Dollar sign) -->
+                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    <span>Gastos</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Overlay para el menú móvil -->
+    <div class="menu-overlay"></div>
+
+    <!-- CONTENIDO PRINCIPAL (El "caparazón") -->
+    <main class="main-content">
+        
+        <!-- Header del contenido (Fijo) -->
+        <header class="main-header">
+            <!-- ... (header sin cambios) ... -->
+            <button class="hamburger-btn" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <h1 id="main-title">Dashboard</h1> 
+            
+            <div class="theme-switcher">
+                <input type="checkbox" id="theme-toggle">
+                <label for="theme-toggle" class="slider"></label>
+            </div>
+        </header>
+
+        <!-- CONTENEDOR DE LA APLICACIÓN -->
+        <div id="app-content">
+            <!-- El contenido se cargará aquí... -->
+        </div>
+
+    </main>
+
+    <!-- 
+      ¡¡CAMBIO!! ESTRUCTURA DEL MODAL
+      - Se elimina la <img id="modal-image">
+      - Se añade un <div id="modal-loader"> para el spinner
+      - El contenido (img o iframe) se añadirá dinámicamente con JS
+    -->
+    <div id="modal-overlay">
+        <div id="modal-content">
+            <button id="modal-close-btn" aria-label="Cerrar modal">&times;</button>
+            <div id="modal-loader" class="modal-spinner"></div>
+            <!-- El <img> o <iframe> se insertará aquí -->
+        </div>
+    </div>
+    
+    <script src="script_GardenHills-Edificio5.js"></script>
+</body>
+</html>
+
