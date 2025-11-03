@@ -1,11 +1,19 @@
-/* --- 0. RESET GLOBAL Y CORRECCIÓN DE LAYOUT --- */
+/* --- 0. RESETEO GLOBAL Y FUENTE BASE --- */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-/* --- 1. Variables Globales y Tipografía --- */
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex; /* La clave del layout Desktop */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* --- 1. VARIABLES GLOBALES (TEMA CLARO) --- */
 :root {
     /* Paleta de Tema Claro (Default) */
     --bg-color: #f0f4f8;
@@ -16,13 +24,16 @@
     --border-color: #e2e8f0;
     --shadow-color: rgba(99, 99, 99, 0.1);
     
-    /* Colores de Sidebar (Nuevos) */
-    --sidebar-bg: #1a1a2e; /* Color de portafolio oscuro */
+    /* Versión RGB para fondos con transparencia (usado en header sticky) */
+    --bg-color-rgb: 240, 244, 248;
+
+    /* Colores de Sidebar */
+    --sidebar-bg: #1a1a2e;
     --sidebar-text: #a0a0b5;
     --sidebar-text-hover: #ffffff;
     --sidebar-active-bg: #2a2a45;
 
-    /* Acentos */
+    /* Acentos y Estados */
     --accent-green: #2ecc71;
     --accent-red: #e74c3c;
     --accent-blue: #3498db;
@@ -31,14 +42,14 @@
     --status-bg-red: #fdeeee;
     --status-bg-yellow: #fef5e7;
 
-    /* REQ 16: Nuevas variables para filtros */
+    /* Filtros */
     --filter-bg: #e9eef2;
     --filter-border: #d1d9e0;
     --filter-icon: #5a6b7c;
     --filter-icon-hover-bg: #d8dee4;
 }
 
-/* --- 2. Definición del TEMA OSCURO --- */
+/* --- 2. TEMA OSCURO --- */
 body.dark-mode {
     --bg-color: #1a1a2e;
     --card-bg-color: #2a2a45;
@@ -48,31 +59,26 @@ body.dark-mode {
     --border-color: #3a3a5a;
     --shadow-color: rgba(0, 0, 0, 0.2);
 
-    /* Sidebar en modo oscuro (no cambia mucho, ya es oscuro) */
+    /* Versión RGB para transparencia */
+    --bg-color-rgb: 26, 26, 46;
+
+    /* Sidebar en modo oscuro */
     --sidebar-bg: #121220;
     --sidebar-active-bg: #222238;
 
-    /* Status en modo oscuro */
+    /* Estados en modo oscuro */
     --status-bg-green: #2c4a32;
     --status-bg-red: #4a2c2c;
     --status-bg-yellow: #4a3a2c;
 
-    /* REQ 16: Filtros en modo oscuro */
+    /* Filtros en modo oscuro */
     --filter-bg: #2a2a45;
     --filter-border: #3a3a5a;
     --filter-icon: #a0a0b5;
     --filter-icon-hover-bg: #3a3a5a;
 }
 
-/* --- 3. Layout Principal (Sidebar + Contenido) --- */
-body {
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    display: flex; /* La clave del layout */
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
+/* --- 3. LAYOUT PRINCIPAL (SIDEBAR + CONTENIDO) --- */
 .sidebar {
     width: 250px;
     background-color: var(--sidebar-bg);
@@ -81,23 +87,23 @@ body {
     height: 100vh; /* Ocupa toda la altura */
     display: flex;
     flex-direction: column;
-    position: fixed; /* Fijo en el lugar */
+    position: fixed; /* Fijo en el lugar (en desktop) */
     left: 0;
     top: 0;
     transition: background-color 0.3s ease, left 0.3s ease-in-out;
     flex-shrink: 0; /* Evita que se encoja */
-    z-index: 1000; /* Asegura que esté por encima del overlay */
+    z-index: 1000; /* Por encima del overlay */
 }
 
 .main-content {
     flex-grow: 1; /* Ocupa el resto del espacio */
     margin-left: 250px; /* Deja espacio para el sidebar */
-    padding: 30px;
+    padding: 0 30px 30px 30px; 
     height: 100vh;
-    overflow-y: auto; /* Permite scroll solo en esta área */
+    overflow-y: auto; /* Permite scroll solo en esta área (en desktop) */
 }
 
-/* --- 4. Estilos del Sidebar --- */
+/* --- 4. ESTILOS DEL SIDEBAR --- */
 .sidebar-header {
     text-align: center;
     margin-bottom: 30px;
@@ -109,7 +115,7 @@ body {
 }
 .sidebar-menu {
     list-style: none;
-    flex-grow: 1; /* Empuja el footer hacia abajo */
+    flex-grow: 1; /* Empuja el footer (si existiera) hacia abajo */
 }
 .sidebar-menu li a {
     display: flex;
@@ -131,42 +137,54 @@ body {
     background-color: var(--accent-blue);
     color: #ffffff;
 }
-/* REQ 1 (v7.0): Estilos para los iconos SVG */
 .nav-icon {
     width: 24px;
     height: 24px;
     stroke: var(--sidebar-text); /* Color por defecto */
     transition: stroke 0.2s ease;
-    flex-shrink: 0; /* Evita que se encoja */
+    flex-shrink: 0; 
 }
-/* Al pasar el mouse sobre el enlace 'a' */
 .sidebar-menu li a:hover .nav-icon {
-    stroke: var(--sidebar-text-hover); /* Color al hacer hover */
+    stroke: var(--sidebar-text-hover);
 }
-/* Enlace activo */
 .sidebar-menu li.active a .nav-icon {
     stroke: #ffffff; /* Color en estado activo */
 }
-.sidebar-footer {
-    text-align: center;
-    font-size: 0.8rem;
-    padding-top: 20px;
-    border-top: 1px solid #3a3a5a;
-}
 
-/* --- 5. Header del Contenido y Toggle de Tema --- */
+/* --- 5. HEADER PRINCIPAL (CONTENIDO) --- */
 .main-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+
+    /* Lógica del Header Fijo (Sticky) */
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background-color: var(--bg-color); 
+    padding-top: 30px; /* Espacio superior para que el contenido no salte */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
+
+/* Clase que añade JS al hacer scroll */
+.main-header.header-scrolled {
+    background-color: rgba(var(--bg-color-rgb), 0.85); /* 85% opacidad */
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px); /* Soporte Safari */
+    box-shadow: 0 4px 10px var(--shadow-color);
+}
+body.dark-mode .main-header.header-scrolled {
+    background-color: rgba(var(--bg-color-rgb), 0.85);
+}
+
 .main-header h1 {
     color: var(--heading-color);
     margin: 0;
-    font-size: 1.8rem; /* Tamaño ajustado para dar espacio */
+    font-size: 1.8rem;
 }
-/* Estilos del toggle de tema */
+
+/* Toggle de Tema */
 .theme-switcher { position: relative; display: inline-block; width: 50px; height: 28px; flex-shrink: 0; }
 .theme-switcher input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; border-radius: 28px; transition: 0.4s; }
@@ -174,14 +192,14 @@ body {
 input:checked + .slider { background-color: var(--accent-blue); }
 input:checked + .slider:before { transform: translateX(22px); }
 
-/* Botón de Hamburguesa */
+/* Botón de Hamburguesa (Móvil) */
 .hamburger-btn {
     display: none; /* Oculto en desktop */
     background: none;
     border: none;
     cursor: pointer;
     padding: 10px;
-    z-index: 1001; /* Encima de todo menos del sidebar */
+    z-index: 1001;
     flex-shrink: 0;
 }
 .hamburger-btn span {
@@ -205,7 +223,7 @@ body.dark-mode .hamburger-btn span {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999; /* Debajo del sidebar, encima del contenido */
+    z-index: 999; /* Debajo del sidebar */
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -215,20 +233,41 @@ body.sidebar-open .menu-overlay {
 }
 
 
-/* --- 6. Layout de Grid para el Dashboard --- */
-/* REQ 19: Grid de 2 columnas (1fr 1fr) */
-.dashboard-grid {
+/* --- 6. LAYOUT DEL DASHBOARD (KPIs, Grid 50/50) --- */
+.dash-section {
+    margin-bottom: 25px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+}
+.dash-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.kpi-section {
+    /* Fondo degradado para la sección de KPIs */
+    background: linear-gradient(135deg, var(--card-bg-color) 0%, var(--bg-color) 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin: -10px -10px 25px -10px; /* Se ajusta al padding del card padre */
+}
+
+/* Grid para poner Tabla y Gráfico uno al lado del otro */
+.dash-grid-50-50 {
     display: grid;
-    /* Dos columnas de igual tamaño */
-    grid-template-columns: repeat(2, 1fr); 
+    grid-template-columns: 1fr 1fr; /* Dos columnas 50/50 */
     gap: 25px;
 }
-/* REQ 19: KPIs ocupan 2 columnas */
-.grid-span-2 { grid-column: span 2; } 
-/* REQ 19: Tabla y Gráfico ocupan 1 columna cada uno */
-.grid-span-1 { grid-column: span 1; }
+.dash-grid-50-50 > .dash-section {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+    /* Soluciona overflow en celdas de grid */
+    min-width: 0;
+}
 
-/* --- 7. Estilos de Tarjetas --- */
+
+/* --- 7. ESTILOS DE TARJETAS (CARDS) Y KPIs --- */
 .card {
     background-color: var(--card-bg-color);
     border-radius: 16px;
@@ -242,13 +281,10 @@ body.sidebar-open .menu-overlay {
     margin-top: 0;
     margin-bottom: 1rem;
 }
-.kpi-card {
-    background: linear-gradient(135deg, var(--card-bg-color) 0%, var(--bg-color) 100%);
-}
-/* REQ 3 (v10.0): 4 KPIs, ajustado a 4 columnas */
+
 .kpi-container { 
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 KPIs */
+    grid-template-columns: repeat(4, 1fr); /* 4 KPIs en desktop */
     text-align: center; 
     gap: 15px; 
 }
@@ -257,76 +293,153 @@ body.sidebar-open .menu-overlay {
 .kpi-green { color: var(--accent-green); }
 .kpi-red { color: var(--accent-red); }
 .kpi-blue { color: var(--accent-blue); }
-.kpi-yellow { color: var(--accent-yellow); } /* REQ 3 (v10.0): KPI Saldo */
+.kpi-yellow { color: var(--accent-yellow); } 
 
-/* --- 8. Estilos de Tabla --- */
-/* ¡¡CAMBIO v29.0!!: Se añade .table-wrapper */
+/* --- 8. ESTILOS DE TABLAS --- */
 .table-wrapper {
-    position: relative;
+    position: relative; /* Necesario para el indicador de scroll móvil */
 }
 
 .table-container { 
     overflow-x: auto; 
-    /* REQ 19: Para asegurar que la tabla no colapse */
-    max-height: 400px; /* Altura máxima para la tabla del dash */
+    max-height: 400px; /* Altura máxima para la tabla del dash (se resetea) */
     overflow-y: auto;
-    /* Habilitar scroll táctil suave en iOS */
-    -webkit-overflow-scrolling: touch; 
+    -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
 }
+/* Resetea la altura máxima para tablas fuera del dashboard */
 .card > .table-wrapper > .table-container {
-    max-height: none; /* Quitamos la altura máxima para tablas en Residentes/Gastos */
+    max-height: none; 
 }
-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-th, td { padding: 14px 10px; text-align: left; border-bottom: 1px solid var(--border-color); transition: border-color 0.3s ease; }
-th { font-weight: 600; color: var(--subtle-text-color); font-size: 0.9rem; text-transform: uppercase; }
-tbody tr:hover { background-color: var(--bg-color); }
-.status { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: inline-block; }
+.dash-section > .table-wrapper > .table-container {
+     max-height: none;
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 20px; 
+}
+th, td { 
+    padding: 14px 10px; 
+    text-align: left; 
+    border-bottom: 1px solid var(--border-color); 
+    transition: border-color 0.3s ease; 
+}
+th { 
+    font-weight: 600; 
+    color: var(--subtle-text-color); 
+    font-size: 0.9rem; 
+    text-transform: uppercase; 
+}
+tbody tr:hover { 
+    background-color: var(--bg-color); 
+}
+/* Píldoras de Estado */
+.status { 
+    padding: 6px 12px; 
+    border-radius: 20px; 
+    font-size: 0.85rem; 
+    font-weight: 600; 
+    display: inline-block; 
+}
 .status-pagado { background-color: var(--status-bg-green); color: var(--accent-green); }
 .status-pendiente { background-color: var(--status-bg-red); color: var(--accent-red); }
 .status-atrasado { background-color: var(--status-bg-yellow); color: var(--accent-yellow); }
 
-/* --- 9. Contenedor del Gráfico --- */
+/* --- 9. CONTENEDOR DEL GRÁFICO (Chart.js) --- */
 .chart-container { 
     position: relative; 
-    /* REQ-RESPONSIVE (v21.1): Cambiado de 'height' a 'max-height'
-       Esto permite que el contenedor sea flexible (requerido por 
-       maintainAspectRatio: true) pero limita su altura máxima.
-    */
     max-height: 400px; 
     width: 100%; 
 }
-
-/* NUEVO: Centra el canvas dentro de su contenedor */
 .chart-container canvas {
     margin: 0 auto;
 }
 
-/* --- 10. Estilos Adicionales para Páginas y Filtros --- */
+/* --- 10. ESTILOS DE UI (Filtros, Botones, Totales) --- */
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap; /* Permite que los filtros pasen abajo en móvil */
-    gap: 15px; /* Espacio entre título y filtros */
+    flex-wrap: wrap; /* Para responsiveness móvil */
+    gap: 15px; 
     margin-bottom: 20px;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 15px;
 }
 .card-header h2 {
     margin: 0;
-    flex-grow: 1; /* Título ocupa espacio disponible */
+    flex-grow: 1; 
 }
 
-/* REQ 16: Contenedor de filtros */
+/* Botón de Exportar a Excel */
+.btn-export {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent-green);
+    background-color: var(--status-bg-green);
+    border: 1px solid var(--status-bg-green);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+.btn-export svg {
+    width: 18px;
+    height: 18px;
+    stroke: var(--accent-green);
+    transition: all 0.2s ease;
+}
+.btn-export:hover {
+    background-color: var(--accent-green);
+    border-color: var(--accent-green);
+    color: #ffffff;
+}
+.btn-export:hover svg {
+    stroke: #ffffff;
+}
+/* Modos oscuros del botón de exportar */
+body.dark-mode .btn-export {
+    color: var(--accent-green);
+    background-color: var(--status-bg-green);
+    border: 1px solid var(--status-bg-green);
+}
+body.dark-mode .btn-export svg {
+    stroke: var(--accent-green);
+}
+body.dark-mode .btn-export:hover {
+    background-color: var(--accent-green);
+    border-color: var(--accent-green);
+    color: #ffffff;
+}
+body.dark-mode .btn-export:hover svg {
+    stroke: #ffffff;
+}
+
+/* Contenedor de Filtros */
 .filters-container {
     display: flex;
     gap: 10px;
     align-items: center;
-    flex-wrap: wrap; /* NUEVO: Permite que los filtros se ajusten */
-    justify-content: flex-end; /* Alinea los filtros a la derecha */
+    flex-wrap: wrap; 
+    justify-content: flex-end; 
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+    width: 100%;
+}
+.dash-section > .filters-container {
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+    width: 100%;
 }
 
-/* NUEVO: Inputs de texto para búsqueda (Req 2a) */
+/* Inputs de Filtro (Texto) */
 .filter-input {
     font-family: system-ui, -apple-system, sans-serif;
     font-size: 0.9rem;
@@ -337,7 +450,7 @@ tbody tr:hover { background-color: var(--bg-color); }
     border-radius: 8px;
     padding: 8px 12px;
     transition: all 0.2s ease;
-    min-width: 150px; /* Ancho mínimo */
+    min-width: 150px; 
 }
 .filter-input::placeholder {
     color: var(--subtle-text-color);
@@ -348,7 +461,7 @@ tbody tr:hover { background-color: var(--bg-color); }
     outline: none;
 }
 
-/* REQ 16: Estilos para los <select> */
+/* Inputs de Filtro (Select) */
 .filter-select {
     font-family: system-ui, -apple-system, sans-serif;
     font-size: 0.9rem;
@@ -359,7 +472,7 @@ tbody tr:hover { background-color: var(--bg-color); }
     border-radius: 8px;
     padding: 8px 12px;
     cursor: pointer;
-    appearance: none; /* Quitamos flecha nativa */
+    appearance: none; 
     -webkit-appearance: none;
     -moz-appearance: none;
     /* Flecha SVG personalizada */
@@ -367,47 +480,38 @@ tbody tr:hover { background-color: var(--bg-color); }
     background-repeat: no-repeat;
     background-position: right 8px center;
     background-size: 16px;
-    padding-right: 30px; /* Espacio para la flecha */
+    padding-right: 30px; 
     transition: all 0.2s ease;
 }
 .filter-select:hover {
     border-color: var(--accent-blue);
 }
 body.dark-mode .filter-select {
+    /* Flecha SVG para modo oscuro */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a0a0b5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 }
 
-/* REQ 18: Estilos para el menú desplegable <option> */
-/* NOTA: Estos estilos solo funcionan bien en Firefox. */
+/* Estilos de <option> (Solo Firefox) */
 .filter-select option {
     background-color: var(--card-bg-color);
     color: var(--text-color);
     font-weight: 500;
-    padding: 8px; /* Puede no funcionar */
+    padding: 8px;
 }
-/* Al pasar el mouse sobre una opción */
 .filter-select option:hover {
-    background-color: var(--accent-blue) !important; /* Importante para Firefox */
+    background-color: var(--accent-blue) !important;
     color: #ffffff !important;
 }
-/* Opción seleccionada (en Firefox) */
 .filter-select option:checked {
     background-color: var(--accent-blue);
     color: #ffffff;
 }
 
-/* NUEVO: Checkbox para filtros (Req 1b) - AJUSTADO */
+/* Inputs de Filtro (Checkbox) */
 .filter-checkbox {
     display: flex;
     align-items: center;
     gap: 8px;
-    /* REQ 1 y 2: Se eliminó padding, background y border 
-      para alinear visualmente con los .filter-select 
-    */
-}
-/* Se elimina el fondo extra en modo oscuro para consistencia */
-body.dark-mode .filter-checkbox {
-    /* background-color: var(--filter-bg); */
 }
 .filter-checkbox label {
     font-size: 0.9rem;
@@ -425,9 +529,8 @@ body.dark-mode .filter-checkbox label {
     accent-color: var(--accent-blue);
 }
 
-/* REQ 16: Botón de Reset (Icono X) */
+/* Botón de Resetear Filtros (X) */
 .filter-reset-btn {
-    /* REQ: Cambiado a un color rojo leve */
     background-color: var(--status-bg-red);
     border: 1px solid var(--status-bg-red);
     color: var(--accent-red);
@@ -440,10 +543,9 @@ body.dark-mode .filter-checkbox label {
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    flex-shrink: 0; /* Evita que se encoja */
+    flex-shrink: 0; 
 }
 .filter-reset-btn:hover {
-    /* REQ: Invertir color en hover */
     background-color: var(--accent-red);
     border-color: var(--accent-red);
     color: #ffffff;
@@ -454,7 +556,7 @@ body.dark-mode .filter-checkbox label {
 }
 
 
-/* Botones (Comprobante) */
+/* Botones Genéricos (ej. Ver Comprobante) */
 .btn {
     padding: 10px 18px;
     font-size: 0.9rem;
@@ -473,7 +575,7 @@ body.dark-mode .btn-secondary:hover { background-color: #4a4a6a; }
 .btn-sm { padding: 6px 10px; font-size: 0.8rem; }
 td:last-child { text-align: left; }
 
-/* REQ 7 (v14.0): Estilos para botón deshabilitado */
+/* Botón Deshabilitado */
 .btn:disabled {
     background-color: var(--filter-bg);
     color: var(--subtle-text-color);
@@ -486,39 +588,33 @@ body.dark-mode .btn:disabled {
 }
 
 
-/* --- 10.5: Estilos para la Barra de Totales (NUEVO) --- */
+/* Barra de Totales (para Residentes y Gastos) */
 .totals-bar {
     display: flex;
-    justify-content: flex-end; /* Alineado a la derecha */
+    justify-content: flex-end; 
     gap: 20px;
-    padding: 15px 5px; /* Espacio vertical y un poco de padding horizontal */
+    padding: 15px 5px;
     margin-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
 }
-
 .total-item {
     font-size: 1.1rem;
     font-weight: 500;
     color: var(--subtle-text-color);
 }
-
 .total-item strong {
     font-weight: 700;
     color: var(--heading-color);
 }
-
-/* Colores específicos para los totales */
 .total-ingresos strong {
     color: var(--accent-green);
 }
-
 .total-gastos strong {
     color: var(--accent-red);
 }
 
 
 /* --- 11. ESTILOS DEL MODAL (POPUP) --- */
-/* (Soporte para PDF/Imagen - v28.0) */
 #modal-overlay {
     position: fixed;
     top: 0;
@@ -548,7 +644,7 @@ body.dark-mode .btn:disabled {
     position: relative;
     width: 90%;
     height: 90%;
-    max-width: 1200px; /* Ancho máximo aumentado */
+    max-width: 1200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -579,21 +675,17 @@ body.dark-mode .btn:disabled {
     color: var(--heading-color);
 }
 
-/* Clase para el <img> o <iframe> dinámico */
+/* Visor de PDF o Imagen */
 .modal-file-viewer {
     width: 100%;
     height: 100%;
-    max-height: calc(100% - 20px); /* Espacio para padding */
+    max-height: calc(100% - 20px); 
     display: none; /* Oculto hasta que cargue */
-    
-    /* Para <img> */
-    object-fit: contain; 
-    
-    /* Para <iframe> */
-    border: none;
+    object-fit: contain; /* Para <img> */
+    border: none; /* Para <iframe> */
 }
 
-/* Estilo para el spinner de carga */
+/* Spinner de carga del Modal */
 .modal-spinner {
     width: 50px;
     height: 50px;
@@ -607,7 +699,7 @@ body.dark-mode .btn:disabled {
     margin-top: -25px;
     margin-left: -25px;
     z-index: 2001;
-    display: block; /* Visible por defecto */
+    display: block; 
 }
 body.dark-mode .modal-spinner {
     border-color: var(--border-color);
@@ -619,34 +711,51 @@ body.dark-mode .modal-spinner {
 }
 
 
-/* --- 12. Adaptabilidad (Responsive) --- */
+/* --- 12. ADAPTABILIDAD (RESPONSIVE) --- */
 
-/* REQ-RESPONSIVE: Ajustes para Tablets */
+/* --- Tablets (Hasta 1024px) --- */
 @media (max-width: 1024px) {
-    /* REQ 19: Hacemos que la cuadrícula 50/50 se rompa a 1 columna */
-    .grid-span-2, .grid-span-1 {
-        grid-column: span 2;
-    }
     
     .kpi-container {
-        /* En tablet, 2x2 KPIs */
+        /* KPIs se apilan 2x2 */
         grid-template-columns: repeat(2, 1fr);
-        /* REQ-RESPONSIVE: Aumentamos el espacio en tablet */
         gap: 20px;
+    }
+
+    /* Grid 50/50 del dashboard se rompe a 1 columna */
+    .dash-grid-50-50 {
+        grid-template-columns: 1fr; 
+        gap: 0; 
+    }
+
+    /* Las secciones vuelven a tener su separación vertical */
+    .dash-grid-50-50 > .dash-section {
+        margin-bottom: 25px;
+        padding-bottom: 25px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .dash-grid-50-50 > .dash-section:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
     }
 }
 
-/* REQ-RESPONSIVE: Ajustes para Móviles */
+/* --- Móviles (Hasta 768px) --- */
 @media (max-width: 768px) {
-    body { flex-direction: column; }
+    /* El body se vuelve vertical y permite scroll */
+    body { 
+        flex-direction: column; 
+    }
+
+    /* Sidebar se oculta fuera de la pantalla */
     .sidebar {
-        width: 250px; /* Ancho original */
-        height: 100vh; /* Altura completa */
-        position: fixed; /* Fijo */
+        width: 250px;
+        height: 100vh;
+        position: fixed;
         z-index: 1000;
-        left: -250px; /* Oculto fuera de la pantalla */
+        left: -250px; /* Oculto */
         transition: left 0.3s ease-in-out;
-        /* Reseteamos estilos móviles anteriores */
         flex-direction: column;
         justify-content: flex-start;
         align-items: stretch;
@@ -658,33 +767,39 @@ body.dark-mode .modal-spinner {
         left: 0;
     }
 
-    .sidebar-header h3 { font-size: 1.5rem; } /* Tamaño original */
+    .sidebar-header h3 { font-size: 1.5rem; }
     .sidebar-menu { 
-        display: flex; 
-        flex-direction: column; /* Menú vertical */
-        flex-grow: 1; /* Ocupa espacio */
-        gap: 0; /* Sin espacio extra */
+        flex-direction: column;
+        flex-grow: 1;
+        gap: 0;
     }
-    .sidebar-menu span:last-child { 
-        display: inline; /* Mostramos el texto */
-    }
-    .sidebar-menu li a { padding: 14px 10px; } /* Padding original */
-    .sidebar-footer { 
-        display: block; /* Mostramos el footer */
-    }
+    .sidebar-menu li a { padding: 14px 10px; }
     
     .main-content {
-        margin-left: 0;
-        padding: 20px;
-        height: auto; /* Altura automática en móvil */
+        margin-left: 0; /* Resetea el margen del sidebar */
+        padding: 0 20px 20px 20px;
+        height: auto; /* Altura automática para permitir scroll */
+        width: 100%;
+        
+        /* ¡¡LA CORRECCIÓN CLAVE!! */
+        /* Resetea el overflow para que el 'body' 
+           controle el scroll, permitiendo al header ser 'sticky' */
+        overflow-y: visible; 
     }
+
     .main-header {
-        flex-direction: row; /* Volvemos a fila */
-        align-items: center; /* Centramos verticalmente */
-        justify-content: space-between; /* Espacio entre elementos */
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         gap: 15px;
-        /* REQ 2 (v10.0): Evitar que el título se solape */
-        position: relative;
+        margin: 0; 
+        padding: 20px; /* Padding móvil */
+        margin-bottom: 30px; 
+        width: 100%;
+    }
+
+    body.dark-mode .main-header {
+         background-color: var(--bg-color);
     }
 
     /* Mostramos el botón de hamburguesa */
@@ -692,151 +807,255 @@ body.dark-mode .modal-spinner {
         display: block;
     }
     
-    /* Hacemos el título flexible */
+    /* Centramos el título y dejamos espacio para los botones */
     .main-header h1 {
         flex-grow: 1;
         text-align: center;
         font-size: 1.2rem;
         margin: 0;
-        /* REQ 2 (v10.0): Aseguramos que el título esté centrado */
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        width: calc(100% - 120px); /* Ancho total menos los botones */
+        width: calc(100% - 120px); 
     }
 
-    /* REQ 19: Grid se vuelve 1 columna */
-    .dashboard-grid {
-        grid-template-columns: 1fr;
+    /* Centrar títulos de secciones del Dashboard */
+    .kpi-section h2 {
+        text-align: center;
     }
-    .grid-span-2, .grid-span-1 {
-        grid-column: span 1;
+    .dash-grid-50-50 > .dash-section h2 {
+        text-align: center;
     }
+
     .kpi-container {
-        /* REQ-RESPONSIVE: En móvil, 1 columna de KPIs */
+        /* KPIs se apilan 1x4 */
         grid-template-columns: 1fr;
-        /* REQ-RESPONSIVE: Mantenemos el espacio aumentado */
         gap: 20px;
     }
 
-    /* REQ-RESPONSIVE: Ajustamos el tamaño del texto de KPIs en móvil */
     .kpi h3 {
-        font-size: 0.85rem; /* Un poco más pequeño que 0.9rem */
+        font-size: 0.85rem;
     }
     .kpi p {
-        font-size: 1.5rem; /* Más pequeño que 1.75rem */
+        font-size: 1.5rem;
     }
 
-    /* REQ-TOTALES: Centrar la barra de totales en móvil */
+    /* Centrar la barra de totales */
     .totals-bar {
         justify-content: center;
         padding: 10px 0;
         text-align: center;
     }
 
+    /* Centrar el header de las cards */
     .card-header {
         flex-direction: column;
-        align-items: stretch; /* Ocupan todo el ancho */
+        align-items: center; 
         gap: 10px;
     }
+    
+    .btn-export {
+        width: 100%;
+        justify-content: center; 
+    }
+    
     .card-header h2 {
         text-align: center;
     }
     
-    /* REQ-FILTROS: Apilar los filtros verticalmente en móvil */
+    /* Layout de filtros en móvil */
     .filters-container {
-        /* Volvemos a la lógica de fila que se envuelve */
         flex-direction: row; 
         flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content: flex-start; 
         gap: 10px;
     }
     
-    /* Reglas de orden y tamaño para filtros en móvil */
+    /* 1. Botón de Reset (X) */
     .filter-reset-btn {
-        order: 2;
+        order: 2; 
         flex-shrink: 0;
     }
 
-    /* El primer filtro (Año, Nombre, Tipo) ocupa el espacio restante */
-    [id*="-year-select"],
-    [id*="-name-filter"],
-    [id*="-tipo-select"] {
-        order: 1;
-        flex-grow: 1; /* Ocupa el espacio disponible */
+    /* 2. El primer filtro (ocupa el espacio restante) */
+    .filters-container > *:first-child:not(.filter-reset-btn) {
+        order: 1; 
+        flex-grow: 1; 
+        width: calc(100% - 48px); /* Ancho total - Botón X - Gap */
     }
     
-    /* El checkbox "Solo Deudores" se comporta igual que el primer filtro */
-    #dashboard-filters-container .filter-checkbox {
-        order: 1;
-        flex-grow: 1;
-        justify-content: flex-start; /* Alineado a la izquierda */
+    /* 3. El resto de filtros (van a la siguiente fila) */
+    .filters-container > *:not(:first-child):not(.filter-reset-btn) {
+        order: 3; 
+        width: 100%; 
     }
 
-    /* El resto de filtros van a la siguiente fila, ocupando el 100% */
-    [id*="-month-select"],
-    [id*="-apt-filter"] {
+    /* --- Layouts específicos de filtros en móvil --- */
+    
+    /* Dashboard: Checkbox (L1), Año/Mes (L2) */
+    #dashboard-filters-container > *:not(:first-child):not(.filter-reset-btn) {
+        width: calc(50% - 5px); /* Año y Mes al 50% */
+    }
+    .dash-section > #dashboard-filters-container > .filter-checkbox {
+        order: 1;
+        width: calc(100% - 48px);
+        justify-content: flex-start;
+    }
+    .dash-section > #dashboard-filters-container > [id*="-year-select"] { order: 3; width: calc(50% - 5px); }
+    .dash-section > #dashboard-filters-container > [id*="-month-select"] { order: 4; width: calc(50% - 5px); }
+    
+    /* Residentes: Año/Mes/Reset (L1), Nombre (L2), Apt (L3) */
+    #residentes-filters-container > [id*="-year-select"] {
+        order: 1;
+        width: calc(50% - 29px);
+    }
+    #residentes-filters-container > [id*="-month-select"] {
+        order: 2;
+        width: calc(50% - 29px);
+    }
+    #residentes-filters-container .filter-reset-btn {
         order: 3;
+        width: 38px;
+    }
+    #residentes-filters-container > input[id*="-name-filter"] {
+        order: 4;
         width: 100%;
     }
-
-
-    /* --- INICIO CAMBIOS v29.0: Indicador de Scroll --- */
-
-    /* Animación de "pulso" para la flecha.
-      La añadimos aquí para que solo se anime en móviles.
-    */
-    @keyframes pulse-horizontal {
-        0% {
-            transform: translateY(-50%) scale(1);
-            opacity: 0.7;
-        }
-        50% {
-            transform: translateY(-50%) scale(1.1) translateX(3px);
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(-50%) scale(1);
-            opacity: 0.7;
-        }
+    #residentes-filters-container > input[id*="-apt-filter"] {
+        order: 5;
+        width: 100%;
+    }
+    
+    /* Gastos: Tipo (L1), Año/Mes (L2) */
+    #gastos-filters-container > [id*="-tipo-select"] {
+        order: 1;
+        width: calc(100% - 48px);
+    }
+    #gastos-filters-container > [id*="-year-select"] { order: 3; width: calc(50% - 5px); }
+    #gastos-filters-container > [id*="-month-select"] { order: 4; width: calc(50% - 5px); }
+    
+    /* --- Indicador de Scroll en Tablas Móviles --- */
+    .table-wrapper {
+        position: relative;
+        padding-top: 50px; /* Espacio para el indicador */
+    }
+    
+    .table-wrapper .table-container table {
+        margin-top: 0;
     }
 
+    .table-wrapper .table-container {
+        padding-right: 0;
+    }
+
+    /* Animación de "empuje" */
+    @keyframes nudge-left {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(-5px); }
+    }
+
+    /* Indicador "Arrastrar" */
     .table-wrapper::after {
-        content: '›'; /* Flecha simple */
-        font-family: monospace;
-        font-size: 1.8rem; /* Tamaño de la flecha interna */
-        font-weight: bold;
-        color: white; /* Color de la flecha */
-        
+        content: '‹‹ Arrastrar para ver más';
+        font-family: system-ui, -apple-system, sans-serif;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--heading-color);
         position: absolute;
-        top: 50%;
-        right: 8px; /* Separación del borde */
-        transform: translateY(-50%);
-        
-        background: var(--accent-blue); /* Círculo azul */
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        
+        top: 10px; 
+        right: 10px; 
+        background: var(--card-bg-color);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 10px var(--shadow-color);
+        height: 30px;
+        border-radius: 15px; /* Píldora */
         display: flex;
         align-items: center;
         justify-content: center;
-        line-height: 0; /* Ajuste para centrar la flecha */
-
-        pointer-events: none; /* Permite hacer scroll "a través" de ella */
-        
-        /* Aplicar la animación */
-        animation: pulse-horizontal 1.5s infinite ease-in-out;
+        padding: 0 12px;
+        pointer-events: none;
+        z-index: 2;
+        animation: nudge-left 2.5s infinite ease-in-out; 
     }
-    
-    /* Añadimos un pequeño padding al contenedor de la tabla
-      para que el contenido no quede *debajo* de la flecha flotante.
-    */
-    .table-wrapper .table-container {
-         padding-right: 20px;
-    }
-    
-    /* --- FIN CAMBIOS v29.0 --- */
 
+    body.dark-mode .table-wrapper::after {
+        color: var(--heading-color);
+        background: var(--card-bg-color);
+        border: 1px solid var(--border-color);
+    }
+
+    .table-wrapper::before {
+        content: none; /* Deshabilita indicador viejo si existiera */
+    }
+}
+
+/* --- 13. ESTILOS DE SCROLLBAR --- */
+.main-content::-webkit-scrollbar {
+    width: 8px;
+}
+.main-content::-webkit-scrollbar-track {
+    background: var(--filter-bg);
+    border-radius: 10px;
+}
+.main-content::-webkit-scrollbar-thumb {
+    background-color: var(--accent-blue);
+    border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar {
+    height: 8px; /* Scroll horizontal */
+    width: 8px;  /* Scroll vertical */
+}
+.table-container::-webkit-scrollbar-track {
+    background: var(--filter-bg);
+    border-radius: 10px;
+}
+.table-container::-webkit-scrollbar-thumb {
+    background-color: var(--accent-blue);
+    border-radius: 10px;
+}
+
+/* Scrollbar en Modo Oscuro */
+body.dark-mode .main-content::-webkit-scrollbar-track,
+body.dark-mode .table-container::-webkit-scrollbar-track {
+    background: var(--filter-bg);
+}
+body.dark-mode .main-content::-webkit-scrollbar-thumb,
+body.dark-mode .table-container::-webkit-scrollbar-thumb {
+    background-color: var(--accent-blue);
+}
+
+/* --- 14. ESTADOS DE CARGA Y ERROR (Movido de JS a CSS) --- */
+.loading-shimmer {
+    background: #f6f7f8;
+    background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+    background-repeat: no-repeat;
+    background-size: 800px 104px; 
+    display: inline-block;
+    position: relative; 
+    animation-duration: 1s;
+    animation-fill-mode: forwards; 
+    animation-iteration-count: infinite;
+    animation-name: shimmer;
+    animation-timing-function: linear;
+    border-radius: 4px;
+}
+body.dark-mode .loading-shimmer {
+    background: #2a2a45;
+    background-image: linear-gradient(to right, #2a2a45 0%, #3a3a5a 20%, #2a2a45 40%, #2a2a45 100%);
+}
+@keyframes shimmer {
+    0% { background-position: -468px 0; }
+    100% { background-position: 468px 0; } 
+}
+.loading-text { 
+    color: var(--subtle-text-color); 
+    text-align: center; 
+    padding: 20px; 
+}
+.error-text { 
+    color: var(--accent-red); 
+    text-align: center; 
+    padding: 20px; 
+    font-weight: 600; 
 }
