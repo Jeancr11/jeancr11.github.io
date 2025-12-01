@@ -331,7 +331,7 @@ function renderDashboardView() {
     // Por defecto, muestra el mes y año actual.
     const today = new Date();
     const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() - 1; 
+    const currentMonth = today.getMonth(); 
 
     // Configura los listeners para los filtros de esta vista.
     setupFilterListeners('dashboard', currentYear, currentMonth);
@@ -532,7 +532,7 @@ function setupFilterListeners(pagePrefix, defaultYear, defaultMonth) {
             
             const today = new Date();
             const kpiYear = today.getFullYear();
-            const kpiMonth = today.getMonth() - 1;
+            const kpiMonth = today.getMonth();
             
             fetchAndRenderDashboardData(selectedYear, selectedMonth, showDebtors, kpiYear, kpiMonth);
             
@@ -1282,4 +1282,5 @@ function setNoData(elementId, message, colspan = 1) {
         }
     }
 }
+
 
