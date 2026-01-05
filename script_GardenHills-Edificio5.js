@@ -471,7 +471,7 @@ function createFiltersHTML(pagePrefix) {
     const currentYear = new Date().getFullYear();
     
     // 2. Definimos desde qué año empezamos a usar el sistema (Fijo: 2024)
-    const startYear = 2024; 
+    const startYear = 2025; 
     
     // 3. Definimos hasta qué año mostrar (Año actual + 1 para incluir 2026 si estamos en 2025)
     const endYear = currentYear + 1; 
@@ -1318,3 +1318,4 @@ function setNoData(elementId, message, colspan = 1) {
         }
     }
 }
+
