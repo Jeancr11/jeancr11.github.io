@@ -331,7 +331,7 @@ function renderDashboardView() {
     // Por defecto, muestra el mes y año actual.
     const today = new Date();
     const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth(); 
+    const currentMonth = today.getMonth() + 1;
 
     // Configura los listeners para los filtros de esta vista.
     setupFilterListeners('dashboard', currentYear, currentMonth);
@@ -1282,5 +1282,6 @@ function setNoData(elementId, message, colspan = 1) {
         }
     }
 }
+
 
 
