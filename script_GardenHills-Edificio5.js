@@ -447,11 +447,16 @@ function renderGastosView() {
  */
 function createFiltersHTML(pagePrefix) {
     // Opciones de Año (se podrían generar dinámicamente)
-    let yearOptions = `
-        <option value="all">Todos los Años</option>
-        <option value="2025">2025</option>
-        <option value="2024">2024</option>
-    `; 
+    const currentYear = new Date().getFullYear(); // Obtiene 2025, 2026, etc.
+    const startYear = 2024; // Año fijo de inicio
+    const endYear = currentYear + 1; // Año actual + 1 (ej. 2026)
+
+    let yearOptions = '<option value="all">Todos los Años</option>';
+
+    // Bucle que crea las opciones <option> desde el futuro hacia el pasado
+    for (let year = endYear; year >= startYear; year--) {
+        yearOptions += `<option value="${year}">${year}</option>`;
+    }
 
     // Opciones de Mes
     const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
@@ -1282,6 +1287,7 @@ function setNoData(elementId, message, colspan = 1) {
         }
     }
 }
+
 
 
 
