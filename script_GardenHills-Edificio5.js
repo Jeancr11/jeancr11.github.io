@@ -144,41 +144,54 @@ function setupModalListeners() {
         }
     };
 
-    // Función interna para mostrar el modal. Detecta si la URL es PDF o imagen.
+    // --- SOLUCIÓN NUEVA ---
     const showModal = (imageUrl) => {
         clearModalContent(); 
-        modalLoader.style.display = 'block'; // Muestra el spinner
+        modalLoader.style.display = 'block'; 
         
         let fileViewer;
 
-        if (imageUrl.toLowerCase().endsWith('.pdf')) {
-            // Es PDF: crear un <iframe>
+        // CORRECCIÓN 1: Limpiamos la URL para detectar .pdf aunque tenga tokens
+        const cleanUrl = imageUrl.split('?')[0].toLowerCase();
+
+        if (cleanUrl.endsWith('.pdf')) {
             fileViewer = document.createElement('iframe');
             fileViewer.className = 'modal-file-viewer';
             fileViewer.src = imageUrl;
             
+            // CORRECCIÓN 2: Temporizador de seguridad (1.5 segundos)
+            // Si el PDF carga pero no avisa, lo mostramos a la fuerza.
+            const safetyTimeout = setTimeout(() => {
+                if (modalLoader.style.display !== 'none') {
+                    modalLoader.style.display = 'none';
+                    fileViewer.style.display = 'block';
+                }
+            }, 1500);
+
             fileViewer.onload = () => {
-                modalLoader.style.display = 'none'; // Oculta spinner
+                clearTimeout(safetyTimeout); // Cancelamos el timer si cargó bien
+                modalLoader.style.display = 'none'; 
                 fileViewer.style.display = 'block'; 
             };
             fileViewer.onerror = () => {
+                clearTimeout(safetyTimeout);
                 console.error('Error al cargar el PDF.');
                 hideModal();
             };
 
         } else {
-            // Es Imagen: crear un <img>
+            // Lógica de imagen (se mantiene igual, pero indentada)
             fileViewer = document.createElement('img');
             fileViewer.className = 'modal-file-viewer';
             fileViewer.src = imageUrl;
             fileViewer.alt = 'Comprobante';
 
             fileViewer.onload = () => {
-                modalLoader.style.display = 'none'; // Oculta spinner
+                modalLoader.style.display = 'none'; 
                 fileViewer.style.display = 'block'; 
             };
             fileViewer.onerror = () => {
-                console.error('Error al cargar la imagen del comprobante.');
+                console.error('Error al cargar la imagen.');
                 hideModal();
             };
         }
@@ -328,10 +341,15 @@ function renderDashboardView() {
         </div>
     `;
 
-    // Por defecto, muestra el mes y año actual.
+    // --- SOLUCIÓN PARA MOSTRAR MES ANTERIOR ---
     const today = new Date();
+    
+    // Restamos 1 mes a la fecha de hoy. 
+    // Si estamos en Enero 2026, esto nos lleva a Diciembre 2025 automáticamente.
+    today.setMonth(today.getMonth() - 1); 
+
     const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth(); 
+    const currentMonth = today.getMonth() + 1; 
 
     // Configura los listeners para los filtros de esta vista.
     setupFilterListeners('dashboard', currentYear, currentMonth);
@@ -446,12 +464,25 @@ function renderGastosView() {
  * @returns {string} - El HTML de los filtros.
  */
 function createFiltersHTML(pagePrefix) {
-    // Opciones de Año (se podrían generar dinámicamente)
-    let yearOptions = `
-        <option value="all">Todos los Años</option>
-        <option value="2025">2025</option>
-        <option value="2024">2024</option>
-    `; 
+    // --- INICIO DE LA SOLUCIÓN DINÁMICA ---
+    // ESTO REEMPLAZA A LA LISTA DE AÑOS FIJA QUE TENÍAS ANTES
+    
+    // 1. Obtenemos el año actual del sistema (ej. 2025 o 2026)
+    const currentYear = new Date().getFullYear();
+    
+    // 2. Definimos desde qué año empezamos a usar el sistema (Fijo: 2024)
+    const startYear = 2025; 
+    
+    // 3. Definimos hasta qué año mostrar (Año actual + 1 para incluir 2026 si estamos en 2025)
+    const endYear = currentYear + 1; 
+
+    let yearOptions = '<option value="all">Todos los Años</option>';
+
+    // 4. Creamos las opciones automáticamente con un bucle (de mayor a menor)
+    for (let year = endYear; year >= startYear; year--) {
+        yearOptions += `<option value="${year}">${year}</option>`;
+    }
+    // --- FIN DE LA SOLUCIÓN DINÁMICA ---
 
     // Opciones de Mes
     const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
@@ -480,7 +511,7 @@ function createFiltersHTML(pagePrefix) {
             <input type="text" id="residentes-apt-filter" class="filter-input" placeholder="Buscar por Apt...">
         ` + filters;
     } else if (pagePrefix === 'gastos') {
-        const tiposGasto = ['all', 'Luz', 'Bienes Comunes', 'Mantenimiento', 'Otros'];
+        const tiposGasto = ['all', 'Luz', 'Bienes Comunes', 'Mantenimiento', 'Cargo Mensual - TC', 'Art. Limpieza', 'Reparación', 'Otros'];
         let tipoOptions = '';
         tiposGasto.forEach(tipo => {
             tipoOptions += `<option value="${tipo}">${tipo === 'all' ? 'Todos los Tipos' : tipo}</option>`;
@@ -532,7 +563,7 @@ function setupFilterListeners(pagePrefix, defaultYear, defaultMonth) {
             
             const today = new Date();
             const kpiYear = today.getFullYear();
-            const kpiMonth = today.getMonth();
+            const kpiMonth = today.getMonth() + 1; // Ajuste para consistencia
             
             fetchAndRenderDashboardData(selectedYear, selectedMonth, showDebtors, kpiYear, kpiMonth);
             
@@ -628,8 +659,13 @@ function applyDateFilters(query, year, month) {
         let startDate, endDate;
         if (month !== 'all') {
             // Filtro por mes específico
+            // IMPORTANTE: 'month' aquí debe ser 1-12. 
+            // Si llega 0 (por error), crea "YYYY-00-01" que falla en PostgreSQL.
             startDate = `${year}-${String(month).padStart(2, '0')}-01`;
-            const nextMonthDate = new Date(year, month, 1); // JS Date (month 0-11)
+            
+            // Para calcular el fin de mes, usamos month tal cual (que es 1-based index visual, pero new Date usa 0-based).
+            // Si month es 1 (Enero), new Date(year, 1, 1) crea FEBRERO 1. Esto es correcto para el límite superior.
+            const nextMonthDate = new Date(year, month, 1); 
             endDate = `${nextMonthDate.getFullYear()}-${String(nextMonthDate.getMonth() + 1).padStart(2, '0')}-01`;
         } else {
             // Filtro por año completo
@@ -1282,5 +1318,3 @@ function setNoData(elementId, message, colspan = 1) {
         }
     }
 }
-
-
