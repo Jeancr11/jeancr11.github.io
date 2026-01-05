@@ -458,7 +458,7 @@ function createFiltersHTML(pagePrefix) {
     const currentYear = new Date().getFullYear();
     
     // 2. Definimos desde qué año empezamos a usar el sistema (Fijo: 2024)
-    const startYear = 2025; 
+    const startYear = 2024; 
     
     // 3. Definimos hasta qué año mostrar (Año actual + 1 para incluir 2026 si estamos en 2025)
     const endYear = currentYear + 1; 
@@ -498,7 +498,7 @@ function createFiltersHTML(pagePrefix) {
             <input type="text" id="residentes-apt-filter" class="filter-input" placeholder="Buscar por Apt...">
         ` + filters;
     } else if (pagePrefix === 'gastos') {
-        const tiposGasto = ['all', 'Luz', 'Bienes Comunes', 'Mantenimiento', 'Otros'];
+        const tiposGasto = ['all', 'Luz', 'Bienes Comunes', 'Mantenimiento', 'Cargo Mensual - TC', 'Art. Limpieza', 'Reparación', 'Otros'];
         let tipoOptions = '';
         tiposGasto.forEach(tipo => {
             tipoOptions += `<option value="${tipo}">${tipo === 'all' ? 'Todos los Tipos' : tipo}</option>`;
