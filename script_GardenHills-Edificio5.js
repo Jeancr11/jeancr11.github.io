@@ -328,10 +328,15 @@ function renderDashboardView() {
         </div>
     `;
 
-    // Por defecto, muestra el mes y año actual.
+    // --- SOLUCIÓN PARA MOSTRAR MES ANTERIOR ---
     const today = new Date();
+    
+    // Restamos 1 mes a la fecha de hoy. 
+    // Si estamos en Enero 2026, esto nos lleva a Diciembre 2025 automáticamente.
+    today.setMonth(today.getMonth() - 1); 
+
     const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() + 1;
+    const currentMonth = today.getMonth() + 1; 
 
     // Configura los listeners para los filtros de esta vista.
     setupFilterListeners('dashboard', currentYear, currentMonth);
@@ -446,17 +451,25 @@ function renderGastosView() {
  * @returns {string} - El HTML de los filtros.
  */
 function createFiltersHTML(pagePrefix) {
-    // Opciones de Año (se podrían generar dinámicamente)
-    const currentYear = new Date().getFullYear(); // Obtiene 2025, 2026, etc.
-    const startYear = 2025; // Año fijo de inicio
-    const endYear = currentYear + 1; // Año actual + 1 (ej. 2026)
+    // --- INICIO DE LA SOLUCIÓN DINÁMICA ---
+    // ESTO REEMPLAZA A LA LISTA DE AÑOS FIJA QUE TENÍAS ANTES
+    
+    // 1. Obtenemos el año actual del sistema (ej. 2025 o 2026)
+    const currentYear = new Date().getFullYear();
+    
+    // 2. Definimos desde qué año empezamos a usar el sistema (Fijo: 2024)
+    const startYear = 2025; 
+    
+    // 3. Definimos hasta qué año mostrar (Año actual + 1 para incluir 2026 si estamos en 2025)
+    const endYear = currentYear + 1; 
 
     let yearOptions = '<option value="all">Todos los Años</option>';
 
-    // Bucle que crea las opciones <option> desde el futuro hacia el pasado
+    // 4. Creamos las opciones automáticamente con un bucle (de mayor a menor)
     for (let year = endYear; year >= startYear; year--) {
         yearOptions += `<option value="${year}">${year}</option>`;
     }
+    // --- FIN DE LA SOLUCIÓN DINÁMICA ---
 
     // Opciones de Mes
     const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
@@ -537,7 +550,7 @@ function setupFilterListeners(pagePrefix, defaultYear, defaultMonth) {
             
             const today = new Date();
             const kpiYear = today.getFullYear();
-            const kpiMonth = today.getMonth();
+            const kpiMonth = today.getMonth() + 1; // Ajuste para consistencia
             
             fetchAndRenderDashboardData(selectedYear, selectedMonth, showDebtors, kpiYear, kpiMonth);
             
@@ -633,8 +646,13 @@ function applyDateFilters(query, year, month) {
         let startDate, endDate;
         if (month !== 'all') {
             // Filtro por mes específico
+            // IMPORTANTE: 'month' aquí debe ser 1-12. 
+            // Si llega 0 (por error), crea "YYYY-00-01" que falla en PostgreSQL.
             startDate = `${year}-${String(month).padStart(2, '0')}-01`;
-            const nextMonthDate = new Date(year, month, 1); // JS Date (month 0-11)
+            
+            // Para calcular el fin de mes, usamos month tal cual (que es 1-based index visual, pero new Date usa 0-based).
+            // Si month es 1 (Enero), new Date(year, 1, 1) crea FEBRERO 1. Esto es correcto para el límite superior.
+            const nextMonthDate = new Date(year, month, 1); 
             endDate = `${nextMonthDate.getFullYear()}-${String(nextMonthDate.getMonth() + 1).padStart(2, '0')}-01`;
         } else {
             // Filtro por año completo
@@ -1287,8 +1305,3 @@ function setNoData(elementId, message, colspan = 1) {
         }
     }
 }
-
-
-
-
-
