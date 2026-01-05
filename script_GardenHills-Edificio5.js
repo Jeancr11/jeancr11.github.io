@@ -448,7 +448,7 @@ function renderGastosView() {
 function createFiltersHTML(pagePrefix) {
     // Opciones de Año (se podrían generar dinámicamente)
     const currentYear = new Date().getFullYear(); // Obtiene 2025, 2026, etc.
-    const startYear = 2024; // Año fijo de inicio
+    const startYear = 2025; // Año fijo de inicio
     const endYear = currentYear + 1; // Año actual + 1 (ej. 2026)
 
     let yearOptions = '<option value="all">Todos los Años</option>';
@@ -1287,6 +1287,7 @@ function setNoData(elementId, message, colspan = 1) {
         }
     }
 }
+
 
 
 
