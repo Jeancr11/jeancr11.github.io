@@ -144,41 +144,54 @@ function setupModalListeners() {
         }
     };
 
-    // Función interna para mostrar el modal. Detecta si la URL es PDF o imagen.
+    // --- SOLUCIÓN NUEVA ---
     const showModal = (imageUrl) => {
         clearModalContent(); 
-        modalLoader.style.display = 'block'; // Muestra el spinner
+        modalLoader.style.display = 'block'; 
         
         let fileViewer;
 
-        if (imageUrl.toLowerCase().endsWith('.pdf')) {
-            // Es PDF: crear un <iframe>
+        // CORRECCIÓN 1: Limpiamos la URL para detectar .pdf aunque tenga tokens
+        const cleanUrl = imageUrl.split('?')[0].toLowerCase();
+
+        if (cleanUrl.endsWith('.pdf')) {
             fileViewer = document.createElement('iframe');
             fileViewer.className = 'modal-file-viewer';
             fileViewer.src = imageUrl;
             
+            // CORRECCIÓN 2: Temporizador de seguridad (1.5 segundos)
+            // Si el PDF carga pero no avisa, lo mostramos a la fuerza.
+            const safetyTimeout = setTimeout(() => {
+                if (modalLoader.style.display !== 'none') {
+                    modalLoader.style.display = 'none';
+                    fileViewer.style.display = 'block';
+                }
+            }, 1500);
+
             fileViewer.onload = () => {
-                modalLoader.style.display = 'none'; // Oculta spinner
+                clearTimeout(safetyTimeout); // Cancelamos el timer si cargó bien
+                modalLoader.style.display = 'none'; 
                 fileViewer.style.display = 'block'; 
             };
             fileViewer.onerror = () => {
+                clearTimeout(safetyTimeout);
                 console.error('Error al cargar el PDF.');
                 hideModal();
             };
 
         } else {
-            // Es Imagen: crear un <img>
+            // Lógica de imagen (se mantiene igual, pero indentada)
             fileViewer = document.createElement('img');
             fileViewer.className = 'modal-file-viewer';
             fileViewer.src = imageUrl;
             fileViewer.alt = 'Comprobante';
 
             fileViewer.onload = () => {
-                modalLoader.style.display = 'none'; // Oculta spinner
+                modalLoader.style.display = 'none'; 
                 fileViewer.style.display = 'block'; 
             };
             fileViewer.onerror = () => {
-                console.error('Error al cargar la imagen del comprobante.');
+                console.error('Error al cargar la imagen.');
                 hideModal();
             };
         }
