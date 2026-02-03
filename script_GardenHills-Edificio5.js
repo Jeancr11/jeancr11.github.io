@@ -511,7 +511,7 @@ function createFiltersHTML(pagePrefix) {
             <input type="text" id="residentes-apt-filter" class="filter-input" placeholder="Buscar por Apt...">
         ` + filters;
     } else if (pagePrefix === 'gastos') {
-        const tiposGasto = ['all', 'Luz', 'Bienes Comunes', 'Mantenimiento', 'Cargo Mensual - TC', 'Art. Limpieza', 'Reparación', 'Otros'];
+        const tiposGasto = ['all', 'Luz', 'Bienes Comunes', 'Mantenimiento', 'Cargo Mensual - TC', 'Art. Limpieza', 'Jardinería', 'Reparación', 'Otros'];
         let tipoOptions = '';
         tiposGasto.forEach(tipo => {
             tipoOptions += `<option value="${tipo}">${tipo === 'all' ? 'Todos los Tipos' : tipo}</option>`;
@@ -1318,3 +1318,4 @@ function setNoData(elementId, message, colspan = 1) {
         }
     }
 }
+
