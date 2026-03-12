@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Journal Dashboard</title>
-    <!-- Favicon -->
-    <link rel="icon" href="https://res.cloudinary.com/dlo3r0you/image/upload/v1754687755/logo_oyr4yr.png" type="image/png">   
+    <title>Trading Journal Dashboard Pro</title>
+    
     <!-- Librerías: Tailwind (CSS), SheetJS (Excel), Chart.js (Gráficos) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -13,7 +12,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
     <style>
-        /* Animación suave para la carga de datos */
         .fade-in {
             animation: fadeIn 0.4s ease-in-out;
         }
@@ -21,21 +19,30 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Para truncar texto largo en pantallas pequeñas */
         .truncate-text {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+        .cell-scrollbar::-webkit-scrollbar {
+            width: 3px;
+        }
+        .cell-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .cell-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
         }
     </style>
 </head>
 <body class="bg-gray-900 text-white font-sans min-h-screen p-4 md:p-8">
 
     <!-- Cabecera y Botones de Acción -->
-    <div class="flex flex-col md:flex-row justify-between items-center mb-8 bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
         <div>
-            <h1 class="text-3xl font-bold text-blue-400">📊 Trading Performance</h1>
-            <p class="text-gray-400 text-sm mt-1">Analizador de Historial MT5</p>
+            <h1 class="text-3xl font-bold text-blue-400">📊 Trading Performance Pro</h1>
+            <p class="text-gray-400 text-sm mt-1">Analizador de Historial MT5 y Analítica Avanzada</p>
         </div>
         <div class="mt-4 md:mt-0 flex gap-4">
             <input type="file" id="fileInput" accept=".xlsx, .xls, .csv" class="hidden" />
@@ -52,62 +59,113 @@
     <!-- Contenedor Principal (Oculto hasta que haya datos) -->
     <div id="dashboardContent" class="hidden fade-in flex flex-col lg:flex-row gap-6 items-stretch">
         
-        <!-- BARRA LATERAL (Filtros - Ahora llega hasta abajo) -->
-        <div class="w-full lg:w-1/4 xl:w-1/5 shrink-0 flex flex-col">
-            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg flex-1">
-                <h2 class="text-lg font-semibold text-gray-300 mb-4 border-b border-gray-700 pb-2 flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-                    Filtros
+        <!-- BARRA LATERAL (Únicamente Top Pares - Toma toda la altura) -->
+        <div class="w-full lg:w-56 xl:w-64 shrink-0 flex flex-col">
+            <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg flex-1 flex flex-col min-h-[500px]">
+                <h2 class="text-base font-semibold text-gray-300 mb-3 border-b border-gray-700 pb-2 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                    Top Rendimiento
                 </h2>
-                <div class="flex flex-col gap-4">
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wide">Símbolo</label>
-                        <select id="filterSymbol" onchange="applyFilters()" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wide">Año</label>
-                        <select id="filterYear" onchange="applyFilters()" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wide">Mes</label>
-                        <select id="filterMonth" onchange="applyFilters()" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
-                    </div>
+                <div id="leaderboardContainer" class="mt-1 flex-1 overflow-y-auto cell-scrollbar pr-1 flex flex-col gap-1">
+                    <!-- JS inyectará la lista aquí -->
                 </div>
             </div>
         </div>
 
         <!-- ÁREA PRINCIPAL (Métricas, Gráficos y Calendario) -->
-        <div class="w-full lg:w-3/4 xl:w-4/5 flex flex-col gap-6">
+        <div class="flex-1 min-w-0 flex flex-col gap-6">
 
-            <!-- KPIs (Métricas Principales) -->
+            <!-- NUEVO: Barra de Filtros Horizontal -->
+            <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex flex-col md:flex-row items-center gap-4 justify-between">
+                <div class="flex items-center gap-2 text-gray-300 font-semibold w-full md:w-auto">
+                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                    <span>Filtros Globales</span>
+                </div>
+                
+                <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto flex-1 md:justify-end">
+                    <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
+                        <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Símbolo:</label>
+                        <select id="filterSymbol" onchange="applyFilters()" class="w-full md:w-36 bg-gray-700 text-white text-sm rounded py-1.5 px-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
+                    </div>
+                    <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
+                        <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Año:</label>
+                        <select id="filterYear" onchange="applyFilters()" class="w-full md:w-32 bg-gray-700 text-white text-sm rounded py-1.5 px-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
+                    </div>
+                    <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
+                        <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Mes:</label>
+                        <select id="filterMonth" onchange="applyFilters()" class="w-full md:w-36 bg-gray-700 text-white text-sm rounded py-1.5 px-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
+                    </div>
+                    <button onclick="clearGlobalFilters()" class="bg-gray-700 hover:bg-red-600 hover:text-white text-gray-300 text-xs font-semibold py-1.5 px-3 rounded border border-gray-600 hover:border-red-500 transition-all flex items-center justify-center gap-1 mt-2 md:mt-0">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        Quitar Filtros
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPIs (Métricas Avanzadas en 2 filas) -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
-                    <span class="text-gray-400 text-sm">Grand Total (Neto)</span>
-                    <span id="kpiTotalProfit" class="text-3xl font-bold mt-2">$0.00</span>
-                    <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
+                
+                <!-- Fila 1 -->
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                    <span class="text-gray-400 text-xs uppercase tracking-wide">Grand Total (Neto)</span>
+                    <span id="kpiTotalProfit" class="text-2xl lg:text-3xl font-bold mt-1">$0.00</span>
+                    <div class="flex gap-4 mt-2 text-[10px] lg:text-xs font-semibold w-full justify-center">
                         <span id="kpiGrossProfit" class="text-green-400 flex flex-col"><span>Ganancias</span><span class="mt-1">$0.00</span></span>
                         <span id="kpiGrossLoss" class="text-red-400 flex flex-col"><span>Pérdidas</span><span class="mt-1">$0.00</span></span>
                     </div>
                 </div>
-                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
-                    <span class="text-gray-400 text-sm">Cantidad de Trades</span>
-                    <span id="kpiTotalTrades" class="text-3xl font-bold mt-2 text-white">0</span>
+                
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                    <span class="text-gray-400 text-xs uppercase tracking-wide">Cantidad de Trades</span>
+                    <span id="kpiTotalTrades" class="text-2xl lg:text-3xl font-bold mt-1 text-white">0</span>
+                    <span id="kpiBestDay" class="text-xs text-blue-400 mt-2 font-semibold">Mejor día: -</span>
                 </div>
-                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
-                    <span class="text-gray-400 text-sm">Win Rate</span>
-                    <span id="kpiWinRate" class="text-3xl font-bold mt-2 text-blue-400">0%</span>
-                    <span id="kpiWinRateSub" class="text-xs text-gray-500 mt-2">0 / 0 Victorias</span>
+                
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                    <span class="text-gray-400 text-xs uppercase tracking-wide">Win Rate</span>
+                    <span id="kpiWinRate" class="text-2xl lg:text-3xl font-bold mt-1 text-blue-400">0%</span>
+                    <span id="kpiWinRateSub" class="text-[10px] lg:text-xs text-gray-500 mt-2">0 / 0 Victorias</span>
                 </div>
-                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
-                    <span class="text-gray-400 text-sm">Promedio por Trade</span>
-                    <span id="kpiAvgTrade" class="text-3xl font-bold mt-2 text-white">$0.00</span>
+                
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                    <span class="text-gray-400 text-xs uppercase tracking-wide">Promedio por Trade</span>
+                    <span id="kpiAvgTrade" class="text-2xl lg:text-3xl font-bold mt-1 text-white">$0.00</span>
+                    <span class="text-[10px] lg:text-xs text-gray-500 mt-2">Esperanza Matemática</span>
                 </div>
+
+                <!-- Fila 2 (Nuevos Indicadores) -->
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow relative group">
+                    <span class="text-gray-400 text-xs uppercase tracking-wide">Profit Factor</span>
+                    <span id="kpiProfitFactor" class="text-2xl lg:text-3xl font-bold mt-1 text-white">0.00</span>
+                    <span class="text-[10px] lg:text-xs text-gray-500 mt-2">Ganado / Perdido Bruto</span>
+                </div>
+
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                    <span class="text-gray-400 text-xs uppercase tracking-wide">Riesgo / Beneficio</span>
+                    <span id="kpiRiskReward" class="text-2xl lg:text-3xl font-bold mt-1 text-white">1:0.00</span>
+                    <span class="text-[10px] lg:text-xs text-gray-500 mt-2">Win Prom. vs Loss Prom.</span>
+                </div>
+
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                    <span class="text-gray-400 text-xs uppercase tracking-wide">Max Drawdown</span>
+                    <span id="kpiDrawdown" class="text-2xl lg:text-3xl font-bold mt-1 text-red-400">$0.00</span>
+                    <span class="text-[10px] lg:text-xs text-gray-500 mt-2">Peor racha de caída neta</span>
+                </div>
+
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                    <span class="text-gray-400 text-xs uppercase tracking-wide">Rachas Máximas</span>
+                    <div class="flex gap-4 mt-1 text-xs font-semibold w-full justify-center">
+                        <span class="text-green-400 flex flex-col items-center"><span id="kpiMaxWinStreak" class="text-xl lg:text-2xl font-bold">0</span><span class="mt-1 text-[10px]">Victorias</span></span>
+                        <span class="text-red-400 flex flex-col items-center"><span id="kpiMaxLossStreak" class="text-xl lg:text-2xl font-bold">0</span><span class="mt-1 text-[10px]">Derrotas</span></span>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Gráfico de Línea Curvo -->
-            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg">
+            <!-- Sección de Gráficos (Solo Línea ahora, ancho completo) -->
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full">
                 <h2 class="text-lg font-semibold text-gray-300 mb-4">Curva de Capital (Acumulado)</h2>
-                <div class="relative h-72 w-full">
+                <div class="relative h-[500px] lg:h-[600px] xl:h-[700px] w-full flex-1">
                     <canvas id="equityChart"></canvas>
                 </div>
             </div>
@@ -158,25 +216,25 @@
         let rawData = [];
         let filteredData = [];
         let equityChartInstance = null;
-        const storageKey = 'mt5_trading_data_v3'; 
+        const storageKey = 'mt5_trading_data_v4'; 
 
         // Variables del Calendario
-        let calMode = 'YEARS'; // 'YEARS', 'MONTHS', 'DAYS'
+        let calMode = 'YEARS';
         let calYear = null;
         let calMonth = null;
 
         const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        const daysArr = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
         // Helper para formatear dinero con comas (1,000.00)
         function fmtMoney(val, decimals = 2) {
             return '$' + parseFloat(val).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
         }
 
-        // NUEVO: Limpiador de números para el formato de MetaTrader 5
+        // Limpiador de números para el formato de MetaTrader 5
         function cleanNumber(val) {
             if (val === undefined || val === null) return 0;
             if (typeof val === 'number') return val;
-            // Elimina espacios en blanco (ej. "1 027.50" -> "1027.50" | "- 245.00" -> "-245.00")
             let str = String(val).replace(/\s/g, '').replace(/,/g, '');
             let num = parseFloat(str);
             return isNaN(num) ? 0 : num;
@@ -227,11 +285,8 @@
                     }
 
                     if(dateObj && !isNaN(dateObj.getTime())) {
-                        // USAR EL LIMPIADOR DE NÚMEROS AQUÍ
                         let rawProfit = cleanNumber(row.Profit);
-                        
-                        // REGLA: Excluir trades con Profit exactamente igual a 0
-                        if (rawProfit === 0) return;
+                        if (rawProfit === 0) return; // Ignorar trades en 0
 
                         let comm = cleanNumber(row.Commission);
                         let swap = cleanNumber(row.Swap);
@@ -244,7 +299,8 @@
                                 Symbol: row.Symbol.trim(),
                                 NetProfit: netProfit,
                                 Year: dateObj.getFullYear(),
-                                Month: dateObj.getMonth() + 1, // 1 a 12
+                                Month: dateObj.getMonth() + 1, 
+                                DayOfWeek: dateObj.getDay(), // 0-6
                                 DateOnly: dateObj.toISOString().split('T')[0]
                             });
                         }
@@ -270,6 +326,8 @@
 
             populateFilters();
             applyFilters();
+            updateLeaderboard();
+            updateSmartCalendar();
         }
 
         function populateFilters() {
@@ -300,13 +358,18 @@
                 let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
                 let matchYear = (year === "ALL") ? true : d.Year.toString() === year;
                 let matchMonth = (month === "ALL") ? true : d.Month.toString() === month;
-
                 return matchSym && matchYear && matchMonth;
             });
 
             updateKPIs();
             updateChart();
-            updateSmartCalendar();
+        }
+
+        function clearGlobalFilters() {
+            document.getElementById('filterSymbol').value = 'ALL';
+            document.getElementById('filterYear').value = 'ALL';
+            document.getElementById('filterMonth').value = 'ALL';
+            applyFilters();
         }
 
         function updateKPIs() {
@@ -314,14 +377,43 @@
             let grossProfit = 0;
             let grossLoss = 0;
             let winningTrades = 0;
+            let losingTrades = 0;
+
+            let currentWinStreak = 0;
+            let currentLossStreak = 0;
+            let maxWinStreak = 0;
+            let maxLossStreak = 0;
+
+            let peak = 0;
+            let maxDrawdown = 0;
+            let cumulative = 0;
+
+            let dayProfits = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
 
             filteredData.forEach(d => {
                 totalProfit += d.NetProfit;
+                cumulative += d.NetProfit;
+                dayProfits[d.DayOfWeek] += d.NetProfit;
+
+                // Drawdown ($)
+                if (cumulative > peak) peak = cumulative;
+                let drawdownAmount = peak - cumulative;
+                if (drawdownAmount > maxDrawdown) maxDrawdown = drawdownAmount;
+
                 if (d.NetProfit > 0) {
                     winningTrades++;
                     grossProfit += d.NetProfit;
+                    
+                    currentWinStreak++;
+                    currentLossStreak = 0;
+                    if(currentWinStreak > maxWinStreak) maxWinStreak = currentWinStreak;
                 } else if (d.NetProfit < 0) {
+                    losingTrades++;
                     grossLoss += d.NetProfit;
+
+                    currentLossStreak++;
+                    currentWinStreak = 0;
+                    if(currentLossStreak > maxLossStreak) maxLossStreak = currentLossStreak;
                 }
             });
 
@@ -329,20 +421,54 @@
             const winRate = totalTrades > 0 ? (winningTrades / totalTrades) * 100 : 0;
             const avgTrade = totalTrades > 0 ? totalProfit / totalTrades : 0;
 
+            // Encontrar el mejor día de la semana
+            let maxDayProf = -Infinity;
+            let bestDayIndex = 0;
+            let hasProfits = false;
+            for(let i=0; i<=6; i++) {
+                if(dayProfits[i] > maxDayProf) {
+                    maxDayProf = dayProfits[i];
+                    bestDayIndex = i;
+                }
+                if (dayProfits[i] > 0) hasProfits = true;
+            }
+
+            // Cálculos Avanzados (PF y R/R)
+            const absoluteGrossLoss = Math.abs(grossLoss);
+            const profitFactor = absoluteGrossLoss > 0 ? (grossProfit / absoluteGrossLoss) : (grossProfit > 0 ? 99.99 : 0);
+            
+            const avgWin = winningTrades > 0 ? grossProfit / winningTrades : 0;
+            const avgLoss = losingTrades > 0 ? absoluteGrossLoss / losingTrades : 0;
+            const riskReward = avgLoss > 0 ? (avgWin / avgLoss) : (avgWin > 0 ? 99.99 : 0);
+
+            // Actualizar el DOM (Fila 1)
             const kpiTotalEl = document.getElementById('kpiTotalProfit');
             kpiTotalEl.innerText = fmtMoney(totalProfit);
-            kpiTotalEl.className = `text-3xl font-bold mt-2 ${totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}`;
+            kpiTotalEl.className = `text-2xl lg:text-3xl font-bold mt-1 ${totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}`;
 
             document.getElementById('kpiGrossProfit').lastElementChild.innerText = fmtMoney(grossProfit);
-            document.getElementById('kpiGrossLoss').lastElementChild.innerText = fmtMoney(Math.abs(grossLoss));
+            document.getElementById('kpiGrossLoss').lastElementChild.innerText = fmtMoney(absoluteGrossLoss);
 
             document.getElementById('kpiTotalTrades').innerText = totalTrades;
+            document.getElementById('kpiBestDay').innerText = `Mejor día: ${hasProfits ? daysArr[bestDayIndex] : '-'}`;
+
             document.getElementById('kpiWinRate').innerText = `${winRate.toFixed(1)}%`;
             document.getElementById('kpiWinRateSub').innerText = `${winningTrades} / ${totalTrades} Victorias`;
             
             const kpiAvgEl = document.getElementById('kpiAvgTrade');
             kpiAvgEl.innerText = fmtMoney(avgTrade);
-            kpiAvgEl.className = `text-3xl font-bold mt-2 ${avgTrade >= 0 ? 'text-green-400' : 'text-red-400'}`;
+            kpiAvgEl.className = `text-2xl lg:text-3xl font-bold mt-1 ${avgTrade >= 0 ? 'text-green-400' : 'text-red-400'}`;
+
+            // Actualizar el DOM (Fila 2 - Avanzados)
+            const kpiPFEl = document.getElementById('kpiProfitFactor');
+            kpiPFEl.innerText = profitFactor === 99.99 ? '∞' : profitFactor.toFixed(2);
+            kpiPFEl.className = `text-2xl lg:text-3xl font-bold mt-1 ${profitFactor >= 1.5 ? 'text-green-400' : (profitFactor >= 1 ? 'text-blue-400' : 'text-red-400')}`;
+
+            document.getElementById('kpiRiskReward').innerText = riskReward === 99.99 ? `1:∞` : `1:${riskReward.toFixed(2)}`;
+            document.getElementById('kpiDrawdown').innerText = `-$${fmtMoney(maxDrawdown).replace('$-', '').replace('$', '')}`; // format absolute $
+            
+            document.getElementById('kpiMaxWinStreak').innerText = maxWinStreak;
+            document.getElementById('kpiMaxLossStreak').innerText = maxLossStreak;
         }
 
         // --- GRÁFICO SUAVE (CURVO) ---
@@ -374,7 +500,6 @@
                         fill: true,
                         pointRadius: 0,
                         pointHoverRadius: 5,
-                        // Configuración para que sea curvilíneo en lugar de cuadrado
                         tension: 0.4, 
                         cubicInterpolationMode: 'monotone'
                     }]
@@ -385,13 +510,7 @@
                     interaction: { mode: 'index', intersect: false },
                     plugins: { 
                         legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return 'Balance: ' + fmtMoney(context.parsed.y);
-                                }
-                            }
-                        }
+                        tooltip: { callbacks: { label: function(context) { return 'Balance: ' + fmtMoney(context.parsed.y); } } }
                     },
                     scales: {
                         x: {
@@ -409,15 +528,55 @@
             });
         }
 
+        // --- TOP LEADERBOARD (Reemplaza el gráfico de barras) ---
+        function updateLeaderboard() {
+            const container = document.getElementById('leaderboardContainer');
+            
+            // Agrupar ganancias por par (usando rawData para no ser afectado por filtros globales)
+            let pairData = {};
+            rawData.forEach(d => {
+                if(!pairData[d.Symbol]) pairData[d.Symbol] = 0;
+                pairData[d.Symbol] += d.NetProfit;
+            });
+
+            // Ordenar de mayor ganancia a mayor pérdida
+            let sortedPairs = Object.keys(pairData).sort((a,b) => pairData[b] - pairData[a]);
+            
+            container.innerHTML = '';
+            
+            if (sortedPairs.length === 0) {
+                container.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">Sin operaciones</div>';
+                return;
+            }
+
+            let html = '';
+            sortedPairs.forEach((p, index) => {
+                let prof = pairData[p];
+                let colorClass = prof >= 0 ? 'text-green-400' : 'text-red-400';
+                let bgClass = index % 2 === 0 ? 'bg-gray-700/30' : 'bg-transparent';
+                let prefix = prof > 0 ? '+' : '';
+                
+                html += `
+                    <div class="flex justify-between items-center text-sm p-3 rounded hover:bg-gray-700 transition-colors ${bgClass}">
+                        <div class="flex items-center gap-2 truncate">
+                            <span class="text-xs font-bold text-gray-500 w-5">${index + 1}.</span>
+                            <span class="font-semibold text-gray-200 truncate text-sm" title="${p}">${p}</span>
+                        </div>
+                        <span class="font-bold font-mono text-sm ${colorClass} ml-2 shrink-0">${prefix}${fmtMoney(prof, 2)}</span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
         // --- LÓGICA DEL CALENDARIO INTELIGENTE ---
-        
         function getCellColorClass(profit) {
             if (profit === undefined || profit === null || profit === 0) return "bg-gray-800/50 border-gray-700 text-gray-500 hover:border-gray-500";
             if (profit > 0) return "bg-green-900/40 border-green-600 text-green-400 shadow-[0_0_10px_rgba(34,197,94,0.1)] hover:border-green-400";
             return "bg-red-900/40 border-red-600 text-red-400 shadow-[0_0_10px_rgba(239,68,68,0.1)] hover:border-red-400";
         }
 
-        // Navegación Manual del Calendario
         window.calZoomInYear = function(year) {
             calYear = parseInt(year);
             calMode = 'MONTHS';
@@ -437,20 +596,12 @@
         };
 
         window.calZoomIn = function() {
-            // El calendario usa los datos filtrados por Símbolo
-            const sym = document.getElementById('filterSymbol').value;
-            
-            let calData = rawData.filter(d => {
-                let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
-                return matchSym;
-            });
+            let calData = rawData; // Desvinculado de los filtros globales
 
             if (calMode === 'YEARS') {
-                // Al acercarse desde años, elige el año más reciente con operaciones
                 let years = [...new Set(calData.map(d => d.Year))].sort((a,b) => b-a);
                 if (years.length > 0) calZoomInYear(years[0]);
             } else if (calMode === 'MONTHS') {
-                // Al acercarse desde meses, elige el mes más reciente operado en ese año
                 let months = [...new Set(calData.filter(d => d.Year === calYear).map(d => d.Month))].sort((a,b) => b-a);
                 if (months.length > 0) calZoomInMonth(months[0]);
                 else calZoomInMonth(1);
@@ -477,17 +628,10 @@
             const btnZoomOut = document.getElementById('btnCalZoomOut');
             const btnZoomIn = document.getElementById('btnCalZoomIn');
 
-            // El calendario usa los datos filtrados por Símbolo
-            const sym = document.getElementById('filterSymbol').value;
-            
-            let calData = rawData.filter(d => {
-                let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
-                return matchSym;
-            });
+            let calData = rawData; // Desvinculado de los filtros globales
 
             container.innerHTML = ''; 
 
-            // Actualizar botones
             btnPrev.disabled = (calMode === 'YEARS');
             btnNext.disabled = (calMode === 'YEARS');
             btnZoomOut.disabled = (calMode === 'YEARS');
@@ -567,45 +711,68 @@
             container.innerHTML = html;
         }
 
-        // 3. NIVEL DIARIO (Calendario Tradicional)
+        // 3. NIVEL DIARIO (Calendario Tradicional con Pares Internos)
         function renderDaysGrid(container, data, year, month) {
             let dailyData = {};
             data.forEach(d => {
                 if (d.Year === year && d.Month === month) {
                     let day = d.Time.getDate();
-                    if(!dailyData[day]) dailyData[day] = 0;
-                    dailyData[day] += d.NetProfit;
+                    if(!dailyData[day]) {
+                        dailyData[day] = { total: 0, symbols: {} };
+                    }
+                    dailyData[day].total += d.NetProfit;
+                    
+                    if(!dailyData[day].symbols[d.Symbol]) {
+                        dailyData[day].symbols[d.Symbol] = 0;
+                    }
+                    dailyData[day].symbols[d.Symbol] += d.NetProfit;
                 }
             });
 
             let daysInMonth = new Date(year, month, 0).getDate();
-            let firstDay = new Date(year, month - 1, 1).getDay(); // 0=Domingo, 6=Sábado
+            let firstDay = new Date(year, month - 1, 1).getDay();
 
             let html = `<div class="w-full max-w-4xl mx-auto fade-in">`;
             
-            // Encabezados de días (Dom a Sáb)
             html += `<div class="grid grid-cols-7 text-center text-xs text-gray-400 font-bold mb-2">`;
             ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(d => html += `<div class="py-2">${d}</div>`);
             html += `</div>`;
 
-            // Cuadrícula del calendario
             html += `<div class="grid grid-cols-7 gap-1 md:gap-2">`;
             
-            // Espacios vacíos antes del día 1
             for(let i = 0; i < firstDay; i++) {
-                html += `<div class="aspect-square rounded border border-transparent"></div>`;
+                html += `<div class="min-h-[80px] rounded border border-transparent"></div>`;
             }
 
-            // Días del mes
             for(let i = 1; i <= daysInMonth; i++) {
-                let profit = dailyData[i];
+                let dayData = dailyData[i];
+                let profit = dayData ? dayData.total : undefined;
                 let colorClass = getCellColorClass(profit);
                 let displayProfit = profit !== undefined ? fmtMoney(profit, 1) : '-';
                 
+                let symbolsHtml = '';
+                if (dayData) {
+                    let syms = Object.keys(dayData.symbols);
+                    syms.forEach(s => {
+                        let sProf = dayData.symbols[s];
+                        let sColorClass = sProf >= 0 ? 'text-green-300' : 'text-red-300';
+                        let sPrefix = sProf > 0 ? '+' : '';
+                        symbolsHtml += `<div class="flex justify-between w-full items-center gap-1 border-b border-white/5 pb-[2px] last:border-0">
+                            <span class="truncate" title="${s}">${s}</span>
+                            <span class="${sColorClass} font-mono">${sPrefix}${fmtMoney(sProf, 0)}</span>
+                        </div>`;
+                    });
+                }
+                
                 html += `
-                    <div class="aspect-square flex flex-col items-center justify-center rounded border ${colorClass} p-1 transition-transform hover:scale-105 cursor-default" title="Día ${i}\nNeto: ${profit !== undefined ? fmtMoney(profit, 2) : '0.00'}">
-                        <span class="text-[10px] md:text-xs font-semibold mb-1 opacity-75">${i}</span>
-                        <span class="text-[10px] md:text-sm font-bold truncate-text w-full text-center">${displayProfit}</span>
+                    <div class="min-h-[85px] max-h-[120px] flex flex-col items-center justify-start rounded border ${colorClass} p-1 transition-transform hover:scale-105 cursor-default overflow-hidden" title="Día ${i}\nNeto: ${profit !== undefined ? fmtMoney(profit, 2) : '0.00'}">
+                        <div class="text-[10px] md:text-xs font-semibold opacity-90 border-b border-white/20 w-full text-center pb-1 mb-1 flex flex-col">
+                            <span>${i}</span>
+                            <span class="font-bold text-[10px] md:text-[11px]">${displayProfit}</span>
+                        </div>
+                        <div class="w-full flex flex-col gap-[2px] text-[8px] md:text-[9px] overflow-y-auto cell-scrollbar px-[2px]">
+                            ${symbolsHtml}
+                        </div>
                     </div>
                 `;
             }
