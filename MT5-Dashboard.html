@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Journal Dashboard</title>
-    
+    <!-- Favicon -->
+    <link rel="icon" href="https://res.cloudinary.com/dlo3r0you/image/upload/v1754687755/logo_oyr4yr.png" type="image/png">   
     <!-- Librerías: Tailwind (CSS), SheetJS (Excel), Chart.js (Gráficos) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -49,81 +50,94 @@
     </div>
 
     <!-- Contenedor Principal (Oculto hasta que haya datos) -->
-    <div id="dashboardContent" class="hidden fade-in">
+    <div id="dashboardContent" class="hidden fade-in flex flex-col lg:flex-row gap-6 items-stretch">
         
-        <!-- Barra de Filtros (Actualización Instantánea) -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-gray-800 p-4 rounded-xl border border-gray-700">
-            <div>
-                <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wide">Símbolo</label>
-                <select id="filterSymbol" onchange="applyFilters()" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
-            </div>
-            <div>
-                <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wide">Año (Zoom)</label>
-                <select id="filterYear" onchange="applyFilters()" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
-            </div>
-            <div>
-                <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wide">Mes (Zoom)</label>
-                <select id="filterMonth" onchange="applyFilters()" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
-            </div>
-        </div>
-
-        <!-- KPIs (Métricas Principales) -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
-                <span class="text-gray-400 text-sm">Grand Total (Neto)</span>
-                <span id="kpiTotalProfit" class="text-3xl font-bold mt-2">$0.00</span>
-                <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
-                    <span id="kpiGrossProfit" class="text-green-400 flex flex-col"><span>Ganancias</span><span class="mt-1">$0.00</span></span>
-                    <span id="kpiGrossLoss" class="text-red-400 flex flex-col"><span>Pérdidas</span><span class="mt-1">$0.00</span></span>
+        <!-- BARRA LATERAL (Filtros - Ahora llega hasta abajo) -->
+        <div class="w-full lg:w-1/4 xl:w-1/5 shrink-0 flex flex-col">
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg flex-1">
+                <h2 class="text-lg font-semibold text-gray-300 mb-4 border-b border-gray-700 pb-2 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                    Filtros
+                </h2>
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wide">Símbolo</label>
+                        <select id="filterSymbol" onchange="applyFilters()" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wide">Año</label>
+                        <select id="filterYear" onchange="applyFilters()" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wide">Mes</label>
+                        <select id="filterMonth" onchange="applyFilters()" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
+                    </div>
                 </div>
             </div>
-            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
-                <span class="text-gray-400 text-sm">Cantidad de Trades</span>
-                <span id="kpiTotalTrades" class="text-3xl font-bold mt-2 text-white">0</span>
-            </div>
-            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
-                <span class="text-gray-400 text-sm">Win Rate</span>
-                <span id="kpiWinRate" class="text-3xl font-bold mt-2 text-blue-400">0%</span>
-                <span id="kpiWinRateSub" class="text-xs text-gray-500 mt-2">0 / 0 Victorias</span>
-            </div>
-            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
-                <span class="text-gray-400 text-sm">Promedio por Trade</span>
-                <span id="kpiAvgTrade" class="text-3xl font-bold mt-2 text-white">$0.00</span>
-            </div>
         </div>
 
-        <!-- Gráfico de Línea Curvo -->
-        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-8 shadow-lg">
-            <h2 class="text-lg font-semibold text-gray-300 mb-4">Curva de Capital (Acumulado)</h2>
-            <div class="relative h-72 w-full">
-                <canvas id="equityChart"></canvas>
-            </div>
-        </div>
+        <!-- ÁREA PRINCIPAL (Métricas, Gráficos y Calendario) -->
+        <div class="w-full lg:w-3/4 xl:w-4/5 flex flex-col gap-6">
 
-        <!-- Calendario Inteligente -->
-        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg mb-8">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                <h2 class="text-lg font-semibold text-gray-300">Calendario de Desempeño</h2>
-                <div class="flex items-center gap-1 md:gap-2">
-                    <button id="btnCalPrev" onclick="calNavigate(-1)" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-colors">◀</button>
-                    <span id="calendarModeIndicator" class="text-xs md:text-sm font-semibold bg-gray-900 border border-gray-600 px-3 py-1 rounded text-blue-400 min-w-[120px] md:min-w-[160px] text-center">Años</span>
-                    <button id="btnCalNext" onclick="calNavigate(1)" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-colors">▶</button>
-                    <button id="btnCalZoomOut" onclick="calZoomOut()" class="ml-2 md:ml-4 px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs md:text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"></path></svg>
-                        <span class="hidden md:inline">Alejar</span>
-                    </button>
-                    <button id="btnCalZoomIn" onclick="calZoomIn()" class="ml-1 md:ml-2 px-3 py-1 bg-green-600 hover:bg-green-500 text-white rounded text-xs md:text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
-                        <span class="hidden md:inline">Acercar</span>
-                    </button>
+            <!-- KPIs (Métricas Principales) -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
+                    <span class="text-gray-400 text-sm">Grand Total (Neto)</span>
+                    <span id="kpiTotalProfit" class="text-3xl font-bold mt-2">$0.00</span>
+                    <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
+                        <span id="kpiGrossProfit" class="text-green-400 flex flex-col"><span>Ganancias</span><span class="mt-1">$0.00</span></span>
+                        <span id="kpiGrossLoss" class="text-red-400 flex flex-col"><span>Pérdidas</span><span class="mt-1">$0.00</span></span>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
+                    <span class="text-gray-400 text-sm">Cantidad de Trades</span>
+                    <span id="kpiTotalTrades" class="text-3xl font-bold mt-2 text-white">0</span>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
+                    <span class="text-gray-400 text-sm">Win Rate</span>
+                    <span id="kpiWinRate" class="text-3xl font-bold mt-2 text-blue-400">0%</span>
+                    <span id="kpiWinRateSub" class="text-xs text-gray-500 mt-2">0 / 0 Victorias</span>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
+                    <span class="text-gray-400 text-sm">Promedio por Trade</span>
+                    <span id="kpiAvgTrade" class="text-3xl font-bold mt-2 text-white">$0.00</span>
                 </div>
             </div>
-            
-            <!-- Contenedor Dinámico del Calendario -->
-            <div id="calendarContainer" class="w-full">
-                <!-- Los bloques se inyectarán aquí -->
+
+            <!-- Gráfico de Línea Curvo -->
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg">
+                <h2 class="text-lg font-semibold text-gray-300 mb-4">Curva de Capital (Acumulado)</h2>
+                <div class="relative h-72 w-full">
+                    <canvas id="equityChart"></canvas>
+                </div>
             </div>
-        </div>
+
+            <!-- Calendario Inteligente -->
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <h2 class="text-lg font-semibold text-gray-300">Calendario de Desempeño</h2>
+                    <div class="flex items-center gap-1 md:gap-2">
+                        <button id="btnCalPrev" onclick="calNavigate(-1)" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-colors">◀</button>
+                        <span id="calendarModeIndicator" class="text-xs md:text-sm font-semibold bg-gray-900 border border-gray-600 px-3 py-1 rounded text-blue-400 min-w-[120px] md:min-w-[160px] text-center">Años</span>
+                        <button id="btnCalNext" onclick="calNavigate(1)" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-colors">▶</button>
+                        <button id="btnCalZoomOut" onclick="calZoomOut()" class="ml-2 md:ml-4 px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs md:text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"></path></svg>
+                            <span class="hidden md:inline">Alejar</span>
+                        </button>
+                        <button id="btnCalZoomIn" onclick="calZoomIn()" class="ml-1 md:ml-2 px-3 py-1 bg-green-600 hover:bg-green-500 text-white rounded text-xs md:text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+                            <span class="hidden md:inline">Acercar</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Contenedor Dinámico del Calendario -->
+                <div id="calendarContainer" class="w-full">
+                    <!-- Los bloques se inyectarán aquí -->
+                </div>
+            </div>
+
+        </div> <!-- Cierre del Área Principal -->
 
     </div>
 
@@ -156,6 +170,16 @@
         // Helper para formatear dinero con comas (1,000.00)
         function fmtMoney(val, decimals = 2) {
             return '$' + parseFloat(val).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+        }
+
+        // NUEVO: Limpiador de números para el formato de MetaTrader 5
+        function cleanNumber(val) {
+            if (val === undefined || val === null) return 0;
+            if (typeof val === 'number') return val;
+            // Elimina espacios en blanco (ej. "1 027.50" -> "1027.50" | "- 245.00" -> "-245.00")
+            let str = String(val).replace(/\s/g, '').replace(/,/g, '');
+            let num = parseFloat(str);
+            return isNaN(num) ? 0 : num;
         }
 
         window.onload = () => {
@@ -203,13 +227,14 @@
                     }
 
                     if(dateObj && !isNaN(dateObj.getTime())) {
-                        let rawProfit = parseFloat(row.Profit) || 0;
+                        // USAR EL LIMPIADOR DE NÚMEROS AQUÍ
+                        let rawProfit = cleanNumber(row.Profit);
                         
                         // REGLA: Excluir trades con Profit exactamente igual a 0
                         if (rawProfit === 0) return;
 
-                        let comm = parseFloat(row.Commission) || 0;
-                        let swap = parseFloat(row.Swap) || 0;
+                        let comm = cleanNumber(row.Commission);
+                        let swap = cleanNumber(row.Swap);
                         let netProfit = rawProfit + comm + swap;
 
                         if(row.Symbol && row.Symbol.trim() !== '') {
@@ -275,6 +300,7 @@
                 let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
                 let matchYear = (year === "ALL") ? true : d.Year.toString() === year;
                 let matchMonth = (month === "ALL") ? true : d.Month.toString() === month;
+
                 return matchSym && matchYear && matchMonth;
             });
 
@@ -411,9 +437,13 @@
         };
 
         window.calZoomIn = function() {
-            // El calendario usa los datos filtrados SOLO por Símbolo
+            // El calendario usa los datos filtrados por Símbolo
             const sym = document.getElementById('filterSymbol').value;
-            let calData = sym !== "ALL" ? rawData.filter(d => d.Symbol === sym) : rawData;
+            
+            let calData = rawData.filter(d => {
+                let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
+                return matchSym;
+            });
 
             if (calMode === 'YEARS') {
                 // Al acercarse desde años, elige el año más reciente con operaciones
@@ -447,12 +477,13 @@
             const btnZoomOut = document.getElementById('btnCalZoomOut');
             const btnZoomIn = document.getElementById('btnCalZoomIn');
 
-            // El calendario usa los datos filtrados SOLO por Símbolo
+            // El calendario usa los datos filtrados por Símbolo
             const sym = document.getElementById('filterSymbol').value;
-            let calData = rawData;
-            if (sym !== "ALL") {
-                calData = rawData.filter(d => d.Symbol === sym);
-            }
+            
+            let calData = rawData.filter(d => {
+                let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
+                return matchSym;
+            });
 
             container.innerHTML = ''; 
 
