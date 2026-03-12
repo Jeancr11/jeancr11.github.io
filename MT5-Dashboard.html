@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Journal Dashboard</title>
+    
+    <!-- Librerías: Tailwind (CSS), SheetJS (Excel), Chart.js (Gráficos) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+    <style>
+        /* Animación suave para la carga de datos */
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Para truncar texto largo en pantallas pequeñas */
+        .truncate-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white font-sans min-h-screen p-4 md:p-8">
+
+    <!-- Cabecera y Botones de Acción -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8 bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+        <div>
+            <h1 class="text-3xl font-bold text-blue-400">📊 Trading Performance</h1>
+            <p class="text-gray-400 text-sm mt-1">Analizador de Historial MT5</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex gap-4">
+            <input type="file" id="fileInput" accept=".xlsx, .xls, .csv" class="hidden" />
+            <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Cargar Archivo Excel (.xlsx)
+            </button>
+            <button onclick="clearData()" id="clearBtn" class="hidden bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all">
+                Borrar Datos
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenedor Principal (Oculto hasta que haya datos) -->
+    <div id="dashboardContent" class="hidden fade-in">
+        
+        <!-- Barra de Filtros (Actualización Instantánea) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-gray-800 p-4 rounded-xl border border-gray-700">
+            <div>
+                <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wide">Símbolo</label>
+                <select id="filterSymbol" onchange="applyFilters()" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
+            </div>
+            <div>
+                <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wide">Año (Zoom)</label>
+                <select id="filterYear" onchange="applyFilters()" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
+            </div>
+            <div>
+                <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wide">Mes (Zoom)</label>
+                <select id="filterMonth" onchange="applyFilters()" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
+            </div>
+        </div>
+
+        <!-- KPIs (Métricas Principales) -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
+                <span class="text-gray-400 text-sm">Grand Total (Neto)</span>
+                <span id="kpiTotalProfit" class="text-3xl font-bold mt-2">$0.00</span>
+                <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
+                    <span id="kpiGrossProfit" class="text-green-400 flex flex-col"><span>Ganancias</span><span class="mt-1">$0.00</span></span>
+                    <span id="kpiGrossLoss" class="text-red-400 flex flex-col"><span>Pérdidas</span><span class="mt-1">$0.00</span></span>
+                </div>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
+                <span class="text-gray-400 text-sm">Cantidad de Trades</span>
+                <span id="kpiTotalTrades" class="text-3xl font-bold mt-2 text-white">0</span>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
+                <span class="text-gray-400 text-sm">Win Rate</span>
+                <span id="kpiWinRate" class="text-3xl font-bold mt-2 text-blue-400">0%</span>
+                <span id="kpiWinRateSub" class="text-xs text-gray-500 mt-2">0 / 0 Victorias</span>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center">
+                <span class="text-gray-400 text-sm">Promedio por Trade</span>
+                <span id="kpiAvgTrade" class="text-3xl font-bold mt-2 text-white">$0.00</span>
+            </div>
+        </div>
+
+        <!-- Gráfico de Línea Curvo -->
+        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-8 shadow-lg">
+            <h2 class="text-lg font-semibold text-gray-300 mb-4">Curva de Capital (Acumulado)</h2>
+            <div class="relative h-72 w-full">
+                <canvas id="equityChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Calendario Inteligente -->
+        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <h2 class="text-lg font-semibold text-gray-300">Calendario de Desempeño</h2>
+                <div class="flex items-center gap-1 md:gap-2">
+                    <button id="btnCalPrev" onclick="calNavigate(-1)" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-colors">◀</button>
+                    <span id="calendarModeIndicator" class="text-xs md:text-sm font-semibold bg-gray-900 border border-gray-600 px-3 py-1 rounded text-blue-400 min-w-[120px] md:min-w-[160px] text-center">Años</span>
+                    <button id="btnCalNext" onclick="calNavigate(1)" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-colors">▶</button>
+                    <button id="btnCalZoomOut" onclick="calZoomOut()" class="ml-2 md:ml-4 px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs md:text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"></path></svg>
+                        <span class="hidden md:inline">Alejar</span>
+                    </button>
+                    <button id="btnCalZoomIn" onclick="calZoomIn()" class="ml-1 md:ml-2 px-3 py-1 bg-green-600 hover:bg-green-500 text-white rounded text-xs md:text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+                        <span class="hidden md:inline">Acercar</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Contenedor Dinámico del Calendario -->
+            <div id="calendarContainer" class="w-full">
+                <!-- Los bloques se inyectarán aquí -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Pantalla de Bienvenida -->
+    <div id="welcomeScreen" class="flex flex-col items-center justify-center mt-20 text-center">
+        <div class="bg-gray-800 p-10 rounded-2xl border border-gray-700 max-w-2xl shadow-2xl">
+            <svg class="w-20 h-20 text-green-500 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+            <h2 class="text-2xl font-bold text-white mb-4">Sube tu archivo Excel (.xlsx)</h2>
+            <p class="text-gray-400 mb-6">Asegúrate de que la primera hoja contenga las columnas:</p>
+            <div class="bg-gray-900 text-xs text-green-400 p-4 rounded text-left overflow-x-auto font-mono">
+                Time, Deal, Symbol, Type, Direction, Volume, Price, Order, Commission, Swap, Profit, Balance, Comment
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables Globales
+        let rawData = [];
+        let filteredData = [];
+        let equityChartInstance = null;
+        const storageKey = 'mt5_trading_data_v3'; 
+
+        // Variables del Calendario
+        let calMode = 'YEARS'; // 'YEARS', 'MONTHS', 'DAYS'
+        let calYear = null;
+        let calMonth = null;
+
+        const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+        // Helper para formatear dinero con comas (1,000.00)
+        function fmtMoney(val, decimals = 2) {
+            return '$' + parseFloat(val).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+        }
+
+        window.onload = () => {
+            const savedData = localStorage.getItem(storageKey);
+            if (savedData) {
+                rawData = JSON.parse(savedData);
+                initDashboard();
+            }
+        };
+
+        // LECTURA DE ARCHIVO EXCEL (.xlsx)
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                const data = new Uint8Array(event.target.result);
+                try {
+                    const workbook = XLSX.read(data, { type: 'array', cellDates: true });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonResult = XLSX.utils.sheet_to_json(worksheet);
+                    processRawData(jsonResult);
+                } catch (err) {
+                    console.error(err);
+                    alert("Error al leer el Excel. Verifica que tenga la estructura correcta.");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        function processRawData(data) {
+            let processed = [];
+            
+            data.forEach(row => {
+                if (row.Time !== undefined && row.Profit !== undefined) {
+                    let dateObj;
+                    if (row.Time instanceof Date) {
+                        dateObj = row.Time;
+                    } else if (typeof row.Time === 'number') {
+                        dateObj = new Date(Math.round((row.Time - 25569) * 86400 * 1000));
+                    } else if (typeof row.Time === 'string') {
+                        dateObj = new Date(row.Time.replace(/\./g, '-'));
+                    }
+
+                    if(dateObj && !isNaN(dateObj.getTime())) {
+                        let rawProfit = parseFloat(row.Profit) || 0;
+                        
+                        // REGLA: Excluir trades con Profit exactamente igual a 0
+                        if (rawProfit === 0) return;
+
+                        let comm = parseFloat(row.Commission) || 0;
+                        let swap = parseFloat(row.Swap) || 0;
+                        let netProfit = rawProfit + comm + swap;
+
+                        if(row.Symbol && row.Symbol.trim() !== '') {
+                            processed.push({
+                                Time: dateObj,
+                                TimeStr: dateObj.toISOString(),
+                                Symbol: row.Symbol.trim(),
+                                NetProfit: netProfit,
+                                Year: dateObj.getFullYear(),
+                                Month: dateObj.getMonth() + 1, // 1 a 12
+                                DateOnly: dateObj.toISOString().split('T')[0]
+                            });
+                        }
+                    }
+                }
+            });
+
+            processed.sort((a, b) => a.Time - b.Time);
+            rawData = processed;
+            
+            try { localStorage.setItem(storageKey, JSON.stringify(rawData)); } catch(e) {}
+            initDashboard();
+        }
+
+        function initDashboard() {
+            rawData.forEach(d => {
+                if (typeof d.Time === 'string') d.Time = new Date(d.Time);
+            });
+
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('dashboardContent').classList.remove('hidden');
+            document.getElementById('clearBtn').classList.remove('hidden');
+
+            populateFilters();
+            applyFilters();
+        }
+
+        function populateFilters() {
+            const symbols = [...new Set(rawData.map(d => d.Symbol))].sort();
+            const symbolSelect = document.getElementById('filterSymbol');
+            symbolSelect.innerHTML = '<option value="ALL">Todos los Pares</option>';
+            symbols.forEach(sym => symbolSelect.innerHTML += `<option value="${sym}">${sym}</option>`);
+
+            const years = [...new Set(rawData.map(d => d.Year))].sort((a,b) => b-a);
+            const yearSelect = document.getElementById('filterYear');
+            yearSelect.innerHTML = '<option value="ALL">Todos los Años</option>';
+            years.forEach(y => yearSelect.innerHTML += `<option value="${y}">${y}</option>`);
+
+            const monthSelect = document.getElementById('filterMonth');
+            monthSelect.innerHTML = '<option value="ALL">Todos los Meses</option>';
+            monthNames.forEach((m, idx) => {
+                monthSelect.innerHTML += `<option value="${idx + 1}">${m}</option>`;
+            });
+        }
+
+        // --- FILTROS INSTANTÁNEOS ---
+        function applyFilters() {
+            const sym = document.getElementById('filterSymbol').value;
+            const year = document.getElementById('filterYear').value;
+            const month = document.getElementById('filterMonth').value;
+
+            filteredData = rawData.filter(d => {
+                let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
+                let matchYear = (year === "ALL") ? true : d.Year.toString() === year;
+                let matchMonth = (month === "ALL") ? true : d.Month.toString() === month;
+                return matchSym && matchYear && matchMonth;
+            });
+
+            updateKPIs();
+            updateChart();
+            updateSmartCalendar();
+        }
+
+        function updateKPIs() {
+            let totalProfit = 0;
+            let grossProfit = 0;
+            let grossLoss = 0;
+            let winningTrades = 0;
+
+            filteredData.forEach(d => {
+                totalProfit += d.NetProfit;
+                if (d.NetProfit > 0) {
+                    winningTrades++;
+                    grossProfit += d.NetProfit;
+                } else if (d.NetProfit < 0) {
+                    grossLoss += d.NetProfit;
+                }
+            });
+
+            const totalTrades = filteredData.length;
+            const winRate = totalTrades > 0 ? (winningTrades / totalTrades) * 100 : 0;
+            const avgTrade = totalTrades > 0 ? totalProfit / totalTrades : 0;
+
+            const kpiTotalEl = document.getElementById('kpiTotalProfit');
+            kpiTotalEl.innerText = fmtMoney(totalProfit);
+            kpiTotalEl.className = `text-3xl font-bold mt-2 ${totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}`;
+
+            document.getElementById('kpiGrossProfit').lastElementChild.innerText = fmtMoney(grossProfit);
+            document.getElementById('kpiGrossLoss').lastElementChild.innerText = fmtMoney(Math.abs(grossLoss));
+
+            document.getElementById('kpiTotalTrades').innerText = totalTrades;
+            document.getElementById('kpiWinRate').innerText = `${winRate.toFixed(1)}%`;
+            document.getElementById('kpiWinRateSub').innerText = `${winningTrades} / ${totalTrades} Victorias`;
+            
+            const kpiAvgEl = document.getElementById('kpiAvgTrade');
+            kpiAvgEl.innerText = fmtMoney(avgTrade);
+            kpiAvgEl.className = `text-3xl font-bold mt-2 ${avgTrade >= 0 ? 'text-green-400' : 'text-red-400'}`;
+        }
+
+        // --- GRÁFICO SUAVE (CURVO) ---
+        function updateChart() {
+            const ctx = document.getElementById('equityChart').getContext('2d');
+            
+            let cumulative = 0;
+            let chartLabels = [];
+            let chartData = [];
+
+            filteredData.forEach(d => {
+                cumulative += d.NetProfit;
+                chartLabels.push(d.Time);
+                chartData.push(cumulative);
+            });
+
+            if (equityChartInstance) equityChartInstance.destroy();
+
+            equityChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Balance Acumulado ($)',
+                        data: chartData,
+                        borderColor: '#3b82f6', 
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        pointRadius: 0,
+                        pointHoverRadius: 5,
+                        // Configuración para que sea curvilíneo en lugar de cuadrado
+                        tension: 0.4, 
+                        cubicInterpolationMode: 'monotone'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Balance: ' + fmtMoney(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: { tooltipFormat: 'dd MMM yyyy, HH:mm' },
+                            grid: { color: '#374151' },
+                            ticks: { color: '#9ca3af' }
+                        },
+                        y: {
+                            grid: { color: '#374151' },
+                            ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- LÓGICA DEL CALENDARIO INTELIGENTE ---
+        
+        function getCellColorClass(profit) {
+            if (profit === undefined || profit === null || profit === 0) return "bg-gray-800/50 border-gray-700 text-gray-500 hover:border-gray-500";
+            if (profit > 0) return "bg-green-900/40 border-green-600 text-green-400 shadow-[0_0_10px_rgba(34,197,94,0.1)] hover:border-green-400";
+            return "bg-red-900/40 border-red-600 text-red-400 shadow-[0_0_10px_rgba(239,68,68,0.1)] hover:border-red-400";
+        }
+
+        // Navegación Manual del Calendario
+        window.calZoomInYear = function(year) {
+            calYear = parseInt(year);
+            calMode = 'MONTHS';
+            updateSmartCalendar();
+        };
+
+        window.calZoomInMonth = function(month) {
+            calMonth = parseInt(month);
+            calMode = 'DAYS';
+            updateSmartCalendar();
+        };
+
+        window.calZoomOut = function() {
+            if (calMode === 'DAYS') calMode = 'MONTHS';
+            else if (calMode === 'MONTHS') calMode = 'YEARS';
+            updateSmartCalendar();
+        };
+
+        window.calZoomIn = function() {
+            // El calendario usa los datos filtrados SOLO por Símbolo
+            const sym = document.getElementById('filterSymbol').value;
+            let calData = sym !== "ALL" ? rawData.filter(d => d.Symbol === sym) : rawData;
+
+            if (calMode === 'YEARS') {
+                // Al acercarse desde años, elige el año más reciente con operaciones
+                let years = [...new Set(calData.map(d => d.Year))].sort((a,b) => b-a);
+                if (years.length > 0) calZoomInYear(years[0]);
+            } else if (calMode === 'MONTHS') {
+                // Al acercarse desde meses, elige el mes más reciente operado en ese año
+                let months = [...new Set(calData.filter(d => d.Year === calYear).map(d => d.Month))].sort((a,b) => b-a);
+                if (months.length > 0) calZoomInMonth(months[0]);
+                else calZoomInMonth(1);
+            }
+        };
+
+        window.calNavigate = function(dir) {
+            if (calMode === 'MONTHS') {
+                calYear += dir;
+            } else if (calMode === 'DAYS') {
+                calMonth += dir;
+                if (calMonth > 12) { calMonth = 1; calYear++; }
+                if (calMonth < 1) { calMonth = 12; calYear--; }
+            }
+            updateSmartCalendar();
+        };
+
+        function updateSmartCalendar() {
+            const container = document.getElementById('calendarContainer');
+            const indicator = document.getElementById('calendarModeIndicator');
+            
+            const btnPrev = document.getElementById('btnCalPrev');
+            const btnNext = document.getElementById('btnCalNext');
+            const btnZoomOut = document.getElementById('btnCalZoomOut');
+            const btnZoomIn = document.getElementById('btnCalZoomIn');
+
+            // El calendario usa los datos filtrados SOLO por Símbolo
+            const sym = document.getElementById('filterSymbol').value;
+            let calData = rawData;
+            if (sym !== "ALL") {
+                calData = rawData.filter(d => d.Symbol === sym);
+            }
+
+            container.innerHTML = ''; 
+
+            // Actualizar botones
+            btnPrev.disabled = (calMode === 'YEARS');
+            btnNext.disabled = (calMode === 'YEARS');
+            btnZoomOut.disabled = (calMode === 'YEARS');
+            if (btnZoomIn) btnZoomIn.disabled = (calMode === 'DAYS');
+
+            if (calData.length === 0) {
+                indicator.innerText = "Sin Datos";
+                container.innerHTML = '<div class="text-gray-500 py-8 text-center border border-dashed border-gray-700 rounded-xl">No hay operaciones registradas.</div>';
+                return;
+            }
+
+            if (calMode === 'YEARS') {
+                indicator.innerText = "Vista: Años";
+                renderYearsGrid(container, calData);
+            } else if (calMode === 'MONTHS') {
+                indicator.innerText = `Año ${calYear}`;
+                renderMonthsGrid(container, calData, calYear);
+            } else if (calMode === 'DAYS') {
+                indicator.innerText = `${monthNames[calMonth-1]} ${calYear}`;
+                renderDaysGrid(container, calData, calYear, calMonth);
+            }
+        }
+
+        // 1. NIVEL ANUAL
+        function renderYearsGrid(container, data) {
+            let yearlyData = {};
+            data.forEach(d => {
+                if(!yearlyData[d.Year]) yearlyData[d.Year] = 0;
+                yearlyData[d.Year] += d.NetProfit;
+            });
+
+            let years = Object.keys(yearlyData).sort((a,b) => b - a); 
+            let html = `<div class="grid grid-cols-2 md:grid-cols-4 gap-4 fade-in">`;
+
+            years.forEach(year => {
+                let profit = yearlyData[year];
+                let colorClass = getCellColorClass(profit);
+                
+                html += `
+                    <div onclick="calZoomInYear('${year}')" class="h-28 flex flex-col items-center justify-center rounded-xl border ${colorClass} p-4 transition-transform hover:-translate-y-1 cursor-pointer relative group">
+                        <span class="absolute top-2 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/30 px-2 py-1 rounded">Ver Meses 🔍</span>
+                        <span class="text-sm font-semibold mb-2 opacity-75">Año ${year}</span>
+                        <span class="text-2xl font-bold truncate-text w-full text-center">${fmtMoney(profit, 2)}</span>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // 2. NIVEL MENSUAL
+        function renderMonthsGrid(container, data, year) {
+            let monthlyData = {};
+            data.forEach(d => {
+                if (d.Year === year) {
+                    if(!monthlyData[d.Month]) monthlyData[d.Month] = 0;
+                    monthlyData[d.Month] += d.NetProfit;
+                }
+            });
+
+            let html = `<div class="grid grid-cols-3 md:grid-cols-4 gap-4 fade-in">`;
+
+            for(let i = 1; i <= 12; i++) {
+                let profit = monthlyData[i];
+                let colorClass = getCellColorClass(profit);
+                let displayProfit = profit !== undefined ? fmtMoney(profit, 2) : 'Sin trades';
+                
+                html += `
+                    <div onclick="calZoomInMonth('${i}')" class="h-24 flex flex-col items-center justify-center rounded-xl border ${colorClass} p-2 transition-transform hover:-translate-y-1 cursor-pointer relative group">
+                        <span class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/30 px-2 py-1 rounded">Ver Días 🔍</span>
+                        <span class="text-xs font-semibold mb-1 opacity-75 uppercase">${monthNames[i-1]}</span>
+                        <span class="text-lg font-bold truncate-text w-full text-center">${displayProfit}</span>
+                    </div>
+                `;
+            }
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // 3. NIVEL DIARIO (Calendario Tradicional)
+        function renderDaysGrid(container, data, year, month) {
+            let dailyData = {};
+            data.forEach(d => {
+                if (d.Year === year && d.Month === month) {
+                    let day = d.Time.getDate();
+                    if(!dailyData[day]) dailyData[day] = 0;
+                    dailyData[day] += d.NetProfit;
+                }
+            });
+
+            let daysInMonth = new Date(year, month, 0).getDate();
+            let firstDay = new Date(year, month - 1, 1).getDay(); // 0=Domingo, 6=Sábado
+
+            let html = `<div class="w-full max-w-4xl mx-auto fade-in">`;
+            
+            // Encabezados de días (Dom a Sáb)
+            html += `<div class="grid grid-cols-7 text-center text-xs text-gray-400 font-bold mb-2">`;
+            ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(d => html += `<div class="py-2">${d}</div>`);
+            html += `</div>`;
+
+            // Cuadrícula del calendario
+            html += `<div class="grid grid-cols-7 gap-1 md:gap-2">`;
+            
+            // Espacios vacíos antes del día 1
+            for(let i = 0; i < firstDay; i++) {
+                html += `<div class="aspect-square rounded border border-transparent"></div>`;
+            }
+
+            // Días del mes
+            for(let i = 1; i <= daysInMonth; i++) {
+                let profit = dailyData[i];
+                let colorClass = getCellColorClass(profit);
+                let displayProfit = profit !== undefined ? fmtMoney(profit, 1) : '-';
+                
+                html += `
+                    <div class="aspect-square flex flex-col items-center justify-center rounded border ${colorClass} p-1 transition-transform hover:scale-105 cursor-default" title="Día ${i}\nNeto: ${profit !== undefined ? fmtMoney(profit, 2) : '0.00'}">
+                        <span class="text-[10px] md:text-xs font-semibold mb-1 opacity-75">${i}</span>
+                        <span class="text-[10px] md:text-sm font-bold truncate-text w-full text-center">${displayProfit}</span>
+                    </div>
+                `;
+            }
+
+            html += `</div></div>`;
+            container.innerHTML = html;
+        }
+
+        function clearData() {
+            if(confirm("¿Estás seguro de borrar todos los datos guardados en tu navegador?")) {
+                localStorage.removeItem(storageKey);
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
