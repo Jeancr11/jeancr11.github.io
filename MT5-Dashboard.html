@@ -44,6 +44,15 @@
             border-bottom: 2px solid #3b82f6;
             color: #60a5fa;
         }
+        /* Ocultar flechas de inputs numéricos del optimizador */
+        .hide-arrows::-webkit-outer-spin-button,
+        .hide-arrows::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .hide-arrows[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white font-sans min-h-screen">
@@ -62,6 +71,10 @@
                     </button>
                     <button onclick="switchTab('comparator')" id="nav-comparator" class="nav-link font-semibold text-gray-300 hover:text-white pb-1 transition-colors">
                         Comparador
+                    </button>
+                    <!-- NUEVO: Botón Optimizador -->
+                    <button onclick="switchTab('optimizer')" id="nav-optimizer" class="nav-link font-semibold text-gray-300 hover:text-white pb-1 transition-colors">
+                        Optimizador
                     </button>
                 </div>
             </div>
@@ -396,6 +409,140 @@
             </div>
         </div>
 
+        <!-- ========================================================= -->
+        <!-- PÁGINA 3: OPTIMIZADOR / FILTRO DE RESULTADOS (NUEVO)      -->
+        <!-- ========================================================= -->
+        <div id="view-optimizer" class="hidden fade-in">
+            
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-gray-800 py-3 px-5 rounded-xl shadow-lg border border-gray-700">
+                <div>
+                    <h1 class="text-2xl font-bold text-teal-400">⚙️ Filtro de Optimización</h1>
+                    <p class="text-gray-400 text-xs mt-0.5">Sube reportes de optimización (.xml, .xlsx, .csv) para filtrar resultados en bruto.</p>
+                </div>
+                <div class="mt-3 md:mt-0 flex gap-3">
+                    <input type="file" id="optimizerFileInput" accept=".xlsx, .xls, .csv, .xml, .html, .htm" multiple class="hidden" />
+                    <button onclick="document.getElementById('optimizerFileInput').click()" class="bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold py-1.5 px-4 rounded-lg shadow-md transition-all flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Añadir Reportes
+                    </button>
+                    <button onclick="clearOptimizer()" class="bg-red-600 hover:bg-red-500 text-white text-sm font-semibold py-1.5 px-4 rounded-lg shadow-md transition-all">
+                        Limpiar Todo
+                    </button>
+                </div>
+            </div>
+
+            <div id="optFilesList" class="flex flex-wrap gap-3 mb-4">
+                <div class="text-sm text-gray-500 italic mt-2">Aún no hay reportes de optimización cargados.</div>
+            </div>
+
+            <div id="optimizerContent" class="hidden flex-col gap-6">
+                
+                <!-- Barra de Filtros del Optimizador -->
+                <div class="bg-gray-800 p-5 rounded-xl border border-teal-700/50 shadow-lg flex flex-col gap-5">
+                    
+                    <div class="flex items-center gap-2 text-teal-300 font-semibold border-b border-gray-700 pb-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                        <span>Criterios Principales</span>
+                    </div>
+                    
+                    <!-- Fila 1 de Filtros (Nuevos inputs numéricos con estilo) -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+                        <div class="flex flex-col">
+                            <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Profit Mínimo ($)</label>
+                            <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
+                                <button onclick="stepOptInput('optFiltProfit', -100)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
+                                <input type="number" id="optFiltProfit" value="3000" step="100" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <button onclick="stepOptInput('optFiltProfit', 100)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Trades Mínimos</label>
+                            <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
+                                <button onclick="stepOptInput('optFiltTrades', -10)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
+                                <input type="number" id="optFiltTrades" value="60" step="10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <button onclick="stepOptInput('optFiltTrades', 10)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Profit Factor Mín.</label>
+                            <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
+                                <button onclick="stepOptInput('optFiltPF', -0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
+                                <input type="number" id="optFiltPF" value="2.50" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <button onclick="stepOptInput('optFiltPF', 0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Drawdown Máx. (%)</label>
+                            <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
+                                <button onclick="stepOptInput('optFiltDD', -1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
+                                <input type="number" id="optFiltDD" value="10.00" step="1.00" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <button onclick="stepOptInput('optFiltDD', 1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fila 2 de Filtros (Más Filtros - Ocultos por defecto) -->
+                    <div id="extraFiltersContainer" class="hidden grid grid-cols-2 md:grid-cols-3 gap-5 border-t border-gray-700 pt-4 mt-1">
+                        <div class="flex flex-col">
+                            <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5 text-teal-300">Exp. Payoff Mín.</label>
+                            <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
+                                <button onclick="stepOptInput('optFiltPayoff', -1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
+                                <input type="number" id="optFiltPayoff" value="0.00" step="1.00" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <button onclick="stepOptInput('optFiltPayoff', 1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5 text-teal-300">Recovery Factor Mín.</label>
+                            <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
+                                <button onclick="stepOptInput('optFiltRecovery', -0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
+                                <input type="number" id="optFiltRecovery" value="0.00" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <button onclick="stepOptInput('optFiltRecovery', 0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5 text-teal-300">Sharpe Ratio Mín.</label>
+                            <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
+                                <button onclick="stepOptInput('optFiltSharpe', -0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
+                                <input type="number" id="optFiltSharpe" value="0.00" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <button onclick="stepOptInput('optFiltSharpe', 0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col md:flex-row justify-between items-center mt-2 pt-4 border-t border-gray-700 gap-4">
+                        <span id="optResultsCount" class="text-sm font-semibold text-teal-400">Mostrando 0 resultados</span>
+                        <div class="flex flex-wrap justify-center md:justify-end gap-3 w-full md:w-auto">
+                            <button onclick="toggleExtraFiltersRow()" id="btnToggleExtraFilters" class="bg-gray-800 hover:bg-teal-700 text-teal-400 hover:text-white text-xs font-semibold py-1.5 px-4 rounded border border-teal-600 transition-all flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                Más Filtros
+                            </button>
+                            <button onclick="toggleExtraParams()" id="btnToggleExtra" class="bg-gray-700 hover:bg-gray-600 text-white text-xs font-semibold py-1.5 px-4 rounded border border-gray-600 transition-all">
+                                Mostrar Parámetros
+                            </button>
+                            <button onclick="resetOptimizerFilters()" class="bg-gray-700 hover:bg-red-600 hover:text-white text-gray-300 text-xs font-semibold py-1.5 px-4 rounded border border-gray-600 transition-all">
+                                Restablecer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Resultados de Optimización -->
+                <div class="bg-gray-800 rounded-xl border border-gray-700 shadow-lg overflow-hidden">
+                    <div class="overflow-x-auto cell-scrollbar max-h-[600px]">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="bg-gray-900 border-b border-gray-700 text-gray-400 uppercase font-semibold text-[11px] sticky top-0 z-10 shadow-sm" id="optTableHeader">
+                                <!-- Cabeceras inyectadas por JS -->
+                            </thead>
+                            <tbody id="optTableBody" class="divide-y divide-gray-700">
+                                <!-- Filas inyectadas por JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -403,8 +550,11 @@
         function switchTab(tabId) {
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-comparator').classList.add('hidden');
+            document.getElementById('view-optimizer').classList.add('hidden'); // Añadido
+            
             document.getElementById('nav-dashboard').classList.remove('active');
             document.getElementById('nav-comparator').classList.remove('active');
+            document.getElementById('nav-optimizer').classList.remove('active'); // Añadido
             
             document.getElementById(`view-${tabId}`).classList.remove('hidden');
             document.getElementById(`nav-${tabId}`).classList.add('active');
@@ -553,6 +703,9 @@
                 }
             };
             reader.readAsArrayBuffer(file);
+            
+            // SOLUCIÓN: Limpiar el valor del input para poder subir el mismo archivo después
+            e.target.value = '';
         });
 
         function processRawData(data) {
@@ -1118,6 +1271,9 @@
                 };
                 reader.readAsArrayBuffer(file);
             });
+            
+            // SOLUCIÓN: Limpiar el valor del input para poder subir el mismo archivo después
+            e.target.value = '';
         });
 
         function addFileToComparator(name, dataArr) {
@@ -1299,6 +1455,268 @@
                     }
                 }
             });
+        }
+
+        // ==========================================
+        // --- NUEVO: OPTIMIZADOR LÓGICA ---
+        // ==========================================
+        let optFiles = [];
+        let globalExtraColumns = []; // Guardará el orden exacto del primer archivo leído
+        let optNextColorIndex = 0;
+        let showExtraParams = false;
+        
+        // Estructura fija de columnas base
+        const BASE_COLUMNS = ['Pass', 'Result', 'Profit', 'Expected Payoff', 'Profit Factor', 'Recovery Factor', 'Sharpe Ratio', 'Equity DD %', 'Trades'];
+
+        document.getElementById('optimizerFileInput').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = event => {
+                    try { 
+                        const workbook = XLSX.read(new Uint8Array(event.target.result), { type: 'array' });
+                        const jsonResult = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+                        processOptimizerData(file.name, jsonResult);
+                    } catch (err) { console.error("Error optimizador", err); }
+                };
+                reader.readAsArrayBuffer(file);
+            });
+            
+            // SOLUCIÓN: Limpiar el valor del input para poder subir el mismo archivo después
+            e.target.value = '';
+        });
+
+        function processOptimizerData(filename, dataArr) {
+            if(dataArr.length === 0) return;
+            
+            let color = colorPalette[optNextColorIndex % colorPalette.length];
+            optNextColorIndex++;
+
+            // Extraer orden de columnas extras directamente del archivo
+            let fileHeaders = Object.keys(dataArr[0]);
+            let fileExtraColumns = fileHeaders.filter(k => !BASE_COLUMNS.includes(k) && k !== 'Custom');
+            
+            // Añadir las nuevas columnas extras a la lista global respetando el orden original
+            fileExtraColumns.forEach(k => {
+                if(!globalExtraColumns.includes(k)) {
+                    globalExtraColumns.push(k);
+                }
+            });
+
+            let processed = dataArr.map(row => {
+                if('Custom' in row) delete row['Custom'];
+                return {
+                    ...row,
+                    'Profit': cleanNumber(row['Profit']),
+                    'Expected Payoff': cleanNumber(row['Expected Payoff']),
+                    'Recovery Factor': cleanNumber(row['Recovery Factor']),
+                    'Sharpe Ratio': cleanNumber(row['Sharpe Ratio']),
+                    'Trades': cleanNumber(row['Trades']),
+                    'Profit Factor': cleanNumber(row['Profit Factor']),
+                    'Equity DD %': cleanNumber(row['Equity DD %']),
+                    '_source': filename,
+                    '_color': color
+                };
+            });
+
+            optFiles.push({ filename, color, data: processed });
+            
+            document.getElementById('optimizerContent').classList.remove('hidden');
+            renderOptimizerFilesTags();
+            applyOptimizerFilters();
+        }
+
+        // Helper para los botones +/-
+        function stepOptInput(id, stepAmount) {
+            let el = document.getElementById(id);
+            let val = parseFloat(el.value) || 0;
+            // Corregir problemas de redondeo de punto flotante en JS
+            let result = (val + stepAmount).toFixed(2);
+            // Quitar decimales innecesarios en .00
+            el.value = result.replace(/\.00$/, '');
+            applyOptimizerFilters();
+        }
+
+        function toggleExtraFiltersRow() {
+            let row = document.getElementById('extraFiltersContainer');
+            let btn = document.getElementById('btnToggleExtraFilters');
+            if(row.classList.contains('hidden')) {
+                row.classList.remove('hidden');
+                btn.classList.add('bg-teal-700', 'text-white');
+                btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg> Menos Filtros`;
+            } else {
+                row.classList.add('hidden');
+                btn.classList.remove('bg-teal-700', 'text-white');
+                btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Más Filtros`;
+            }
+        }
+
+        function renderOptimizerFilesTags() {
+            const listDiv = document.getElementById('optFilesList');
+            if (optFiles.length === 0) {
+                listDiv.innerHTML = '<div class="text-sm text-gray-500 italic mt-2">Aún no hay reportes de optimización cargados.</div>';
+                document.getElementById('optimizerContent').classList.add('hidden');
+                return;
+            }
+            listDiv.innerHTML = optFiles.map((f, i) => `
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-600 bg-gray-800 shadow-sm">
+                    <span class="w-3 h-3 rounded-full" style="background-color: ${f.color}"></span>
+                    <span class="text-sm font-semibold truncate max-w-[150px]" title="${f.filename}">${f.filename}</span>
+                    <button onclick="removeOptFile(${i})" class="ml-1 text-gray-400 hover:text-red-500 font-bold">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removeOptFile(index) {
+            optFiles.splice(index, 1);
+            
+            // Si no quedan archivos, limpiar las columnas extras globales
+            if(optFiles.length === 0) {
+                globalExtraColumns = [];
+            }
+            
+            renderOptimizerFilesTags();
+            applyOptimizerFilters();
+        }
+
+        function clearOptimizer() {
+            optFiles = [];
+            globalExtraColumns = [];
+            optNextColorIndex = 0;
+            renderOptimizerFilesTags();
+        }
+
+        function toggleExtraParams() {
+            showExtraParams = !showExtraParams;
+            document.getElementById('btnToggleExtra').innerText = showExtraParams ? "Ocultar Parámetros" : "Mostrar Parámetros";
+            document.getElementById('btnToggleExtra').classList.toggle('bg-teal-600', showExtraParams);
+            applyOptimizerFilters(); 
+        }
+
+        function resetOptimizerFilters() {
+            document.getElementById('optFiltProfit').value = "3000";
+            document.getElementById('optFiltTrades').value = "60";
+            document.getElementById('optFiltPF').value = "2.50";
+            document.getElementById('optFiltDD').value = "10.00";
+            
+            // Nuevos
+            document.getElementById('optFiltPayoff').value = "0.00";
+            document.getElementById('optFiltRecovery').value = "0.00";
+            document.getElementById('optFiltSharpe').value = "0.00";
+            
+            applyOptimizerFilters();
+        }
+
+        function applyOptimizerFilters() {
+            if(optFiles.length === 0) return;
+
+            const minProfit = parseFloat(document.getElementById('optFiltProfit').value) || 0;
+            const minTrades = parseFloat(document.getElementById('optFiltTrades').value) || 0;
+            const minPF = parseFloat(document.getElementById('optFiltPF').value) || 0;
+            const maxDD = parseFloat(document.getElementById('optFiltDD').value) || 999;
+            
+            const minPayoff = parseFloat(document.getElementById('optFiltPayoff').value) || -999;
+            const minRecovery = parseFloat(document.getElementById('optFiltRecovery').value) || -999;
+            const minSharpe = parseFloat(document.getElementById('optFiltSharpe').value) || -999;
+
+            let allRows = [];
+            optFiles.forEach(file => {
+                allRows = allRows.concat(file.data);
+            });
+
+            let filtered = allRows.filter(r => {
+                return (r['Profit'] >= minProfit) && 
+                       (r['Trades'] >= minTrades) && 
+                       (r['Profit Factor'] >= minPF) && 
+                       (r['Equity DD %'] <= maxDD) &&
+                       (r['Expected Payoff'] >= minPayoff) &&
+                       (r['Recovery Factor'] >= minRecovery) &&
+                       (r['Sharpe Ratio'] >= minSharpe);
+            });
+
+            document.getElementById('optResultsCount').innerText = `Mostrando ${filtered.length} resultados de ${allRows.length} totales`;
+
+            renderOptimizerTable(filtered);
+        }
+
+        function renderOptimizerTable(data) {
+            const head = document.getElementById('optTableHeader');
+            const body = document.getElementById('optTableBody');
+
+            if(data.length === 0) {
+                head.innerHTML = '';
+                body.innerHTML = `<tr><td class="p-6 text-center text-gray-500 italic">No hay resultados que coincidan con los filtros actuales.</td></tr>`;
+                return;
+            }
+
+            // Render Header (Asegurando el orden de globalExtraColumns extraído originalmente)
+            let headHTML = `<tr>
+                <th class="p-3 whitespace-nowrap bg-gray-900 border-r border-gray-700">Arch.</th>
+                ${BASE_COLUMNS.map(c => `<th class="p-3 whitespace-nowrap bg-gray-900">${c}</th>`).join('')}
+            `;
+            if (showExtraParams) {
+                globalExtraColumns.forEach(k => {
+                    headHTML += `<th class="p-3 whitespace-nowrap bg-gray-900 text-teal-400 border-l border-gray-700">${k}</th>`;
+                });
+            }
+            headHTML += `</tr>`;
+            head.innerHTML = headHTML;
+
+            // Render Body
+            body.innerHTML = data.map((row, idx) => {
+                let rowBg = idx % 2 === 0 ? 'bg-gray-800/30' : 'bg-transparent';
+                
+                let html = `<tr class="${rowBg} hover:bg-gray-700 transition-colors">
+                    <td class="p-3 border-r border-gray-700 w-10 text-center">
+                        <div class="w-3 h-3 rounded-full inline-block" style="background-color: ${row._color}" title="${row._source}"></div>
+                    </td>
+                `;
+
+                // Columnas Base: Topadas a 2 decimales máximo siempre
+                BASE_COLUMNS.forEach(col => {
+                    let val = row[col];
+                    if(val === undefined) val = '-';
+                    
+                    let formattedVal = val;
+                    let colorClass = '';
+                    
+                    if(typeof val === 'number') {
+                        if(col === 'Profit') { formattedVal = fmtMoney(val, 2); colorClass = val >= 0 ? 'text-green-400' : 'text-red-400'; }
+                        else if(col === 'Expected Payoff') { formattedVal = fmtMoney(val, 2); }
+                        else if(col === 'Equity DD %') { formattedVal = val.toFixed(2) + '%'; colorClass = 'text-orange-400'; }
+                        else if(col === 'Trades' || col === 'Pass') { formattedVal = val.toFixed(0); } // Enteros
+                        else {
+                            // Profit Factor, Recovery Factor, Sharpe Ratio
+                            formattedVal = val.toFixed(2);
+                            if(col === 'Profit Factor' && val >= 2.5) colorClass = 'text-blue-400 font-bold';
+                        }
+                    }
+
+                    html += `<td class="p-3 font-mono ${colorClass}">${formattedVal}</td>`;
+                });
+
+                // Columnas Extras: Topadas a 2 decimales si son números con decimales
+                if(showExtraParams) {
+                    globalExtraColumns.forEach(k => {
+                        let val = row[k];
+                        let formattedVal = val;
+                        
+                        if(val === undefined || val === null || val === '') {
+                            formattedVal = '-';
+                        } else if (typeof val === 'number') {
+                            // Si es número con decimales, toFixed(2), si es entero se queda igual
+                            formattedVal = Number.isInteger(val) ? val : parseFloat(val).toFixed(2);
+                        }
+                        
+                        html += `<td class="p-3 font-mono text-gray-400 border-l border-gray-700/50">${formattedVal}</td>`;
+                    });
+                }
+
+                html += `</tr>`;
+                return html;
+            }).join('');
         }
 
     </script>
