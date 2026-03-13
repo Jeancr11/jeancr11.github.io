@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Journal Dashboard Pro</title>
+    <title>Trading Journal Dashboard</title>
     
+    <link rel="icon" href="https://res.cloudinary.com/dlo3r0you/image/upload/v1754687755/logo_oyr4yr.png" type="image/png">
+
     <!-- Librerías: Tailwind (CSS), SheetJS (Excel), Chart.js (Gráficos) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -25,14 +27,17 @@
             text-overflow: ellipsis;
         }
         .cell-scrollbar::-webkit-scrollbar {
-            width: 3px;
+            width: 4px;
         }
         .cell-scrollbar::-webkit-scrollbar-track {
             background: transparent;
         }
         .cell-scrollbar::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
+            border-radius: 4px;
+        }
+        .cell-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
         }
     </style>
 </head>
@@ -41,8 +46,8 @@
     <!-- Cabecera y Botones de Acción -->
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
         <div>
-            <h1 class="text-3xl font-bold text-blue-400">📊 Trading Performance Pro</h1>
-            <p class="text-gray-400 text-sm mt-1">Analizador de Historial MT5 y Analítica Avanzada</p>
+            <h1 class="text-3xl font-bold text-blue-400">📊 Trading Performance</h1>
+            <p class="text-gray-400 text-sm mt-1">Analizador de Historial MT5</p>
         </div>
         <div class="mt-4 md:mt-0 flex gap-4">
             <input type="file" id="fileInput" accept=".xlsx, .xls, .csv" class="hidden" />
@@ -59,8 +64,8 @@
     <!-- Contenedor Principal (Oculto hasta que haya datos) -->
     <div id="dashboardContent" class="hidden fade-in flex flex-col lg:flex-row gap-6 items-stretch">
         
-        <!-- BARRA LATERAL (Únicamente Top Pares - Toma toda la altura) -->
-        <div class="w-full lg:w-56 xl:w-64 shrink-0 flex flex-col">
+        <!-- BARRA LATERAL (Únicamente Top Pares - Toma toda la altura, MÁS ANCHA) -->
+        <div class="w-full lg:w-64 xl:w-80 shrink-0 flex flex-col">
             <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg flex-1 flex flex-col min-h-[500px]">
                 <h2 class="text-base font-semibold text-gray-300 mb-3 border-b border-gray-700 pb-2 flex items-center gap-2">
                     <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
@@ -75,7 +80,7 @@
         <!-- ÁREA PRINCIPAL (Métricas, Gráficos y Calendario) -->
         <div class="flex-1 min-w-0 flex flex-col gap-6">
 
-            <!-- NUEVO: Barra de Filtros Horizontal -->
+            <!-- Barra de Filtros Horizontal -->
             <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex flex-col md:flex-row items-center gap-4 justify-between">
                 <div class="flex items-center gap-2 text-gray-300 font-semibold w-full md:w-auto">
                     <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
@@ -118,7 +123,10 @@
                 <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
                     <span class="text-gray-400 text-xs uppercase tracking-wide">Cantidad de Trades</span>
                     <span id="kpiTotalTrades" class="text-2xl lg:text-3xl font-bold mt-1 text-white">0</span>
-                    <span id="kpiBestDay" class="text-xs text-blue-400 mt-2 font-semibold">Mejor día: -</span>
+                    <div class="flex flex-col items-center mt-2 gap-0.5 w-full">
+                        <span id="kpiBestDay" class="text-[10px] lg:text-xs text-green-400 font-semibold">Mejor día: -</span>
+                        <span id="kpiWorstDay" class="text-[10px] lg:text-xs text-red-400 font-semibold">Peor día: -</span>
+                    </div>
                 </div>
                 
                 <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
@@ -195,6 +203,65 @@
                 </div>
             </div>
 
+            <!-- NUEVO: 6 Gráficos Analíticos -->
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <!-- Fila 1: Entradas -->
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow flex flex-col">
+                    <h3 class="text-sm font-semibold text-gray-300 mb-1 text-center">Entradas por Hora</h3>
+                    <p class="text-[10px] text-gray-500 text-center mb-3">🟣 Asia (22-7) 🔵 Europa (8-12) 🟢 EEUU (13-21)</p>
+                    <div class="relative h-48 w-full"><canvas id="cTradesHour"></canvas></div>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow flex flex-col">
+                    <h3 class="text-sm font-semibold text-gray-300 mb-3 text-center">Entradas por Día de la Semana</h3>
+                    <div class="relative h-48 w-full"><canvas id="cTradesDay"></canvas></div>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow flex flex-col">
+                    <h3 class="text-sm font-semibold text-gray-300 mb-3 text-center">Entradas por Mes</h3>
+                    <div class="relative h-48 w-full"><canvas id="cTradesMonth"></canvas></div>
+                </div>
+
+                <!-- Fila 2: Profits -->
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow flex flex-col">
+                    <h3 class="text-sm font-semibold text-gray-300 mb-1 text-center">Ganancias/Pérdidas por Hora</h3>
+                    <div class="relative h-48 w-full"><canvas id="cProfitHour"></canvas></div>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow flex flex-col">
+                    <h3 class="text-sm font-semibold text-gray-300 mb-1 text-center">Ganancias/Pérdidas por Día</h3>
+                    <div class="relative h-48 w-full"><canvas id="cProfitDay"></canvas></div>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow flex flex-col">
+                    <h3 class="text-sm font-semibold text-gray-300 mb-1 text-center">Ganancias/Pérdidas por Mes</h3>
+                    <div class="relative h-48 w-full"><canvas id="cProfitMonth"></canvas></div>
+                </div>
+            </div>
+
+            <!-- Análisis de Retención y Scatter Plot -->
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full mt-2">
+                
+                <h2 class="text-lg font-semibold text-gray-300 mb-4">Análisis de Retención de Posición (Hold Time)</h2>
+
+                <!-- Tarjetas de Tiempos -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-gray-900/50 border border-gray-700 p-3 rounded-lg text-center flex justify-between px-6 items-center shadow-inner">
+                        <span class="text-gray-400 text-xs uppercase tracking-wide font-semibold">Tiempo Mínimo</span>
+                        <span id="statHoldMin" class="text-lg font-bold text-white">-</span>
+                    </div>
+                    <div class="bg-gray-900/50 border border-gray-700 p-3 rounded-lg text-center flex justify-between px-6 items-center shadow-inner">
+                        <span class="text-gray-400 text-xs uppercase tracking-wide font-semibold">Tiempo Medio</span>
+                        <span id="statHoldAvg" class="text-lg font-bold text-blue-400">-</span>
+                    </div>
+                    <div class="bg-gray-900/50 border border-gray-700 p-3 rounded-lg text-center flex justify-between px-6 items-center shadow-inner">
+                        <span class="text-gray-400 text-xs uppercase tracking-wide font-semibold">Tiempo Máximo</span>
+                        <span id="statHoldMax" class="text-lg font-bold text-purple-400">-</span>
+                    </div>
+                </div>
+
+                <!-- Gráfico Gigante Scatter -->
+                <div class="relative h-[500px] lg:h-[600px] xl:h-[700px] w-full flex-1">
+                    <canvas id="scatterChart"></canvas>
+                </div>
+            </div>
+
         </div> <!-- Cierre del Área Principal -->
 
     </div>
@@ -212,26 +279,31 @@
     </div>
 
     <script>
-        // Variables Globales
+        // --- VARIABLES GLOBALES ---
         let rawData = [];
         let filteredData = [];
+        const storageKey = 'mt5_trading_data_v6'; 
+        
+        // Instancias de gráficos
         let equityChartInstance = null;
-        const storageKey = 'mt5_trading_data_v4'; 
+        let cTH = null, cTD = null, cTM = null; // Charts Trades
+        let cPH = null, cPD = null, cPM = null; // Charts Profits
+        let scatterChartInstance = null;
 
         // Variables del Calendario
         let calMode = 'YEARS';
         let calYear = null;
         let calMonth = null;
 
-        const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-        const daysArr = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+        const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+        const daysArrFull = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+        const daysArr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
-        // Helper para formatear dinero con comas (1,000.00)
+        // --- HELPERS BÁSICOS ---
         function fmtMoney(val, decimals = 2) {
             return '$' + parseFloat(val).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
         }
 
-        // Limpiador de números para el formato de MetaTrader 5
         function cleanNumber(val) {
             if (val === undefined || val === null) return 0;
             if (typeof val === 'number') return val;
@@ -240,6 +312,15 @@
             return isNaN(num) ? 0 : num;
         }
 
+        // Formato para mostrar horas de retención de manera legible
+        function formatDurationText(hours) {
+            if(hours === undefined || isNaN(hours)) return "-";
+            if(hours < 1) return (hours * 60).toFixed(0) + " min";
+            if(hours > 24) return (hours / 24).toFixed(1) + " días";
+            return hours.toFixed(1) + " h";
+        }
+
+        // --- INICIALIZACIÓN ---
         window.onload = () => {
             const savedData = localStorage.getItem(storageKey);
             if (savedData) {
@@ -248,7 +329,6 @@
             }
         };
 
-        // LECTURA DE ARCHIVO EXCEL (.xlsx)
         document.getElementById('fileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -258,8 +338,7 @@
                 const data = new Uint8Array(event.target.result);
                 try {
                     const workbook = XLSX.read(data, { type: 'array', cellDates: true });
-                    const firstSheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[firstSheetName];
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
                     const jsonResult = XLSX.utils.sheet_to_json(worksheet);
                     processRawData(jsonResult);
                 } catch (err) {
@@ -270,47 +349,75 @@
             reader.readAsArrayBuffer(file);
         });
 
+        // --- PROCESAMIENTO CRONOLÓGICO Y EMPAREJAMIENTO (IN/OUT) ---
         function processRawData(data) {
-            let processed = [];
-            
+            // 1. Parsear fechas y ordenar todo cronológicamente
+            let parsedRows = [];
             data.forEach(row => {
-                if (row.Time !== undefined && row.Profit !== undefined) {
-                    let dateObj;
-                    if (row.Time instanceof Date) {
-                        dateObj = row.Time;
-                    } else if (typeof row.Time === 'number') {
-                        dateObj = new Date(Math.round((row.Time - 25569) * 86400 * 1000));
-                    } else if (typeof row.Time === 'string') {
-                        dateObj = new Date(row.Time.replace(/\./g, '-'));
+                let dateObj;
+                if (row.Time instanceof Date) dateObj = row.Time;
+                else if (typeof row.Time === 'number') dateObj = new Date(Math.round((row.Time - 25569) * 86400 * 1000));
+                else if (typeof row.Time === 'string') dateObj = new Date(row.Time.replace(/\./g, '-'));
+                
+                if (dateObj && !isNaN(dateObj.getTime())) {
+                    row.parsedTime = dateObj;
+                    parsedRows.push(row);
+                }
+            });
+            parsedRows.sort((a,b) => a.parsedTime - b.parsedTime);
+
+            // 2. Emparejar trades IN con trades OUT para obtener la duración real y hora de entrada
+            let processed = [];
+            let openPositions = {}; // colas por símbolo (FIFO)
+
+            parsedRows.forEach(row => {
+                let sym = (row.Symbol || '').trim();
+                if (!sym) return;
+
+                let dirStr = String(row.Direction || '').toLowerCase().trim();
+                let rawProfit = cleanNumber(row.Profit);
+
+                // Registrar entradas
+                if (dirStr === 'in') {
+                    if (!openPositions[sym]) openPositions[sym] = [];
+                    openPositions[sym].push(row.parsedTime);
+                } 
+                // Registrar salidas y calcular ganancias
+                else if (dirStr === 'out' || dirStr === 'in/out' || rawProfit !== 0) {
+                    // Si el excel solo tiene trades sin dirección pero con profit (como la versión anterior)
+                    if (rawProfit === 0 && dirStr !== 'out') return; 
+                    
+                    let entryTime = row.parsedTime; 
+                    // FIFO: sacamos la entrada más antigua de este símbolo
+                    if (openPositions[sym] && openPositions[sym].length > 0) {
+                        entryTime = openPositions[sym].shift(); 
                     }
 
-                    if(dateObj && !isNaN(dateObj.getTime())) {
-                        let rawProfit = cleanNumber(row.Profit);
-                        if (rawProfit === 0) return; // Ignorar trades en 0
+                    let exitTime = row.parsedTime;
+                    let durationHours = (exitTime.getTime() - entryTime.getTime()) / (1000 * 60 * 60);
+                    if(durationHours < 0) durationHours = 0; // Fallback por si acaso
 
-                        let comm = cleanNumber(row.Commission);
-                        let swap = cleanNumber(row.Swap);
-                        let netProfit = rawProfit + comm + swap;
+                    let comm = cleanNumber(row.Commission);
+                    let swap = cleanNumber(row.Swap);
+                    let netProfit = rawProfit + comm + swap;
 
-                        if(row.Symbol && row.Symbol.trim() !== '') {
-                            processed.push({
-                                Time: dateObj,
-                                TimeStr: dateObj.toISOString(),
-                                Symbol: row.Symbol.trim(),
-                                NetProfit: netProfit,
-                                Year: dateObj.getFullYear(),
-                                Month: dateObj.getMonth() + 1, 
-                                DayOfWeek: dateObj.getDay(), // 0-6
-                                DateOnly: dateObj.toISOString().split('T')[0]
-                            });
-                        }
-                    }
+                    processed.push({
+                        Time: exitTime, // Cierre
+                        EntryTime: entryTime, // Entrada
+                        DurationHours: durationHours,
+                        Symbol: sym,
+                        NetProfit: netProfit,
+                        Year: exitTime.getFullYear(),
+                        Month: exitTime.getMonth() + 1,
+                        ExitMonth: exitTime.getMonth(), // Indice 0-11 para charts
+                        DayOfWeek: entryTime.getDay(), // Día en que entró
+                        EntryHour: entryTime.getHours(), // Hora en que entró (0-23)
+                        DateOnly: exitTime.toISOString().split('T')[0]
+                    });
                 }
             });
 
-            processed.sort((a, b) => a.Time - b.Time);
             rawData = processed;
-            
             try { localStorage.setItem(storageKey, JSON.stringify(rawData)); } catch(e) {}
             initDashboard();
         }
@@ -318,6 +425,7 @@
         function initDashboard() {
             rawData.forEach(d => {
                 if (typeof d.Time === 'string') d.Time = new Date(d.Time);
+                if (typeof d.EntryTime === 'string') d.EntryTime = new Date(d.EntryTime);
             });
 
             document.getElementById('welcomeScreen').classList.add('hidden');
@@ -326,10 +434,9 @@
 
             populateFilters();
             applyFilters();
-            updateLeaderboard();
-            updateSmartCalendar();
         }
 
+        // --- FILTROS GLOBALES ---
         function populateFilters() {
             const symbols = [...new Set(rawData.map(d => d.Symbol))].sort();
             const symbolSelect = document.getElementById('filterSymbol');
@@ -348,7 +455,13 @@
             });
         }
 
-        // --- FILTROS INSTANTÁNEOS ---
+        function clearGlobalFilters() {
+            document.getElementById('filterSymbol').value = 'ALL';
+            document.getElementById('filterYear').value = 'ALL';
+            document.getElementById('filterMonth').value = 'ALL';
+            applyFilters();
+        }
+
         function applyFilters() {
             const sym = document.getElementById('filterSymbol').value;
             const year = document.getElementById('filterYear').value;
@@ -363,39 +476,73 @@
 
             updateKPIs();
             updateChart();
+            updateAnalyticsCharts(); // Se encarga de los 6 gráficos nuevos + Scatter
+            
+            // Los elementos laterales y calendario no son afectados por el filtro global, 
+            // pero los actualizamos por si es la carga inicial.
+            updateLeaderboard(); 
+            updateSmartCalendar();
         }
 
-        function clearGlobalFilters() {
-            document.getElementById('filterSymbol').value = 'ALL';
-            document.getElementById('filterYear').value = 'ALL';
-            document.getElementById('filterMonth').value = 'ALL';
-            applyFilters();
+        // --- TOP LEADERBOARD (Independiente de filtros globales) ---
+        function updateLeaderboard() {
+            const container = document.getElementById('leaderboardContainer');
+            
+            let pairData = {};
+            rawData.forEach(d => {
+                if(!pairData[d.Symbol]) pairData[d.Symbol] = { profit: 0, count: 0 };
+                pairData[d.Symbol].profit += d.NetProfit;
+                pairData[d.Symbol].count += 1;
+            });
+
+            let sortedPairs = Object.keys(pairData).sort((a,b) => pairData[b].profit - pairData[a].profit);
+            container.innerHTML = '';
+            
+            if (sortedPairs.length === 0) {
+                container.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">Sin operaciones</div>';
+                return;
+            }
+
+            let html = '';
+            sortedPairs.forEach((p, index) => {
+                let prof = pairData[p].profit;
+                let count = pairData[p].count;
+                let colorClass = prof >= 0 ? 'text-green-400' : 'text-red-400';
+                let bgClass = index % 2 === 0 ? 'bg-gray-700/30' : 'bg-transparent';
+                let prefix = prof > 0 ? '+' : '';
+                
+                html += `
+                    <div class="flex justify-between items-center text-sm p-3 rounded hover:bg-gray-700 transition-colors ${bgClass}">
+                        <div class="flex items-center gap-2 truncate pr-2">
+                            <span class="text-xs font-bold text-gray-500 w-5 shrink-0">${index + 1}.</span>
+                            <span class="font-semibold text-gray-200 truncate text-sm" title="${p}">${p}</span>
+                            <span class="text-[11px] text-gray-400 shrink-0 ml-1">${count}</span>
+                        </div>
+                        <span class="font-bold font-mono text-sm ${colorClass} shrink-0">${prefix}${fmtMoney(prof, 2)}</span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
         }
 
+        // --- KPIs ---
         function updateKPIs() {
-            let totalProfit = 0;
-            let grossProfit = 0;
-            let grossLoss = 0;
-            let winningTrades = 0;
-            let losingTrades = 0;
-
-            let currentWinStreak = 0;
-            let currentLossStreak = 0;
-            let maxWinStreak = 0;
-            let maxLossStreak = 0;
-
-            let peak = 0;
-            let maxDrawdown = 0;
-            let cumulative = 0;
-
+            let totalProfit = 0; let grossProfit = 0; let grossLoss = 0;
+            let winningTrades = 0; let losingTrades = 0;
+            let currentWinStreak = 0; let currentLossStreak = 0;
+            let maxWinStreak = 0; let maxLossStreak = 0;
+            let peak = 0; let maxDrawdown = 0; let cumulative = 0;
+            
             let dayProfits = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
+            let dayCounts = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
 
             filteredData.forEach(d => {
                 totalProfit += d.NetProfit;
                 cumulative += d.NetProfit;
                 dayProfits[d.DayOfWeek] += d.NetProfit;
+                dayCounts[d.DayOfWeek]++;
 
-                // Drawdown ($)
                 if (cumulative > peak) peak = cumulative;
                 let drawdownAmount = peak - cumulative;
                 if (drawdownAmount > maxDrawdown) maxDrawdown = drawdownAmount;
@@ -403,14 +550,12 @@
                 if (d.NetProfit > 0) {
                     winningTrades++;
                     grossProfit += d.NetProfit;
-                    
                     currentWinStreak++;
                     currentLossStreak = 0;
                     if(currentWinStreak > maxWinStreak) maxWinStreak = currentWinStreak;
                 } else if (d.NetProfit < 0) {
                     losingTrades++;
                     grossLoss += d.NetProfit;
-
                     currentLossStreak++;
                     currentWinStreak = 0;
                     if(currentLossStreak > maxLossStreak) maxLossStreak = currentLossStreak;
@@ -421,19 +566,20 @@
             const winRate = totalTrades > 0 ? (winningTrades / totalTrades) * 100 : 0;
             const avgTrade = totalTrades > 0 ? totalProfit / totalTrades : 0;
 
-            // Encontrar el mejor día de la semana
             let maxDayProf = -Infinity;
+            let minDayProf = Infinity;
             let bestDayIndex = 0;
-            let hasProfits = false;
+            let worstDayIndex = 0;
+            let hasDataDay = false;
+            
             for(let i=0; i<=6; i++) {
-                if(dayProfits[i] > maxDayProf) {
-                    maxDayProf = dayProfits[i];
-                    bestDayIndex = i;
+                if(dayCounts[i] > 0) {
+                    if(dayProfits[i] > maxDayProf) { maxDayProf = dayProfits[i]; bestDayIndex = i; }
+                    if(dayProfits[i] < minDayProf) { minDayProf = dayProfits[i]; worstDayIndex = i; }
+                    hasDataDay = true;
                 }
-                if (dayProfits[i] > 0) hasProfits = true;
             }
 
-            // Cálculos Avanzados (PF y R/R)
             const absoluteGrossLoss = Math.abs(grossLoss);
             const profitFactor = absoluteGrossLoss > 0 ? (grossProfit / absoluteGrossLoss) : (grossProfit > 0 ? 99.99 : 0);
             
@@ -441,43 +587,32 @@
             const avgLoss = losingTrades > 0 ? absoluteGrossLoss / losingTrades : 0;
             const riskReward = avgLoss > 0 ? (avgWin / avgLoss) : (avgWin > 0 ? 99.99 : 0);
 
-            // Actualizar el DOM (Fila 1)
-            const kpiTotalEl = document.getElementById('kpiTotalProfit');
-            kpiTotalEl.innerText = fmtMoney(totalProfit);
-            kpiTotalEl.className = `text-2xl lg:text-3xl font-bold mt-1 ${totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}`;
-
+            document.getElementById('kpiTotalProfit').innerText = fmtMoney(totalProfit);
+            document.getElementById('kpiTotalProfit').className = `text-2xl lg:text-3xl font-bold mt-1 ${totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}`;
             document.getElementById('kpiGrossProfit').lastElementChild.innerText = fmtMoney(grossProfit);
             document.getElementById('kpiGrossLoss').lastElementChild.innerText = fmtMoney(absoluteGrossLoss);
-
+            
             document.getElementById('kpiTotalTrades').innerText = totalTrades;
-            document.getElementById('kpiBestDay').innerText = `Mejor día: ${hasProfits ? daysArr[bestDayIndex] : '-'}`;
-
+            document.getElementById('kpiBestDay').innerText = `Mejor día: ${hasDataDay ? daysArrFull[bestDayIndex] : '-'}`;
+            document.getElementById('kpiWorstDay').innerText = `Peor día: ${hasDataDay ? daysArrFull[worstDayIndex] : '-'}`;
+            
             document.getElementById('kpiWinRate').innerText = `${winRate.toFixed(1)}%`;
             document.getElementById('kpiWinRateSub').innerText = `${winningTrades} / ${totalTrades} Victorias`;
-            
-            const kpiAvgEl = document.getElementById('kpiAvgTrade');
-            kpiAvgEl.innerText = fmtMoney(avgTrade);
-            kpiAvgEl.className = `text-2xl lg:text-3xl font-bold mt-1 ${avgTrade >= 0 ? 'text-green-400' : 'text-red-400'}`;
+            document.getElementById('kpiAvgTrade').innerText = fmtMoney(avgTrade);
+            document.getElementById('kpiAvgTrade').className = `text-2xl lg:text-3xl font-bold mt-1 ${avgTrade >= 0 ? 'text-green-400' : 'text-red-400'}`;
 
-            // Actualizar el DOM (Fila 2 - Avanzados)
-            const kpiPFEl = document.getElementById('kpiProfitFactor');
-            kpiPFEl.innerText = profitFactor === 99.99 ? '∞' : profitFactor.toFixed(2);
-            kpiPFEl.className = `text-2xl lg:text-3xl font-bold mt-1 ${profitFactor >= 1.5 ? 'text-green-400' : (profitFactor >= 1 ? 'text-blue-400' : 'text-red-400')}`;
-
+            document.getElementById('kpiProfitFactor').innerText = profitFactor === 99.99 ? '∞' : profitFactor.toFixed(2);
+            document.getElementById('kpiProfitFactor').className = `text-2xl lg:text-3xl font-bold mt-1 ${profitFactor >= 1.5 ? 'text-green-400' : (profitFactor >= 1 ? 'text-blue-400' : 'text-red-400')}`;
             document.getElementById('kpiRiskReward').innerText = riskReward === 99.99 ? `1:∞` : `1:${riskReward.toFixed(2)}`;
-            document.getElementById('kpiDrawdown').innerText = `-$${fmtMoney(maxDrawdown).replace('$-', '').replace('$', '')}`; // format absolute $
-            
+            document.getElementById('kpiDrawdown').innerText = `-$${fmtMoney(maxDrawdown).replace('$-', '').replace('$', '')}`;
             document.getElementById('kpiMaxWinStreak').innerText = maxWinStreak;
             document.getElementById('kpiMaxLossStreak').innerText = maxLossStreak;
         }
 
-        // --- GRÁFICO SUAVE (CURVO) ---
+        // --- GRÁFICO CURVA CAPITAL ---
         function updateChart() {
             const ctx = document.getElementById('equityChart').getContext('2d');
-            
-            let cumulative = 0;
-            let chartLabels = [];
-            let chartData = [];
+            let cumulative = 0; let chartLabels = []; let chartData = [];
 
             filteredData.forEach(d => {
                 cumulative += d.NetProfit;
@@ -492,82 +627,200 @@
                 data: {
                     labels: chartLabels,
                     datasets: [{
-                        label: 'Balance Acumulado ($)',
-                        data: chartData,
-                        borderColor: '#3b82f6', 
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        pointRadius: 0,
-                        pointHoverRadius: 5,
-                        tension: 0.4, 
-                        cubicInterpolationMode: 'monotone'
+                        label: 'Balance Acumulado ($)', data: chartData,
+                        borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2, fill: true, pointRadius: 0, pointHoverRadius: 5,
+                        tension: 0.4, cubicInterpolationMode: 'monotone'
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
-                    plugins: { 
-                        legend: { display: false },
-                        tooltip: { callbacks: { label: function(context) { return 'Balance: ' + fmtMoney(context.parsed.y); } } }
-                    },
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return 'Balance: ' + fmtMoney(context.parsed.y); } } } },
                     scales: {
-                        x: {
-                            type: 'time',
-                            time: { tooltipFormat: 'dd MMM yyyy, HH:mm' },
-                            grid: { color: '#374151' },
-                            ticks: { color: '#9ca3af' }
-                        },
-                        y: {
-                            grid: { color: '#374151' },
-                            ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) }
-                        }
+                        x: { type: 'time', time: { tooltipFormat: 'dd MMM yyyy, HH:mm' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
+                        y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) } }
                     }
                 }
             });
         }
 
-        // --- TOP LEADERBOARD (Reemplaza el gráfico de barras) ---
-        function updateLeaderboard() {
-            const container = document.getElementById('leaderboardContainer');
+        // --- 6 GRÁFICOS ANALÍTICOS Y SCATTER PLOT ---
+        function updateAnalyticsCharts() {
+            // Arrays de Data
+            let tHour = new Array(24).fill(0); 
+            let pHourWin = new Array(24).fill(0);
+            let pHourLoss = new Array(24).fill(0);
             
-            // Agrupar ganancias por par (usando rawData para no ser afectado por filtros globales)
-            let pairData = {};
-            rawData.forEach(d => {
-                if(!pairData[d.Symbol]) pairData[d.Symbol] = 0;
-                pairData[d.Symbol] += d.NetProfit;
-            });
+            let tDay = new Array(7).fill(0);  
+            let pDayWin = new Array(7).fill(0);
+            let pDayLoss = new Array(7).fill(0);
+            
+            let tMonth = new Array(12).fill(0); 
+            let pMonthWin = new Array(12).fill(0);
+            let pMonthLoss = new Array(12).fill(0);
+            
+            let scatterData = [];
+            
+            let totalDur = 0; let maxDur = 0; let minDur = Infinity;
 
-            // Ordenar de mayor ganancia a mayor pérdida
-            let sortedPairs = Object.keys(pairData).sort((a,b) => pairData[b] - pairData[a]);
-            
-            container.innerHTML = '';
-            
-            if (sortedPairs.length === 0) {
-                container.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">Sin operaciones</div>';
-                return;
-            }
-
-            let html = '';
-            sortedPairs.forEach((p, index) => {
-                let prof = pairData[p];
-                let colorClass = prof >= 0 ? 'text-green-400' : 'text-red-400';
-                let bgClass = index % 2 === 0 ? 'bg-gray-700/30' : 'bg-transparent';
-                let prefix = prof > 0 ? '+' : '';
+            filteredData.forEach(d => {
+                // Entradas y Profit dividido (Win/Loss) almacenado en POSITIVO para barras hacia arriba
+                tHour[d.EntryHour]++;  
+                tDay[d.DayOfWeek]++;   
+                tMonth[d.ExitMonth]++; 
                 
-                html += `
-                    <div class="flex justify-between items-center text-sm p-3 rounded hover:bg-gray-700 transition-colors ${bgClass}">
-                        <div class="flex items-center gap-2 truncate">
-                            <span class="text-xs font-bold text-gray-500 w-5">${index + 1}.</span>
-                            <span class="font-semibold text-gray-200 truncate text-sm" title="${p}">${p}</span>
-                        </div>
-                        <span class="font-bold font-mono text-sm ${colorClass} ml-2 shrink-0">${prefix}${fmtMoney(prof, 2)}</span>
-                    </div>
-                `;
+                if(d.NetProfit >= 0) {
+                    pHourWin[d.EntryHour] += d.NetProfit;
+                    pDayWin[d.DayOfWeek] += d.NetProfit;
+                    pMonthWin[d.ExitMonth] += d.NetProfit;
+                } else {
+                    pHourLoss[d.EntryHour] += Math.abs(d.NetProfit);
+                    pDayLoss[d.DayOfWeek] += Math.abs(d.NetProfit);
+                    pMonthLoss[d.ExitMonth] += Math.abs(d.NetProfit);
+                }
+                
+                scatterData.push({ x: d.DurationHours, y: d.NetProfit });
+                
+                totalDur += d.DurationHours;
+                if(d.DurationHours > maxDur) maxDur = d.DurationHours;
+                if(d.DurationHours < minDur) minDur = d.DurationHours;
             });
+
+            if(filteredData.length === 0) minDur = 0;
+            let avgDur = filteredData.length > 0 ? (totalDur / filteredData.length) : 0;
+
+            // Actualizar Tarjetas Hold Time
+            document.getElementById('statHoldMin').innerText = formatDurationText(minDur);
+            document.getElementById('statHoldAvg').innerText = formatDurationText(avgDur);
+            document.getElementById('statHoldMax').innerText = formatDurationText(maxDur);
+
+            // Helpers para configuraciones comunes de ChartJS
+            const destroyIfExists = (chart) => { if (chart) chart.destroy(); };
+            const barOptions = {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    x: { grid: { display: false }, ticks: { color: '#9ca3af', font: {size: 10} } },
+                    y: { grid: { color: '#374151', drawBorder: false }, ticks: { color: '#9ca3af', font: {size: 10} } }
+                }
+            };
             
-            container.innerHTML = html;
+            const barOptionsMoneyGrouped = {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { 
+                    legend: { display: true, position: 'top', labels: { color: '#9ca3af', boxWidth: 10, font: {size: 10} } },
+                    tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmtMoney(ctx.raw)}` } }
+                },
+                scales: { 
+                    x: { grid: { display: false }, ticks: { color: '#9ca3af', font: {size: 10} } },
+                    y: { grid: { color: '#374151', drawBorder: false }, ticks: { color: '#9ca3af', font: {size: 10}, callback: (v) => fmtMoney(v, 0) } }
+                }
+            };
+
+            // Colores por sesión horaria (Solo para el gráfico de entradas por hora)
+            let hourColors = tHour.map((_, h) => {
+                if (h >= 8 && h < 13) return '#3b82f6'; // Azul Londres
+                if (h >= 13 && h < 22) return '#10b981'; // Verde NY
+                return '#8b5cf6'; // Morado Asia
+            });
+
+            let hourLabels = Array.from({length: 24}, (_, i) => i + 'h');
+
+            // 1. Entradas por Hora
+            destroyIfExists(cTH);
+            cTH = new Chart(document.getElementById('cTradesHour'), { type: 'bar', data: { labels: hourLabels, datasets: [{ data: tHour, backgroundColor: hourColors, borderRadius: 2 }] }, options: barOptions });
+            
+            // 2. Entradas por Día
+            destroyIfExists(cTD);
+            cTD = new Chart(document.getElementById('cTradesDay'), { type: 'bar', data: { labels: daysArr, datasets: [{ data: tDay, backgroundColor: '#3b82f6', borderRadius: 2 }] }, options: barOptions });
+            
+            // 3. Entradas por Mes
+            destroyIfExists(cTM);
+            cTM = new Chart(document.getElementById('cTradesMonth'), { type: 'bar', data: { labels: monthNames, datasets: [{ data: tMonth, backgroundColor: '#3b82f6', borderRadius: 2 }] }, options: barOptions });
+
+            // 4. Profit por Hora (Columnas Agrupadas Misma Dirección)
+            destroyIfExists(cPH);
+            cPH = new Chart(document.getElementById('cProfitHour'), { 
+                type: 'bar', 
+                data: { 
+                    labels: hourLabels, 
+                    datasets: [
+                        { label: 'Ganancia', data: pHourWin, backgroundColor: '#10b981', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 },
+                        { label: 'Pérdida.', data: pHourLoss, backgroundColor: '#ef4444', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 }
+                    ] 
+                }, 
+                options: barOptionsMoneyGrouped 
+            });
+
+            // 5. Profit por Día (Columnas Agrupadas Misma Dirección)
+            destroyIfExists(cPD);
+            cPD = new Chart(document.getElementById('cProfitDay'), { 
+                type: 'bar', 
+                data: { 
+                    labels: daysArr, 
+                    datasets: [
+                        { label: 'Ganancia', data: pDayWin, backgroundColor: '#10b981', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 },
+                        { label: 'Pérdida.', data: pDayLoss, backgroundColor: '#ef4444', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 }
+                    ] 
+                }, 
+                options: barOptionsMoneyGrouped 
+            });
+
+            // 6. Profit por Mes (Columnas Agrupadas Misma Dirección)
+            destroyIfExists(cPM);
+            cPM = new Chart(document.getElementById('cProfitMonth'), { 
+                type: 'bar', 
+                data: { 
+                    labels: monthNames, 
+                    datasets: [
+                        { label: 'Ganancia', data: pMonthWin, backgroundColor: '#10b981', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 },
+                        { label: 'Pérdida.', data: pMonthLoss, backgroundColor: '#ef4444', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 }
+                    ] 
+                }, 
+                options: barOptionsMoneyGrouped 
+            });
+
+            // 7. Scatter Plot Gigante (Hold Time vs Profit)
+            destroyIfExists(scatterChartInstance);
+            scatterChartInstance = new Chart(document.getElementById('scatterChart'), {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Operación',
+                        data: scatterData,
+                        backgroundColor: scatterData.map(d => d.y >= 0 ? 'rgba(16, 185, 129, 0.6)' : 'rgba(239, 68, 68, 0.6)'),
+                        borderColor: scatterData.map(d => d.y >= 0 ? 'rgb(16, 185, 129)' : 'rgb(239, 68, 68)'),
+                        borderWidth: 1,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    let timeStr = formatDurationText(ctx.parsed.x);
+                                    return `Retención: ${timeStr} | Profit: ${fmtMoney(ctx.parsed.y)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            title: { display: true, text: 'Tiempo retenido (Horas)', color: '#9ca3af' },
+                            grid: { color: '#374151' }, ticks: { color: '#9ca3af' }
+                        },
+                        y: { 
+                            title: { display: true, text: 'Profit ($)', color: '#9ca3af' },
+                            grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) }
+                        }
+                    }
+                }
+            });
         }
 
         // --- LÓGICA DEL CALENDARIO INTELIGENTE ---
@@ -577,27 +830,15 @@
             return "bg-red-900/40 border-red-600 text-red-400 shadow-[0_0_10px_rgba(239,68,68,0.1)] hover:border-red-400";
         }
 
-        window.calZoomInYear = function(year) {
-            calYear = parseInt(year);
-            calMode = 'MONTHS';
-            updateSmartCalendar();
-        };
-
-        window.calZoomInMonth = function(month) {
-            calMonth = parseInt(month);
-            calMode = 'DAYS';
-            updateSmartCalendar();
-        };
-
+        window.calZoomInYear = function(year) { calYear = parseInt(year); calMode = 'MONTHS'; updateSmartCalendar(); };
+        window.calZoomInMonth = function(month) { calMonth = parseInt(month); calMode = 'DAYS'; updateSmartCalendar(); };
         window.calZoomOut = function() {
             if (calMode === 'DAYS') calMode = 'MONTHS';
             else if (calMode === 'MONTHS') calMode = 'YEARS';
             updateSmartCalendar();
         };
-
         window.calZoomIn = function() {
-            let calData = rawData; // Desvinculado de los filtros globales
-
+            let calData = rawData; 
             if (calMode === 'YEARS') {
                 let years = [...new Set(calData.map(d => d.Year))].sort((a,b) => b-a);
                 if (years.length > 0) calZoomInYear(years[0]);
@@ -607,11 +848,9 @@
                 else calZoomInMonth(1);
             }
         };
-
         window.calNavigate = function(dir) {
-            if (calMode === 'MONTHS') {
-                calYear += dir;
-            } else if (calMode === 'DAYS') {
+            if (calMode === 'MONTHS') calYear += dir;
+            else if (calMode === 'DAYS') {
                 calMonth += dir;
                 if (calMonth > 12) { calMonth = 1; calYear++; }
                 if (calMonth < 1) { calMonth = 12; calYear--; }
@@ -622,14 +861,12 @@
         function updateSmartCalendar() {
             const container = document.getElementById('calendarContainer');
             const indicator = document.getElementById('calendarModeIndicator');
-            
             const btnPrev = document.getElementById('btnCalPrev');
             const btnNext = document.getElementById('btnCalNext');
             const btnZoomOut = document.getElementById('btnCalZoomOut');
             const btnZoomIn = document.getElementById('btnCalZoomIn');
 
-            let calData = rawData; // Desvinculado de los filtros globales
-
+            let calData = rawData; 
             container.innerHTML = ''; 
 
             btnPrev.disabled = (calMode === 'YEARS');
@@ -644,45 +881,35 @@
             }
 
             if (calMode === 'YEARS') {
-                indicator.innerText = "Vista: Años";
-                renderYearsGrid(container, calData);
+                indicator.innerText = "Vista: Años"; renderYearsGrid(container, calData);
             } else if (calMode === 'MONTHS') {
-                indicator.innerText = `Año ${calYear}`;
-                renderMonthsGrid(container, calData, calYear);
+                indicator.innerText = `Año ${calYear}`; renderMonthsGrid(container, calData, calYear);
             } else if (calMode === 'DAYS') {
-                indicator.innerText = `${monthNames[calMonth-1]} ${calYear}`;
-                renderDaysGrid(container, calData, calYear, calMonth);
+                indicator.innerText = `${monthNames[calMonth-1]} ${calYear}`; renderDaysGrid(container, calData, calYear, calMonth);
             }
         }
 
-        // 1. NIVEL ANUAL
         function renderYearsGrid(container, data) {
             let yearlyData = {};
             data.forEach(d => {
                 if(!yearlyData[d.Year]) yearlyData[d.Year] = 0;
                 yearlyData[d.Year] += d.NetProfit;
             });
-
             let years = Object.keys(yearlyData).sort((a,b) => b - a); 
             let html = `<div class="grid grid-cols-2 md:grid-cols-4 gap-4 fade-in">`;
-
             years.forEach(year => {
                 let profit = yearlyData[year];
                 let colorClass = getCellColorClass(profit);
-                
                 html += `
                     <div onclick="calZoomInYear('${year}')" class="h-28 flex flex-col items-center justify-center rounded-xl border ${colorClass} p-4 transition-transform hover:-translate-y-1 cursor-pointer relative group">
                         <span class="absolute top-2 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/30 px-2 py-1 rounded">Ver Meses 🔍</span>
                         <span class="text-sm font-semibold mb-2 opacity-75">Año ${year}</span>
                         <span class="text-2xl font-bold truncate-text w-full text-center">${fmtMoney(profit, 2)}</span>
-                    </div>
-                `;
+                    </div>`;
             });
-            html += `</div>`;
-            container.innerHTML = html;
+            html += `</div>`; container.innerHTML = html;
         }
 
-        // 2. NIVEL MENSUAL
         function renderMonthsGrid(container, data, year) {
             let monthlyData = {};
             data.forEach(d => {
@@ -691,40 +918,29 @@
                     monthlyData[d.Month] += d.NetProfit;
                 }
             });
-
             let html = `<div class="grid grid-cols-3 md:grid-cols-4 gap-4 fade-in">`;
-
             for(let i = 1; i <= 12; i++) {
                 let profit = monthlyData[i];
                 let colorClass = getCellColorClass(profit);
                 let displayProfit = profit !== undefined ? fmtMoney(profit, 2) : 'Sin trades';
-                
                 html += `
                     <div onclick="calZoomInMonth('${i}')" class="h-24 flex flex-col items-center justify-center rounded-xl border ${colorClass} p-2 transition-transform hover:-translate-y-1 cursor-pointer relative group">
                         <span class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/30 px-2 py-1 rounded">Ver Días 🔍</span>
                         <span class="text-xs font-semibold mb-1 opacity-75 uppercase">${monthNames[i-1]}</span>
                         <span class="text-lg font-bold truncate-text w-full text-center">${displayProfit}</span>
-                    </div>
-                `;
+                    </div>`;
             }
-            html += `</div>`;
-            container.innerHTML = html;
+            html += `</div>`; container.innerHTML = html;
         }
 
-        // 3. NIVEL DIARIO (Calendario Tradicional con Pares Internos)
         function renderDaysGrid(container, data, year, month) {
             let dailyData = {};
             data.forEach(d => {
                 if (d.Year === year && d.Month === month) {
                     let day = d.Time.getDate();
-                    if(!dailyData[day]) {
-                        dailyData[day] = { total: 0, symbols: {} };
-                    }
+                    if(!dailyData[day]) dailyData[day] = { total: 0, symbols: {} };
                     dailyData[day].total += d.NetProfit;
-                    
-                    if(!dailyData[day].symbols[d.Symbol]) {
-                        dailyData[day].symbols[d.Symbol] = 0;
-                    }
+                    if(!dailyData[day].symbols[d.Symbol]) dailyData[day].symbols[d.Symbol] = 0;
                     dailyData[day].symbols[d.Symbol] += d.NetProfit;
                 }
             });
@@ -733,16 +949,11 @@
             let firstDay = new Date(year, month - 1, 1).getDay();
 
             let html = `<div class="w-full max-w-4xl mx-auto fade-in">`;
-            
             html += `<div class="grid grid-cols-7 text-center text-xs text-gray-400 font-bold mb-2">`;
-            ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(d => html += `<div class="py-2">${d}</div>`);
-            html += `</div>`;
-
-            html += `<div class="grid grid-cols-7 gap-1 md:gap-2">`;
+            daysArr.forEach(d => html += `<div class="py-2">${d}</div>`);
+            html += `</div><div class="grid grid-cols-7 gap-1 md:gap-2">`;
             
-            for(let i = 0; i < firstDay; i++) {
-                html += `<div class="min-h-[80px] rounded border border-transparent"></div>`;
-            }
+            for(let i = 0; i < firstDay; i++) { html += `<div class="min-h-[80px] rounded border border-transparent"></div>`; }
 
             for(let i = 1; i <= daysInMonth; i++) {
                 let dayData = dailyData[i];
@@ -767,18 +978,14 @@
                 html += `
                     <div class="min-h-[85px] max-h-[120px] flex flex-col items-center justify-start rounded border ${colorClass} p-1 transition-transform hover:scale-105 cursor-default overflow-hidden" title="Día ${i}\nNeto: ${profit !== undefined ? fmtMoney(profit, 2) : '0.00'}">
                         <div class="text-[10px] md:text-xs font-semibold opacity-90 border-b border-white/20 w-full text-center pb-1 mb-1 flex flex-col">
-                            <span>${i}</span>
-                            <span class="font-bold text-[10px] md:text-[11px]">${displayProfit}</span>
+                            <span>${i}</span><span class="font-bold text-[10px] md:text-[11px]">${displayProfit}</span>
                         </div>
                         <div class="w-full flex flex-col gap-[2px] text-[8px] md:text-[9px] overflow-y-auto cell-scrollbar px-[2px]">
                             ${symbolsHtml}
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }
-
-            html += `</div></div>`;
-            container.innerHTML = html;
+            html += `</div></div>`; container.innerHTML = html;
         }
 
         function clearData() {
