@@ -1465,6 +1465,9 @@
         let optNextColorIndex = 0;
         let showExtraParams = false;
         
+        let currentOptSortCol = null; // Columna actual de ordenamiento
+        let currentOptSortAsc = false; // Dirección del ordenamiento (false = descendente, true = ascendente)
+        
         // Estructura fija de columnas base
         const BASE_COLUMNS = ['Pass', 'Result', 'Profit', 'Expected Payoff', 'Profit Factor', 'Recovery Factor', 'Sharpe Ratio', 'Equity DD %', 'Trades'];
 
@@ -1606,7 +1609,24 @@
             document.getElementById('optFiltRecovery').value = "0.00";
             document.getElementById('optFiltSharpe').value = "0.00";
             
+            // Reiniciar ordenamiento
+            currentOptSortCol = null;
+            currentOptSortAsc = false;
+            
             applyOptimizerFilters();
+        }
+
+        // Función que gestiona el click en los encabezados para ordenar
+        function sortByOptColumn(colName) {
+            if (currentOptSortCol === colName) {
+                // Si es la misma columna, invertimos el orden
+                currentOptSortAsc = !currentOptSortAsc; 
+            } else {
+                // Nueva columna, ordenamos descendente por defecto (mayor a menor)
+                currentOptSortCol = colName;
+                currentOptSortAsc = false; 
+            }
+            applyOptimizerFilters(); 
         }
 
         function applyOptimizerFilters() {
@@ -1636,6 +1656,34 @@
                        (r['Sharpe Ratio'] >= minSharpe);
             });
 
+            // LÓGICA DE ORDENAMIENTO (APLICADA A LOS RESULTADOS FILTRADOS)
+            if (currentOptSortCol) {
+                filtered.sort((a, b) => {
+                    let valA = a[currentOptSortCol];
+                    let valB = b[currentOptSortCol];
+
+                    // Manejo de valores vacíos o nulos para mandarlos al final de la lista
+                    if (valA === undefined || valA === null || valA === '-') valA = currentOptSortAsc ? Infinity : -Infinity;
+                    if (valB === undefined || valB === null || valB === '-') valB = currentOptSortAsc ? Infinity : -Infinity;
+
+                    // Manejo inteligente de strings vs números
+                    if (typeof valA === 'string' && typeof valB === 'string') {
+                        let numA = parseFloat(valA);
+                        let numB = parseFloat(valB);
+                        if(!isNaN(numA) && !isNaN(numB)) {
+                            valA = numA; valB = numB;
+                        } else {
+                            let cmp = valA.localeCompare(valB);
+                            return currentOptSortAsc ? cmp : -cmp;
+                        }
+                    }
+
+                    if (valA < valB) return currentOptSortAsc ? -1 : 1;
+                    if (valA > valB) return currentOptSortAsc ? 1 : -1;
+                    return 0;
+                });
+            }
+
             document.getElementById('optResultsCount').innerText = `Mostrando ${filtered.length} resultados de ${allRows.length} totales`;
 
             renderOptimizerTable(filtered);
@@ -1651,14 +1699,20 @@
                 return;
             }
 
-            // Render Header (Asegurando el orden de globalExtraColumns extraído originalmente)
+            // Render Header (Asegurando el orden de globalExtraColumns extraído originalmente y agregando botones de ordenar)
             let headHTML = `<tr>
                 <th class="p-3 whitespace-nowrap bg-gray-900 border-r border-gray-700">Arch.</th>
-                ${BASE_COLUMNS.map(c => `<th class="p-3 whitespace-nowrap bg-gray-900">${c}</th>`).join('')}
+                ${BASE_COLUMNS.map(c => {
+                    let sortIcon = currentOptSortCol === c ? (currentOptSortAsc ? ' ↑' : ' ↓') : '';
+                    let activeClass = currentOptSortCol === c ? 'text-white' : '';
+                    return `<th class="p-3 whitespace-nowrap bg-gray-900 cursor-pointer hover:bg-gray-700 select-none transition-colors ${activeClass}" onclick="sortByOptColumn('${c}')" title="Ordenar por ${c}">${c}<span class="text-teal-400 font-bold ml-1">${sortIcon}</span></th>`;
+                }).join('')}
             `;
             if (showExtraParams) {
                 globalExtraColumns.forEach(k => {
-                    headHTML += `<th class="p-3 whitespace-nowrap bg-gray-900 text-teal-400 border-l border-gray-700">${k}</th>`;
+                    let sortIcon = currentOptSortCol === k ? (currentOptSortAsc ? ' ↑' : ' ↓') : '';
+                    let activeClass = currentOptSortCol === k ? 'text-teal-200' : 'text-teal-400';
+                    headHTML += `<th class="p-3 whitespace-nowrap bg-gray-900 border-l border-gray-700 cursor-pointer hover:bg-gray-700 select-none transition-colors ${activeClass}" onclick="sortByOptColumn('${k.replace(/'/g, "\\'")}')" title="Ordenar por ${k}">${k}<span class="text-white font-bold ml-1">${sortIcon}</span></th>`;
                 });
             }
             headHTML += `</tr>`;
