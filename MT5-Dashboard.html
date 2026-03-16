@@ -72,7 +72,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-2">
-                    <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012-2h2a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     <span class="text-xl font-bold tracking-wide">Trading<span class="text-blue-500">Analytics</span></span>
                 </div>
                 <div class="flex gap-4 md:gap-8">
@@ -189,9 +189,17 @@
                         </div>
                         
                         <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
-                            <span class="text-gray-400 text-xs uppercase tracking-wide">Promedio por Trade</span>
-                            <span id="kpiAvgTrade" class="text-2xl lg:text-3xl font-bold mt-1 text-white">$0.00</span>
-                            <span class="text-[10px] lg:text-xs text-gray-500 mt-2">Esperanza Matemática</span>
+                            <span class="text-gray-400 text-xs uppercase tracking-wide">Métricas por Trade</span>
+                            <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
+                                <span class="flex flex-col items-center">
+                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Promedio ($)</span>
+                                    <span id="kpiAvgTrade" class="text-xl lg:text-2xl font-bold leading-none">$0.00</span>
+                                </span>
+                                <span class="flex flex-col items-center border-l border-gray-700 pl-4">
+                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Trades / Mes</span>
+                                    <span id="kpiTradesPerMonth" class="text-xl lg:text-2xl font-bold leading-none text-blue-400">0.0</span>
+                                </span>
+                            </div>
                         </div>
 
                         <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow relative group">
@@ -571,8 +579,8 @@
         // --- VARIABLES GLOBALES DASHBOARD ---
         let rawData = [];
         let filteredData = [];
-        // Bump version para obligar al cache a refrescar con el nuevo formato de gráficos
-        const storageKey = 'mt5_trading_data_v11'; 
+        // Bump version para obligar al cache a refrescar con la nueva lógica (BE contados como ganancias)
+        const storageKey = 'mt5_trading_data_v14'; 
         
         let equityChartInstance = null;
         let cTH = null, cTD = null, cTM = null; 
@@ -771,9 +779,11 @@
                 }
 
                 let netProfit = balance - prevBalance;
+                
+                // Si el beneficio es exactamente $0 en el CSV de Gráficos, lo marcamos como un "tick" temporal
+                // De esta forma se trazará en la curva de capital, pero NO inflará el contador de "Trades totales" ni estropeará el Win Rate.
+                let isTick = Math.abs(netProfit) < 0.00001; 
 
-                // Se eliminó la validación que filtraba solo cuando el balance cambiaba.
-                // Ahora cada línea subsecuente a la primera es procesada.
                 processed.push({
                     Time: dateObj,
                     EntryTime: dateObj,
@@ -786,7 +796,8 @@
                     DayOfWeek: dateObj.getDay(),
                     EntryHour: dateObj.getHours(),
                     DateOnly: dateObj.toISOString().split('T')[0],
-                    BalanceAfter: balance
+                    BalanceAfter: balance,
+                    IsGraphTick: isTick
                 });
                 
                 prevBalance = balance;
@@ -969,23 +980,36 @@
             let dayProfits = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
             let dayCounts = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
 
+            let totalTrades = dataArr.length; // SÍ incluye todos los ticks en la métrica global de "Cantidad de Trades"
+            let winRateDenominator = 0; // Se usará exclusivamente para no dañar el % de WinRate
+            
+            let minDate = new Date(8640000000000000);
+            let maxDate = new Date(-8640000000000000);
+
             dataArr.forEach(d => {
+                if (d.Time < minDate) minDate = d.Time;
+                if (d.Time > maxDate) maxDate = d.Time;
+
                 totalProfit += d.NetProfit;
                 cumulative += d.NetProfit;
-                dayProfits[d.DayOfWeek] += d.NetProfit;
-                dayCounts[d.DayOfWeek]++;
 
                 if (cumulative > peak) peak = cumulative;
 
-                if (d.NetProfit > 0) {
+                dayProfits[d.DayOfWeek] += d.NetProfit;
+                dayCounts[d.DayOfWeek]++;
+
+                // LÓGICA ACTUALIZADA: Cualquier operación >= 0 (Incluyendo los BE de $0) se cuenta como Ganancia
+                if (d.NetProfit >= 0) {
                     winningTrades++;
-                    grossProfit += d.NetProfit;
+                    winRateDenominator++; // Afecta WinRate
+                    grossProfit += d.NetProfit; // Sumará 0 si es BE
                     currentWinStreak++;
                     currentLossStreak = 0;
                     currentConsecutiveLoss = 0; 
                     if(currentWinStreak > maxWinStreak) maxWinStreak = currentWinStreak;
-                } else if (d.NetProfit < 0) {
+                } else { // d.NetProfit < 0
                     losingTrades++;
+                    winRateDenominator++; // Afecta WinRate
                     grossLoss += d.NetProfit;
                     
                     // Lógica precisa para el Peor Trade Individual (Single Loss)
@@ -1017,14 +1041,22 @@
                 }
             });
 
-            const totalTrades = dataArr.length;
-            const winRate = totalTrades > 0 ? (winningTrades / totalTrades) * 100 : 0;
+            // Lógica de cálculo estricta usando sus denominadores separados
+            const winRate = winRateDenominator > 0 ? (winningTrades / winRateDenominator) * 100 : 0;
             const avgTrade = totalTrades > 0 ? totalProfit / totalTrades : 0;
             const absoluteGrossLoss = Math.abs(grossLoss);
             const profitFactor = absoluteGrossLoss > 0 ? (grossProfit / absoluteGrossLoss) : (grossProfit > 0 ? 99.99 : 0);
             const avgWin = winningTrades > 0 ? grossProfit / winningTrades : 0;
             const avgLoss = losingTrades > 0 ? absoluteGrossLoss / losingTrades : 0;
             const riskReward = avgLoss > 0 ? (avgWin / avgLoss) : (avgWin > 0 ? 99.99 : 0);
+
+            // Fórmula: Trades por Mes
+            let monthsSpan = 1;
+            if(totalTrades > 0) {
+                monthsSpan = (maxDate.getFullYear() - minDate.getFullYear()) * 12 + (maxDate.getMonth() - minDate.getMonth()) + 1;
+                if(monthsSpan <= 0) monthsSpan = 1;
+            }
+            const tradesPerMonth = totalTrades > 0 ? (totalTrades / monthsSpan) : 0;
 
             let maxDayProf = -Infinity; let minDayProf = Infinity;
             let bestDayIndex = 0; let worstDayIndex = 0;
@@ -1040,7 +1072,7 @@
 
             return {
                 totalProfit, grossProfit, grossLoss, absoluteGrossLoss,
-                totalTrades, winningTrades, losingTrades, winRate, avgTrade,
+                totalTrades, winRateDenominator, winningTrades, losingTrades, winRate, avgTrade, tradesPerMonth,
                 profitFactor, riskReward, maxConsDrawdownPct, maxConsecutiveLoss, maxConsDate, maxSingleLoss, maxSingleLossPct, maxSingleDate, maxWinStreak, maxLossStreak,
                 bestDayIndex, worstDayIndex, hasDataDay
             };
@@ -1100,9 +1132,12 @@
             document.getElementById('kpiWorstDay').innerText = `Peor día: ${metrics.hasDataDay ? daysArrFull[metrics.worstDayIndex] : '-'}`;
             
             document.getElementById('kpiWinRate').innerText = `${metrics.winRate.toFixed(1)}%`;
-            document.getElementById('kpiWinRateSub').innerText = `${metrics.winningTrades} / ${metrics.totalTrades} Victorias`;
+            document.getElementById('kpiWinRateSub').innerText = `${metrics.winningTrades} / ${metrics.winRateDenominator} Victorias`;
+            
+            // Tarjeta Dividida de Promedio x Trade y Trades x Mes
             document.getElementById('kpiAvgTrade').innerText = fmtMoney(metrics.avgTrade);
-            document.getElementById('kpiAvgTrade').className = `text-2xl lg:text-3xl font-bold mt-1 ${metrics.avgTrade >= 0 ? 'text-green-400' : 'text-red-400'}`;
+            document.getElementById('kpiAvgTrade').className = `text-xl lg:text-2xl font-bold leading-none mt-1 ${metrics.avgTrade >= 0 ? 'text-green-400' : 'text-red-400'}`;
+            document.getElementById('kpiTradesPerMonth').innerText = metrics.tradesPerMonth.toFixed(1);
 
             document.getElementById('kpiProfitFactor').innerText = metrics.profitFactor === 99.99 ? '∞' : metrics.profitFactor.toFixed(2);
             document.getElementById('kpiProfitFactor').className = `text-2xl lg:text-3xl font-bold mt-1 ${metrics.profitFactor >= 1.5 ? 'text-green-400' : (metrics.profitFactor >= 1 ? 'text-blue-400' : 'text-red-400')}`;
@@ -1134,6 +1169,7 @@
             const ctx = document.getElementById('equityChart').getContext('2d');
             let cumulative = 0; let chartLabels = []; let chartData = [];
 
+            // Procesamos todos, incluyendo los IsGraphTick, porque queremos la curva de líneas completita
             filteredData.forEach(d => {
                 cumulative += d.NetProfit;
                 chartLabels.push(d.Time);
@@ -1180,9 +1216,11 @@
             
             let scatterData = [];
             
+            let realTradesCount = 0;
             let totalDur = 0; let maxDur = 0; let minDur = Infinity;
 
             filteredData.forEach(d => {
+                realTradesCount++;
                 tHour[d.EntryHour]++;  
                 tDay[d.DayOfWeek]++;   
                 tMonth[d.ExitMonth]++; 
@@ -1204,8 +1242,8 @@
                 if(d.DurationHours < minDur) minDur = d.DurationHours;
             });
 
-            if(filteredData.length === 0) minDur = 0;
-            let avgDur = filteredData.length > 0 ? (totalDur / filteredData.length) : 0;
+            if(realTradesCount === 0) minDur = 0;
+            let avgDur = realTradesCount > 0 ? (totalDur / realTradesCount) : 0;
 
             document.getElementById('statHoldMin').innerText = formatDurationText(minDur);
             document.getElementById('statHoldAvg').innerText = formatDurationText(avgDur);
@@ -1388,11 +1426,10 @@
                     if(!dailyData[day]) dailyData[day] = { total: 0, trades: [] };
                     dailyData[day].total += d.NetProfit;
                     
-                    // En lugar de agrupar, guardamos cada trade individual con su hora
                     dailyData[day].trades.push({
                         sym: d.Symbol,
                         prof: d.NetProfit,
-                        time: d.EntryTime // Usamos EntryTime para saber a qué hora exacta se abrió
+                        time: d.EntryTime 
                     });
                 }
             });
@@ -1415,7 +1452,6 @@
                 
                 let tradesHtml = '';
                 if (dayData) {
-                    // Ordenamos los trades del día cronológicamente
                     dayData.trades.sort((a,b) => a.time - b.time).forEach(t => {
                         let hh = t.time.getHours().toString().padStart(2, '0');
                         let mm = t.time.getMinutes().toString().padStart(2, '0');
@@ -1635,6 +1671,7 @@
                 { label: 'Máx. Cons. DD', key: 'maxConsDrawdownPct', fmt: (v, m) => `<span class="text-red-400">-${v.toFixed(2)}% <span class="text-[10px] text-gray-500 block leading-tight">(-${fmtMoney(m.maxConsecutiveLoss)})</span></span>` },
                 { label: 'Máx. Single Loss', key: 'maxSingleLossPct', fmt: (v, m) => `<span class="text-red-400">${v <= 0 ? v.toFixed(2) : '-'+v.toFixed(2)}% <span class="text-[10px] text-gray-500 block leading-tight">(${fmtMoney(m.maxSingleLoss)})</span></span>` },
                 { label: 'Promedio x Trade', key: 'avgTrade', fmt: v => fmtMoney(v) },
+                { label: 'Trades / Mes', key: 'tradesPerMonth', fmt: v => `<span class="text-blue-400 font-bold">${v.toFixed(1)}</span>` },
                 { label: 'Risk / Reward', key: 'riskReward', fmt: v => v===99.99?'1:∞':`1:${v.toFixed(2)}` },
                 { label: 'Mejor Racha', key: 'maxWinStreak', fmt: v => `<span class="text-green-400">${v} Wins</span>` },
                 { label: 'Peor Racha', key: 'maxLossStreak', fmt: v => `<span class="text-red-400">${v} Loss</span>` }
