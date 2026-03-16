@@ -492,7 +492,7 @@
                             <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Drawdown Máx. (%)</label>
                             <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
                                 <button onclick="stepOptInput('optFiltDD', -1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
-                                <input type="number" id="optFiltDD" value="10.00" step="1.00" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <input type="number" id="optFiltDD" value="5.00" step="1.00" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
                                 <button onclick="stepOptInput('optFiltDD', 1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
                             </div>
                         </div>
@@ -511,7 +511,7 @@
                             <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5 text-teal-300">Recovery Factor Mín.</label>
                             <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
                                 <button onclick="stepOptInput('optFiltRecovery', -0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
-                                <input type="number" id="optFiltRecovery" value="0.00" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <input type="number" id="optFiltRecovery" value="5.00" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
                                 <button onclick="stepOptInput('optFiltRecovery', 0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
                             </div>
                         </div>
@@ -519,7 +519,7 @@
                             <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5 text-teal-300">Sharpe Ratio Mín.</label>
                             <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
                                 <button onclick="stepOptInput('optFiltSharpe', -0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
-                                <input type="number" id="optFiltSharpe" value="0.00" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <input type="number" id="optFiltSharpe" value="5.00" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
                                 <button onclick="stepOptInput('optFiltSharpe', 0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
                             </div>
                         </div>
@@ -1890,11 +1890,11 @@
             document.getElementById('optFiltProfit').value = "2000";
             document.getElementById('optFiltTrades').value = "50";
             document.getElementById('optFiltPF').value = "2.00";
-            document.getElementById('optFiltDD').value = "10.00";
+            document.getElementById('optFiltDD').value = "5.00"; // Atualizado para 5.00
             
             document.getElementById('optFiltPayoff').value = "0.00";
-            document.getElementById('optFiltRecovery').value = "0.00";
-            document.getElementById('optFiltSharpe').value = "0.00";
+            document.getElementById('optFiltRecovery').value = "5.00"; // Atualizado para 5.00
+            document.getElementById('optFiltSharpe').value = "5.00"; // Atualizado para 5.00
             
             currentOptSortCol = null;
             currentOptSortAsc = false;
