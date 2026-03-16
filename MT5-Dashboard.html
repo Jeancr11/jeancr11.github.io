@@ -465,7 +465,7 @@
                             <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Profit Factor Mín.</label>
                             <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
                                 <button onclick="stepOptInput('optFiltPF', -0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
-                                <input type="number" id="optFiltPF" value="2" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <input type="number" id="optFiltPF" value="2.00" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
                                 <button onclick="stepOptInput('optFiltPF', 0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
                             </div>
                         </div>
@@ -689,23 +689,19 @@
         // =========================================================
         // --- NUEVO MOTOR DE LECTURA DE TEXTO PURO (.CSV GRAPH) ---
         // =========================================================
-        // Este motor rompe y separa el archivo línea por línea en lugar de usar SheetJS
-        // para asegurar un 100% de eficacia con los raros TSV camuflados de MT5.
         function parseRawMT5Graph(csvText) {
             let lines = csvText.split(/\r?\n/);
             if(lines.length < 2) return [];
 
-            let delimiter = '\t'; // Por defecto MT5 usa Tabulaciones
+            let delimiter = '\t'; 
             let headerLine = lines[0];
             
-            // Buscar la fila de encabezado que tenga <DATE> o DATE
             let headerIdx = 0;
             for(let i=0; i<Math.min(lines.length, 10); i++) {
                 let upper = lines[i].toUpperCase();
                 if(upper.includes('<DATE>') || upper.includes('DATE') || upper.includes('TIME')) {
                     headerLine = lines[i];
                     headerIdx = i;
-                    // Detectar qué separador usó MT5 realmente
                     if(headerLine.includes('\t')) delimiter = '\t';
                     else if(headerLine.includes(';')) delimiter = ';';
                     else if(headerLine.includes(',')) delimiter = ',';
@@ -717,23 +713,22 @@
             let dateIdx = headers.findIndex(h => h.includes('DATE') || h.includes('TIME'));
             let balIdx = headers.findIndex(h => h.includes('BALANCE'));
 
-            if(dateIdx === -1 || balIdx === -1) return []; // Fallo de seguridad
+            if(dateIdx === -1 || balIdx === -1) return []; 
 
             let processed = [];
             let prevBalance = null;
 
             for(let i = headerIdx + 1; i < lines.length; i++) {
                 let rowStr = lines[i].trim();
-                if(!rowStr) continue; // Saltar líneas vacías
+                if(!rowStr) continue; 
                 
                 let cols = rowStr.split(delimiter);
-                if(cols.length <= Math.max(dateIdx, balIdx)) continue; // Evitar columnas rotas
+                if(cols.length <= Math.max(dateIdx, balIdx)) continue; 
 
                 let dateStr = cols[dateIdx].trim();
                 let balStr = cols[balIdx].trim();
                 let balance = cleanNumber(balStr);
 
-                // Parsear Fecha MT5 con blindaje
                 let cleanStr = dateStr.replace(/\./g, '-');
                 if (cleanStr.includes(' ')) {
                     let parts = cleanStr.split(' ');
@@ -751,7 +746,6 @@
 
                 let netProfit = balance - prevBalance;
 
-                // Solo registrar "trades" cuando el balance efectivamente cambia
                 if (Math.abs(netProfit) > 0.00001) {
                     processed.push({
                         Time: dateObj,
@@ -770,7 +764,6 @@
                 }
             }
             
-            // ORDENAMIENTO CRONOLÓGICO ESTRICTO
             processed.sort((a, b) => a.Time - b.Time);
             return processed;
         }
@@ -820,7 +813,7 @@
                     finally { hideLoader(); }
                 }, 50);
             };
-            reader.readAsText(file); // CLAVE: Leer como texto directo
+            reader.readAsText(file); 
             e.target.value = '';
         });
 
@@ -1299,10 +1292,15 @@
             data.forEach(d => {
                 if (d.Year === year && d.Month === month) {
                     let day = d.Time.getDate();
-                    if(!dailyData[day]) dailyData[day] = { total: 0, symbols: {} };
+                    if(!dailyData[day]) dailyData[day] = { total: 0, trades: [] };
                     dailyData[day].total += d.NetProfit;
-                    if(!dailyData[day].symbols[d.Symbol]) dailyData[day].symbols[d.Symbol] = 0;
-                    dailyData[day].symbols[d.Symbol] += d.NetProfit;
+                    
+                    // En lugar de agrupar, guardamos cada trade individual con su hora
+                    dailyData[day].trades.push({
+                        sym: d.Symbol,
+                        prof: d.NetProfit,
+                        time: d.EntryTime // Usamos EntryTime para saber a qué hora exacta se abrió
+                    });
                 }
             });
 
@@ -1322,16 +1320,20 @@
                 let colorClass = getCellColorClass(profit);
                 let displayProfit = profit !== undefined ? fmtMoney(profit, 1) : '-';
                 
-                let symbolsHtml = '';
+                let tradesHtml = '';
                 if (dayData) {
-                    let syms = Object.keys(dayData.symbols);
-                    syms.forEach(s => {
-                        let sProf = dayData.symbols[s];
-                        let sColorClass = sProf >= 0 ? 'text-green-300' : 'text-red-300';
-                        let sPrefix = sProf > 0 ? '+' : '';
-                        symbolsHtml += `<div class="flex justify-between w-full items-center gap-1 border-b border-white/5 pb-[2px] last:border-0">
-                            <span class="truncate" title="${s}">${s}</span>
-                            <span class="${sColorClass} font-mono">${sPrefix}${fmtMoney(sProf, 0)}</span>
+                    // Ordenamos los trades del día cronológicamente
+                    dayData.trades.sort((a,b) => a.time - b.time).forEach(t => {
+                        let hh = t.time.getHours().toString().padStart(2, '0');
+                        let mm = t.time.getMinutes().toString().padStart(2, '0');
+                        let tProf = t.prof;
+                        let sColorClass = tProf >= 0 ? 'text-green-300' : 'text-red-300';
+                        let sPrefix = tProf > 0 ? '+' : '';
+                        
+                        tradesHtml += `<div class="flex justify-between w-full items-center gap-1 border-b border-white/5 pb-[2px] last:border-0 opacity-90 hover:opacity-100">
+                            <span class="text-[8px] text-gray-500 font-mono tracking-tighter shrink-0" title="Hora de entrada">${hh}:${mm}</span>
+                            <span class="truncate max-w-[35px] text-[8px] text-gray-400" title="${t.sym}">${t.sym}</span>
+                            <span class="${sColorClass} font-mono shrink-0 text-[9px]">${sPrefix}${fmtMoney(tProf, 0)}</span>
                         </div>`;
                     });
                 }
@@ -1341,8 +1343,8 @@
                         <div class="text-[10px] md:text-xs font-semibold opacity-90 border-b border-white/20 w-full text-center pb-1 mb-1 flex flex-col">
                             <span>${i}</span><span class="font-bold text-[10px] md:text-[11px]">${displayProfit}</span>
                         </div>
-                        <div class="w-full flex flex-col gap-[2px] text-[8px] md:text-[9px] overflow-y-auto cell-scrollbar px-[2px]">
-                            ${symbolsHtml}
+                        <div class="w-full flex flex-col gap-[2px] overflow-y-auto cell-scrollbar px-[2px]">
+                            ${tradesHtml}
                         </div>
                     </div>`;
             }
@@ -1614,7 +1616,8 @@
         let currentOptSortCol = null; 
         let currentOptSortAsc = false; 
         
-        const BASE_COLUMNS = ['Pass', 'Result', 'Profit', 'Expected Payoff', 'Profit Factor', 'Recovery Factor', 'Sharpe Ratio', 'Equity DD %', 'Trades'];
+        // AGREGADA NUEVA COLUMNA EST. WIN %
+        const BASE_COLUMNS = ['Pass', 'Result', 'Profit', 'Expected Payoff', 'Profit Factor', 'Est. Win %', 'Recovery Factor', 'Sharpe Ratio', 'Equity DD %', 'Trades'];
 
         document.getElementById('optimizerFileInput').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
@@ -1629,10 +1632,7 @@
                     setTimeout(() => {
                         try { 
                             const workbook = XLSX.read(new Uint8Array(event.target.result), { type: 'array' });
-                            
-                            // Para el optimizador mantenemos SheetJS normal ya que siempre exporta tablas limpias
                             const jsonResult = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { defval: "" });
-                            
                             processOptimizerData(file.name, jsonResult);
                         } catch (err) { 
                             console.error("Error optimizador", err); 
@@ -1665,6 +1665,13 @@
 
             let processed = dataArr.map(row => {
                 if('Custom' in row) delete row['Custom'];
+                
+                // CALCULAR WIN RATE ESTIMADO MATEMÁTICAMENTE
+                let pf = cleanNumber(row['Profit Factor']);
+                let estWin = 0;
+                if(pf > 0) estWin = (pf / (pf + 1)) * 100;
+                if(pf >= 99 || row['Profit Factor'] === '') estWin = 100; // Si no hay pérdidas
+
                 return {
                     ...row,
                     'Profit': cleanNumber(row['Profit']),
@@ -1672,7 +1679,8 @@
                     'Recovery Factor': cleanNumber(row['Recovery Factor']),
                     'Sharpe Ratio': cleanNumber(row['Sharpe Ratio']),
                     'Trades': cleanNumber(row['Trades']),
-                    'Profit Factor': cleanNumber(row['Profit Factor']),
+                    'Profit Factor': pf,
+                    'Est. Win %': estWin,
                     'Equity DD %': cleanNumber(row['Equity DD %']),
                     '_source': filename,
                     '_color': color
@@ -1749,8 +1757,8 @@
 
         function resetOptimizerFilters() {
             document.getElementById('optFiltProfit').value = "2000";
-            document.getElementById('optFiltTrades').value = "60";
-            document.getElementById('optFiltPF').value = "2";
+            document.getElementById('optFiltTrades').value = "50";
+            document.getElementById('optFiltPF').value = "2.00";
             document.getElementById('optFiltDD').value = "10.00";
             
             document.getElementById('optFiltPayoff').value = "0.00";
@@ -1879,9 +1887,14 @@
                         else if(col === 'Expected Payoff') { formattedVal = fmtMoney(val, 2); }
                         else if(col === 'Equity DD %') { formattedVal = val.toFixed(2) + '%'; colorClass = 'text-orange-400'; }
                         else if(col === 'Trades' || col === 'Pass') { formattedVal = val.toFixed(0); } 
+                        // ESTILO NUEVO PARA EL WIN RATE
+                        else if(col === 'Est. Win %') { 
+                            formattedVal = val.toFixed(1) + '%'; 
+                            colorClass = val >= 60 ? 'text-blue-400 font-bold' : (val >= 50 ? 'text-blue-300' : 'text-gray-400'); 
+                        }
                         else {
                             formattedVal = val.toFixed(2);
-                            if(col === 'Profit Factor' && val >= 2.5) colorClass = 'text-blue-400 font-bold';
+                            if(col === 'Profit Factor' && val >= 2.5) colorClass = 'text-green-400 font-bold';
                         }
                     }
 
