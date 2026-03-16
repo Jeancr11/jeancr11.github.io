@@ -571,8 +571,8 @@
         // --- VARIABLES GLOBALES DASHBOARD ---
         let rawData = [];
         let filteredData = [];
-        // Bump version para obligar al cache a refrescar con BalanceAfter
-        const storageKey = 'mt5_trading_data_v10'; 
+        // Bump version para obligar al cache a refrescar con el nuevo formato de gráficos
+        const storageKey = 'mt5_trading_data_v11'; 
         
         let equityChartInstance = null;
         let cTH = null, cTD = null, cTM = null; 
@@ -767,28 +767,29 @@
 
                 if (prevBalance === null) {
                     prevBalance = balance;
-                    continue;
+                    continue; // No considerar la primera línea (depósito inicial)
                 }
 
                 let netProfit = balance - prevBalance;
 
-                if (Math.abs(netProfit) > 0.00001) {
-                    processed.push({
-                        Time: dateObj,
-                        EntryTime: dateObj,
-                        DurationHours: 0, 
-                        Symbol: 'Estrategia',
-                        NetProfit: netProfit,
-                        Year: dateObj.getFullYear(),
-                        Month: dateObj.getMonth() + 1,
-                        ExitMonth: dateObj.getMonth(),
-                        DayOfWeek: dateObj.getDay(),
-                        EntryHour: dateObj.getHours(),
-                        DateOnly: dateObj.toISOString().split('T')[0],
-                        BalanceAfter: balance
-                    });
-                    prevBalance = balance;
-                }
+                // Se eliminó la validación que filtraba solo cuando el balance cambiaba.
+                // Ahora cada línea subsecuente a la primera es procesada.
+                processed.push({
+                    Time: dateObj,
+                    EntryTime: dateObj,
+                    DurationHours: 0, 
+                    Symbol: 'Estrategia',
+                    NetProfit: netProfit,
+                    Year: dateObj.getFullYear(),
+                    Month: dateObj.getMonth() + 1,
+                    ExitMonth: dateObj.getMonth(),
+                    DayOfWeek: dateObj.getDay(),
+                    EntryHour: dateObj.getHours(),
+                    DateOnly: dateObj.toISOString().split('T')[0],
+                    BalanceAfter: balance
+                });
+                
+                prevBalance = balance;
             }
             
             processed.sort((a, b) => a.Time - b.Time);
