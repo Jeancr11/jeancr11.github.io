@@ -67,6 +67,13 @@
         <p class="text-gray-400 text-sm mt-2 font-medium">Dependiendo del tamaño de los archivos, esto puede tomar unos segundos.</p>
     </div>
 
+    <!-- PANTALLA DRAG AND DROP (GLOBAL) -->
+    <div id="dndOverlay" class="fixed inset-0 z-[9998] bg-blue-900/60 backdrop-blur-md hidden flex-col items-center justify-center transition-all border-[6px] border-dashed border-blue-400 pointer-events-none">
+        <svg class="w-24 h-24 text-blue-400 mb-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+        <h2 class="text-4xl font-bold text-white tracking-wide">Suelta tus archivos aquí</h2>
+        <p class="text-blue-200 text-lg mt-4 font-medium">Se procesarán automáticamente en la sección que tienes activa.</p>
+    </div>
+
     <!-- BARRA DE NAVEGACIÓN PRINCIPAL -->
     <nav class="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -812,11 +819,9 @@
         function hideLoader() { document.getElementById('globalLoader').classList.add('hidden'); document.getElementById('globalLoader').classList.remove('flex'); }
 
 
-        // --- MANEJADORES DE SUBIDA DE ARCHIVOS ---
+        // --- MANEJADORES GLOBALES DE ARCHIVOS (SUBIDA Y DRAG & DROP) ---
 
-        // 1. DASHBOARD - HISTORIAL CLASSIC (.XLSX)
-        document.getElementById('dashInputClassic').addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
+        function handleDashboardClassicFiles(files) {
             if (files.length === 0) return;
             showLoader(); 
             let processedCount = 0;
@@ -844,12 +849,9 @@
                 };
                 reader.readAsArrayBuffer(file);
             });
-            e.target.value = '';
-        });
+        }
 
-        // 2. DASHBOARD - GRÁFICO (.CSV / .TSV)
-        document.getElementById('dashInputGraph').addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
+        function handleDashboardGraphFiles(files) {
             if (files.length === 0) return;
             showLoader(); 
             let processedCount = 0;
@@ -875,6 +877,17 @@
                 };
                 reader.readAsText(file); 
             });
+        }
+
+        // 1. DASHBOARD - HISTORIAL CLASSIC (.XLSX)
+        document.getElementById('dashInputClassic').addEventListener('change', function(e) {
+            handleDashboardClassicFiles(Array.from(e.target.files));
+            e.target.value = '';
+        });
+
+        // 2. DASHBOARD - GRÁFICO (.CSV / .TSV)
+        document.getElementById('dashInputGraph').addEventListener('change', function(e) {
+            handleDashboardGraphFiles(Array.from(e.target.files));
             e.target.value = '';
         });
 
@@ -1503,11 +1516,8 @@
             }
         }
 
-        // 3. COMPARADOR - HISTORIAL CLASSIC (.XLSX)
-        document.getElementById('compInputClassic').addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
+        function handleComparatorClassicFiles(files) {
             if (files.length === 0) return;
-            
             showLoader();
             let processedCount = 0;
 
@@ -1530,14 +1540,10 @@
                 };
                 reader.readAsArrayBuffer(file);
             });
-            e.target.value = '';
-        });
+        }
 
-        // 4. COMPARADOR - GRÁFICO (.CSV)
-        document.getElementById('compInputGraph').addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
+        function handleComparatorGraphFiles(files) {
             if (files.length === 0) return;
-            
             showLoader();
             let processedCount = 0;
 
@@ -1557,8 +1563,19 @@
                         }
                     }, 50);
                 };
-                reader.readAsText(file); // Leer texto directo
+                reader.readAsText(file);
             });
+        }
+
+        // 3. COMPARADOR - HISTORIAL CLASSIC (.XLSX)
+        document.getElementById('compInputClassic').addEventListener('change', function(e) {
+            handleComparatorClassicFiles(Array.from(e.target.files));
+            e.target.value = '';
+        });
+
+        // 4. COMPARADOR - GRÁFICO (.CSV)
+        document.getElementById('compInputGraph').addEventListener('change', function(e) {
+            handleComparatorGraphFiles(Array.from(e.target.files));
             e.target.value = '';
         });
 
@@ -1750,10 +1767,8 @@
         // AGREGADA NUEVA COLUMNA EST. WIN %
         const BASE_COLUMNS = ['Pass', 'Result', 'Profit', 'Expected Payoff', 'Profit Factor', 'Est. Win %', 'Recovery Factor', 'Sharpe Ratio', 'Equity DD %', 'Trades'];
 
-        document.getElementById('optimizerFileInput').addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
+        function handleOptimizerFiles(files) {
             if (files.length === 0) return;
-            
             showLoader(); 
             let processedCount = 0;
 
@@ -1775,7 +1790,10 @@
                 };
                 reader.readAsArrayBuffer(file);
             });
-            
+        }
+
+        document.getElementById('optimizerFileInput').addEventListener('change', function(e) {
+            handleOptimizerFiles(Array.from(e.target.files));
             e.target.value = '';
         });
 
@@ -2051,6 +2069,63 @@
                 return html;
             }).join('');
         }
+
+        // ==========================================
+        // --- MOTOR DE DRAG AND DROP (ARRASTRAR Y SOLTAR) GLOBAL ---
+        // ==========================================
+        let dragCounter = 0;
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+            document.body.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); });
+        });
+
+        document.body.addEventListener('dragenter', e => {
+            dragCounter++;
+            if (dragCounter === 1) {
+                document.getElementById('dndOverlay').classList.remove('hidden');
+                document.getElementById('dndOverlay').classList.add('flex');
+            }
+        });
+
+        document.body.addEventListener('dragleave', e => {
+            dragCounter--;
+            if (dragCounter === 0) {
+                document.getElementById('dndOverlay').classList.add('hidden');
+                document.getElementById('dndOverlay').classList.remove('flex');
+            }
+        });
+
+        document.body.addEventListener('drop', e => {
+            dragCounter = 0;
+            document.getElementById('dndOverlay').classList.add('hidden');
+            document.getElementById('dndOverlay').classList.remove('flex');
+
+            const files = Array.from(e.dataTransfer.files);
+            if(files.length === 0) return;
+
+            // Detectar la pestaña activa
+            let activeTab = 'dashboard';
+            if(!document.getElementById('view-comparator').classList.contains('hidden')) activeTab = 'comparator';
+            if(!document.getElementById('view-optimizer').classList.contains('hidden')) activeTab = 'optimizer';
+
+            // Enrutar los archivos al motor correspondiente según la pestaña y la extensión
+            if (activeTab === 'dashboard') {
+                let classicFiles = files.filter(f => f.name.match(/\.(xlsx|xls)$/i));
+                let graphFiles = files.filter(f => f.name.match(/\.(csv|tsv|txt)$/i));
+                if(classicFiles.length) handleDashboardClassicFiles(classicFiles);
+                if(graphFiles.length) handleDashboardGraphFiles(graphFiles);
+            } 
+            else if (activeTab === 'comparator') {
+                let classicFiles = files.filter(f => f.name.match(/\.(xlsx|xls)$/i));
+                let graphFiles = files.filter(f => f.name.match(/\.(csv|tsv|txt)$/i));
+                if(classicFiles.length) handleComparatorClassicFiles(classicFiles);
+                if(graphFiles.length) handleComparatorGraphFiles(graphFiles);
+            } 
+            else if (activeTab === 'optimizer') {
+                let optFiles = files.filter(f => f.name.match(/\.(xlsx|xls|csv|xml|html|htm)$/i));
+                if(optFiles.length) handleOptimizerFiles(optFiles);
+            }
+        });
 
     </script>
 </body>
