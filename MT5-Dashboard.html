@@ -130,6 +130,9 @@
                 </div>
             </div>
 
+            <!-- CONTENEDOR DE ARCHIVOS DEL DASHBOARD (NUEVO) -->
+            <div id="dashFilesList" class="flex flex-wrap gap-3 mb-4"></div>
+
             <!-- Contenedor Principal (Oculto hasta que haya datos) -->
             <div id="dashboardContent" class="hidden fade-in flex flex-col lg:flex-row gap-6 items-stretch">
                 
@@ -238,11 +241,20 @@
                             </div>
                         </div>
 
+                        <!-- MODIFICADO: Tarjeta de Rachas dividida para incluir promedios -->
                         <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
-                            <span class="text-gray-400 text-xs uppercase tracking-wide">Rachas Máximas</span>
-                            <div class="flex gap-4 mt-1 text-xs font-semibold w-full justify-center">
-                                <span class="text-green-400 flex flex-col items-center"><span id="kpiMaxWinStreak" class="text-xl lg:text-2xl font-bold">0</span><span class="mt-1 text-[10px]">Victorias</span></span>
-                                <span class="text-red-400 flex flex-col items-center"><span id="kpiMaxLossStreak" class="text-xl lg:text-2xl font-bold">0</span><span class="mt-1 text-[10px]">Derrotas</span></span>
+                            <span class="text-gray-400 text-xs uppercase tracking-wide">Análisis de Rachas</span>
+                            <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
+                                <span class="text-green-400 flex flex-col items-center">
+                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Ganadoras</span>
+                                    <span class="text-xl lg:text-2xl font-bold leading-none"><span id="kpiMaxWinStreak">0</span><span class="text-xs text-gray-500 ml-1">máx</span></span>
+                                    <span class="text-[10px] text-gray-400 mt-1 font-mono tracking-tighter">Promedio: <span id="kpiAvgWinStreak">0.0</span></span>
+                                </span>
+                                <span class="text-red-400 flex flex-col items-center border-l border-gray-700 pl-4">
+                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Perdedoras</span>
+                                    <span class="text-xl lg:text-2xl font-bold leading-none"><span id="kpiMaxLossStreak">0</span><span class="text-xs text-gray-500 ml-1">máx</span></span>
+                                    <span class="text-[10px] text-gray-400 mt-1 font-mono tracking-tighter">Promedio: <span id="kpiAvgLossStreak">0.0</span></span>
+                                </span>
                             </div>
                         </div>
 
@@ -586,8 +598,9 @@
         // --- VARIABLES GLOBALES DASHBOARD ---
         let rawData = [];
         let filteredData = [];
-        // Bump version para obligar al cache a refrescar con la nueva lógica (BE contados como ganancias)
-        const storageKey = 'mt5_trading_data_v14'; 
+        let dashFiles = []; // NUEVO: Para guardar archivos independientes en Dashboard
+        // Bump version para nueva lógica de lista de archivos y promedios de rachas
+        const storageKey = 'mt5_trading_data_v15'; 
         
         let equityChartInstance = null;
         let cTH = null, cTD = null, cTM = null; 
@@ -632,9 +645,10 @@
         window.onload = () => {
             const savedData = localStorage.getItem(storageKey);
             if (savedData) {
-                rawData = JSON.parse(savedData);
-                initDashboard();
-                syncMainFileToComparator();
+                try {
+                    dashFiles = JSON.parse(savedData);
+                    processDashFiles(); 
+                } catch(e) { console.error("Error al recuperar datos:", e); }
             }
         };
 
@@ -825,7 +839,6 @@
             if (files.length === 0) return;
             showLoader(); 
             let processedCount = 0;
-            let batchData = [];
 
             files.forEach(file => {
                 const reader = new FileReader();
@@ -836,12 +849,15 @@
                             const workbook = XLSX.read(data, { type: 'array', cellDates: true });
                             const jsonResult = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {defval: ""});
                             const parsedData = parseMT5Data(jsonResult);
-                            batchData = batchData.concat(parsedData);
+                            
+                            if (parsedData.length > 0) {
+                                dashFiles.push({ id: Date.now() + Math.random(), name: file.name, data: parsedData });
+                            }
                         } catch (err) { alert(`Error al leer el archivo Excel: ${file.name}`); console.error(err); } 
                         finally { 
                             processedCount++;
                             if (processedCount === files.length) {
-                                processRawDataBatch(batchData);
+                                processDashFiles();
                                 hideLoader();
                             }
                         }
@@ -855,7 +871,6 @@
             if (files.length === 0) return;
             showLoader(); 
             let processedCount = 0;
-            let batchData = [];
 
             files.forEach(file => {
                 const reader = new FileReader();
@@ -864,12 +879,15 @@
                         try {
                             const text = event.target.result;
                             const parsedData = parseRawMT5Graph(text);
-                            batchData = batchData.concat(parsedData);
+                            
+                            if (parsedData.length > 0) {
+                                dashFiles.push({ id: Date.now() + Math.random(), name: file.name, data: parsedData });
+                            }
                         } catch (err) { alert(`Error al leer el archivo de Gráfico: ${file.name}`); console.error(err); } 
                         finally { 
                             processedCount++;
                             if (processedCount === files.length) {
-                                processRawDataBatch(batchData);
+                                processDashFiles();
                                 hideLoader();
                             }
                         }
@@ -891,35 +909,74 @@
             e.target.value = '';
         });
 
-        function processRawDataBatch(newData) {
-            if(newData.length === 0) {
-                alert("No se detectaron operaciones válidas en los archivos subidos.");
+        // NUEVA FUNCIÓN QUE REEMPLAZA processRawDataBatch
+        function processDashFiles() {
+            if(dashFiles.length === 0) {
                 return;
             }
 
-            // Agrupar con datos existentes
-            rawData = rawData.concat(newData);
+            rawData = [];
+            dashFiles.forEach(f => {
+                f.data.forEach(d => {
+                    if (typeof d.Time === 'string') d.Time = new Date(d.Time);
+                    if (typeof d.EntryTime === 'string') d.EntryTime = new Date(d.EntryTime);
+                });
+                rawData = rawData.concat(f.data);
+            });
+
             rawData.sort((a, b) => a.Time - b.Time);
 
-            // Recalcular Balance Global para mantener la curva conectada
             let currentBalance = 10000;
             rawData.forEach(d => {
                 currentBalance += d.NetProfit;
                 d.BalanceAfter = currentBalance;
             });
 
-            try { localStorage.setItem(storageKey, JSON.stringify(rawData)); } catch(e) {}
+            try { localStorage.setItem(storageKey, JSON.stringify(dashFiles)); } catch(e) {}
+            
+            renderDashFilesTags();
             initDashboard();
             syncMainFileToComparator();
         }
 
+        function renderDashFilesTags() {
+            const listDiv = document.getElementById('dashFilesList');
+            if (dashFiles.length === 0) {
+                listDiv.innerHTML = '';
+                return;
+            }
+            listDiv.innerHTML = dashFiles.map(f => `
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-600 bg-gray-800 shadow-sm">
+                    <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                    <span class="text-sm font-semibold truncate max-w-[150px]" title="${f.name}">${f.name}</span>
+                    <button onclick="removeDashFile(${f.id})" class="ml-1 text-gray-400 hover:text-red-500 font-bold">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removeDashFile(id) {
+            dashFiles = dashFiles.filter(f => f.id !== id);
+            
+            // Si eliminamos el último archivo del Dashboard
+            if (dashFiles.length === 0) {
+                localStorage.removeItem(storageKey);
+                rawData = [];
+                filteredData = [];
+                document.getElementById('dashboardContent').classList.add('hidden');
+                document.getElementById('welcomeScreen').classList.remove('hidden');
+                document.getElementById('clearBtn').classList.add('hidden');
+                renderDashFilesTags();
+                
+                // Limpiar del comparador también
+                let idx = comparedFiles.findIndex(f => f.name.includes("Estrategia Principal"));
+                if(idx > -1) removeFileFromComparator(comparedFiles[idx].id);
+            } else {
+                processDashFiles();
+            }
+        }
+
         function initDashboard() {
             if (rawData.length === 0) return; 
-            
-            rawData.forEach(d => {
-                if (typeof d.Time === 'string') d.Time = new Date(d.Time);
-                if (typeof d.EntryTime === 'string') d.EntryTime = new Date(d.EntryTime);
-            });
 
             document.getElementById('welcomeScreen').classList.add('hidden');
             document.getElementById('dashboardContent').classList.remove('hidden');
@@ -980,6 +1037,9 @@
             let maxWinStreak = 0; let maxLossStreak = 0;
             let cumulative = 0; let peak = 0;
 
+            let winStreaks = [];
+            let lossStreaks = [];
+
             let currentConsecutiveLoss = 0;
             let maxConsecutiveLoss = 0;
             let balanceAtStreakStart = 0;
@@ -1013,14 +1073,23 @@
 
                 // LÓGICA ACTUALIZADA: Cualquier operación >= 0 (Incluyendo los BE de $0) se cuenta como Ganancia
                 if (d.NetProfit >= 0) {
+                    if (currentLossStreak > 0) {
+                        lossStreaks.push(currentLossStreak);
+                        currentLossStreak = 0;
+                    }
+
                     winningTrades++;
                     winRateDenominator++; // Afecta WinRate
                     grossProfit += d.NetProfit; // Sumará 0 si es BE
                     currentWinStreak++;
-                    currentLossStreak = 0;
                     currentConsecutiveLoss = 0; 
                     if(currentWinStreak > maxWinStreak) maxWinStreak = currentWinStreak;
                 } else { // d.NetProfit < 0
+                    if (currentWinStreak > 0) {
+                        winStreaks.push(currentWinStreak);
+                        currentWinStreak = 0;
+                    }
+
                     losingTrades++;
                     winRateDenominator++; // Afecta WinRate
                     grossLoss += d.NetProfit;
@@ -1054,6 +1123,14 @@
                 }
             });
 
+            // Registrar la última racha si quedó en progreso al finalizar el bucle
+            if (currentWinStreak > 0) winStreaks.push(currentWinStreak);
+            if (currentLossStreak > 0) lossStreaks.push(currentLossStreak);
+
+            // Calcular Promedio de Rachas
+            const avgWinStreak = winStreaks.length > 0 ? winStreaks.reduce((a, b) => a + b, 0) / winStreaks.length : 0;
+            const avgLossStreak = lossStreaks.length > 0 ? lossStreaks.reduce((a, b) => a + b, 0) / lossStreaks.length : 0;
+
             // Lógica de cálculo estricta usando sus denominadores separados
             const winRate = winRateDenominator > 0 ? (winningTrades / winRateDenominator) * 100 : 0;
             const avgTrade = totalTrades > 0 ? totalProfit / totalTrades : 0;
@@ -1086,7 +1163,8 @@
             return {
                 totalProfit, grossProfit, grossLoss, absoluteGrossLoss,
                 totalTrades, winRateDenominator, winningTrades, losingTrades, winRate, avgTrade, tradesPerMonth,
-                profitFactor, riskReward, maxConsDrawdownPct, maxConsecutiveLoss, maxConsDate, maxSingleLoss, maxSingleLossPct, maxSingleDate, maxWinStreak, maxLossStreak,
+                profitFactor, riskReward, maxConsDrawdownPct, maxConsecutiveLoss, maxConsDate, maxSingleLoss, maxSingleLossPct, maxSingleDate, 
+                maxWinStreak, maxLossStreak, avgWinStreak, avgLossStreak,
                 bestDayIndex, worstDayIndex, hasDataDay
             };
         }
@@ -1176,6 +1254,8 @@
             
             document.getElementById('kpiMaxWinStreak').innerText = metrics.maxWinStreak;
             document.getElementById('kpiMaxLossStreak').innerText = metrics.maxLossStreak;
+            document.getElementById('kpiAvgWinStreak').innerText = metrics.avgWinStreak.toFixed(1);
+            document.getElementById('kpiAvgLossStreak').innerText = metrics.avgLossStreak.toFixed(1);
         }
 
         function updateChart() {
