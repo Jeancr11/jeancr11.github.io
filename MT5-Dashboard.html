@@ -599,8 +599,8 @@
         let rawData = [];
         let filteredData = [];
         let dashFiles = []; // NUEVO: Para guardar archivos independientes en Dashboard
-        // Bump version para nueva lógica de lista de archivos y promedios de rachas
-        const storageKey = 'mt5_trading_data_v15'; 
+        // Bump version para nueva lógica (BE ignorados como ganadas o perdidas)
+        const storageKey = 'mt5_trading_data_v16'; 
         
         let equityChartInstance = null;
         let cTH = null, cTD = null, cTM = null; 
@@ -1071,8 +1071,8 @@
                 dayProfits[d.DayOfWeek] += d.NetProfit;
                 dayCounts[d.DayOfWeek]++;
 
-                // LÓGICA ACTUALIZADA: Cualquier operación >= 0 (Incluyendo los BE de $0) se cuenta como Ganancia
-                if (d.NetProfit >= 0) {
+                // LÓGICA ACTUALIZADA: > 0 Ganancia, < 0 Pérdida, == 0 Neutro (ni ganada ni perdida)
+                if (d.NetProfit > 0) {
                     if (currentLossStreak > 0) {
                         lossStreaks.push(currentLossStreak);
                         currentLossStreak = 0;
@@ -1080,11 +1080,11 @@
 
                     winningTrades++;
                     winRateDenominator++; // Afecta WinRate
-                    grossProfit += d.NetProfit; // Sumará 0 si es BE
+                    grossProfit += d.NetProfit; 
                     currentWinStreak++;
                     currentConsecutiveLoss = 0; 
                     if(currentWinStreak > maxWinStreak) maxWinStreak = currentWinStreak;
-                } else { // d.NetProfit < 0
+                } else if (d.NetProfit < 0) {
                     if (currentWinStreak > 0) {
                         winStreaks.push(currentWinStreak);
                         currentWinStreak = 0;
@@ -1119,6 +1119,15 @@
                         let baseCapital = balanceAtStreakStart > 0 ? balanceAtStreakStart : 10000;
                         maxConsDrawdownPct = (maxConsecutiveLoss / baseCapital) * 100;
                         maxConsDate = d.Time;
+                    }
+                } else {
+                    // d.NetProfit === 0 (Break Even o Tick de Gráfico)
+                    // No se cuenta ni como ganada ni como perdida (no suma al winRateDenominator)
+                    if (!d.IsGraphTick) {
+                        // Un BE real (no un tick fantasma) rompe las rachas activas
+                        if (currentWinStreak > 0) { winStreaks.push(currentWinStreak); currentWinStreak = 0; }
+                        if (currentLossStreak > 0) { lossStreaks.push(currentLossStreak); currentLossStreak = 0; }
+                        currentConsecutiveLoss = 0; 
                     }
                 }
             });
