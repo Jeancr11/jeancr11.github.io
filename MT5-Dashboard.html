@@ -224,7 +224,7 @@
                             <span class="text-[10px] lg:text-xs text-gray-500 mt-2">Win Prom. vs Loss Prom.</span>
                         </div>
 
-                        <!-- MODIFICADO: Tarjeta de Drawdowns dividida para incluir peor trade individual en % -->
+                        <!-- Tarjeta de Drawdowns dividida para incluir peor trade individual en % -->
                         <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
                             <span class="text-gray-400 text-xs uppercase tracking-wide">Drawdowns Máximos</span>
                             <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
@@ -241,7 +241,7 @@
                             </div>
                         </div>
 
-                        <!-- MODIFICADO: Tarjeta de Rachas dividida para incluir promedios -->
+                        <!-- Tarjeta de Rachas dividida para incluir promedios -->
                         <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
                             <span class="text-gray-400 text-xs uppercase tracking-wide">Análisis de Rachas</span>
                             <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
@@ -598,9 +598,9 @@
         // --- VARIABLES GLOBALES DASHBOARD ---
         let rawData = [];
         let filteredData = [];
-        let dashFiles = []; // NUEVO: Para guardar archivos independientes en Dashboard
-        // Bump version para nueva lógica (BE ignorados como ganadas o perdidas)
-        const storageKey = 'mt5_trading_data_v16'; 
+        let dashFiles = [];
+        // Bump version para nueva lógica global (los trades en 0 se excluyen por completo)
+        const storageKey = 'mt5_trading_data_v17'; 
         
         let equityChartInstance = null;
         let cTH = null, cTD = null, cTM = null; 
@@ -728,10 +728,8 @@
                 }
             });
 
-            // ORDENAMIENTO CRONOLÓGICO ESTRICTO
             processed.sort((a, b) => a.Time - b.Time);
 
-            // CALCULAR BALANCE ACUMULADO
             let currentBalance = initialDeposit;
             processed.forEach(d => {
                 currentBalance += d.NetProfit;
@@ -801,10 +799,6 @@
 
                 let netProfit = balance - prevBalance;
                 
-                // Si el beneficio es exactamente $0 en el CSV de Gráficos, lo marcamos como un "tick" temporal
-                // De esta forma se trazará en la curva de capital, pero NO inflará el contador de "Trades totales" ni estropeará el Win Rate.
-                let isTick = Math.abs(netProfit) < 0.00001; 
-
                 processed.push({
                     Time: dateObj,
                     EntryTime: dateObj,
@@ -817,8 +811,7 @@
                     DayOfWeek: dateObj.getDay(),
                     EntryHour: dateObj.getHours(),
                     DateOnly: dateObj.toISOString().split('T')[0],
-                    BalanceAfter: balance,
-                    IsGraphTick: isTick
+                    BalanceAfter: balance
                 });
                 
                 prevBalance = balance;
@@ -909,7 +902,6 @@
             e.target.value = '';
         });
 
-        // NUEVA FUNCIÓN QUE REEMPLAZA processRawDataBatch
         function processDashFiles() {
             if(dashFiles.length === 0) {
                 return;
@@ -1011,6 +1003,9 @@
             applyFilters();
         }
 
+        // ==========================================
+        // FILTRO PRINCIPAL (GLOBAL): LOS TRADES EN $0 MUEREN AQUÍ
+        // ==========================================
         function applyFilters() {
             const sym = document.getElementById('filterSymbol').value;
             const year = document.getElementById('filterYear').value;
@@ -1020,7 +1015,10 @@
                 let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
                 let matchYear = (year === "ALL") ? true : d.Year.toString() === year;
                 let matchMonth = (month === "ALL") ? true : d.Month.toString() === month;
-                return matchSym && matchYear && matchMonth;
+                // Exclusión radical de todo trade o línea de gráfica cuyo beneficio sea cero ($0.00)
+                let isNotZero = Math.abs(d.NetProfit) >= 0.00001; 
+                
+                return matchSym && matchYear && matchMonth && isNotZero;
             });
 
             updateKPIs();
@@ -1053,8 +1051,7 @@
             let dayProfits = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
             let dayCounts = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
 
-            let totalTrades = dataArr.length; // SÍ incluye todos los ticks en la métrica global de "Cantidad de Trades"
-            let winRateDenominator = 0; // Se usará exclusivamente para no dañar el % de WinRate
+            let totalTrades = dataArr.length; // Los ceros ya no existen en dataArr, por lo que es 100% puro
             
             let minDate = new Date(8640000000000000);
             let maxDate = new Date(-8640000000000000);
@@ -1071,7 +1068,6 @@
                 dayProfits[d.DayOfWeek] += d.NetProfit;
                 dayCounts[d.DayOfWeek]++;
 
-                // LÓGICA ACTUALIZADA: > 0 Ganancia, < 0 Pérdida, == 0 Neutro (ni ganada ni perdida)
                 if (d.NetProfit > 0) {
                     if (currentLossStreak > 0) {
                         lossStreaks.push(currentLossStreak);
@@ -1079,7 +1075,6 @@
                     }
 
                     winningTrades++;
-                    winRateDenominator++; // Afecta WinRate
                     grossProfit += d.NetProfit; 
                     currentWinStreak++;
                     currentConsecutiveLoss = 0; 
@@ -1091,10 +1086,8 @@
                     }
 
                     losingTrades++;
-                    winRateDenominator++; // Afecta WinRate
                     grossLoss += d.NetProfit;
                     
-                    // Lógica precisa para el Peor Trade Individual (Single Loss)
                     if (d.NetProfit < maxSingleLoss) {
                         maxSingleLoss = d.NetProfit;
                         let currentBalance = d.BalanceAfter !== undefined ? d.BalanceAfter : (10000 + cumulative);
@@ -1103,7 +1096,6 @@
                         maxSingleDate = d.Time;
                     }
                     
-                    // Lógica precisa para el Drawdown Consecutivo
                     if (currentLossStreak === 0) {
                         balanceAtStreakStart = d.BalanceAfter !== undefined ? (d.BalanceAfter - d.NetProfit) : (10000 + cumulative - d.NetProfit);
                     }
@@ -1120,28 +1112,16 @@
                         maxConsDrawdownPct = (maxConsecutiveLoss / baseCapital) * 100;
                         maxConsDate = d.Time;
                     }
-                } else {
-                    // d.NetProfit === 0 (Break Even o Tick de Gráfico)
-                    // No se cuenta ni como ganada ni como perdida (no suma al winRateDenominator)
-                    if (!d.IsGraphTick) {
-                        // Un BE real (no un tick fantasma) rompe las rachas activas
-                        if (currentWinStreak > 0) { winStreaks.push(currentWinStreak); currentWinStreak = 0; }
-                        if (currentLossStreak > 0) { lossStreaks.push(currentLossStreak); currentLossStreak = 0; }
-                        currentConsecutiveLoss = 0; 
-                    }
                 }
             });
 
-            // Registrar la última racha si quedó en progreso al finalizar el bucle
             if (currentWinStreak > 0) winStreaks.push(currentWinStreak);
             if (currentLossStreak > 0) lossStreaks.push(currentLossStreak);
 
-            // Calcular Promedio de Rachas
             const avgWinStreak = winStreaks.length > 0 ? winStreaks.reduce((a, b) => a + b, 0) / winStreaks.length : 0;
             const avgLossStreak = lossStreaks.length > 0 ? lossStreaks.reduce((a, b) => a + b, 0) / lossStreaks.length : 0;
 
-            // Lógica de cálculo estricta usando sus denominadores separados
-            const winRate = winRateDenominator > 0 ? (winningTrades / winRateDenominator) * 100 : 0;
+            const winRate = totalTrades > 0 ? (winningTrades / totalTrades) * 100 : 0;
             const avgTrade = totalTrades > 0 ? totalProfit / totalTrades : 0;
             const absoluteGrossLoss = Math.abs(grossLoss);
             const profitFactor = absoluteGrossLoss > 0 ? (grossProfit / absoluteGrossLoss) : (grossProfit > 0 ? 99.99 : 0);
@@ -1149,7 +1129,6 @@
             const avgLoss = losingTrades > 0 ? absoluteGrossLoss / losingTrades : 0;
             const riskReward = avgLoss > 0 ? (avgWin / avgLoss) : (avgWin > 0 ? 99.99 : 0);
 
-            // Fórmula: Trades por Mes
             let monthsSpan = 1;
             if(totalTrades > 0) {
                 monthsSpan = (maxDate.getFullYear() - minDate.getFullYear()) * 12 + (maxDate.getMonth() - minDate.getMonth()) + 1;
@@ -1171,7 +1150,7 @@
 
             return {
                 totalProfit, grossProfit, grossLoss, absoluteGrossLoss,
-                totalTrades, winRateDenominator, winningTrades, losingTrades, winRate, avgTrade, tradesPerMonth,
+                totalTrades, winningTrades, losingTrades, winRate, avgTrade, tradesPerMonth,
                 profitFactor, riskReward, maxConsDrawdownPct, maxConsecutiveLoss, maxConsDate, maxSingleLoss, maxSingleLossPct, maxSingleDate, 
                 maxWinStreak, maxLossStreak, avgWinStreak, avgLossStreak,
                 bestDayIndex, worstDayIndex, hasDataDay
@@ -1182,7 +1161,7 @@
             const container = document.getElementById('leaderboardContainer');
             
             let pairData = {};
-            rawData.forEach(d => {
+            filteredData.forEach(d => {
                 if(!pairData[d.Symbol]) pairData[d.Symbol] = { profit: 0, count: 0 };
                 pairData[d.Symbol].profit += d.NetProfit;
                 pairData[d.Symbol].count += 1;
@@ -1232,7 +1211,7 @@
             document.getElementById('kpiWorstDay').innerText = `Peor día: ${metrics.hasDataDay ? daysArrFull[metrics.worstDayIndex] : '-'}`;
             
             document.getElementById('kpiWinRate').innerText = `${metrics.winRate.toFixed(1)}%`;
-            document.getElementById('kpiWinRateSub').innerText = `${metrics.winningTrades} / ${metrics.winRateDenominator} Victorias`;
+            document.getElementById('kpiWinRateSub').innerText = `${metrics.winningTrades} / ${metrics.totalTrades} Victorias`;
             
             // Tarjeta Dividida de Promedio x Trade y Trades x Mes
             document.getElementById('kpiAvgTrade').innerText = fmtMoney(metrics.avgTrade);
@@ -1271,7 +1250,6 @@
             const ctx = document.getElementById('equityChart').getContext('2d');
             let cumulative = 0; let chartLabels = []; let chartData = [];
 
-            // Procesamos todos, incluyendo los IsGraphTick, porque queremos la curva de líneas completita
             filteredData.forEach(d => {
                 cumulative += d.NetProfit;
                 chartLabels.push(d.Time);
@@ -1327,11 +1305,11 @@
                 tDay[d.DayOfWeek]++;   
                 tMonth[d.ExitMonth]++; 
                 
-                if(d.NetProfit >= 0) {
+                if(d.NetProfit > 0) {
                     pHourWin[d.EntryHour] += d.NetProfit;
                     pDayWin[d.DayOfWeek] += d.NetProfit;
                     pMonthWin[d.ExitMonth] += d.NetProfit;
-                } else {
+                } else if(d.NetProfit < 0) {
                     pHourLoss[d.EntryHour] += Math.abs(d.NetProfit);
                     pDayLoss[d.DayOfWeek] += Math.abs(d.NetProfit);
                     pMonthLoss[d.ExitMonth] += Math.abs(d.NetProfit);
@@ -1425,7 +1403,7 @@
             updateSmartCalendar();
         };
         window.calZoomIn = function() {
-            let calData = rawData; 
+            let calData = filteredData; 
             if (calMode === 'YEARS') {
                 let years = [...new Set(calData.map(d => d.Year))].sort((a,b) => b-a);
                 if (years.length > 0) calZoomInYear(years[0]);
@@ -1453,7 +1431,7 @@
             const btnZoomOut = document.getElementById('btnCalZoomOut');
             const btnZoomIn = document.getElementById('btnCalZoomIn');
 
-            let calData = rawData; 
+            let calData = filteredData; 
             container.innerHTML = ''; 
 
             btnPrev.disabled = (calMode === 'YEARS');
@@ -1726,7 +1704,10 @@
                     let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
                     let matchYear = (year === "ALL") ? true : d.Year.toString() === year;
                     let matchMonth = (month === "ALL") ? true : d.Month.toString() === month;
-                    return matchSym && matchYear && matchMonth;
+                    // Mismo filtro implacable que en Dashboard
+                    let isNotZero = Math.abs(d.NetProfit) >= 0.00001; 
+                    
+                    return matchSym && matchYear && matchMonth && isNotZero;
                 });
             });
 
@@ -1853,7 +1834,6 @@
         let currentOptSortCol = null; 
         let currentOptSortAsc = false; 
         
-        // AGREGADA NUEVA COLUMNA EST. WIN %
         const BASE_COLUMNS = ['Pass', 'Result', 'Profit', 'Expected Payoff', 'Profit Factor', 'Est. Win %', 'Recovery Factor', 'Sharpe Ratio', 'Equity DD %', 'Trades'];
 
         function handleOptimizerFiles(files) {
@@ -1904,11 +1884,10 @@
             let processed = dataArr.map(row => {
                 if('Custom' in row) delete row['Custom'];
                 
-                // CALCULAR WIN RATE ESTIMADO MATEMÁTICAMENTE
                 let pf = cleanNumber(row['Profit Factor']);
                 let estWin = 0;
                 if(pf > 0) estWin = (pf / (pf + 1)) * 100;
-                if(pf >= 99 || row['Profit Factor'] === '') estWin = 100; // Si no hay pérdidas
+                if(pf >= 99 || row['Profit Factor'] === '') estWin = 100;
 
                 return {
                     ...row,
@@ -1997,11 +1976,11 @@
             document.getElementById('optFiltProfit').value = "2000";
             document.getElementById('optFiltTrades').value = "50";
             document.getElementById('optFiltPF').value = "2.00";
-            document.getElementById('optFiltDD').value = "5.00"; // Atualizado para 5.00
+            document.getElementById('optFiltDD').value = "5.00"; 
             
             document.getElementById('optFiltPayoff').value = "0.00";
-            document.getElementById('optFiltRecovery').value = "5.00"; // Atualizado para 5.00
-            document.getElementById('optFiltSharpe').value = "5.00"; // Atualizado para 5.00
+            document.getElementById('optFiltRecovery').value = "5.00"; 
+            document.getElementById('optFiltSharpe').value = "5.00"; 
             
             currentOptSortCol = null;
             currentOptSortAsc = false;
@@ -2125,7 +2104,6 @@
                         else if(col === 'Expected Payoff') { formattedVal = fmtMoney(val, 2); }
                         else if(col === 'Equity DD %') { formattedVal = val.toFixed(2) + '%'; colorClass = 'text-orange-400'; }
                         else if(col === 'Trades' || col === 'Pass') { formattedVal = val.toFixed(0); } 
-                        // ESTILO NUEVO PARA EL WIN RATE
                         else if(col === 'Est. Win %') { 
                             formattedVal = val.toFixed(1) + '%'; 
                             colorClass = val >= 60 ? 'text-blue-400 font-bold' : (val >= 50 ? 'text-blue-300' : 'text-gray-400'); 
@@ -2192,12 +2170,10 @@
             const files = Array.from(e.dataTransfer.files);
             if(files.length === 0) return;
 
-            // Detectar la pestaña activa
             let activeTab = 'dashboard';
             if(!document.getElementById('view-comparator').classList.contains('hidden')) activeTab = 'comparator';
             if(!document.getElementById('view-optimizer').classList.contains('hidden')) activeTab = 'optimizer';
 
-            // Enrutar los archivos al motor correspondiente según la pestaña y la extensión
             if (activeTab === 'dashboard') {
                 let classicFiles = files.filter(f => f.name.match(/\.(xlsx|xls)$/i));
                 let graphFiles = files.filter(f => f.name.match(/\.(csv|tsv|txt)$/i));
