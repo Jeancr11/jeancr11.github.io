@@ -130,7 +130,7 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR DE ARCHIVOS DEL DASHBOARD (NUEVO) -->
+            <!-- CONTENEDOR DE ARCHIVOS DEL DASHBOARD -->
             <div id="dashFilesList" class="flex flex-wrap gap-3 mb-4"></div>
 
             <!-- Contenedor Principal (Oculto hasta que haya datos) -->
@@ -187,8 +187,7 @@
                             <span class="text-gray-400 text-xs uppercase tracking-wide">Cantidad de Trades</span>
                             <span id="kpiTotalTrades" class="text-2xl lg:text-3xl font-bold mt-1 text-white">0</span>
                             <div class="flex flex-col items-center mt-2 gap-0.5 w-full">
-                                <span id="kpiBestDay" class="text-[10px] lg:text-xs text-green-400 font-semibold">Mejor día: -</span>
-                                <span id="kpiWorstDay" class="text-[10px] lg:text-xs text-red-400 font-semibold">Peor día: -</span>
+                                <span id="kpiSimultaneous" class="text-[10px] lg:text-xs text-purple-400 font-semibold" title="Máxima cantidad de trades abiertos al mismo tiempo">Simultáneos: -</span>
                             </div>
                         </div>
                         
@@ -260,14 +259,42 @@
 
                     </div>
 
-                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full">
-                        <h2 class="text-lg font-semibold text-gray-300 mb-4">Curva de Capital (Acumulado)</h2>
-                        <div class="relative h-[500px] lg:h-[600px] xl:h-[700px] w-full flex-1">
-                            <canvas id="equityChart"></canvas>
+                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-2">
+                        <!-- Gráfico Lineal -->
+                        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full relative">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h2 class="text-lg font-semibold text-gray-300">Curva de Capital Real</h2>
+                                    <p class="text-[10px] text-gray-500">Balance final del set de datos</p>
+                                </div>
+                                <div class="text-right">
+                                    <span id="kpiLinearFinal" class="text-xl font-bold text-blue-400">$10,000</span>
+                                </div>
+                            </div>
+                            <div class="relative h-[350px] lg:h-[450px] w-full flex-1">
+                                <canvas id="equityChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico Compuesto 1% -->
+                        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full relative">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h2 class="text-lg font-semibold text-gray-300 text-purple-400">Proyección Compuesta</h2>
+                                    <p class="text-[10px] text-gray-500">Asumiendo 1% de riesgo estricto por trade</p>
+                                </div>
+                                <div class="text-right">
+                                    <span id="kpiCompFinal" class="text-xl font-bold text-purple-400">$10,000</span>
+                                    <span id="kpiCompPct" class="text-xs font-semibold text-gray-400 block">+0.00%</span>
+                                </div>
+                            </div>
+                            <div class="relative h-[350px] lg:h-[450px] w-full flex-1">
+                                <canvas id="compoundChart"></canvas>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg">
+                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg mt-2">
                         <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                             <h2 class="text-lg font-semibold text-gray-300">Calendario de Desempeño</h2>
                             <div class="flex items-center gap-1 md:gap-2">
@@ -591,18 +618,23 @@
             document.getElementById(`view-${tabId}`).classList.remove('hidden');
             document.getElementById(`nav-${tabId}`).classList.add('active');
 
-            if(tabId === 'dashboard' && equityChartInstance) equityChartInstance.resize();
+            if(tabId === 'dashboard') {
+                if(equityChartInstance) equityChartInstance.resize();
+                if(compoundChartInstance) compoundChartInstance.resize();
+            }
             if(tabId === 'comparator' && comparatorChartInstance) comparatorChartInstance.resize();
         }
 
         // --- VARIABLES GLOBALES DASHBOARD ---
         let rawData = [];
         let filteredData = [];
+        let compChartDataObj = []; // Para el gráfico compuesto
         let dashFiles = [];
-        // Bump version para nueva lógica global (los trades en 0 se excluyen por completo)
-        const storageKey = 'mt5_trading_data_v17'; 
+        const storageKey = 'mt5_trading_data_v20'; // Limpiando historial previo
         
         let equityChartInstance = null;
+        let compoundChartInstance = null; // Nuevo gráfico para el interés compuesto
+        
         let cTH = null, cTD = null, cTM = null; 
         let cPH = null, cPD = null, cPM = null; 
         let scatterChartInstance = null;
@@ -621,7 +653,13 @@
         const colorPalette = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#f97316'];
         let nextColorIndex = 0; 
 
-        // --- HELPERS BÁSICOS ---
+        // --- HELPERS BÁSICOS Y DESTRUCTORES DE CHARTJS ---
+        const safeDestroy = (chart) => {
+            if (chart) {
+                try { chart.destroy(); } catch(e) { console.warn("Error destruyendo chart", e); }
+            }
+        };
+
         function fmtMoney(val, decimals = 2) {
             return (val < 0 ? '-' : '') + '$' + Math.abs(parseFloat(val)).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
         }
@@ -635,7 +673,7 @@
         }
 
         function formatDurationText(hours) {
-            if(hours === undefined || isNaN(hours)) return "-";
+            if(typeof hours !== 'number' || isNaN(hours) || !isFinite(hours)) return "-";
             if(hours < 1) return (hours * 60).toFixed(0) + " min";
             if(hours > 24) return (hours / 24).toFixed(1) + " días";
             return hours.toFixed(1) + " h";
@@ -706,6 +744,7 @@
 
                     let exitTime = row.parsedTime;
                     let durationHours = (exitTime.getTime() - entryTime.getTime()) / (1000 * 60 * 60);
+                    if(isNaN(durationHours) || !isFinite(durationHours)) durationHours = 0; // ANTI-CRASH de Duración
                     if(durationHours < 0) durationHours = 0; 
 
                     let comm = cleanNumber(row.Commission);
@@ -742,7 +781,7 @@
         // =========================================================
         // --- NUEVO MOTOR DE LECTURA DE TEXTO PURO (.CSV GRAPH) ---
         // =========================================================
-        function parseRawMT5Graph(csvText) {
+        function parseRawMT5Graph(csvText, sourceName = 'Estrategia') {
             let lines = csvText.split(/\r?\n/);
             if(lines.length < 2) return [];
 
@@ -801,9 +840,9 @@
                 
                 processed.push({
                     Time: dateObj,
-                    EntryTime: dateObj,
+                    EntryTime: dateObj, // Se simula misma entrada para mantener formato
                     DurationHours: 0, 
-                    Symbol: 'Estrategia',
+                    Symbol: sourceName,
                     NetProfit: netProfit,
                     Year: dateObj.getFullYear(),
                     Month: dateObj.getMonth() + 1,
@@ -845,12 +884,14 @@
                             
                             if (parsedData.length > 0) {
                                 dashFiles.push({ id: Date.now() + Math.random(), name: file.name, data: parsedData });
+                            } else {
+                                alert(`No se encontraron operaciones compatibles en el archivo: ${file.name}\n\nAsegúrate de que sea un reporte de MT5 con encabezados en Inglés (Time, Symbol, Profit).`);
                             }
                         } catch (err) { alert(`Error al leer el archivo Excel: ${file.name}`); console.error(err); } 
                         finally { 
                             processedCount++;
                             if (processedCount === files.length) {
-                                processDashFiles();
+                                try { processDashFiles(); } catch (e) { console.error("Error processDashFiles:", e); alert("Error inesperado al procesar las gráficas: " + e.message); }
                                 hideLoader();
                             }
                         }
@@ -871,16 +912,18 @@
                     setTimeout(() => {
                         try {
                             const text = event.target.result;
-                            const parsedData = parseRawMT5Graph(text);
+                            const parsedData = parseRawMT5Graph(text, file.name); // Pasamos el nombre para el compound individual
                             
                             if (parsedData.length > 0) {
                                 dashFiles.push({ id: Date.now() + Math.random(), name: file.name, data: parsedData });
+                            } else {
+                                alert(`El archivo ${file.name} está vacío o no es un formato de Gráfico válido (.csv/.txt).`);
                             }
                         } catch (err) { alert(`Error al leer el archivo de Gráfico: ${file.name}`); console.error(err); } 
                         finally { 
                             processedCount++;
                             if (processedCount === files.length) {
-                                processDashFiles();
+                                try { processDashFiles(); } catch (e) { console.error("Error processDashFiles:", e); alert("Error inesperado al procesar las gráficas: " + e.message); }
                                 hideLoader();
                             }
                         }
@@ -903,9 +946,7 @@
         });
 
         function processDashFiles() {
-            if(dashFiles.length === 0) {
-                return;
-            }
+            if(dashFiles.length === 0) return;
 
             rawData = [];
             dashFiles.forEach(f => {
@@ -920,7 +961,7 @@
 
             let currentBalance = 10000;
             rawData.forEach(d => {
-                currentBalance += d.NetProfit;
+                currentBalance += (d.NetProfit || 0);
                 d.BalanceAfter = currentBalance;
             });
 
@@ -949,7 +990,6 @@
         function removeDashFile(id) {
             dashFiles = dashFiles.filter(f => f.id !== id);
             
-            // Si eliminamos el último archivo del Dashboard
             if (dashFiles.length === 0) {
                 localStorage.removeItem(storageKey);
                 rawData = [];
@@ -959,11 +999,10 @@
                 document.getElementById('clearBtn').classList.add('hidden');
                 renderDashFilesTags();
                 
-                // Limpiar del comparador también
                 let idx = comparedFiles.findIndex(f => f.name.includes("Estrategia Principal"));
                 if(idx > -1) removeFileFromComparator(comparedFiles[idx].id);
             } else {
-                processDashFiles();
+                try { processDashFiles(); } catch (e) { console.error(e); }
             }
         }
 
@@ -1004,7 +1043,7 @@
         }
 
         // ==========================================
-        // FILTRO PRINCIPAL (GLOBAL): LOS TRADES EN $0 MUEREN AQUÍ
+        // FILTRO PRINCIPAL (GLOBAL)
         // ==========================================
         function applyFilters() {
             const sym = document.getElementById('filterSymbol').value;
@@ -1013,10 +1052,9 @@
 
             filteredData = rawData.filter(d => {
                 let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
-                let matchYear = (year === "ALL") ? true : d.Year.toString() === year;
-                let matchMonth = (month === "ALL") ? true : d.Month.toString() === month;
-                // Exclusión radical de todo trade o línea de gráfica cuyo beneficio sea cero ($0.00)
-                let isNotZero = Math.abs(d.NetProfit) >= 0.00001; 
+                let matchYear = (year === "ALL") ? true : (d.Year ? d.Year.toString() === year : false);
+                let matchMonth = (month === "ALL") ? true : (d.Month ? d.Month.toString() === month : false);
+                let isNotZero = Math.abs(d.NetProfit || 0) >= 0.00001; 
                 
                 return matchSym && matchYear && matchMonth && isNotZero;
             });
@@ -1051,22 +1089,48 @@
             let dayProfits = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
             let dayCounts = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
 
-            let totalTrades = dataArr.length; // Los ceros ya no existen en dataArr, por lo que es 100% puro
+            let totalTrades = dataArr.length;
             
             let minDate = new Date(8640000000000000);
             let maxDate = new Date(-8640000000000000);
 
+            // CALCULAR MAX TRADES SIMULTÁNEOS (Con salvavidas de fechas)
+            let simEvents = [];
             dataArr.forEach(d => {
-                if (d.Time < minDate) minDate = d.Time;
-                if (d.Time > maxDate) maxDate = d.Time;
+                if (d.EntryTime && typeof d.EntryTime.getTime === 'function') {
+                    simEvents.push({ time: d.EntryTime.getTime(), type: 1 });
+                } else if (d.Time && typeof d.Time.getTime === 'function') {
+                    simEvents.push({ time: d.Time.getTime(), type: 1 });
+                }
+                
+                if (d.Time && typeof d.Time.getTime === 'function') {
+                    simEvents.push({ time: d.Time.getTime(), type: -1 });
+                }
+            });
+            // Si el tiempo es exacto, procesamos apertura antes que cierre
+            simEvents.sort((a, b) => a.time === b.time ? b.type - a.type : a.time - b.time);
+            
+            let currentSimultaneous = 0;
+            let maxSimultaneous = 0;
+            simEvents.forEach(e => {
+                currentSimultaneous += e.type;
+                if(currentSimultaneous > maxSimultaneous) maxSimultaneous = currentSimultaneous;
+            });
 
-                totalProfit += d.NetProfit;
-                cumulative += d.NetProfit;
+            // MÉTRICAS PRINCIPALES
+            dataArr.forEach(d => {
+                if (d.Time && d.Time < minDate) minDate = d.Time;
+                if (d.Time && d.Time > maxDate) maxDate = d.Time;
+
+                totalProfit += d.NetProfit || 0;
+                cumulative += d.NetProfit || 0;
 
                 if (cumulative > peak) peak = cumulative;
 
-                dayProfits[d.DayOfWeek] += d.NetProfit;
-                dayCounts[d.DayOfWeek]++;
+                if (d.DayOfWeek !== undefined) {
+                    dayProfits[d.DayOfWeek] += d.NetProfit || 0;
+                    dayCounts[d.DayOfWeek]++;
+                }
 
                 if (d.NetProfit > 0) {
                     if (currentLossStreak > 0) {
@@ -1129,8 +1193,62 @@
             const avgLoss = losingTrades > 0 ? absoluteGrossLoss / losingTrades : 0;
             const riskReward = avgLoss > 0 ? (avgWin / avgLoss) : (avgWin > 0 ? 99.99 : 0);
 
+            // =====================================================
+            // CÁLCULO DE INTERÉS COMPUESTO (1% Riesgo Real Unificado)
+            // =====================================================
+            
+            // PASO 1: Calcular la pérdida promedio (1R) de forma INDIVIDUAL por cada Símbolo/Archivo
+            let symbolStats = {};
+            dataArr.forEach(d => {
+                let sym = d.Symbol || 'Estrategia';
+                if(!symbolStats[sym]) symbolStats[sym] = { lossSum: 0, lossCount: 0, winSum: 0, winCount: 0 };
+                if(d.NetProfit < 0) {
+                    symbolStats[sym].lossSum += Math.abs(d.NetProfit);
+                    symbolStats[sym].lossCount++;
+                } else if (d.NetProfit > 0) {
+                    symbolStats[sym].winSum += d.NetProfit;
+                    symbolStats[sym].winCount++;
+                }
+            });
+
+            Object.keys(symbolStats).forEach(sym => {
+                let st = symbolStats[sym];
+                let avgL = st.lossCount > 0 ? st.lossSum / st.lossCount : 0;
+                let avgW = st.winCount > 0 ? st.winSum / st.winCount : 0;
+                st.oneR = avgL > 0 ? avgL : (avgW > 0 ? avgW : 1); // El 1R dinámico para este activo
+            });
+
+            // PASO 2: Simulación Cronológica Dinámica en 1 sola cuenta de 10k
+            let compBalance = 10000; 
+            compChartDataObj = []; 
+
+            // Aseguramos orden estrictamente cronológico absoluto
+            let sortedDataForComp = [...dataArr].sort((a, b) => a.Time - b.Time);
+
+            sortedDataForComp.forEach(d => {
+                let sym = d.Symbol || 'Estrategia';
+                let oneR = symbolStats[sym].oneR;
+                
+                // Extraer los múltiplos de R para este trade específico
+                let R = d.NetProfit / oneR;
+                if(R > 100) R = 100; // Salvavidas anomalías
+                if(R < -100) R = -100;
+
+                // El interés compuesto se aplica basándose en arriesgar un 1% (0.01) del BALANCE ACTUAL
+                compBalance *= (1 + (R * 0.01));
+                
+                if (compBalance < 0) compBalance = 0; 
+                if (isNaN(compBalance)) compBalance = 10000; 
+                compBalance = Math.min(compBalance, 1000000000000); 
+
+                compChartDataObj.push({ time: d.Time, balance: compBalance });
+            });
+
+            const finalCompBalance = compBalance;
+            const compReturnPct = ((finalCompBalance - 10000) / 10000) * 100;
+
             let monthsSpan = 1;
-            if(totalTrades > 0) {
+            if(totalTrades > 0 && maxDate > minDate) {
                 monthsSpan = (maxDate.getFullYear() - minDate.getFullYear()) * 12 + (maxDate.getMonth() - minDate.getMonth()) + 1;
                 if(monthsSpan <= 0) monthsSpan = 1;
             }
@@ -1153,7 +1271,8 @@
                 totalTrades, winningTrades, losingTrades, winRate, avgTrade, tradesPerMonth,
                 profitFactor, riskReward, maxConsDrawdownPct, maxConsecutiveLoss, maxConsDate, maxSingleLoss, maxSingleLossPct, maxSingleDate, 
                 maxWinStreak, maxLossStreak, avgWinStreak, avgLossStreak,
-                bestDayIndex, worstDayIndex, hasDataDay
+                bestDayIndex, worstDayIndex, hasDataDay,
+                maxSimultaneous, finalCompBalance, compReturnPct
             };
         }
 
@@ -1162,8 +1281,9 @@
             
             let pairData = {};
             filteredData.forEach(d => {
+                if(!d.Symbol) return;
                 if(!pairData[d.Symbol]) pairData[d.Symbol] = { profit: 0, count: 0 };
-                pairData[d.Symbol].profit += d.NetProfit;
+                pairData[d.Symbol].profit += d.NetProfit || 0;
                 pairData[d.Symbol].count += 1;
             });
 
@@ -1207,13 +1327,11 @@
             document.getElementById('kpiGrossLoss').lastElementChild.innerText = fmtMoney(metrics.absoluteGrossLoss);
             
             document.getElementById('kpiTotalTrades').innerText = metrics.totalTrades;
-            document.getElementById('kpiBestDay').innerText = `Mejor día: ${metrics.hasDataDay ? daysArrFull[metrics.bestDayIndex] : '-'}`;
-            document.getElementById('kpiWorstDay').innerText = `Peor día: ${metrics.hasDataDay ? daysArrFull[metrics.worstDayIndex] : '-'}`;
+            document.getElementById('kpiSimultaneous').innerText = `Simultáneos: ${metrics.maxSimultaneous}`;
             
             document.getElementById('kpiWinRate').innerText = `${metrics.winRate.toFixed(1)}%`;
             document.getElementById('kpiWinRateSub').innerText = `${metrics.winningTrades} / ${metrics.totalTrades} Victorias`;
             
-            // Tarjeta Dividida de Promedio x Trade y Trades x Mes
             document.getElementById('kpiAvgTrade').innerText = fmtMoney(metrics.avgTrade);
             document.getElementById('kpiAvgTrade').className = `text-xl lg:text-2xl font-bold leading-none mt-1 ${metrics.avgTrade >= 0 ? 'text-green-400' : 'text-red-400'}`;
             document.getElementById('kpiTradesPerMonth').innerText = metrics.tradesPerMonth.toFixed(1);
@@ -1222,9 +1340,8 @@
             document.getElementById('kpiProfitFactor').className = `text-2xl lg:text-3xl font-bold mt-1 ${metrics.profitFactor >= 1.5 ? 'text-green-400' : (metrics.profitFactor >= 1 ? 'text-blue-400' : 'text-red-400')}`;
             document.getElementById('kpiRiskReward').innerText = metrics.riskReward === 99.99 ? `1:∞` : `1:${metrics.riskReward.toFixed(2)}`;
             
-            // Drawdown Updates con fechas
             let formatDDDate = (dateObj) => {
-                if(!dateObj) return 'Fecha desconocida';
+                if(!dateObj || isNaN(new Date(dateObj).getTime())) return 'Fecha desconocida';
                 let d = new Date(dateObj);
                 return d.toLocaleDateString('es-ES', {year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
             };
@@ -1244,26 +1361,37 @@
             document.getElementById('kpiMaxLossStreak').innerText = metrics.maxLossStreak;
             document.getElementById('kpiAvgWinStreak').innerText = metrics.avgWinStreak.toFixed(1);
             document.getElementById('kpiAvgLossStreak').innerText = metrics.avgLossStreak.toFixed(1);
+
+            const baseCapital = 10000;
+            document.getElementById('kpiLinearFinal').innerText = fmtMoney(baseCapital + metrics.totalProfit, 0);
+
+            let renderComp = isNaN(metrics.finalCompBalance) ? 10000 : metrics.finalCompBalance;
+            let renderCompPct = isNaN(metrics.compReturnPct) ? 0 : metrics.compReturnPct;
+            document.getElementById('kpiCompFinal').innerText = fmtMoney(renderComp, 0);
+            document.getElementById('kpiCompPct').innerText = (renderCompPct > 0 ? '+' : '') + renderCompPct.toFixed(2) + '%';
+            document.getElementById('kpiCompPct').className = `text-xs font-semibold block ${renderCompPct >= 0 ? 'text-purple-400' : 'text-red-400'}`;
         }
 
         function updateChart() {
-            const ctx = document.getElementById('equityChart').getContext('2d');
+            const ctxEq = document.getElementById('equityChart').getContext('2d');
             let cumulative = 0; let chartLabels = []; let chartData = [];
 
             filteredData.forEach(d => {
-                cumulative += d.NetProfit;
-                chartLabels.push(d.Time);
+                cumulative += d.NetProfit || 0;
+                let timeVal = d.Time instanceof Date ? d.Time : new Date(d.Time);
+                if(isNaN(timeVal.getTime())) timeVal = new Date();
+                chartLabels.push(timeVal);
                 chartData.push(cumulative);
             });
 
-            if (equityChartInstance) equityChartInstance.destroy();
+            safeDestroy(equityChartInstance);
 
-            equityChartInstance = new Chart(ctx, {
+            equityChartInstance = new Chart(ctxEq, {
                 type: 'line',
                 data: {
                     labels: chartLabels,
                     datasets: [{
-                        label: 'Balance Acumulado ($)', data: chartData,
+                        label: 'Balance Lineal ($)', data: chartData,
                         borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)',
                         borderWidth: 2, fill: true, pointRadius: 0, pointHoverRadius: 5,
                         tension: 0.4, cubicInterpolationMode: 'monotone'
@@ -1273,6 +1401,37 @@
                     responsive: true, maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
                     plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return 'Balance: ' + fmtMoney(context.parsed.y); } } } },
+                    scales: {
+                        x: { type: 'time', time: { tooltipFormat: 'dd MMM yyyy, HH:mm' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
+                        y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) } }
+                    }
+                }
+            });
+
+            const ctxComp = document.getElementById('compoundChart').getContext('2d');
+            let compLabels = compChartDataObj.map(d => {
+                let timeVal = d.time instanceof Date ? d.time : new Date(d.time);
+                return isNaN(timeVal.getTime()) ? new Date() : timeVal;
+            });
+            let compData = compChartDataObj.map(d => isNaN(d.balance) ? 10000 : d.balance);
+
+            safeDestroy(compoundChartInstance);
+
+            compoundChartInstance = new Chart(ctxComp, {
+                type: 'line',
+                data: {
+                    labels: compLabels,
+                    datasets: [{
+                        label: 'Balance Compuesto ($)', data: compData,
+                        borderColor: '#a855f7', backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                        borderWidth: 2, fill: true, pointRadius: 0, pointHoverRadius: 5,
+                        tension: 0.4, cubicInterpolationMode: 'monotone'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return 'Proyección: ' + fmtMoney(context.parsed.y); } } } },
                     scales: {
                         x: { type: 'time', time: { tooltipFormat: 'dd MMM yyyy, HH:mm' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
                         y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) } }
@@ -1301,35 +1460,40 @@
 
             filteredData.forEach(d => {
                 realTradesCount++;
-                tHour[d.EntryHour]++;  
-                tDay[d.DayOfWeek]++;   
-                tMonth[d.ExitMonth]++; 
+                
+                if (d.EntryHour !== undefined) tHour[d.EntryHour]++;  
+                if (d.DayOfWeek !== undefined) tDay[d.DayOfWeek]++;   
+                if (d.ExitMonth !== undefined) tMonth[d.ExitMonth]++; 
                 
                 if(d.NetProfit > 0) {
-                    pHourWin[d.EntryHour] += d.NetProfit;
-                    pDayWin[d.DayOfWeek] += d.NetProfit;
-                    pMonthWin[d.ExitMonth] += d.NetProfit;
+                    if (d.EntryHour !== undefined) pHourWin[d.EntryHour] += d.NetProfit;
+                    if (d.DayOfWeek !== undefined) pDayWin[d.DayOfWeek] += d.NetProfit;
+                    if (d.ExitMonth !== undefined) pMonthWin[d.ExitMonth] += d.NetProfit;
                 } else if(d.NetProfit < 0) {
-                    pHourLoss[d.EntryHour] += Math.abs(d.NetProfit);
-                    pDayLoss[d.DayOfWeek] += Math.abs(d.NetProfit);
-                    pMonthLoss[d.ExitMonth] += Math.abs(d.NetProfit);
+                    if (d.EntryHour !== undefined) pHourLoss[d.EntryHour] += Math.abs(d.NetProfit);
+                    if (d.DayOfWeek !== undefined) pDayLoss[d.DayOfWeek] += Math.abs(d.NetProfit);
+                    if (d.ExitMonth !== undefined) pMonthLoss[d.ExitMonth] += Math.abs(d.NetProfit);
                 }
                 
-                scatterData.push({ x: d.DurationHours, y: d.NetProfit });
+                let dur = d.DurationHours;
+                if (dur === undefined || isNaN(dur) || !isFinite(dur)) dur = 0;
+                scatterData.push({ x: dur, y: d.NetProfit || 0 });
                 
-                totalDur += d.DurationHours;
-                if(d.DurationHours > maxDur) maxDur = d.DurationHours;
-                if(d.DurationHours < minDur) minDur = d.DurationHours;
+                totalDur += dur;
+                if(dur > maxDur) maxDur = dur;
+                if(dur < minDur) minDur = dur;
             });
 
-            if(realTradesCount === 0) minDur = 0;
+            if(realTradesCount === 0) {
+                minDur = 0; maxDur = 0; avgDur = 0;
+            }
+            
             let avgDur = realTradesCount > 0 ? (totalDur / realTradesCount) : 0;
 
             document.getElementById('statHoldMin').innerText = formatDurationText(minDur);
             document.getElementById('statHoldAvg').innerText = formatDurationText(avgDur);
             document.getElementById('statHoldMax').innerText = formatDurationText(maxDur);
 
-            const destroyIfExists = (chart) => { if (chart) chart.destroy(); };
             const barOptions = {
                 responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
@@ -1358,15 +1522,15 @@
             });
             let hourLabels = Array.from({length: 24}, (_, i) => i + 'h');
 
-            destroyIfExists(cTH); cTH = new Chart(document.getElementById('cTradesHour'), { type: 'bar', data: { labels: hourLabels, datasets: [{ data: tHour, backgroundColor: hourColors, borderRadius: 2 }] }, options: barOptions });
-            destroyIfExists(cTD); cTD = new Chart(document.getElementById('cTradesDay'), { type: 'bar', data: { labels: daysArr, datasets: [{ data: tDay, backgroundColor: '#3b82f6', borderRadius: 2 }] }, options: barOptions });
-            destroyIfExists(cTM); cTM = new Chart(document.getElementById('cTradesMonth'), { type: 'bar', data: { labels: monthNames, datasets: [{ data: tMonth, backgroundColor: '#3b82f6', borderRadius: 2 }] }, options: barOptions });
+            safeDestroy(cTH); cTH = new Chart(document.getElementById('cTradesHour'), { type: 'bar', data: { labels: hourLabels, datasets: [{ data: tHour, backgroundColor: hourColors, borderRadius: 2 }] }, options: barOptions });
+            safeDestroy(cTD); cTD = new Chart(document.getElementById('cTradesDay'), { type: 'bar', data: { labels: daysArr, datasets: [{ data: tDay, backgroundColor: '#3b82f6', borderRadius: 2 }] }, options: barOptions });
+            safeDestroy(cTM); cTM = new Chart(document.getElementById('cTradesMonth'), { type: 'bar', data: { labels: monthNames, datasets: [{ data: tMonth, backgroundColor: '#3b82f6', borderRadius: 2 }] }, options: barOptions });
 
-            destroyIfExists(cPH); cPH = new Chart(document.getElementById('cProfitHour'), { type: 'bar', data: { labels: hourLabels, datasets: [ { label: 'Ganancia', data: pHourWin, backgroundColor: '#10b981', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 }, { label: 'Pérdida.', data: pHourLoss, backgroundColor: '#ef4444', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 } ] }, options: barOptionsMoneyGrouped });
-            destroyIfExists(cPD); cPD = new Chart(document.getElementById('cProfitDay'), { type: 'bar', data: { labels: daysArr, datasets: [ { label: 'Ganancia', data: pDayWin, backgroundColor: '#10b981', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 }, { label: 'Pérdida.', data: pDayLoss, backgroundColor: '#ef4444', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 } ] }, options: barOptionsMoneyGrouped });
-            destroyIfExists(cPM); cPM = new Chart(document.getElementById('cProfitMonth'), { type: 'bar', data: { labels: monthNames, datasets: [ { label: 'Ganancia', data: pMonthWin, backgroundColor: '#10b981', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 }, { label: 'Pérdida.', data: pMonthLoss, backgroundColor: '#ef4444', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 } ] }, options: barOptionsMoneyGrouped });
+            safeDestroy(cPH); cPH = new Chart(document.getElementById('cProfitHour'), { type: 'bar', data: { labels: hourLabels, datasets: [ { label: 'Ganancia', data: pHourWin, backgroundColor: '#10b981', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 }, { label: 'Pérdida.', data: pHourLoss, backgroundColor: '#ef4444', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 } ] }, options: barOptionsMoneyGrouped });
+            safeDestroy(cPD); cPD = new Chart(document.getElementById('cProfitDay'), { type: 'bar', data: { labels: daysArr, datasets: [ { label: 'Ganancia', data: pDayWin, backgroundColor: '#10b981', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 }, { label: 'Pérdida.', data: pDayLoss, backgroundColor: '#ef4444', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 } ] }, options: barOptionsMoneyGrouped });
+            safeDestroy(cPM); cPM = new Chart(document.getElementById('cProfitMonth'), { type: 'bar', data: { labels: monthNames, datasets: [ { label: 'Ganancia', data: pMonthWin, backgroundColor: '#10b981', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 }, { label: 'Pérdida.', data: pMonthLoss, backgroundColor: '#ef4444', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 } ] }, options: barOptionsMoneyGrouped });
 
-            destroyIfExists(scatterChartInstance);
+            safeDestroy(scatterChartInstance);
             scatterChartInstance = new Chart(document.getElementById('scatterChart'), {
                 type: 'scatter',
                 data: {
@@ -1405,10 +1569,10 @@
         window.calZoomIn = function() {
             let calData = filteredData; 
             if (calMode === 'YEARS') {
-                let years = [...new Set(calData.map(d => d.Year))].sort((a,b) => b-a);
+                let years = [...new Set(calData.map(d => d.Year).filter(Boolean))].sort((a,b) => b-a);
                 if (years.length > 0) calZoomInYear(years[0]);
             } else if (calMode === 'MONTHS') {
-                let months = [...new Set(calData.filter(d => d.Year === calYear).map(d => d.Month))].sort((a,b) => b-a);
+                let months = [...new Set(calData.filter(d => d.Year === calYear).map(d => d.Month).filter(Boolean))].sort((a,b) => b-a);
                 if (months.length > 0) calZoomInMonth(months[0]);
                 else calZoomInMonth(1);
             }
@@ -1450,15 +1614,16 @@
             } else if (calMode === 'MONTHS') {
                 indicator.innerText = `Año ${calYear}`; renderMonthsGrid(container, calData, calYear);
             } else if (calMode === 'DAYS') {
-                indicator.innerText = `${monthNames[calMonth-1]} ${calYear}`; renderDaysGrid(container, calData, calYear, calMonth);
+                indicator.innerText = `${monthNames[(calMonth || 1)-1]} ${calYear}`; renderDaysGrid(container, calData, calYear, calMonth);
             }
         }
 
         function renderYearsGrid(container, data) {
             let yearlyData = {};
             data.forEach(d => {
+                if(!d.Year) return;
                 if(!yearlyData[d.Year]) yearlyData[d.Year] = 0;
-                yearlyData[d.Year] += d.NetProfit;
+                yearlyData[d.Year] += d.NetProfit || 0;
             });
             let years = Object.keys(yearlyData).sort((a,b) => b - a); 
             let html = `<div class="grid grid-cols-2 md:grid-cols-4 gap-4 fade-in">`;
@@ -1477,15 +1642,18 @@
 
         function renderMonthsGrid(container, data, year) {
             let monthlyData = {};
+            let monthlyTrades = {};
             data.forEach(d => {
-                if (d.Year === year) {
-                    if(!monthlyData[d.Month]) monthlyData[d.Month] = 0;
-                    monthlyData[d.Month] += d.NetProfit;
+                if (d.Year === year && d.Month) {
+                    if(!monthlyData[d.Month]) { monthlyData[d.Month] = 0; monthlyTrades[d.Month] = 0; }
+                    monthlyData[d.Month] += d.NetProfit || 0;
+                    monthlyTrades[d.Month]++;
                 }
             });
             let html = `<div class="grid grid-cols-3 md:grid-cols-4 gap-4 fade-in">`;
             for(let i = 1; i <= 12; i++) {
                 let profit = monthlyData[i];
+                let trades = monthlyTrades[i] || 0;
                 let colorClass = getCellColorClass(profit);
                 let displayProfit = profit !== undefined ? fmtMoney(profit, 2) : 'Sin trades';
                 html += `
@@ -1493,6 +1661,7 @@
                         <span class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/30 px-2 py-1 rounded">Ver Días 🔍</span>
                         <span class="text-xs font-semibold mb-1 opacity-75 uppercase">${monthNames[i-1]}</span>
                         <span class="text-lg font-bold truncate-text w-full text-center">${displayProfit}</span>
+                        <span class="text-[10px] text-gray-400 mt-1">${trades} trades</span>
                     </div>`;
             }
             html += `</div>`; container.innerHTML = html;
@@ -1501,15 +1670,15 @@
         function renderDaysGrid(container, data, year, month) {
             let dailyData = {};
             data.forEach(d => {
-                if (d.Year === year && d.Month === month) {
+                if (d.Year === year && d.Month === month && d.Time) {
                     let day = d.Time.getDate();
                     if(!dailyData[day]) dailyData[day] = { total: 0, trades: [] };
-                    dailyData[day].total += d.NetProfit;
+                    dailyData[day].total += d.NetProfit || 0;
                     
                     dailyData[day].trades.push({
-                        sym: d.Symbol,
-                        prof: d.NetProfit,
-                        time: d.EntryTime 
+                        sym: d.Symbol || '-',
+                        prof: d.NetProfit || 0,
+                        time: d.EntryTime || d.Time 
                     });
                 }
             });
@@ -1533,8 +1702,8 @@
                 let tradesHtml = '';
                 if (dayData) {
                     dayData.trades.sort((a,b) => a.time - b.time).forEach(t => {
-                        let hh = t.time.getHours().toString().padStart(2, '0');
-                        let mm = t.time.getMinutes().toString().padStart(2, '0');
+                        let hh = t.time && t.time.getHours ? t.time.getHours().toString().padStart(2, '0') : '--';
+                        let mm = t.time && t.time.getMinutes ? t.time.getMinutes().toString().padStart(2, '0') : '--';
                         let tProf = t.prof;
                         let sColorClass = tProf >= 0 ? 'text-green-300' : 'text-red-300';
                         let sPrefix = tProf > 0 ? '+' : '';
@@ -1597,7 +1766,11 @@
                             const jsonResult = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {defval: ""});
                             const extractedData = parseMT5Data(jsonResult);
                             
-                            if (extractedData.length > 0) addFileToComparator(file.name, extractedData);
+                            if (extractedData.length > 0) {
+                                addFileToComparator(file.name, extractedData);
+                            } else {
+                                alert(`El archivo ${file.name} no contiene operaciones compatibles.`);
+                            }
                         } catch (err) { console.error(`Error procesando ${file.name}`, err); } 
                         finally {
                             processedCount++;
@@ -1620,9 +1793,13 @@
                     setTimeout(() => {
                         try {
                             const text = event.target.result;
-                            const extractedData = parseRawMT5Graph(text);
+                            const extractedData = parseRawMT5Graph(text, file.name);
                             
-                            if (extractedData.length > 0) addFileToComparator(file.name, extractedData);
+                            if (extractedData.length > 0) {
+                                addFileToComparator(file.name, extractedData);
+                            } else {
+                                alert(`El archivo ${file.name} no contiene un Gráfico válido.`);
+                            }
                         } catch (err) { console.error(`Error procesando ${file.name}`, err); } 
                         finally {
                             processedCount++;
@@ -1672,8 +1849,8 @@
 
             comparedFiles.forEach(file => {
                 file.data.forEach(d => {
-                    allSymbols.add(d.Symbol);
-                    allYears.add(d.Year);
+                    if (d.Symbol) allSymbols.add(d.Symbol);
+                    if (d.Year) allYears.add(d.Year);
                 });
             });
 
@@ -1702,10 +1879,9 @@
             comparedFiles.forEach(file => {
                 file.filteredData = file.data.filter(d => {
                     let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
-                    let matchYear = (year === "ALL") ? true : d.Year.toString() === year;
-                    let matchMonth = (month === "ALL") ? true : d.Month.toString() === month;
-                    // Mismo filtro implacable que en Dashboard
-                    let isNotZero = Math.abs(d.NetProfit) >= 0.00001; 
+                    let matchYear = (year === "ALL") ? true : (d.Year ? d.Year.toString() === year : false);
+                    let matchMonth = (month === "ALL") ? true : (d.Month ? d.Month.toString() === month : false);
+                    let isNotZero = Math.abs(d.NetProfit || 0) >= 0.00001; 
                     
                     return matchSym && matchYear && matchMonth && isNotZero;
                 });
@@ -1761,7 +1937,8 @@
                 { label: 'Trades / Mes', key: 'tradesPerMonth', fmt: v => `<span class="text-blue-400 font-bold">${v.toFixed(1)}</span>` },
                 { label: 'Risk / Reward', key: 'riskReward', fmt: v => v===99.99?'1:∞':`1:${v.toFixed(2)}` },
                 { label: 'Mejor Racha', key: 'maxWinStreak', fmt: v => `<span class="text-green-400">${v} Wins</span>` },
-                { label: 'Peor Racha', key: 'maxLossStreak', fmt: v => `<span class="text-red-400">${v} Loss</span>` }
+                { label: 'Peor Racha', key: 'maxLossStreak', fmt: v => `<span class="text-red-400">${v} Loss</span>` },
+                { label: 'Proyección Compuesta (1%)', key: 'compReturnPct', fmt: (v, m) => `<span class="${v>=0?'text-purple-400':'text-red-400'} font-bold">${v>0?'+':''}${v.toFixed(2)}% <span class="text-[10px] block leading-tight">(${fmtMoney(m.finalCompBalance)})</span></span>` }
             ];
 
             body.innerHTML = rowsConfig.map((row, idx) => {
@@ -1777,8 +1954,9 @@
             let datasets = comparedFiles.map(file => {
                 let cumulative = 0;
                 let dataPoints = file.filteredData.map(d => {
-                    cumulative += d.NetProfit;
-                    return { x: d.Time, y: cumulative };
+                    cumulative += d.NetProfit || 0;
+                    let timeVal = d.Time instanceof Date ? d.Time : new Date(d.Time);
+                    return { x: timeVal, y: cumulative };
                 });
                 
                 return {
@@ -1795,7 +1973,7 @@
                 };
             });
 
-            if (comparatorChartInstance) comparatorChartInstance.destroy();
+            safeDestroy(comparatorChartInstance);
 
             comparatorChartInstance = new Chart(ctx, {
                 type: 'line',
@@ -1850,7 +2028,7 @@
                             const jsonResult = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { defval: "" });
                             processOptimizerData(file.name, jsonResult);
                         } catch (err) { 
-                            console.error("Error optimizador", err); 
+                            console.error("Error optimizador", err); alert(`Error al leer el archivo Optimizador: ${file.name}`);
                         } finally {
                             processedCount++;
                             if (processedCount === files.length) hideLoader();
