@@ -247,12 +247,12 @@
                                 <span class="text-green-400 flex flex-col items-center">
                                     <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Ganadoras</span>
                                     <span class="text-xl lg:text-2xl font-bold leading-none"><span id="kpiMaxWinStreak">0</span><span class="text-xs text-gray-500 ml-1">máx</span></span>
-                                    <span class="text-[10px] text-gray-400 mt-1 font-mono tracking-tighter">Promedio: <span id="kpiAvgWinStreak">0.0</span></span>
+                                    <span class="text-[10px] text-gray-400 mt-1 font-mono tracking-tighter">Promedio: <span id="kpiAvgWinStreak">0</span></span>
                                 </span>
                                 <span class="text-red-400 flex flex-col items-center border-l border-gray-700 pl-4">
                                     <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Perdedoras</span>
                                     <span class="text-xl lg:text-2xl font-bold leading-none"><span id="kpiMaxLossStreak">0</span><span class="text-xs text-gray-500 ml-1">máx</span></span>
-                                    <span class="text-[10px] text-gray-400 mt-1 font-mono tracking-tighter">Promedio: <span id="kpiAvgLossStreak">0.0</span></span>
+                                    <span class="text-[10px] text-gray-400 mt-1 font-mono tracking-tighter">Promedio: <span id="kpiAvgLossStreak">0</span></span>
                                 </span>
                             </div>
                         </div>
@@ -1359,8 +1359,8 @@
             
             document.getElementById('kpiMaxWinStreak').innerText = metrics.maxWinStreak;
             document.getElementById('kpiMaxLossStreak').innerText = metrics.maxLossStreak;
-            document.getElementById('kpiAvgWinStreak').innerText = metrics.avgWinStreak.toFixed(1);
-            document.getElementById('kpiAvgLossStreak').innerText = metrics.avgLossStreak.toFixed(1);
+            document.getElementById('kpiAvgWinStreak').innerText = metrics.avgWinStreak.toFixed(0);
+            document.getElementById('kpiAvgLossStreak').innerText = metrics.avgLossStreak.toFixed(0);
 
             const baseCapital = 10000;
             document.getElementById('kpiLinearFinal').innerText = fmtMoney(baseCapital + metrics.totalProfit, 0);
