@@ -134,10 +134,10 @@
             <div id="dashFilesList" class="flex flex-wrap gap-3 mb-4"></div>
 
             <!-- Contenedor Principal (Oculto hasta que haya datos) -->
-            <div id="dashboardContent" class="hidden fade-in flex flex-col lg:flex-row gap-6 items-stretch">
+            <div id="dashboardContent" class="hidden fade-in flex flex-col lg:flex-row gap-4 items-stretch">
                 
                 <div class="w-full lg:w-64 xl:w-80 shrink-0 flex flex-col">
-                    <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg flex-1 flex flex-col min-h-[500px]">
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex-1 flex flex-col min-h-[500px]">
                         <h2 class="text-base font-semibold text-gray-300 mb-3 border-b border-gray-700 pb-2 flex items-center gap-2">
                             <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                             Top Rendimiento
@@ -146,7 +146,7 @@
                     </div>
                 </div>
 
-                <div class="flex-1 min-w-0 flex flex-col gap-6">
+                <div class="flex-1 min-w-0 flex flex-col gap-4">
 
                     <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex flex-col md:flex-row items-center gap-4 justify-between">
                         <div class="flex items-center gap-2 text-gray-300 font-semibold w-full md:w-auto">
@@ -173,8 +173,8 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
                             <span class="text-gray-400 text-xs uppercase tracking-wide">Grand Total (Neto)</span>
                             <span id="kpiTotalProfit" class="text-2xl lg:text-3xl font-bold mt-1">$0.00</span>
                             <div class="flex gap-4 mt-2 text-[10px] lg:text-xs font-semibold w-full justify-center">
@@ -183,7 +183,7 @@
                             </div>
                         </div>
                         
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
                             <span class="text-gray-400 text-xs uppercase tracking-wide">Cantidad de Trades</span>
                             <span id="kpiTotalTrades" class="text-2xl lg:text-3xl font-bold mt-1 text-white">0</span>
                             <div class="flex flex-col items-center mt-2 gap-0.5 w-full">
@@ -191,13 +191,13 @@
                             </div>
                         </div>
                         
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
                             <span class="text-gray-400 text-xs uppercase tracking-wide">Win Rate</span>
                             <span id="kpiWinRate" class="text-2xl lg:text-3xl font-bold mt-1 text-blue-400">0%</span>
                             <span id="kpiWinRateSub" class="text-[10px] lg:text-xs text-gray-500 mt-2">0 / 0 Victorias</span>
                         </div>
                         
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
                             <span class="text-gray-400 text-xs uppercase tracking-wide">Métricas por Trade</span>
                             <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
                                 <span class="flex flex-col items-center">
@@ -210,92 +210,134 @@
                                 </span>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow relative group">
+                    <!-- NUEVA CUADRÍCULA DE 3 COLUMNAS PARA IGUALAR ANCHOS -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow relative group">
                             <span class="text-gray-400 text-xs uppercase tracking-wide">Profit Factor</span>
                             <span id="kpiProfitFactor" class="text-2xl lg:text-3xl font-bold mt-1 text-white">0.00</span>
                             <span class="text-[10px] lg:text-xs text-gray-500 mt-2">Ganado / Perdido Bruto</span>
                         </div>
 
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
                             <span class="text-gray-400 text-xs uppercase tracking-wide">Riesgo / Beneficio</span>
                             <span id="kpiRiskReward" class="text-2xl lg:text-3xl font-bold mt-1 text-white">1:0.00</span>
                             <span class="text-[10px] lg:text-xs text-gray-500 mt-2">Win Prom. vs Loss Prom.</span>
                         </div>
 
-                        <!-- Tarjeta de Drawdowns dividida para incluir peor trade individual en % -->
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
-                            <span class="text-gray-400 text-xs uppercase tracking-wide">Drawdowns Máximos</span>
-                            <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
-                                <span class="text-red-400 flex flex-col items-center group cursor-help">
-                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Consecutivo</span>
-                                    <span id="kpiDrawdownConsPct" class="text-xl lg:text-2xl font-bold leading-none">-0.00%</span>
-                                    <span id="kpiDrawdownConsMoney" class="text-[10px] text-gray-400 mt-1 font-mono tracking-tighter">-$0.00</span>
-                                </span>
-                                <span class="text-red-400 flex flex-col items-center border-l border-gray-700 pl-4 group cursor-help">
-                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Peor Trade</span>
-                                    <span id="kpiDrawdownSinglePct" class="text-xl lg:text-2xl font-bold leading-none">0.00%</span>
-                                    <span id="kpiDrawdownSingleMoney" class="text-[10px] text-gray-400 mt-1 font-mono tracking-tighter">$0.00</span>
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Tarjeta de Rachas dividida para incluir promedios -->
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
                             <span class="text-gray-400 text-xs uppercase tracking-wide">Análisis de Rachas</span>
                             <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
-                                <span class="text-green-400 flex flex-col items-center">
+                                <span class="text-green-400 flex flex-col items-center group cursor-help">
                                     <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Ganadoras</span>
                                     <span class="text-xl lg:text-2xl font-bold leading-none"><span id="kpiMaxWinStreak">0</span><span class="text-xs text-gray-500 ml-1">máx</span></span>
                                     <span class="text-[10px] text-gray-400 mt-1 font-mono tracking-tighter">Promedio: <span id="kpiAvgWinStreak">0</span></span>
                                 </span>
-                                <span class="text-red-400 flex flex-col items-center border-l border-gray-700 pl-4">
+                                <span class="text-red-400 flex flex-col items-center border-l border-gray-700 pl-4 group cursor-help">
                                     <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Perdedoras</span>
                                     <span class="text-xl lg:text-2xl font-bold leading-none"><span id="kpiMaxLossStreak">0</span><span class="text-xs text-gray-500 ml-1">máx</span></span>
                                     <span class="text-[10px] text-gray-400 mt-1 font-mono tracking-tighter">Promedio: <span id="kpiAvgLossStreak">0</span></span>
                                 </span>
                             </div>
                         </div>
-
                     </div>
 
-                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-2">
+                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
                         <!-- Gráfico Lineal -->
-                        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full relative">
+                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full relative">
                             <div class="flex justify-between items-start mb-4">
                                 <div>
                                     <h2 class="text-lg font-semibold text-gray-300">Curva de Capital Real</h2>
                                     <p class="text-[10px] text-gray-500">Balance final del set de datos</p>
                                 </div>
-                                <div class="text-right">
-                                    <span id="kpiLinearFinal" class="text-xl font-bold text-blue-400">$10,000</span>
+                                <div class="text-right flex flex-col items-end gap-1">
+                                    <div class="flex items-baseline gap-2">
+                                        <span id="kpiLinearPct" class="text-xs font-semibold block">+0.00%</span>
+                                        <span id="kpiLinearFinal" class="text-xl font-bold text-blue-400">$10,000</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="relative h-[350px] lg:h-[450px] w-full flex-1">
+
+                            <!-- BARRA DE RIESGO INTEGRADA (Capital Real) -->
+                            <div id="realDDContainer" class="hidden w-full mb-4 bg-gray-900/60 rounded-lg border border-gray-700/50 py-2 px-3 grid grid-cols-3 gap-2 divide-x divide-gray-700/60 shadow-inner">
+                                <div class="flex flex-col justify-center px-1 md:px-2 group cursor-help" title="Máximo Drawdown Histórico Acumulado">
+                                    <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Max DD Histórico</span>
+                                    <div class="flex items-baseline gap-1.5 flex-wrap">
+                                        <span id="kpiRealDDPct" class="text-sm md:text-base font-bold text-red-400">-0.00%</span>
+                                        <span id="kpiRealDDMoney" class="text-[10px] font-mono text-gray-500">-$0.00</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col justify-center px-3 group cursor-help" title="Peor Drawdown sufrido en un solo día">
+                                    <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Peor Día DD</span>
+                                    <div class="flex items-baseline gap-1.5 flex-wrap">
+                                        <span id="kpiRealDailyDDPct" class="text-sm md:text-base font-bold text-orange-400">-0.00%</span>
+                                        <span id="kpiRealDailyDDMoney" class="text-[10px] font-mono text-gray-500">-$0.00</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col justify-center px-3 group cursor-help" title="Promedio de los drawdowns diarios">
+                                    <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Promedio Diario DD</span>
+                                    <div class="flex items-baseline gap-1.5 flex-wrap">
+                                        <span id="kpiRealAvgDailyDDPct" class="text-sm md:text-base font-bold text-yellow-400">-0.00%</span>
+                                        <span id="kpiRealAvgDailyDDMoney" class="text-[10px] font-mono text-gray-500">-$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Alturas reducidas a ~80% del tamaño anterior -->
+                            <div class="relative w-full h-[200px] md:h-[240px] lg:h-[280px] xl:h-[320px]">
                                 <canvas id="equityChart"></canvas>
                             </div>
                         </div>
 
                         <!-- Gráfico Compuesto 1% -->
-                        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full relative">
+                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full relative">
                             <div class="flex justify-between items-start mb-4">
                                 <div>
                                     <h2 class="text-lg font-semibold text-gray-300 text-purple-400">Proyección Compuesta</h2>
                                     <p class="text-[10px] text-gray-500">Asumiendo 1% de riesgo estricto por trade</p>
                                 </div>
-                                <div class="text-right flex flex-col items-end">
-                                    <span id="kpiCompFinal" class="text-xl font-bold text-purple-400">$10,000</span>
-                                    <span id="kpiCompPct" class="text-xs font-semibold text-gray-400 block">+0.00%</span>
-                                    <span id="kpiCompDD" class="text-[10px] font-semibold block mt-1 px-1.5 py-0.5 rounded bg-red-900/40 text-red-400 border border-red-700/50 hidden" title="Máximo Drawdown de la Curva Compuesta">DD: -0.00% (-$0.00)</span>
+                                <div class="text-right flex flex-col items-end gap-1">
+                                    <div class="flex items-baseline gap-2">
+                                        <span id="kpiCompPct" class="text-xs font-semibold text-gray-400 block">+0.00%</span>
+                                        <span id="kpiCompFinal" class="text-xl font-bold text-purple-400">$10,000</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="relative h-[350px] lg:h-[450px] w-full flex-1">
+
+                            <!-- BARRA DE RIESGO INTEGRADA (Elegante y Compacta) -->
+                            <div id="compoundDDContainer" class="hidden w-full mb-4 bg-gray-900/60 rounded-lg border border-gray-700/50 py-2 px-3 grid grid-cols-3 gap-2 divide-x divide-gray-700/60 shadow-inner">
+                                <div class="flex flex-col justify-center px-1 md:px-2 group cursor-help" title="Máximo Drawdown Histórico Acumulado">
+                                    <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Max DD Histórico</span>
+                                    <div class="flex items-baseline gap-1.5 flex-wrap">
+                                        <span id="kpiCompDDPct" class="text-sm md:text-base font-bold text-red-400">-0.00%</span>
+                                        <span id="kpiCompDDMoney" class="text-[10px] font-mono text-gray-500">-$0.00</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col justify-center px-3 group cursor-help" title="Peor Drawdown sufrido en un solo día">
+                                    <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Peor Día DD</span>
+                                    <div class="flex items-baseline gap-1.5 flex-wrap">
+                                        <span id="kpiCompDailyDDPct" class="text-sm md:text-base font-bold text-orange-400">-0.00%</span>
+                                        <span id="kpiCompDailyDDMoney" class="text-[10px] font-mono text-gray-500">-$0.00</span>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col justify-center px-3 group cursor-help" title="Promedio de los drawdowns diarios">
+                                    <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Promedio Diario DD</span>
+                                    <div class="flex items-baseline gap-1.5 flex-wrap">
+                                        <span id="kpiCompAvgDailyDDPct" class="text-sm md:text-base font-bold text-yellow-400">-0.00%</span>
+                                        <span id="kpiCompAvgDailyDDMoney" class="text-[10px] font-mono text-gray-500">-$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Alturas reducidas a ~80% del tamaño anterior -->
+                            <div class="relative w-full h-[200px] md:h-[240px] lg:h-[280px] xl:h-[320px]">
                                 <canvas id="compoundChart"></canvas>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg mt-2">
+                    <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg mt-2">
                         <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                             <h2 class="text-lg font-semibold text-gray-300">Calendario de Desempeño</h2>
                             <div class="flex items-center gap-1 md:gap-2">
@@ -315,36 +357,36 @@
                         <div id="calendarContainer" class="w-full"></div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow flex flex-col">
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow flex flex-col">
                             <h3 class="text-sm font-semibold text-gray-300 mb-1 text-center">Entradas por Hora</h3>
                             <p class="text-[10px] text-gray-500 text-center mb-3">🟣 Asia (22-7) 🔵 Europa (8-12) 🟢 EEUU (13-21)</p>
                             <div class="relative h-48 w-full"><canvas id="cTradesHour"></canvas></div>
                         </div>
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow flex flex-col">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow flex flex-col">
                             <h3 class="text-sm font-semibold text-gray-300 mb-3 text-center">Entradas por Día de la Semana</h3>
                             <div class="relative h-48 w-full"><canvas id="cTradesDay"></canvas></div>
                         </div>
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow flex flex-col">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow flex flex-col">
                             <h3 class="text-sm font-semibold text-gray-300 mb-3 text-center">Entradas por Mes</h3>
                             <div class="relative h-48 w-full"><canvas id="cTradesMonth"></canvas></div>
                         </div>
 
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow flex flex-col">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow flex flex-col">
                             <h3 class="text-sm font-semibold text-gray-300 mb-1 text-center">Ganancias/Pérdidas por Hora</h3>
                             <div class="relative h-48 w-full"><canvas id="cProfitHour"></canvas></div>
                         </div>
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow flex flex-col">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow flex flex-col">
                             <h3 class="text-sm font-semibold text-gray-300 mb-1 text-center">Ganancias/Pérdidas por Día</h3>
                             <div class="relative h-48 w-full"><canvas id="cProfitDay"></canvas></div>
                         </div>
-                        <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow flex flex-col">
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow flex flex-col">
                             <h3 class="text-sm font-semibold text-gray-300 mb-1 text-center">Ganancias/Pérdidas por Mes</h3>
                             <div class="relative h-48 w-full"><canvas id="cProfitMonth"></canvas></div>
                         </div>
                     </div>
 
-                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full mt-2">
+                    <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full">
                         
                         <h2 class="text-lg font-semibold text-gray-300 mb-4">Análisis de Retención de Posición (Hold Time)</h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -453,7 +495,8 @@
 
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg w-full">
                     <h2 class="text-lg font-semibold text-gray-300 mb-4">Comparación de Curvas de Capital</h2>
-                    <div class="relative h-[400px] lg:h-[500px] w-full">
+                    <!-- Alturas reducidas a ~80% del tamaño anterior -->
+                    <div class="relative w-full h-[200px] md:h-[240px] lg:h-[280px] xl:h-[320px]">
                         <canvas id="comparatorChart"></canvas>
                     </div>
                 </div>
@@ -1237,11 +1280,69 @@
             let compPeak = 10000;
             let maxCompDDMoney = 0;
             let maxCompDDPct = 0;
+            let compDailyDDs = {};
+            let prevDateStr = null;
+            let currentDayPeak = 10000;
+            let prevCompBalance = 10000;
+
+            // Variables para Drawdowns de Capital Real
+            let realBalance = 10000;
+            let realPeak = 10000;
+            let maxRealDDMoney = 0;
+            let maxRealDDPct = 0;
+            let realDailyDDs = {};
+            let prevRealDateStr = null;
+            let currentRealDayPeak = 10000;
+            let prevRealBalance = 10000;
 
             // Aseguramos orden estrictamente cronológico absoluto
             let sortedDataForComp = [...dataArr].sort((a, b) => a.Time - b.Time);
 
             sortedDataForComp.forEach(d => {
+                let dateStr = d.DateOnly;
+                if (!dateStr) {
+                    let timeVal = d.Time instanceof Date ? d.Time : new Date(d.Time);
+                    dateStr = isNaN(timeVal.getTime()) ? '1970-01-01' : timeVal.toISOString().split('T')[0];
+                }
+
+                // ========================================================
+                // --- CÁLCULO DE DRAWDOWNS PARA EL CAPITAL REAL (NORMAL) ---
+                // ========================================================
+                realBalance += (d.NetProfit || 0);
+
+                if (realBalance > realPeak) {
+                    realPeak = realBalance;
+                } else {
+                    let currentRealDDMoney = realPeak - realBalance;
+                    let currentRealDDPct = (currentRealDDMoney / realPeak) * 100;
+                    if (currentRealDDMoney > maxRealDDMoney) maxRealDDMoney = currentRealDDMoney;
+                    if (currentRealDDPct > maxRealDDPct) maxRealDDPct = currentRealDDPct;
+                }
+
+                if (dateStr !== prevRealDateStr) {
+                    currentRealDayPeak = prevRealBalance;
+                    if (!realDailyDDs[dateStr]) realDailyDDs[dateStr] = { maxPct: 0, maxMoney: 0 };
+                    prevRealDateStr = dateStr;
+                }
+
+                if (realBalance > currentRealDayPeak) {
+                    currentRealDayPeak = realBalance;
+                }
+
+                let currentRealDailyDDMoney = currentRealDayPeak - realBalance;
+                let currentRealDailyDDPct = currentRealDayPeak > 0 ? (currentRealDailyDDMoney / currentRealDayPeak) * 100 : 0;
+
+                if (currentRealDailyDDPct > realDailyDDs[dateStr].maxPct) {
+                    realDailyDDs[dateStr].maxPct = currentRealDailyDDPct;
+                    realDailyDDs[dateStr].maxMoney = currentRealDailyDDMoney;
+                }
+
+                prevRealBalance = realBalance;
+
+
+                // ========================================================
+                // --- CÁLCULO DE DRAWDOWNS PARA LA PROYECCIÓN COMPUESTA ---
+                // ========================================================
                 let sym = d.Symbol || 'Estrategia';
                 let oneR = symbolStats[sym].oneR;
                 
@@ -1257,7 +1358,6 @@
                 if (isNaN(compBalance)) compBalance = 10000; 
                 compBalance = Math.min(compBalance, 1000000000000); 
 
-                // Cálculo de Drawdown Compuesto
                 if (compBalance > compPeak) {
                     compPeak = compBalance;
                 } else {
@@ -1266,9 +1366,72 @@
                     if (currentDDMoney > maxCompDDMoney) maxCompDDMoney = currentDDMoney;
                     if (currentDDPct > maxCompDDPct) maxCompDDPct = currentDDPct;
                 }
+                
+                if (dateStr !== prevDateStr) {
+                    currentDayPeak = prevCompBalance; 
+                    if (!compDailyDDs[dateStr]) compDailyDDs[dateStr] = { maxPct: 0, maxMoney: 0 };
+                    prevDateStr = dateStr;
+                }
 
+                if (compBalance > currentDayPeak) {
+                    currentDayPeak = compBalance;
+                }
+
+                let currentDailyDDMoney = currentDayPeak - compBalance;
+                let currentDailyDDPct = currentDayPeak > 0 ? (currentDailyDDMoney / currentDayPeak) * 100 : 0;
+
+                if (currentDailyDDPct > compDailyDDs[dateStr].maxPct) {
+                    compDailyDDs[dateStr].maxPct = currentDailyDDPct;
+                    compDailyDDs[dateStr].maxMoney = currentDailyDDMoney;
+                }
+
+                prevCompBalance = compBalance;
+                
                 compChartDataObj.push({ time: d.Time, balance: compBalance });
             });
+            
+            // Agregar estadísticas diarias de DD Real
+            let maxRealDailyDDPct = 0;
+            let maxRealDailyDDMoney = 0;
+            let sumRealDailyDDPct = 0;
+            let sumRealDailyDDMoney = 0;
+            let realTradingDaysCount = 0;
+
+            for (let date in realDailyDDs) {
+                let dayStats = realDailyDDs[date];
+                if (dayStats.maxPct > maxRealDailyDDPct) {
+                    maxRealDailyDDPct = dayStats.maxPct;
+                    maxRealDailyDDMoney = dayStats.maxMoney;
+                }
+                sumRealDailyDDPct += dayStats.maxPct;
+                sumRealDailyDDMoney += dayStats.maxMoney;
+                realTradingDaysCount++;
+            }
+
+            let avgRealDailyDDPct = realTradingDaysCount > 0 ? (sumRealDailyDDPct / realTradingDaysCount) : 0;
+            let avgRealDailyDDMoney = realTradingDaysCount > 0 ? (sumRealDailyDDMoney / realTradingDaysCount) : 0;
+
+            // Agregar estadísticas diarias de DD Compuesto
+            let maxCompDailyDDPct = 0;
+            let maxCompDailyDDMoney = 0;
+            let sumCompDailyDDPct = 0;
+            let sumCompDailyDDMoney = 0;
+            let tradingDaysCount = 0;
+
+            for (let date in compDailyDDs) {
+                let dayStats = compDailyDDs[date];
+                if (dayStats.maxPct > maxCompDailyDDPct) {
+                    maxCompDailyDDPct = dayStats.maxPct;
+                    maxCompDailyDDMoney = dayStats.maxMoney;
+                }
+                // Sumamos para el promedio de los días en que hubo Drawdown intra-dia (o todos los días operativos)
+                sumCompDailyDDPct += dayStats.maxPct;
+                sumCompDailyDDMoney += dayStats.maxMoney;
+                tradingDaysCount++;
+            }
+
+            let avgCompDailyDDPct = tradingDaysCount > 0 ? (sumCompDailyDDPct / tradingDaysCount) : 0;
+            let avgCompDailyDDMoney = tradingDaysCount > 0 ? (sumCompDailyDDMoney / tradingDaysCount) : 0;
 
             const finalCompBalance = compBalance;
             const compReturnPct = ((finalCompBalance - 10000) / 10000) * 100;
@@ -1299,7 +1462,8 @@
                 maxWinStreak, maxLossStreak, avgWinStreak, avgLossStreak,
                 bestDayIndex, worstDayIndex, hasDataDay,
                 maxSimultaneous, finalCompBalance, compReturnPct,
-                maxCompDDMoney, maxCompDDPct
+                maxRealDDMoney, maxRealDDPct, maxRealDailyDDPct, maxRealDailyDDMoney, avgRealDailyDDPct, avgRealDailyDDMoney,
+                maxCompDDMoney, maxCompDDPct, maxCompDailyDDPct, maxCompDailyDDMoney, avgCompDailyDDPct, avgCompDailyDDMoney
             };
         }
 
@@ -1367,23 +1531,6 @@
             document.getElementById('kpiProfitFactor').className = `text-2xl lg:text-3xl font-bold mt-1 ${metrics.profitFactor >= 1.5 ? 'text-green-400' : (metrics.profitFactor >= 1 ? 'text-blue-400' : 'text-red-400')}`;
             document.getElementById('kpiRiskReward').innerText = metrics.riskReward === 99.99 ? `1:∞` : `1:${metrics.riskReward.toFixed(2)}`;
             
-            let formatDDDate = (dateObj) => {
-                if(!dateObj || isNaN(new Date(dateObj).getTime())) return 'Fecha desconocida';
-                let d = new Date(dateObj);
-                return d.toLocaleDateString('es-ES', {year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
-            };
-
-            const consTitle = `Registrado el: ${formatDDDate(metrics.maxConsDate)}`;
-            document.getElementById('kpiDrawdownConsPct').innerText = `-${metrics.maxConsDrawdownPct.toFixed(2)}%`;
-            document.getElementById('kpiDrawdownConsMoney').innerText = `-${fmtMoney(metrics.maxConsecutiveLoss)}`;
-            document.getElementById('kpiDrawdownConsPct').parentElement.title = consTitle;
-            
-            const singleTitle = `Registrado el: ${formatDDDate(metrics.maxSingleDate)}`;
-            let singlePctStr = metrics.maxSingleLossPct <= 0 ? `${metrics.maxSingleLossPct.toFixed(2)}%` : `-${metrics.maxSingleLossPct.toFixed(2)}%`;
-            document.getElementById('kpiDrawdownSinglePct').innerText = singlePctStr;
-            document.getElementById('kpiDrawdownSingleMoney').innerText = fmtMoney(metrics.maxSingleLoss);
-            document.getElementById('kpiDrawdownSinglePct').parentElement.title = singleTitle;
-            
             document.getElementById('kpiMaxWinStreak').innerText = metrics.maxWinStreak;
             document.getElementById('kpiMaxLossStreak').innerText = metrics.maxLossStreak;
             document.getElementById('kpiAvgWinStreak').innerText = metrics.avgWinStreak.toFixed(0);
@@ -1392,19 +1539,52 @@
             const baseCapital = 10000;
             document.getElementById('kpiLinearFinal').innerText = fmtMoney(baseCapital + metrics.totalProfit, 0);
 
+            // Calcular y Mostrar el Porcentaje del Capital Real
+            let linearReturnPct = (metrics.totalProfit / baseCapital) * 100;
+            let kpiLinearPctEl = document.getElementById('kpiLinearPct');
+            kpiLinearPctEl.innerText = (linearReturnPct > 0 ? '+' : '') + linearReturnPct.toFixed(2) + '%';
+            kpiLinearPctEl.className = `text-xs font-semibold block ${linearReturnPct >= 0 ? 'text-blue-400' : 'text-red-400'}`;
+
+            // Actualización de Drawdowns Reales (Histórico, Diario y Promedio)
+            let realDDContainer = document.getElementById('realDDContainer');
+            
+            if (metrics.maxRealDDPct > 0) {
+                realDDContainer.classList.remove('hidden');
+                
+                document.getElementById('kpiRealDDPct').innerText = `-${metrics.maxRealDDPct.toFixed(2)}%`;
+                document.getElementById('kpiRealDDMoney').innerText = `-${fmtMoney(metrics.maxRealDDMoney)}`;
+                
+                document.getElementById('kpiRealDailyDDPct').innerText = `-${metrics.maxRealDailyDDPct.toFixed(2)}%`;
+                document.getElementById('kpiRealDailyDDMoney').innerText = `-${fmtMoney(metrics.maxRealDailyDDMoney)}`;
+                
+                document.getElementById('kpiRealAvgDailyDDPct').innerText = `-${metrics.avgRealDailyDDPct.toFixed(2)}%`;
+                document.getElementById('kpiRealAvgDailyDDMoney').innerText = `-${fmtMoney(metrics.avgRealDailyDDMoney)}`;
+            } else {
+                realDDContainer.classList.add('hidden');
+            }
+
             let renderComp = isNaN(metrics.finalCompBalance) ? 10000 : metrics.finalCompBalance;
             let renderCompPct = isNaN(metrics.compReturnPct) ? 0 : metrics.compReturnPct;
             document.getElementById('kpiCompFinal').innerText = fmtMoney(renderComp, 0);
             document.getElementById('kpiCompPct').innerText = (renderCompPct > 0 ? '+' : '') + renderCompPct.toFixed(2) + '%';
             document.getElementById('kpiCompPct').className = `text-xs font-semibold block ${renderCompPct >= 0 ? 'text-purple-400' : 'text-red-400'}`;
             
-            // Actualización del Drawdown Compuesto
-            let kpiCompDD = document.getElementById('kpiCompDD');
+            // Actualización de Drawdowns Compuestos (Histórico, Diario y Promedio)
+            let compDDContainer = document.getElementById('compoundDDContainer');
+            
             if (metrics.maxCompDDPct > 0) {
-                kpiCompDD.classList.remove('hidden');
-                kpiCompDD.innerText = `Max DD: -${metrics.maxCompDDPct.toFixed(2)}% (-${fmtMoney(metrics.maxCompDDMoney)})`;
+                compDDContainer.classList.remove('hidden');
+                
+                document.getElementById('kpiCompDDPct').innerText = `-${metrics.maxCompDDPct.toFixed(2)}%`;
+                document.getElementById('kpiCompDDMoney').innerText = `-${fmtMoney(metrics.maxCompDDMoney)}`;
+                
+                document.getElementById('kpiCompDailyDDPct').innerText = `-${metrics.maxCompDailyDDPct.toFixed(2)}%`;
+                document.getElementById('kpiCompDailyDDMoney').innerText = `-${fmtMoney(metrics.maxCompDailyDDMoney)}`;
+                
+                document.getElementById('kpiCompAvgDailyDDPct').innerText = `-${metrics.avgCompDailyDDPct.toFixed(2)}%`;
+                document.getElementById('kpiCompAvgDailyDDMoney').innerText = `-${fmtMoney(metrics.avgCompDailyDDMoney)}`;
             } else {
-                kpiCompDD.classList.add('hidden');
+                compDDContainer.classList.add('hidden');
             }
         }
 
@@ -1641,7 +1821,7 @@
 
             if (calData.length === 0) {
                 indicator.innerText = "Sin Datos";
-                container.innerHTML = '<div class="text-gray-500 py-8 text-center border border-dashed border-gray-700 rounded-xl">No hay operations registradas.</div>';
+                container.innerHTML = '<div class="text-gray-500 py-8 text-center border border-dashed border-gray-700 rounded-xl">No hay operaciones registradas.</div>';
                 return;
             }
 
