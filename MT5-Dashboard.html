@@ -283,9 +283,10 @@
                                     <h2 class="text-lg font-semibold text-gray-300 text-purple-400">Proyección Compuesta</h2>
                                     <p class="text-[10px] text-gray-500">Asumiendo 1% de riesgo estricto por trade</p>
                                 </div>
-                                <div class="text-right">
+                                <div class="text-right flex flex-col items-end">
                                     <span id="kpiCompFinal" class="text-xl font-bold text-purple-400">$10,000</span>
                                     <span id="kpiCompPct" class="text-xs font-semibold text-gray-400 block">+0.00%</span>
+                                    <span id="kpiCompDD" class="text-[10px] font-semibold block mt-1 px-1.5 py-0.5 rounded bg-red-900/40 text-red-400 border border-red-700/50 hidden" title="Máximo Drawdown de la Curva Compuesta">DD: -0.00% (-$0.00)</span>
                                 </div>
                             </div>
                             <div class="relative h-[350px] lg:h-[450px] w-full flex-1">
@@ -509,8 +510,18 @@
                         <span>Criterios Principales</span>
                     </div>
                     
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
-                        <div class="flex flex-col">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <!-- Filtro de Win Rate Resaltado -->
+                        <div class="flex flex-col border border-teal-500 rounded p-2 bg-teal-900/20 shadow-[0_0_10px_rgba(20,184,166,0.15)]">
+                            <label class="text-xs text-teal-300 uppercase tracking-wide mb-1.5 font-bold">Win Rate Mín. (%)</label>
+                            <div class="flex items-center bg-gray-800 rounded border border-teal-500 overflow-hidden">
+                                <button onclick="stepOptInput('optFiltWinRate', -1)" class="px-3 py-1 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors border-r border-gray-600">-</button>
+                                <input type="number" id="optFiltWinRate" value="70" step="1" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono font-bold text-teal-400">
+                                <button onclick="stepOptInput('optFiltWinRate', 1)" class="px-3 py-1 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors border-l border-gray-600">+</button>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col justify-center">
                             <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Profit Mínimo ($)</label>
                             <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
                                 <button onclick="stepOptInput('optFiltProfit', -100)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
@@ -518,33 +529,34 @@
                                 <button onclick="stepOptInput('optFiltProfit', 100)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
                             </div>
                         </div>
-                        <div class="flex flex-col">
-                            <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Trades Mínimos</label>
-                            <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
-                                <button onclick="stepOptInput('optFiltTrades', -10)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
-                                <input type="number" id="optFiltTrades" value="50" step="10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
-                                <button onclick="stepOptInput('optFiltTrades', 10)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
-                            </div>
-                        </div>
-                        <div class="flex flex-col">
+
+                        <div class="flex flex-col justify-center">
                             <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Profit Factor Mín.</label>
                             <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
                                 <button onclick="stepOptInput('optFiltPF', -0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
-                                <input type="number" id="optFiltPF" value="2.00" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <input type="number" id="optFiltPF" value="0.00" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
                                 <button onclick="stepOptInput('optFiltPF', 0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
                             </div>
                         </div>
-                        <div class="flex flex-col">
-                            <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5">Drawdown Máx. (%)</label>
+                        <div class="flex flex-col justify-center">
+                            <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5" title="Dejar en 0 u 100 para no filtrar por Max DD">Drawdown Máx. (%)</label>
                             <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
                                 <button onclick="stepOptInput('optFiltDD', -1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
-                                <input type="number" id="optFiltDD" value="5.00" step="1.00" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <input type="number" id="optFiltDD" value="4.00" step="1.00" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
                                 <button onclick="stepOptInput('optFiltDD', 1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
                             </div>
                         </div>
                     </div>
 
-                    <div id="extraFiltersContainer" class="hidden grid grid-cols-2 md:grid-cols-3 gap-5 border-t border-gray-700 pt-4 mt-1">
+                    <div id="extraFiltersContainer" class="hidden grid grid-cols-2 md:grid-cols-4 gap-5 border-t border-gray-700 pt-4 mt-1">
+                        <div class="flex flex-col justify-center">
+                            <label class="text-xs text-teal-300 uppercase tracking-wide mb-1.5">Trades Mínimos</label>
+                            <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
+                                <button onclick="stepOptInput('optFiltTrades', -10)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
+                                <input type="number" id="optFiltTrades" value="0" step="10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <button onclick="stepOptInput('optFiltTrades', 10)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
+                            </div>
+                        </div>
                         <div class="flex flex-col">
                             <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5 text-teal-300">Exp. Payoff Mín.</label>
                             <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
@@ -557,7 +569,7 @@
                             <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5 text-teal-300">Recovery Factor Mín.</label>
                             <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
                                 <button onclick="stepOptInput('optFiltRecovery', -0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
-                                <input type="number" id="optFiltRecovery" value="5.00" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <input type="number" id="optFiltRecovery" value="0.00" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
                                 <button onclick="stepOptInput('optFiltRecovery', 0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
                             </div>
                         </div>
@@ -565,7 +577,7 @@
                             <label class="text-xs text-gray-400 uppercase tracking-wide mb-1.5 text-teal-300">Sharpe Ratio Mín.</label>
                             <div class="flex items-center bg-gray-700 rounded border border-gray-600 focus-within:border-teal-500 overflow-hidden">
                                 <button onclick="stepOptInput('optFiltSharpe', -0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-r border-gray-600">-</button>
-                                <input type="number" id="optFiltSharpe" value="5.00" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
+                                <input type="number" id="optFiltSharpe" value="0.00" step="0.10" oninput="applyOptimizerFilters()" class="w-full bg-transparent text-white text-sm text-center focus:outline-none hide-arrows font-mono">
                                 <button onclick="stepOptInput('optFiltSharpe', 0.1)" class="px-3 py-1.5 text-gray-400 hover:bg-gray-600 hover:text-white transition-colors bg-gray-800 font-bold border-l border-gray-600">+</button>
                             </div>
                         </div>
@@ -628,12 +640,12 @@
         // --- VARIABLES GLOBALES DASHBOARD ---
         let rawData = [];
         let filteredData = [];
-        let compChartDataObj = []; // Para el gráfico compuesto
+        let compChartDataObj = []; 
         let dashFiles = [];
-        const storageKey = 'mt5_trading_data_v20'; // Limpiando historial previo
+        const storageKey = 'mt5_trading_data_v21'; 
         
         let equityChartInstance = null;
-        let compoundChartInstance = null; // Nuevo gráfico para el interés compuesto
+        let compoundChartInstance = null; 
         
         let cTH = null, cTD = null, cTM = null; 
         let cPH = null, cPD = null, cPM = null; 
@@ -744,7 +756,7 @@
 
                     let exitTime = row.parsedTime;
                     let durationHours = (exitTime.getTime() - entryTime.getTime()) / (1000 * 60 * 60);
-                    if(isNaN(durationHours) || !isFinite(durationHours)) durationHours = 0; // ANTI-CRASH de Duración
+                    if(isNaN(durationHours) || !isFinite(durationHours)) durationHours = 0; 
                     if(durationHours < 0) durationHours = 0; 
 
                     let comm = cleanNumber(row.Commission);
@@ -840,7 +852,7 @@
                 
                 processed.push({
                     Time: dateObj,
-                    EntryTime: dateObj, // Se simula misma entrada para mantener formato
+                    EntryTime: dateObj, 
                     DurationHours: 0, 
                     Symbol: sourceName,
                     NetProfit: netProfit,
@@ -1221,6 +1233,10 @@
             // PASO 2: Simulación Cronológica Dinámica en 1 sola cuenta de 10k
             let compBalance = 10000; 
             compChartDataObj = []; 
+            
+            let compPeak = 10000;
+            let maxCompDDMoney = 0;
+            let maxCompDDPct = 0;
 
             // Aseguramos orden estrictamente cronológico absoluto
             let sortedDataForComp = [...dataArr].sort((a, b) => a.Time - b.Time);
@@ -1240,6 +1256,16 @@
                 if (compBalance < 0) compBalance = 0; 
                 if (isNaN(compBalance)) compBalance = 10000; 
                 compBalance = Math.min(compBalance, 1000000000000); 
+
+                // Cálculo de Drawdown Compuesto
+                if (compBalance > compPeak) {
+                    compPeak = compBalance;
+                } else {
+                    let currentDDMoney = compPeak - compBalance;
+                    let currentDDPct = (currentDDMoney / compPeak) * 100;
+                    if (currentDDMoney > maxCompDDMoney) maxCompDDMoney = currentDDMoney;
+                    if (currentDDPct > maxCompDDPct) maxCompDDPct = currentDDPct;
+                }
 
                 compChartDataObj.push({ time: d.Time, balance: compBalance });
             });
@@ -1272,7 +1298,8 @@
                 profitFactor, riskReward, maxConsDrawdownPct, maxConsecutiveLoss, maxConsDate, maxSingleLoss, maxSingleLossPct, maxSingleDate, 
                 maxWinStreak, maxLossStreak, avgWinStreak, avgLossStreak,
                 bestDayIndex, worstDayIndex, hasDataDay,
-                maxSimultaneous, finalCompBalance, compReturnPct
+                maxSimultaneous, finalCompBalance, compReturnPct,
+                maxCompDDMoney, maxCompDDPct
             };
         }
 
@@ -1370,6 +1397,15 @@
             document.getElementById('kpiCompFinal').innerText = fmtMoney(renderComp, 0);
             document.getElementById('kpiCompPct').innerText = (renderCompPct > 0 ? '+' : '') + renderCompPct.toFixed(2) + '%';
             document.getElementById('kpiCompPct').className = `text-xs font-semibold block ${renderCompPct >= 0 ? 'text-purple-400' : 'text-red-400'}`;
+            
+            // Actualización del Drawdown Compuesto
+            let kpiCompDD = document.getElementById('kpiCompDD');
+            if (metrics.maxCompDDPct > 0) {
+                kpiCompDD.classList.remove('hidden');
+                kpiCompDD.innerText = `Max DD: -${metrics.maxCompDDPct.toFixed(2)}% (-${fmtMoney(metrics.maxCompDDMoney)})`;
+            } else {
+                kpiCompDD.classList.add('hidden');
+            }
         }
 
         function updateChart() {
@@ -1605,7 +1641,7 @@
 
             if (calData.length === 0) {
                 indicator.innerText = "Sin Datos";
-                container.innerHTML = '<div class="text-gray-500 py-8 text-center border border-dashed border-gray-700 rounded-xl">No hay operaciones registradas.</div>';
+                container.innerHTML = '<div class="text-gray-500 py-8 text-center border border-dashed border-gray-700 rounded-xl">No hay operations registradas.</div>';
                 return;
             }
 
@@ -2002,7 +2038,7 @@
         }
 
         // ==========================================
-        // --- OPTIMIZADOR LÓGICA (SE MANTIENE IGUAL) ---
+        // --- OPTIMIZADOR LÓGICA ---
         // ==========================================
         let optFiles = [];
         let globalExtraColumns = []; 
@@ -2012,7 +2048,8 @@
         let currentOptSortCol = null; 
         let currentOptSortAsc = false; 
         
-        const BASE_COLUMNS = ['Pass', 'Result', 'Profit', 'Expected Payoff', 'Profit Factor', 'Est. Win %', 'Recovery Factor', 'Sharpe Ratio', 'Equity DD %', 'Trades'];
+        // Modificado 'Est. Win %' a 'Win Rate %'
+        const BASE_COLUMNS = ['Pass', 'Result', 'Profit', 'Expected Payoff', 'Profit Factor', 'Win Rate %', 'Recovery Factor', 'Sharpe Ratio', 'Equity DD %', 'Trades'];
 
         function handleOptimizerFiles(files) {
             if (files.length === 0) return;
@@ -2051,7 +2088,7 @@
             optNextColorIndex++;
 
             let fileHeaders = Object.keys(dataArr[0]);
-            let fileExtraColumns = fileHeaders.filter(k => !BASE_COLUMNS.includes(k) && k !== 'Custom');
+            let fileExtraColumns = fileHeaders.filter(k => !BASE_COLUMNS.includes(k) && k !== 'Custom' && k !== 'Est. Win %');
             
             fileExtraColumns.forEach(k => {
                 if(!globalExtraColumns.includes(k)) {
@@ -2063,9 +2100,19 @@
                 if('Custom' in row) delete row['Custom'];
                 
                 let pf = cleanNumber(row['Profit Factor']);
-                let estWin = 0;
-                if(pf > 0) estWin = (pf / (pf + 1)) * 100;
-                if(pf >= 99 || row['Profit Factor'] === '') estWin = 100;
+                
+                // EXTRACCIÓN DIRECTA DEL WIN RATE DESDE RESULT (Los últimos dos decimales)
+                let resultVal = row['Result'];
+                let finalWinRate = 0;
+                
+                if (resultVal !== undefined && resultVal !== null && resultVal !== '') {
+                    let num = parseFloat(resultVal);
+                    if(!isNaN(num)) {
+                        let fixedStr = num.toFixed(2); // Aseguramos formato decimal ej. "1245.89"
+                        let lastTwo = fixedStr.slice(-2); // Extraemos los ultimos dos dígitos "89"
+                        finalWinRate = parseInt(lastTwo, 10);
+                    }
+                }
 
                 return {
                     ...row,
@@ -2075,7 +2122,7 @@
                     'Sharpe Ratio': cleanNumber(row['Sharpe Ratio']),
                     'Trades': cleanNumber(row['Trades']),
                     'Profit Factor': pf,
-                    'Est. Win %': estWin,
+                    'Win Rate %': finalWinRate,
                     'Equity DD %': cleanNumber(row['Equity DD %']),
                     '_source': filename,
                     '_color': color
@@ -2151,14 +2198,15 @@
         }
 
         function resetOptimizerFilters() {
+            document.getElementById('optFiltWinRate').value = "70";
             document.getElementById('optFiltProfit').value = "2000";
-            document.getElementById('optFiltTrades').value = "50";
-            document.getElementById('optFiltPF').value = "2.00";
-            document.getElementById('optFiltDD').value = "5.00"; 
+            document.getElementById('optFiltTrades').value = "0";
+            document.getElementById('optFiltPF').value = "0.00";
+            document.getElementById('optFiltDD').value = "4.00"; 
             
             document.getElementById('optFiltPayoff').value = "0.00";
-            document.getElementById('optFiltRecovery').value = "5.00"; 
-            document.getElementById('optFiltSharpe').value = "5.00"; 
+            document.getElementById('optFiltRecovery').value = "0.00"; 
+            document.getElementById('optFiltSharpe').value = "0.00"; 
             
             currentOptSortCol = null;
             currentOptSortAsc = false;
@@ -2179,10 +2227,15 @@
         function applyOptimizerFilters() {
             if(optFiles.length === 0) return;
 
+            const minWinRate = parseFloat(document.getElementById('optFiltWinRate').value) || 0;
             const minProfit = parseFloat(document.getElementById('optFiltProfit').value) || 0;
             const minTrades = parseFloat(document.getElementById('optFiltTrades').value) || 0;
             const minPF = parseFloat(document.getElementById('optFiltPF').value) || 0;
-            const maxDD = parseFloat(document.getElementById('optFiltDD').value) || 999;
+            
+            let maxDDInput = parseFloat(document.getElementById('optFiltDD').value) || 0;
+            // Si el usuario deja Max DD en 0 como se solicitó, asumimos que no quiere ocultar estrategias.
+            // (Si fuera 0 estrictamente, ocultaría todas las estrategias porque ninguna tiene 0 exacto de DD).
+            const maxDD = maxDDInput === 0 ? 9999 : maxDDInput;
             
             const minPayoff = parseFloat(document.getElementById('optFiltPayoff').value) || -999;
             const minRecovery = parseFloat(document.getElementById('optFiltRecovery').value) || -999;
@@ -2194,7 +2247,8 @@
             });
 
             let filtered = allRows.filter(r => {
-                return (r['Profit'] >= minProfit) && 
+                return (r['Win Rate %'] >= minWinRate) &&
+                       (r['Profit'] >= minProfit) && 
                        (r['Trades'] >= minTrades) && 
                        (r['Profit Factor'] >= minPF) && 
                        (r['Equity DD %'] <= maxDD) &&
@@ -2282,13 +2336,13 @@
                         else if(col === 'Expected Payoff') { formattedVal = fmtMoney(val, 2); }
                         else if(col === 'Equity DD %') { formattedVal = val.toFixed(2) + '%'; colorClass = 'text-orange-400'; }
                         else if(col === 'Trades' || col === 'Pass') { formattedVal = val.toFixed(0); } 
-                        else if(col === 'Est. Win %') { 
-                            formattedVal = val.toFixed(1) + '%'; 
-                            colorClass = val >= 60 ? 'text-blue-400 font-bold' : (val >= 50 ? 'text-blue-300' : 'text-gray-400'); 
+                        else if(col === 'Win Rate %') { 
+                            formattedVal = val.toFixed(0) + '%'; 
+                            colorClass = val >= 70 ? 'text-teal-400 font-bold' : (val >= 50 ? 'text-teal-200' : 'text-gray-400'); 
                         }
                         else {
                             formattedVal = val.toFixed(2);
-                            if(col === 'Profit Factor' && val >= 2.5) colorClass = 'text-green-400 font-bold';
+                            if(col === 'Profit Factor' && val >= 2.0) colorClass = 'text-green-400 font-bold';
                         }
                     }
 
