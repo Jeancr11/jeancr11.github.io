@@ -1607,7 +1607,7 @@
                 data: {
                     labels: chartLabels,
                     datasets: [{
-                        label: 'Balance Lineal ($)', data: chartData,
+                        label: 'Beneficio Lineal ($)', data: chartData,
                         borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)',
                         borderWidth: 2, fill: true, pointRadius: 0, pointHoverRadius: 5,
                         tension: 0.4, cubicInterpolationMode: 'monotone'
@@ -1616,7 +1616,7 @@
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return 'Balance: ' + fmtMoney(context.parsed.y); } } } },
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return 'Beneficio: ' + fmtMoney(context.parsed.y); } } } },
                     scales: {
                         x: { type: 'time', time: { tooltipFormat: 'dd MMM yyyy, HH:mm' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
                         y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) } }
@@ -1629,7 +1629,9 @@
                 let timeVal = d.time instanceof Date ? d.time : new Date(d.time);
                 return isNaN(timeVal.getTime()) ? new Date() : timeVal;
             });
-            let compData = compChartDataObj.map(d => isNaN(d.balance) ? 10000 : d.balance);
+            
+            // Restamos los 10,000 iniciales para que el gráfico empiece desde 0 (mostrando solo Beneficio Neto)
+            let compData = compChartDataObj.map(d => isNaN(d.balance) ? 0 : (d.balance - 10000));
 
             safeDestroy(compoundChartInstance);
 
@@ -1638,7 +1640,7 @@
                 data: {
                     labels: compLabels,
                     datasets: [{
-                        label: 'Balance Compuesto ($)', data: compData,
+                        label: 'Beneficio Compuesto ($)', data: compData,
                         borderColor: '#a855f7', backgroundColor: 'rgba(168, 85, 247, 0.1)',
                         borderWidth: 2, fill: true, pointRadius: 0, pointHoverRadius: 5,
                         tension: 0.4, cubicInterpolationMode: 'monotone'
@@ -1647,7 +1649,7 @@
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return 'Proyección: ' + fmtMoney(context.parsed.y); } } } },
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return 'Beneficio: ' + fmtMoney(context.parsed.y); } } } },
                     scales: {
                         x: { type: 'time', time: { tooltipFormat: 'dd MMM yyyy, HH:mm' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
                         y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) } }
