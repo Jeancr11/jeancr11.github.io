@@ -39,12 +39,10 @@
         .cell-scrollbar::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.4);
         }
-        /* Estilos nuevos para la barra de navegación SPA */
         .nav-link.active {
             border-bottom: 2px solid #3b82f6;
             color: #60a5fa;
         }
-        /* Ocultar flechas de inputs numéricos del optimizador */
         .hide-arrows::-webkit-outer-spin-button,
         .hide-arrows::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -136,28 +134,48 @@
             <!-- Contenedor Principal (Oculto hasta que haya datos) -->
             <div id="dashboardContent" class="hidden fade-in flex flex-col lg:flex-row gap-4 items-stretch">
                 
-                <div class="w-full lg:w-64 xl:w-80 shrink-0 flex flex-col">
-                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex-1 flex flex-col min-h-[500px]">
+                <div class="w-full lg:w-64 xl:w-80 shrink-0 flex flex-col gap-4">
+                    <!-- Leaderboard -->
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex flex-col min-h-[350px] max-h-[400px]">
                         <h2 class="text-base font-semibold text-gray-300 mb-3 border-b border-gray-700 pb-2 flex items-center gap-2">
                             <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                             Top Rendimiento
                         </h2>
                         <div id="leaderboardContainer" class="mt-1 flex-1 overflow-y-auto cell-scrollbar pr-1 flex flex-col gap-1"></div>
                     </div>
+
+                    <!-- Portafolios Óptimos (MOTOR ALGORÍTMICO) -->
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex flex-col flex-1 min-h-[300px]">
+                        <h2 class="text-base font-semibold text-gray-300 mb-1 border-b border-gray-700 pb-2 flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                Mejores Combinaciones
+                            </div>
+                        </h2>
+                        <p class="text-[10px] text-gray-500 mb-3 leading-tight">Top de combinaciones matemáticas que logran la mayor relación de ganancia asumiendo el menor Drawdown combinado posible.</p>
+                        <div id="portfoliosContainer" class="mt-1 flex-1 overflow-y-auto cell-scrollbar pr-1 flex flex-col gap-3">
+                            <!-- Los portafolios se inyectan aquí -->
+                        </div>
+                    </div>
                 </div>
 
                 <div class="flex-1 min-w-0 flex flex-col gap-4">
 
-                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex flex-col md:flex-row items-center gap-4 justify-between">
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex flex-col md:flex-row items-center gap-4 justify-between relative">
                         <div class="flex items-center gap-2 text-gray-300 font-semibold w-full md:w-auto">
-                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                             <span>Filtros Globales</span>
+                            <!-- INDICADOR DE PORTAFOLIO ACTIVO -->
+                            <div id="activePortfolioBadge" class="hidden ml-2 bg-purple-900/40 border border-purple-500 text-purple-300 text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-[0_0_8px_rgba(168,85,247,0.3)] max-w-[150px] md:max-w-none truncate">
+                                <span id="portfolioBadgeName" class="truncate">Portafolio Activo</span>
+                                <button onclick="clearPortfolioFilter(event)" class="hover:text-red-400 rounded-full bg-purple-900/80 px-1 ml-1 leading-none transition-colors" title="Quitar filtro de portafolio">&times;</button>
+                            </div>
                         </div>
                         
                         <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto flex-1 md:justify-end">
                             <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
                                 <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Símbolo:</label>
-                                <select id="filterSymbol" onchange="applyFilters()" class="w-full md:w-36 bg-gray-700 text-white text-sm rounded py-1.5 px-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
+                                <select id="filterSymbol" onchange="handleManualFilterChange()" class="w-full md:w-36 bg-gray-700 text-white text-sm rounded py-1.5 px-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
                             </div>
                             <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
                                 <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Año:</label>
@@ -212,7 +230,6 @@
                         </div>
                     </div>
 
-                    <!-- NUEVA CUADRÍCULA DE 3 COLUMNAS PARA IGUALAR ANCHOS -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
                         <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow relative group">
                             <span class="text-gray-400 text-xs uppercase tracking-wide">Profit Factor</span>
@@ -261,21 +278,21 @@
 
                             <!-- BARRA DE RIESGO INTEGRADA (Capital Real) -->
                             <div id="realDDContainer" class="hidden w-full mb-4 bg-gray-900/60 rounded-lg border border-gray-700/50 py-2 px-3 grid grid-cols-3 gap-2 divide-x divide-gray-700/60 shadow-inner">
-                                <div class="flex flex-col justify-center px-1 md:px-2 group cursor-help" title="Máximo Drawdown Histórico Acumulado">
+                                <div id="realDDHistDiv" class="flex flex-col justify-center px-1 md:px-2 group transition-colors rounded cursor-help">
                                     <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Max DD Histórico</span>
                                     <div class="flex items-baseline gap-1.5 flex-wrap">
                                         <span id="kpiRealDDPct" class="text-sm md:text-base font-bold text-red-400">-0.00%</span>
                                         <span id="kpiRealDDMoney" class="text-[10px] font-mono text-gray-500">-$0.00</span>
                                     </div>
                                 </div>
-                                <div class="flex flex-col justify-center px-3 group cursor-help" title="Peor Drawdown sufrido en un solo día">
+                                <div id="realDDDailyDiv" class="flex flex-col justify-center px-3 group transition-colors rounded cursor-help">
                                     <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Peor Día DD</span>
                                     <div class="flex items-baseline gap-1.5 flex-wrap">
                                         <span id="kpiRealDailyDDPct" class="text-sm md:text-base font-bold text-orange-400">-0.00%</span>
                                         <span id="kpiRealDailyDDMoney" class="text-[10px] font-mono text-gray-500">-$0.00</span>
                                     </div>
                                 </div>
-                                <div class="flex flex-col justify-center px-3 group cursor-help" title="Promedio de los drawdowns diarios">
+                                <div class="flex flex-col justify-center px-3 group cursor-help" title="Promedio de los drawdowns diarios en todo el historial">
                                     <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Promedio Diario DD</span>
                                     <div class="flex items-baseline gap-1.5 flex-wrap">
                                         <span id="kpiRealAvgDailyDDPct" class="text-sm md:text-base font-bold text-yellow-400">-0.00%</span>
@@ -307,21 +324,21 @@
 
                             <!-- BARRA DE RIESGO INTEGRADA (Elegante y Compacta) -->
                             <div id="compoundDDContainer" class="hidden w-full mb-4 bg-gray-900/60 rounded-lg border border-gray-700/50 py-2 px-3 grid grid-cols-3 gap-2 divide-x divide-gray-700/60 shadow-inner">
-                                <div class="flex flex-col justify-center px-1 md:px-2 group cursor-help" title="Máximo Drawdown Histórico Acumulado">
+                                <div id="compDDHistDiv" class="flex flex-col justify-center px-1 md:px-2 group transition-colors rounded cursor-help">
                                     <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Max DD Histórico</span>
                                     <div class="flex items-baseline gap-1.5 flex-wrap">
                                         <span id="kpiCompDDPct" class="text-sm md:text-base font-bold text-red-400">-0.00%</span>
                                         <span id="kpiCompDDMoney" class="text-[10px] font-mono text-gray-500">-$0.00</span>
                                     </div>
                                 </div>
-                                <div class="flex flex-col justify-center px-3 group cursor-help" title="Peor Drawdown sufrido en un solo día">
+                                <div id="compDDDailyDiv" class="flex flex-col justify-center px-3 group transition-colors rounded cursor-help">
                                     <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Peor Día DD</span>
                                     <div class="flex items-baseline gap-1.5 flex-wrap">
                                         <span id="kpiCompDailyDDPct" class="text-sm md:text-base font-bold text-orange-400">-0.00%</span>
                                         <span id="kpiCompDailyDDMoney" class="text-[10px] font-mono text-gray-500">-$0.00</span>
                                     </div>
                                 </div>
-                                <div class="flex flex-col justify-center px-3 group cursor-help" title="Promedio de los drawdowns diarios">
+                                <div class="flex flex-col justify-center px-3 group cursor-help" title="Promedio de los drawdowns diarios en todo el historial">
                                     <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Promedio Diario DD</span>
                                     <div class="flex items-baseline gap-1.5 flex-wrap">
                                         <span id="kpiCompAvgDailyDDPct" class="text-sm md:text-base font-bold text-yellow-400">-0.00%</span>
@@ -687,6 +704,8 @@
         let dashFiles = [];
         const storageKey = 'mt5_trading_data_v21'; 
         
+        let activePortfolioConfig = null; // Guardará {name: "...", symbols: ["EURUSD", ...]}
+
         let equityChartInstance = null;
         let compoundChartInstance = null; 
         
@@ -732,6 +751,13 @@
             if(hours < 1) return (hours * 60).toFixed(0) + " min";
             if(hours > 24) return (hours / 24).toFixed(1) + " días";
             return hours.toFixed(1) + " h";
+        }
+        
+        function formatShortDate(d) {
+            if(!d) return '';
+            let date = new Date(d);
+            if(isNaN(date.getTime())) return '';
+            return date.toLocaleDateString('es-ES', {day:'2-digit', month:'short', year:'numeric'});
         }
 
         // --- INICIALIZACIÓN ---
@@ -1049,6 +1075,7 @@
                 localStorage.removeItem(storageKey);
                 rawData = [];
                 filteredData = [];
+                activePortfolioConfig = null;
                 document.getElementById('dashboardContent').classList.add('hidden');
                 document.getElementById('welcomeScreen').classList.remove('hidden');
                 document.getElementById('clearBtn').classList.add('hidden');
@@ -1068,7 +1095,11 @@
             document.getElementById('dashboardContent').classList.remove('hidden');
             document.getElementById('clearBtn').classList.remove('hidden');
 
+            activePortfolioConfig = null; // Reset portfolio filter en inicio
+            document.getElementById('activePortfolioBadge').classList.add('hidden');
+
             populateFilters();
+            analyzePortfolios(); // Ejecutar motor algorítmico de portafolios
             applyFilters();
         }
 
@@ -1090,10 +1121,47 @@
             });
         }
 
+        // ==========================================
+        // MANEJO DE FILTROS: MANUAL VS PORTAFOLIO
+        // ==========================================
+        function handleManualFilterChange() {
+            // Si el usuario cambia manualmente el símbolo, limpiamos el filtro de portafolio
+            if (activePortfolioConfig) {
+                activePortfolioConfig = null;
+                document.getElementById('activePortfolioBadge').classList.add('hidden');
+            }
+            applyFilters();
+        }
+
+        function applyPortfolioFilter(name, symbolsArr) {
+            // Aplicar el filtro de portafolio
+            activePortfolioConfig = { name, symbols: symbolsArr };
+            
+            // Forzar el dropdown de símbolo a "ALL" visualmente
+            document.getElementById('filterSymbol').value = 'ALL';
+            
+            // Mostrar el badge
+            document.getElementById('portfolioBadgeName').innerText = name;
+            document.getElementById('activePortfolioBadge').classList.remove('hidden');
+            
+            applyFilters();
+        }
+
+        function clearPortfolioFilter(e) {
+            if(e) e.stopPropagation();
+            activePortfolioConfig = null;
+            document.getElementById('activePortfolioBadge').classList.add('hidden');
+            applyFilters();
+        }
+
         function clearGlobalFilters() {
             document.getElementById('filterSymbol').value = 'ALL';
             document.getElementById('filterYear').value = 'ALL';
             document.getElementById('filterMonth').value = 'ALL';
+            
+            activePortfolioConfig = null;
+            document.getElementById('activePortfolioBadge').classList.add('hidden');
+
             applyFilters();
         }
 
@@ -1101,12 +1169,20 @@
         // FILTRO PRINCIPAL (GLOBAL)
         // ==========================================
         function applyFilters() {
-            const sym = document.getElementById('filterSymbol').value;
+            const manualSym = document.getElementById('filterSymbol').value;
             const year = document.getElementById('filterYear').value;
             const month = document.getElementById('filterMonth').value;
 
+            // filteredData solo afecta a: Top KPIs, Chart Linear, Chart Compuesto y Calendario.
             filteredData = rawData.filter(d => {
-                let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
+                let matchSym = true;
+                
+                if (activePortfolioConfig && activePortfolioConfig.symbols.length > 0) {
+                    matchSym = activePortfolioConfig.symbols.includes(d.Symbol);
+                } else {
+                    matchSym = (manualSym === "ALL") ? true : d.Symbol === manualSym;
+                }
+
                 let matchYear = (year === "ALL") ? true : (d.Year ? d.Year.toString() === year : false);
                 let matchMonth = (month === "ALL") ? true : (d.Month ? d.Month.toString() === month : false);
                 let isNotZero = Math.abs(d.NetProfit || 0) >= 0.00001; 
@@ -1116,11 +1192,205 @@
 
             updateKPIs();
             updateChart();
-            updateAnalyticsCharts(); 
-            updateLeaderboard(); 
             updateSmartCalendar();
+            
+            // Estas secciones usan SIEMPRE rawData
+            updateLeaderboard(); 
+            updateAnalyticsCharts(); 
         }
 
+        // ==========================================
+        // MOTOR ALGORÍTMICO DE PORTAFOLIOS (NUEVO)
+        // ==========================================
+        
+        // Helper: Calcula las estadísticas COMBINADAS (curva real) de un grupo de símbolos
+        function calcCombinedStats(symbols) {
+            if (!symbols || symbols.length === 0) return { prof: 0, maxDD: 0, rec: 0, wr: 0, trades: 0 };
+            
+            // Filtrar y ordenar cronológicamente
+            let trades = rawData.filter(d => symbols.includes(d.Symbol)).sort((a,b) => a.Time - b.Time);
+            
+            let balance = 0;
+            let peak = 0;
+            let maxDD = 0;
+            let wins = 0;
+
+            trades.forEach(t => {
+                let p = t.NetProfit || 0;
+                balance += p;
+                
+                if (balance > peak) {
+                    peak = balance;
+                } else {
+                    let dd = peak - balance;
+                    if (dd > maxDD) maxDD = dd;
+                }
+                
+                if (p > 0) wins++;
+            });
+
+            let prof = balance;
+            let rec = maxDD > 0 ? prof / maxDD : (prof > 0 ? 999 : 0);
+            let wr = trades.length > 0 ? (wins / trades.length) * 100 : 0;
+
+            return { prof, maxDD, rec, wr, trades: trades.length };
+        }
+
+        function analyzePortfolios() {
+            let uniqueSymbols = [...new Set(rawData.map(d => d.Symbol).filter(Boolean))];
+            let posSymbols = [];
+            
+            // 1. Descartar pares que pierden dinero individualmente (nunca ayudan a largo plazo)
+            uniqueSymbols.forEach(sym => {
+                let stats = calcCombinedStats([sym]);
+                if (stats.prof > 0) {
+                    posSymbols.push({ sym, ...stats });
+                }
+            });
+
+            const container = document.getElementById('portfoliosContainer');
+
+            if (posSymbols.length === 0) {
+                container.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">No hay suficientes datos positivos para buscar combinaciones.</div>';
+                return;
+            }
+
+            let portfolios = [];
+            let seenHashes = new Set();
+
+            // 2. Búsqueda Greedy iterativa para encontrar las mejores mezclas (Gana mucho / Pierde poco)
+            posSymbols.forEach(startSym => {
+                let currentCombo = [startSym.sym];
+                let currentStats = calcCombinedStats(currentCombo);
+                let available = posSymbols.filter(s => s.sym !== startSym.sym);
+
+                // Variante A: Maximizar puramente el Recovery Factor (Gana Mucho / DD Controlado)
+                let tempComboA = [...currentCombo];
+                let tempStatsA = currentStats;
+                let availA = [...available];
+
+                while(availA.length > 0) {
+                    let bestNextSym = null;
+                    let bestNextStats = null;
+                    let bestScore = tempStatsA.rec; 
+
+                    availA.forEach(cand => {
+                        let testCombo = [...tempComboA, cand.sym];
+                        let testStats = calcCombinedStats(testCombo);
+                        // Si mejora la relación de ganancia/drawdown
+                        if (testStats.rec > bestScore) {
+                            bestScore = testStats.rec;
+                            bestNextStats = testStats;
+                            bestNextSym = cand.sym;
+                        }
+                    });
+
+                    if (bestNextSym) {
+                        tempComboA.push(bestNextSym);
+                        tempStatsA = bestNextStats;
+                        
+                        let hash = [...tempComboA].sort().join(',');
+                        if(!seenHashes.has(hash)) {
+                            seenHashes.add(hash);
+                            portfolios.push({ symbols: [...tempComboA], stats: tempStatsA });
+                        }
+                        availA = availA.filter(s => s.sym !== bestNextSym);
+                    } else {
+                        break;
+                    }
+                }
+
+                // Variante B: Minimizar el DD y aumentar Profit (Menos DD consecutivo posible)
+                let tempComboB = [...currentCombo];
+                let tempStatsB = currentStats;
+                let availB = [...available];
+
+                while(availB.length > 0) {
+                    let bestNextSym = null;
+                    let bestNextStats = null;
+                    let lowestDD = tempStatsB.maxDD * 1.05; // Tolera solo un 5% extra de DD si la ganancia sube
+
+                    availB.forEach(cand => {
+                        let testCombo = [...tempComboB, cand.sym];
+                        let testStats = calcCombinedStats(testCombo);
+                        
+                        if (testStats.maxDD <= lowestDD && testStats.prof > tempStatsB.prof) {
+                            lowestDD = testStats.maxDD;
+                            bestNextStats = testStats;
+                            bestNextSym = cand.sym;
+                        }
+                    });
+
+                    if (bestNextSym) {
+                        tempComboB.push(bestNextSym);
+                        tempStatsB = bestNextStats;
+                        
+                        let hash = [...tempComboB].sort().join(',');
+                        if(!seenHashes.has(hash)) {
+                            seenHashes.add(hash);
+                            portfolios.push({ symbols: [...tempComboB], stats: tempStatsB });
+                        }
+                        availB = availB.filter(s => s.sym !== bestNextSym);
+                    } else {
+                        break;
+                    }
+                }
+            });
+
+            // 3. Ordenar todas las combinaciones descubiertas de Mejor a Peor Ratio (Gana / Pierde)
+            portfolios.sort((a,b) => b.stats.rec - a.stats.rec);
+
+            // 4. Mostrar solo el Top 10 para dar los resultados más óptimos absolutos
+            let topPortfolios = portfolios.slice(0, 10);
+
+            if (topPortfolios.length === 0) {
+                container.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">Aún no hay pares suficientes para combinar.</div>';
+                return;
+            }
+
+            let html = '';
+            topPortfolios.forEach((p, index) => {
+                let rank = index + 1;
+                let symList = p.symbols.join(', ');
+                if(symList.length > 30) symList = symList.substring(0, 30) + '...';
+                
+                let safeSymbolsArr = JSON.stringify(p.symbols).replace(/"/g, "'");
+
+                let formattedDD = p.stats.maxDD > 0 ? `-$${fmtMoney(p.stats.maxDD, 0).replace('$', '')}` : '$0';
+                let formattedRec = p.stats.rec === 999 ? '∞' : p.stats.rec.toFixed(2);
+
+                let icon = rank === 1 ? '🏆' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : '🏅'));
+                let colorClass = rank === 1 ? 'text-yellow-400' : (rank === 2 ? 'text-gray-300' : (rank === 3 ? 'text-orange-400' : 'text-blue-400'));
+
+                html += `
+                    <div onclick="applyPortfolioFilter('Top ${rank}', ${safeSymbolsArr})" class="bg-gray-700/30 hover:bg-gray-700 cursor-pointer p-3 rounded-lg border border-gray-600 transition-colors group relative shadow-sm">
+                        
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm font-bold ${colorClass} flex items-center gap-1">
+                                ${icon} Top ${rank} Combinación
+                            </span>
+                            <span class="text-sm font-mono font-bold text-green-400">${fmtMoney(p.stats.prof, 0)}</span>
+                        </div>
+                        
+                        <div class="flex gap-3 text-[10px] uppercase tracking-wide mb-2 mt-2 bg-gray-900/50 p-1.5 rounded border border-gray-700/50">
+                            <span class="flex flex-col text-gray-500">DD Comb: <b class="text-red-400 font-mono tracking-normal text-xs mt-0.5">${formattedDD}</b></span>
+                            <span class="flex flex-col text-gray-500 border-l border-gray-700 pl-3">Ratio: <b class="text-blue-400 font-mono tracking-normal text-xs mt-0.5">${formattedRec}</b></span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center border-t border-gray-600/50 pt-2 mt-1">
+                            <span class="text-[10px] text-gray-400 truncate w-3/4 italic" title="${p.symbols.join(', ')}">${symList} <span class="text-gray-500 font-bold ml-1">(${p.symbols.length} Pares)</span></span>
+                            <span class="text-[10px] font-bold text-blue-400 bg-blue-900/30 px-1.5 py-0.5 rounded">${p.stats.wr.toFixed(1)}% WR</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ==========================================
+        // CÁLCULO DE MÉTRICAS GLOBALES
+        // ==========================================
         function calculateMetrics(dataArr) {
             let totalProfit = 0; let grossProfit = 0; let grossLoss = 0;
             let winningTrades = 0; let losingTrades = 0;
@@ -1270,16 +1540,23 @@
                 let st = symbolStats[sym];
                 let avgL = st.lossCount > 0 ? st.lossSum / st.lossCount : 0;
                 let avgW = st.winCount > 0 ? st.winSum / st.winCount : 0;
-                st.oneR = avgL > 0 ? avgL : (avgW > 0 ? avgW : 1); // El 1R dinámico para este activo
+                st.oneR = avgL > 0 ? avgL : (avgW > 0 ? avgW : 1); 
             });
+
+            // Aseguramos orden estrictamente cronológico absoluto
+            let sortedDataForComp = [...dataArr].sort((a, b) => a.Time - b.Time);
 
             // PASO 2: Simulación Cronológica Dinámica en 1 sola cuenta de 10k
             let compBalance = 10000; 
             compChartDataObj = []; 
             
             let compPeak = 10000;
+            let compPeakDate = sortedDataForComp.length > 0 ? sortedDataForComp[0].Time : null;
             let maxCompDDMoney = 0;
             let maxCompDDPct = 0;
+            let maxCompDDStartDate = null;
+            let maxCompDDEndDate = null;
+            
             let compDailyDDs = {};
             let prevDateStr = null;
             let currentDayPeak = 10000;
@@ -1288,15 +1565,16 @@
             // Variables para Drawdowns de Capital Real
             let realBalance = 10000;
             let realPeak = 10000;
+            let realPeakDate = sortedDataForComp.length > 0 ? sortedDataForComp[0].Time : null;
             let maxRealDDMoney = 0;
             let maxRealDDPct = 0;
+            let maxRealDDStartDate = null;
+            let maxRealDDEndDate = null;
+            
             let realDailyDDs = {};
             let prevRealDateStr = null;
             let currentRealDayPeak = 10000;
             let prevRealBalance = 10000;
-
-            // Aseguramos orden estrictamente cronológico absoluto
-            let sortedDataForComp = [...dataArr].sort((a, b) => a.Time - b.Time);
 
             sortedDataForComp.forEach(d => {
                 let dateStr = d.DateOnly;
@@ -1312,11 +1590,16 @@
 
                 if (realBalance > realPeak) {
                     realPeak = realBalance;
+                    realPeakDate = d.Time;
                 } else {
                     let currentRealDDMoney = realPeak - realBalance;
                     let currentRealDDPct = (currentRealDDMoney / realPeak) * 100;
-                    if (currentRealDDMoney > maxRealDDMoney) maxRealDDMoney = currentRealDDMoney;
-                    if (currentRealDDPct > maxRealDDPct) maxRealDDPct = currentRealDDPct;
+                    if (currentRealDDPct > maxRealDDPct) {
+                        maxRealDDMoney = currentRealDDMoney;
+                        maxRealDDPct = currentRealDDPct;
+                        maxRealDDStartDate = realPeakDate;
+                        maxRealDDEndDate = d.Time;
+                    }
                 }
 
                 if (dateStr !== prevRealDateStr) {
@@ -1346,12 +1629,10 @@
                 let sym = d.Symbol || 'Estrategia';
                 let oneR = symbolStats[sym].oneR;
                 
-                // Extraer los múltiplos de R para este trade específico
                 let R = d.NetProfit / oneR;
-                if(R > 100) R = 100; // Salvavidas anomalías
+                if(R > 100) R = 100; 
                 if(R < -100) R = -100;
 
-                // El interés compuesto se aplica basándose en arriesgar un 1% (0.01) del BALANCE ACTUAL
                 compBalance *= (1 + (R * 0.01));
                 
                 if (compBalance < 0) compBalance = 0; 
@@ -1360,11 +1641,16 @@
 
                 if (compBalance > compPeak) {
                     compPeak = compBalance;
+                    compPeakDate = d.Time;
                 } else {
                     let currentDDMoney = compPeak - compBalance;
                     let currentDDPct = (currentDDMoney / compPeak) * 100;
-                    if (currentDDMoney > maxCompDDMoney) maxCompDDMoney = currentDDMoney;
-                    if (currentDDPct > maxCompDDPct) maxCompDDPct = currentDDPct;
+                    if (currentDDPct > maxCompDDPct) {
+                        maxCompDDMoney = currentDDMoney;
+                        maxCompDDPct = currentDDPct;
+                        maxCompDDStartDate = compPeakDate;
+                        maxCompDDEndDate = d.Time;
+                    }
                 }
                 
                 if (dateStr !== prevDateStr) {
@@ -1390,18 +1676,20 @@
                 compChartDataObj.push({ time: d.Time, balance: compBalance });
             });
             
-            // Agregar estadísticas diarias de DD Real
+            // Estadísticas diarias de DD Real
             let maxRealDailyDDPct = 0;
             let maxRealDailyDDMoney = 0;
             let sumRealDailyDDPct = 0;
             let sumRealDailyDDMoney = 0;
             let realTradingDaysCount = 0;
+            let maxRealDailyDDDate = null;
 
             for (let date in realDailyDDs) {
                 let dayStats = realDailyDDs[date];
                 if (dayStats.maxPct > maxRealDailyDDPct) {
                     maxRealDailyDDPct = dayStats.maxPct;
                     maxRealDailyDDMoney = dayStats.maxMoney;
+                    maxRealDailyDDDate = date;
                 }
                 sumRealDailyDDPct += dayStats.maxPct;
                 sumRealDailyDDMoney += dayStats.maxMoney;
@@ -1411,20 +1699,21 @@
             let avgRealDailyDDPct = realTradingDaysCount > 0 ? (sumRealDailyDDPct / realTradingDaysCount) : 0;
             let avgRealDailyDDMoney = realTradingDaysCount > 0 ? (sumRealDailyDDMoney / realTradingDaysCount) : 0;
 
-            // Agregar estadísticas diarias de DD Compuesto
+            // Estadísticas diarias de DD Compuesto
             let maxCompDailyDDPct = 0;
             let maxCompDailyDDMoney = 0;
             let sumCompDailyDDPct = 0;
             let sumCompDailyDDMoney = 0;
             let tradingDaysCount = 0;
+            let maxCompDailyDDDate = null;
 
             for (let date in compDailyDDs) {
                 let dayStats = compDailyDDs[date];
                 if (dayStats.maxPct > maxCompDailyDDPct) {
                     maxCompDailyDDPct = dayStats.maxPct;
                     maxCompDailyDDMoney = dayStats.maxMoney;
+                    maxCompDailyDDDate = date;
                 }
-                // Sumamos para el promedio de los días en que hubo Drawdown intra-dia (o todos los días operativos)
                 sumCompDailyDDPct += dayStats.maxPct;
                 sumCompDailyDDMoney += dayStats.maxMoney;
                 tradingDaysCount++;
@@ -1462,8 +1751,10 @@
                 maxWinStreak, maxLossStreak, avgWinStreak, avgLossStreak,
                 bestDayIndex, worstDayIndex, hasDataDay,
                 maxSimultaneous, finalCompBalance, compReturnPct,
-                maxRealDDMoney, maxRealDDPct, maxRealDailyDDPct, maxRealDailyDDMoney, avgRealDailyDDPct, avgRealDailyDDMoney,
-                maxCompDDMoney, maxCompDDPct, maxCompDailyDDPct, maxCompDailyDDMoney, avgCompDailyDDPct, avgCompDailyDDMoney
+                maxRealDDMoney, maxRealDDPct, maxRealDDStartDate, maxRealDDEndDate,
+                maxRealDailyDDPct, maxRealDailyDDMoney, maxRealDailyDDDate, avgRealDailyDDPct, avgRealDailyDDMoney,
+                maxCompDDMoney, maxCompDDPct, maxCompDDStartDate, maxCompDDEndDate,
+                maxCompDailyDDPct, maxCompDailyDDMoney, maxCompDailyDDDate, avgCompDailyDDPct, avgCompDailyDDMoney
             };
         }
 
@@ -1471,7 +1762,7 @@
             const container = document.getElementById('leaderboardContainer');
             
             let pairData = {};
-            filteredData.forEach(d => {
+            rawData.forEach(d => {
                 if(!d.Symbol) return;
                 if(!pairData[d.Symbol]) pairData[d.Symbol] = { profit: 0, count: 0 };
                 pairData[d.Symbol].profit += d.NetProfit || 0;
@@ -1539,24 +1830,21 @@
             const baseCapital = 10000;
             document.getElementById('kpiLinearFinal').innerText = fmtMoney(baseCapital + metrics.totalProfit, 0);
 
-            // Calcular y Mostrar el Porcentaje del Capital Real
             let linearReturnPct = (metrics.totalProfit / baseCapital) * 100;
             let kpiLinearPctEl = document.getElementById('kpiLinearPct');
             kpiLinearPctEl.innerText = (linearReturnPct > 0 ? '+' : '') + linearReturnPct.toFixed(2) + '%';
             kpiLinearPctEl.className = `text-xs font-semibold block ${linearReturnPct >= 0 ? 'text-blue-400' : 'text-red-400'}`;
 
-            // Actualización de Drawdowns Reales (Histórico, Diario y Promedio)
+            // Drawdowns Reales
             let realDDContainer = document.getElementById('realDDContainer');
-            
             if (metrics.maxRealDDPct > 0) {
                 realDDContainer.classList.remove('hidden');
-                
                 document.getElementById('kpiRealDDPct').innerText = `-${metrics.maxRealDDPct.toFixed(2)}%`;
                 document.getElementById('kpiRealDDMoney').innerText = `-${fmtMoney(metrics.maxRealDDMoney)}`;
-                
+                document.getElementById('realDDHistDiv').title = `Desde: ${formatShortDate(metrics.maxRealDDStartDate)}\nHasta: ${formatShortDate(metrics.maxRealDDEndDate)}`;
                 document.getElementById('kpiRealDailyDDPct').innerText = `-${metrics.maxRealDailyDDPct.toFixed(2)}%`;
                 document.getElementById('kpiRealDailyDDMoney').innerText = `-${fmtMoney(metrics.maxRealDailyDDMoney)}`;
-                
+                document.getElementById('realDDDailyDiv').title = `Día: ${metrics.maxRealDailyDDDate}`;
                 document.getElementById('kpiRealAvgDailyDDPct').innerText = `-${metrics.avgRealDailyDDPct.toFixed(2)}%`;
                 document.getElementById('kpiRealAvgDailyDDMoney').innerText = `-${fmtMoney(metrics.avgRealDailyDDMoney)}`;
             } else {
@@ -1569,18 +1857,16 @@
             document.getElementById('kpiCompPct').innerText = (renderCompPct > 0 ? '+' : '') + renderCompPct.toFixed(2) + '%';
             document.getElementById('kpiCompPct').className = `text-xs font-semibold block ${renderCompPct >= 0 ? 'text-purple-400' : 'text-red-400'}`;
             
-            // Actualización de Drawdowns Compuestos (Histórico, Diario y Promedio)
+            // Drawdowns Compuestos
             let compDDContainer = document.getElementById('compoundDDContainer');
-            
             if (metrics.maxCompDDPct > 0) {
                 compDDContainer.classList.remove('hidden');
-                
                 document.getElementById('kpiCompDDPct').innerText = `-${metrics.maxCompDDPct.toFixed(2)}%`;
                 document.getElementById('kpiCompDDMoney').innerText = `-${fmtMoney(metrics.maxCompDDMoney)}`;
-                
+                document.getElementById('compDDHistDiv').title = `Desde: ${formatShortDate(metrics.maxCompDDStartDate)}\nHasta: ${formatShortDate(metrics.maxCompDDEndDate)}`;
                 document.getElementById('kpiCompDailyDDPct').innerText = `-${metrics.maxCompDailyDDPct.toFixed(2)}%`;
                 document.getElementById('kpiCompDailyDDMoney').innerText = `-${fmtMoney(metrics.maxCompDailyDDMoney)}`;
-                
+                document.getElementById('compDDDailyDiv').title = `Día: ${metrics.maxCompDailyDDDate}`;
                 document.getElementById('kpiCompAvgDailyDDPct').innerText = `-${metrics.avgCompDailyDDPct.toFixed(2)}%`;
                 document.getElementById('kpiCompAvgDailyDDMoney').innerText = `-${fmtMoney(metrics.avgCompDailyDDMoney)}`;
             } else {
@@ -1630,7 +1916,6 @@
                 return isNaN(timeVal.getTime()) ? new Date() : timeVal;
             });
             
-            // Restamos los 10,000 iniciales para que el gráfico empiece desde 0 (mostrando solo Beneficio Neto)
             let compData = compChartDataObj.map(d => isNaN(d.balance) ? 0 : (d.balance - 10000));
 
             safeDestroy(compoundChartInstance);
@@ -1676,7 +1961,7 @@
             let realTradesCount = 0;
             let totalDur = 0; let maxDur = 0; let minDur = Infinity;
 
-            filteredData.forEach(d => {
+            rawData.forEach(d => {
                 realTradesCount++;
                 
                 if (d.EntryHour !== undefined) tHour[d.EntryHour]++;  
@@ -2230,7 +2515,6 @@
         let currentOptSortCol = null; 
         let currentOptSortAsc = false; 
         
-        // Modificado 'Est. Win %' a 'Win Rate %'
         const BASE_COLUMNS = ['Pass', 'Result', 'Profit', 'Expected Payoff', 'Profit Factor', 'Win Rate %', 'Recovery Factor', 'Sharpe Ratio', 'Equity DD %', 'Trades'];
 
         function handleOptimizerFiles(files) {
@@ -2283,15 +2567,14 @@
                 
                 let pf = cleanNumber(row['Profit Factor']);
                 
-                // EXTRACCIÓN DIRECTA DEL WIN RATE DESDE RESULT (Los últimos dos decimales)
                 let resultVal = row['Result'];
                 let finalWinRate = 0;
                 
                 if (resultVal !== undefined && resultVal !== null && resultVal !== '') {
                     let num = parseFloat(resultVal);
                     if(!isNaN(num)) {
-                        let fixedStr = num.toFixed(2); // Aseguramos formato decimal ej. "1245.89"
-                        let lastTwo = fixedStr.slice(-2); // Extraemos los ultimos dos dígitos "89"
+                        let fixedStr = num.toFixed(2);
+                        let lastTwo = fixedStr.slice(-2);
                         finalWinRate = parseInt(lastTwo, 10);
                     }
                 }
@@ -2415,8 +2698,6 @@
             const minPF = parseFloat(document.getElementById('optFiltPF').value) || 0;
             
             let maxDDInput = parseFloat(document.getElementById('optFiltDD').value) || 0;
-            // Si el usuario deja Max DD en 0 como se solicitó, asumimos que no quiere ocultar estrategias.
-            // (Si fuera 0 estrictamente, ocultaría todas las estrategias porque ninguna tiene 0 exacto de DD).
             const maxDD = maxDDInput === 0 ? 9999 : maxDDInput;
             
             const minPayoff = parseFloat(document.getElementById('optFiltPayoff').value) || -999;
