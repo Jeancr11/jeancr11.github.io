@@ -26,19 +26,21 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        /* SCROLLBARS PERSONALIZADAS */
         .cell-scrollbar::-webkit-scrollbar {
-            width: 4px; height: 4px;
+            width: 6px; height: 6px;
         }
         .cell-scrollbar::-webkit-scrollbar-track {
             background: transparent;
         }
         .cell-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
+            background: rgba(156, 163, 175, 0.3); /* gray-400 con opacidad */
+            border-radius: 6px;
         }
         .cell-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(156, 163, 175, 0.6);
         }
+        
         .nav-link.active {
             border-bottom: 2px solid #3b82f6;
             color: #60a5fa;
@@ -50,6 +52,31 @@
         }
         .hide-arrows[type=number] {
             -moz-appearance: textfield;
+        }
+
+        /* ESTILOS PARA CHECKBOXES PERSONALIZADOS */
+        .custom-checkbox {
+            accent-color: #3b82f6;
+            width: 1.1rem;
+            height: 1.1rem;
+            cursor: pointer;
+        }
+
+        /* ESTILOS DE SCROLLBAR ELEGANTES PARA FILTROS DESPLEGABLES */
+        .filter-scrollbar::-webkit-scrollbar {
+            width: 8px; height: 8px;
+        }
+        .filter-scrollbar::-webkit-scrollbar-track {
+            background: rgba(31, 41, 55, 0.8); /* bg-gray-800 */
+            border-radius: 8px;
+        }
+        .filter-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.6); /* blue-500 */
+            border-radius: 8px;
+            border: 2px solid rgba(31, 41, 55, 0.8);
+        }
+        .filter-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.9);
         }
     </style>
 </head>
@@ -161,10 +188,12 @@
 
                 <div class="flex-1 min-w-0 flex flex-col gap-4">
 
-                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex flex-col md:flex-row items-center gap-4 justify-between relative">
+                    <!-- SECCIÓN DE FILTROS MULTI-SELECCIÓN -->
+                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex flex-col md:flex-row items-center gap-4 justify-between relative z-40">
                         <div class="flex items-center gap-2 text-gray-300 font-semibold w-full md:w-auto">
                             <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                             <span>Filtros Globales</span>
+                            
                             <!-- INDICADOR DE PORTAFOLIO ACTIVO -->
                             <div id="activePortfolioBadge" class="hidden ml-2 bg-purple-900/40 border border-purple-500 text-purple-300 text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-[0_0_8px_rgba(168,85,247,0.3)] max-w-[150px] md:max-w-none truncate">
                                 <span id="portfolioBadgeName" class="truncate">Portafolio Activo</span>
@@ -172,26 +201,51 @@
                             </div>
                         </div>
                         
-                        <div class="flex flex-col md:flex-row gap-4 w-full md:w-auto flex-1 md:justify-end">
-                            <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
-                                <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Símbolo:</label>
-                                <select id="filterSymbol" onchange="handleManualFilterChange()" class="w-full md:w-36 bg-gray-700 text-white text-sm rounded py-1.5 px-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
+                        <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto flex-1 md:justify-end">
+                            
+                            <!-- Custom Multi-Select Símbolos -->
+                            <div class="custom-select-container relative flex flex-col md:flex-row items-start md:items-center gap-2">
+                                <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Símbolos:</label>
+                                <button onclick="toggleDropdown('dropdownSymbols')" class="w-full md:w-44 bg-gray-700 text-white text-sm rounded py-1.5 px-3 border border-gray-600 focus:outline-none hover:border-blue-500 cursor-pointer flex justify-between items-center transition-colors">
+                                    <span id="labelSymbols" class="truncate pr-2">Todos</span>
+                                    <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div id="dropdownSymbols" class="custom-select-dropdown hidden absolute top-full left-0 md:left-auto right-0 mt-1 w-full md:w-56 bg-gray-800 border border-gray-600 rounded-md shadow-xl max-h-60 overflow-y-auto filter-scrollbar z-50 p-2">
+                                    <!-- Options injected here -->
+                                </div>
                             </div>
-                            <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
-                                <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Año:</label>
-                                <select id="filterYear" onchange="applyFilters()" class="w-full md:w-32 bg-gray-700 text-white text-sm rounded py-1.5 px-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
+
+                            <!-- Custom Multi-Select Años -->
+                            <div class="custom-select-container relative flex flex-col md:flex-row items-start md:items-center gap-2">
+                                <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Años:</label>
+                                <button onclick="toggleDropdown('dropdownYears')" class="w-full md:w-36 bg-gray-700 text-white text-sm rounded py-1.5 px-3 border border-gray-600 focus:outline-none hover:border-blue-500 cursor-pointer flex justify-between items-center transition-colors">
+                                    <span id="labelYears" class="truncate pr-2">Todos</span>
+                                    <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div id="dropdownYears" class="custom-select-dropdown hidden absolute top-full left-0 md:left-auto right-0 mt-1 w-full md:w-40 bg-gray-800 border border-gray-600 rounded-md shadow-xl max-h-60 overflow-y-auto filter-scrollbar z-50 p-2">
+                                    <!-- Options injected here -->
+                                </div>
                             </div>
-                            <div class="flex flex-col md:flex-row items-start md:items-center gap-2">
-                                <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Mes:</label>
-                                <select id="filterMonth" onchange="applyFilters()" class="w-full md:w-36 bg-gray-700 text-white text-sm rounded py-1.5 px-2 border border-gray-600 focus:outline-none focus:border-blue-500 cursor-pointer"></select>
+
+                            <!-- Custom Multi-Select Meses -->
+                            <div class="custom-select-container relative flex flex-col md:flex-row items-start md:items-center gap-2">
+                                <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Meses:</label>
+                                <button onclick="toggleDropdown('dropdownMonths')" class="w-full md:w-36 bg-gray-700 text-white text-sm rounded py-1.5 px-3 border border-gray-600 focus:outline-none hover:border-blue-500 cursor-pointer flex justify-between items-center transition-colors">
+                                    <span id="labelMonths" class="truncate pr-2">Todos</span>
+                                    <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div id="dropdownMonths" class="custom-select-dropdown hidden absolute top-full left-0 md:left-auto right-0 mt-1 w-full md:w-40 bg-gray-800 border border-gray-600 rounded-md shadow-xl max-h-60 overflow-y-auto filter-scrollbar z-50 p-2">
+                                    <!-- Options injected here -->
+                                </div>
                             </div>
+
                             <button onclick="clearGlobalFilters()" class="bg-gray-700 hover:bg-red-600 hover:text-white text-gray-300 text-xs font-semibold py-1.5 px-3 rounded border border-gray-600 hover:border-red-500 transition-all flex items-center justify-center gap-1 mt-2 md:mt-0">
-                                Quitar Filtros
+                                Limpiar Filtros
                             </button>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 z-10">
                         <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
                             <span class="text-gray-400 text-xs uppercase tracking-wide">Grand Total (Neto)</span>
                             <span id="kpiTotalProfit" class="text-2xl lg:text-3xl font-bold mt-1">$0.00</span>
@@ -301,7 +355,6 @@
                                 </div>
                             </div>
 
-                            <!-- Alturas reducidas a ~80% del tamaño anterior -->
                             <div class="relative w-full h-[200px] md:h-[240px] lg:h-[280px] xl:h-[320px]">
                                 <canvas id="equityChart"></canvas>
                             </div>
@@ -347,7 +400,6 @@
                                 </div>
                             </div>
 
-                            <!-- Alturas reducidas a ~80% del tamaño anterior -->
                             <div class="relative w-full h-[200px] md:h-[240px] lg:h-[280px] xl:h-[320px]">
                                 <canvas id="compoundChart"></canvas>
                             </div>
@@ -361,10 +413,18 @@
                                 <button id="btnCalPrev" onclick="calNavigate(-1)" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-colors">◀</button>
                                 <span id="calendarModeIndicator" class="text-xs md:text-sm font-semibold bg-gray-900 border border-gray-600 px-3 py-1 rounded text-blue-400 min-w-[120px] md:min-w-[160px] text-center">Años</span>
                                 <button id="btnCalNext" onclick="calNavigate(1)" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-colors">▶</button>
+                                
+                                <!-- NUEVO: Toggle de Ruta de Trades -->
+                                <button id="btnToggleCalendarDetail" onclick="toggleCalendarDetail()" class="ml-2 md:ml-4 px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs md:text-sm font-semibold transition-colors flex items-center gap-1 shadow-md disabled:opacity-30 disabled:cursor-not-allowed">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                                    <span class="hidden md:inline">Ver Ruta de Trades</span>
+                                </button>
+
                                 <button id="btnCalZoomOut" onclick="calZoomOut()" class="ml-2 md:ml-4 px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs md:text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"></path></svg>
                                     <span class="hidden md:inline">Alejar</span>
                                 </button>
+                                <!-- El botón acercar (Año -> Mes -> Día) -->
                                 <button id="btnCalZoomIn" onclick="calZoomIn()" class="ml-1 md:ml-2 px-3 py-1 bg-green-600 hover:bg-green-500 text-white rounded text-xs md:text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                                     <span class="hidden md:inline">Acercar</span>
@@ -505,7 +565,7 @@
                             <select id="compFilterMonth" onchange="applyComparatorFilters()" class="w-full md:w-36 bg-gray-700 text-white text-sm rounded py-1.5 px-2 border border-gray-600 focus:outline-none focus:border-purple-500 cursor-pointer"><option value="ALL">Todos los Meses</option></select>
                         </div>
                         <button onclick="resetComparatorFilters()" class="bg-gray-700 hover:bg-red-600 hover:text-white text-gray-300 text-xs font-semibold py-1.5 px-3 rounded border border-gray-600 hover:border-red-500 transition-all flex items-center justify-center gap-1 mt-2 md:mt-0">
-                            Quitar Filtros
+                            Limpiar Filtros
                         </button>
                     </div>
                 </div>
@@ -697,6 +757,78 @@
             if(tabId === 'comparator' && comparatorChartInstance) comparatorChartInstance.resize();
         }
 
+        // --- MANEJO DE DROPDOWNS MULTI-SELECT ---
+        document.addEventListener('click', (e) => {
+            if(!e.target.closest('.custom-select-container')) {
+                document.querySelectorAll('.custom-select-dropdown').forEach(el => el.classList.add('hidden'));
+            }
+        });
+
+        function toggleDropdown(id) {
+            const el = document.getElementById(id);
+            const isHidden = el.classList.contains('hidden');
+            document.querySelectorAll('.custom-select-dropdown').forEach(d => d.classList.add('hidden'));
+            if(isHidden) el.classList.remove('hidden');
+        }
+
+        let activeFilters = {
+            symbols: [],
+            years: [],
+            months: []
+        };
+
+        function updateMultiSelect(type, val, checked) {
+            let arr = activeFilters[type];
+            if (val === 'ALL') {
+                // Si hace click en TODOS, limpia el arreglo
+                arr.length = 0;
+                let cbs = document.querySelectorAll(`.cb-${type}`);
+                cbs.forEach(cb => { if(cb.value !== 'ALL') cb.checked = false; else cb.checked = true; });
+            } else {
+                // Desmarcar "ALL" si se marca algo específico
+                document.querySelector(`.cb-${type}[value="ALL"]`).checked = false;
+                
+                if (checked) {
+                    if (!arr.includes(val)) arr.push(val);
+                } else {
+                    arr = arr.filter(v => v !== val);
+                    activeFilters[type] = arr;
+                }
+                
+                // Si desmarcó todo, volver a marcar "ALL"
+                if (arr.length === 0) {
+                    document.querySelector(`.cb-${type}[value="ALL"]`).checked = true;
+                }
+            }
+
+            // Actualizar Label Visual
+            let labelId = type === 'symbols' ? 'labelSymbols' : (type === 'years' ? 'labelYears' : 'labelMonths');
+            let baseText = type === 'symbols' ? 'Pares' : (type === 'years' ? 'Años' : 'Meses');
+            let elLabel = document.getElementById(labelId);
+            
+            if (activeFilters[type].length === 0) {
+                elLabel.innerText = `Todos`;
+                elLabel.classList.remove('text-blue-400', 'font-bold');
+            } else if (activeFilters[type].length === 1) {
+                // Si es mes, mostrar nombre en lugar de número
+                let displayVal = activeFilters[type][0];
+                if (type === 'months') displayVal = monthNames[parseInt(displayVal)-1];
+                elLabel.innerText = displayVal;
+                elLabel.classList.add('text-blue-400', 'font-bold');
+            } else {
+                elLabel.innerText = `${activeFilters[type].length} selec.`;
+                elLabel.classList.add('text-blue-400', 'font-bold');
+            }
+
+            // Aplicar Filtros Globales (pero si es manual, limpiar el badge de portafolio)
+            if (activePortfolioConfig && type === 'symbols') {
+                activePortfolioConfig = null;
+                document.getElementById('activePortfolioBadge').classList.add('hidden');
+            }
+            applyFilters();
+        }
+
+
         // --- VARIABLES GLOBALES DASHBOARD ---
         let rawData = [];
         let filteredData = [];
@@ -713,19 +845,15 @@
         let cPH = null, cPD = null, cPM = null; 
         let scatterChartInstance = null;
 
-        let calMode = 'YEARS';
+        let calMode = 'YEARS'; // YEARS, MONTHS, DAYS
         let calYear = null;
         let calMonth = null;
+        
+        let isDetailedCalendar = false; // NUEVO: Estado para alternar la vista de líneas de tiempo en los días
 
         const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
         const daysArrFull = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
         const daysArr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
-
-        // --- VARIABLES GLOBALES COMPARADOR ---
-        let comparedFiles = []; 
-        let comparatorChartInstance = null;
-        const colorPalette = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#f97316'];
-        let nextColorIndex = 0; 
 
         // --- HELPERS BÁSICOS Y DESTRUCTORES DE CHARTJS ---
         const safeDestroy = (chart) => {
@@ -1098,47 +1226,59 @@
             activePortfolioConfig = null; // Reset portfolio filter en inicio
             document.getElementById('activePortfolioBadge').classList.add('hidden');
 
+            activeFilters = { symbols: [], years: [], months: [] }; // Limpiar arrays visuales
             populateFilters();
             analyzePortfolios(); // Ejecutar motor algorítmico de portafolios
             applyFilters();
         }
 
         function populateFilters() {
+            // Símbolos
             const symbols = [...new Set(rawData.map(d => d.Symbol))].sort();
-            const symbolSelect = document.getElementById('filterSymbol');
-            symbolSelect.innerHTML = '<option value="ALL">Todos los Pares</option>';
-            symbols.forEach(sym => symbolSelect.innerHTML += `<option value="${sym}">${sym}</option>`);
-
-            const years = [...new Set(rawData.map(d => d.Year))].sort((a,b) => b-a);
-            const yearSelect = document.getElementById('filterYear');
-            yearSelect.innerHTML = '<option value="ALL">Todos los Años</option>';
-            years.forEach(y => yearSelect.innerHTML += `<option value="${y}">${y}</option>`);
-
-            const monthSelect = document.getElementById('filterMonth');
-            monthSelect.innerHTML = '<option value="ALL">Todos los Meses</option>';
-            monthNames.forEach((m, idx) => {
-                monthSelect.innerHTML += `<option value="${idx + 1}">${m}</option>`;
+            const symbolDropdown = document.getElementById('dropdownSymbols');
+            let symHtml = `<label class="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-700 rounded cursor-pointer text-sm text-gray-300 transition-colors"><input type="checkbox" class="cb-symbols custom-checkbox" value="ALL" checked onchange="updateMultiSelect('symbols', 'ALL', this.checked)"> Todos los pares</label>`;
+            symbols.forEach(sym => {
+                symHtml += `<label class="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-700 rounded cursor-pointer text-sm text-gray-300 transition-colors"><input type="checkbox" class="cb-symbols custom-checkbox" value="${sym}" onchange="updateMultiSelect('symbols', '${sym}', this.checked)"> ${sym}</label>`;
             });
+            symbolDropdown.innerHTML = symHtml;
+
+            // Años
+            const years = [...new Set(rawData.map(d => d.Year))].sort((a,b) => b-a);
+            const yearDropdown = document.getElementById('dropdownYears');
+            let yrHtml = `<label class="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-700 rounded cursor-pointer text-sm text-gray-300 transition-colors"><input type="checkbox" class="cb-years custom-checkbox" value="ALL" checked onchange="updateMultiSelect('years', 'ALL', this.checked)"> Todos</label>`;
+            years.forEach(y => {
+                yrHtml += `<label class="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-700 rounded cursor-pointer text-sm text-gray-300 transition-colors"><input type="checkbox" class="cb-years custom-checkbox" value="${y}" onchange="updateMultiSelect('years', '${y}', this.checked)"> ${y}</label>`;
+            });
+            yearDropdown.innerHTML = yrHtml;
+
+            // Meses
+            const monthDropdown = document.getElementById('dropdownMonths');
+            let moHtml = `<label class="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-700 rounded cursor-pointer text-sm text-gray-300 transition-colors"><input type="checkbox" class="cb-months custom-checkbox" value="ALL" checked onchange="updateMultiSelect('months', 'ALL', this.checked)"> Todos</label>`;
+            monthNames.forEach((m, idx) => {
+                moHtml += `<label class="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-700 rounded cursor-pointer text-sm text-gray-300 transition-colors"><input type="checkbox" class="cb-months custom-checkbox" value="${idx + 1}" onchange="updateMultiSelect('months', '${idx + 1}', this.checked)"> ${m}</label>`;
+            });
+            monthDropdown.innerHTML = moHtml;
+
+            // Set labels to empty
+            document.getElementById('labelSymbols').innerText = `Todos`;
+            document.getElementById('labelYears').innerText = `Todos`;
+            document.getElementById('labelMonths').innerText = `Todos`;
         }
 
         // ==========================================
-        // MANEJO DE FILTROS: MANUAL VS PORTAFOLIO
+        // MANEJO DE FILTROS: PORTAFOLIO Y GLOBAL
         // ==========================================
-        function handleManualFilterChange() {
-            // Si el usuario cambia manualmente el símbolo, limpiamos el filtro de portafolio
-            if (activePortfolioConfig) {
-                activePortfolioConfig = null;
-                document.getElementById('activePortfolioBadge').classList.add('hidden');
-            }
-            applyFilters();
-        }
-
         function applyPortfolioFilter(name, symbolsArr) {
             // Aplicar el filtro de portafolio
             activePortfolioConfig = { name, symbols: symbolsArr };
             
-            // Forzar el dropdown de símbolo a "ALL" visualmente
-            document.getElementById('filterSymbol').value = 'ALL';
+            // Limpiar selección manual de símbolos visualmente
+            activeFilters.symbols = [];
+            let cbs = document.querySelectorAll('.cb-symbols');
+            cbs.forEach(cb => { if(cb.value === 'ALL') cb.checked = true; else cb.checked = false; });
+            let elLabel = document.getElementById('labelSymbols');
+            elLabel.innerText = `Todos`;
+            elLabel.classList.remove('text-blue-400', 'font-bold');
             
             // Mostrar el badge
             document.getElementById('portfolioBadgeName').innerText = name;
@@ -1155,9 +1295,16 @@
         }
 
         function clearGlobalFilters() {
-            document.getElementById('filterSymbol').value = 'ALL';
-            document.getElementById('filterYear').value = 'ALL';
-            document.getElementById('filterMonth').value = 'ALL';
+            activeFilters = { symbols: [], years: [], months: [] };
+            
+            ['symbols', 'years', 'months'].forEach(type => {
+                document.querySelectorAll(`.cb-${type}`).forEach(cb => {
+                    if(cb.value === 'ALL') cb.checked = true; else cb.checked = false;
+                });
+                let elLabel = document.getElementById(type === 'symbols' ? 'labelSymbols' : (type === 'years' ? 'labelYears' : 'labelMonths'));
+                elLabel.innerText = `Todos`;
+                elLabel.classList.remove('text-blue-400', 'font-bold');
+            });
             
             activePortfolioConfig = null;
             document.getElementById('activePortfolioBadge').classList.add('hidden');
@@ -1165,26 +1312,19 @@
             applyFilters();
         }
 
-        // ==========================================
-        // FILTRO PRINCIPAL (GLOBAL)
-        // ==========================================
         function applyFilters() {
-            const manualSym = document.getElementById('filterSymbol').value;
-            const year = document.getElementById('filterYear').value;
-            const month = document.getElementById('filterMonth').value;
-
-            // filteredData solo afecta a: Top KPIs, Chart Linear, Chart Compuesto y Calendario.
+            // filteredData ahora afecta a TODO el dashboard excepto Leaderboard y Combinaciones
             filteredData = rawData.filter(d => {
                 let matchSym = true;
                 
                 if (activePortfolioConfig && activePortfolioConfig.symbols.length > 0) {
                     matchSym = activePortfolioConfig.symbols.includes(d.Symbol);
                 } else {
-                    matchSym = (manualSym === "ALL") ? true : d.Symbol === manualSym;
+                    matchSym = (activeFilters.symbols.length === 0) ? true : activeFilters.symbols.includes(d.Symbol);
                 }
 
-                let matchYear = (year === "ALL") ? true : (d.Year ? d.Year.toString() === year : false);
-                let matchMonth = (month === "ALL") ? true : (d.Month ? d.Month.toString() === month : false);
+                let matchYear = (activeFilters.years.length === 0) ? true : (d.Year ? activeFilters.years.includes(d.Year.toString()) : false);
+                let matchMonth = (activeFilters.months.length === 0) ? true : (d.Month ? activeFilters.months.includes(d.Month.toString()) : false);
                 let isNotZero = Math.abs(d.NetProfit || 0) >= 0.00001; 
                 
                 return matchSym && matchYear && matchMonth && isNotZero;
@@ -1193,10 +1333,10 @@
             updateKPIs();
             updateChart();
             updateSmartCalendar();
-            
-            // Estas secciones usan SIEMPRE rawData
-            updateLeaderboard(); 
             updateAnalyticsCharts(); 
+            
+            // Estas secciones usan SIEMPRE rawData (No son afectadas por filtros)
+            updateLeaderboard(); 
         }
 
         // ==========================================
@@ -1949,7 +2089,7 @@
             let realTradesCount = 0;
             let totalDur = 0; let maxDur = 0; let minDur = Infinity;
 
-            rawData.forEach(d => {
+            filteredData.forEach(d => {
                 realTradesCount++;
                 
                 if (d.EntryHour !== undefined) tHour[d.EntryHour]++;  
@@ -2078,6 +2218,19 @@
             updateSmartCalendar();
         };
 
+        function toggleCalendarDetail() {
+            isDetailedCalendar = !isDetailedCalendar;
+            const btn = document.getElementById('btnToggleCalendarDetail');
+            if (isDetailedCalendar) {
+                btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg><span class="hidden md:inline">Ver Resumen</span>`;
+                btn.className = "ml-2 md:ml-4 px-3 py-1 bg-orange-600 hover:bg-orange-500 text-white rounded text-xs md:text-sm font-semibold transition-colors flex items-center gap-1 shadow-md";
+            } else {
+                btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg><span class="hidden md:inline">Ver Ruta de Trades</span>`;
+                btn.className = "ml-2 md:ml-4 px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs md:text-sm font-semibold transition-colors flex items-center gap-1 shadow-md";
+            }
+            updateSmartCalendar();
+        }
+
         function updateSmartCalendar() {
             const container = document.getElementById('calendarContainer');
             const indicator = document.getElementById('calendarModeIndicator');
@@ -2085,6 +2238,7 @@
             const btnNext = document.getElementById('btnCalNext');
             const btnZoomOut = document.getElementById('btnCalZoomOut');
             const btnZoomIn = document.getElementById('btnCalZoomIn');
+            const btnDetail = document.getElementById('btnToggleCalendarDetail');
 
             let calData = filteredData; 
             container.innerHTML = ''; 
@@ -2093,6 +2247,13 @@
             btnNext.disabled = (calMode === 'YEARS');
             btnZoomOut.disabled = (calMode === 'YEARS');
             if (btnZoomIn) btnZoomIn.disabled = (calMode === 'DAYS');
+            
+            // Solo habilitar botón de ruta en vista de Días
+            if (btnDetail) {
+                btnDetail.disabled = (calMode !== 'DAYS');
+                if (calMode !== 'DAYS') btnDetail.classList.add('opacity-30', 'cursor-not-allowed');
+                else btnDetail.classList.remove('opacity-30', 'cursor-not-allowed');
+            }
 
             if (calData.length === 0) {
                 indicator.innerText = "Sin Datos";
@@ -2159,64 +2320,171 @@
         }
 
         function renderDaysGrid(container, data, year, month) {
-            let dailyData = {};
-            data.forEach(d => {
-                if (d.Year === year && d.Month === month && d.Time) {
-                    let day = d.Time.getDate();
-                    if(!dailyData[day]) dailyData[day] = { total: 0, trades: [] };
-                    dailyData[day].total += d.NetProfit || 0;
-                    
-                    dailyData[day].trades.push({
-                        sym: d.Symbol || '-',
-                        prof: d.NetProfit || 0,
-                        time: d.EntryTime || d.Time 
-                    });
-                }
-            });
-
             let daysInMonth = new Date(year, month, 0).getDate();
             let firstDay = new Date(year, month - 1, 1).getDay();
 
-            let html = `<div class="w-full max-w-4xl mx-auto fade-in">`;
+            let html = `<div class="w-full max-w-6xl mx-auto fade-in">`;
             html += `<div class="grid grid-cols-7 text-center text-xs text-gray-400 font-bold mb-2">`;
             daysArr.forEach(d => html += `<div class="py-2">${d}</div>`);
             html += `</div><div class="grid grid-cols-7 gap-1 md:gap-2">`;
             
             for(let i = 0; i < firstDay; i++) { html += `<div class="min-h-[80px] rounded border border-transparent"></div>`; }
 
-            for(let i = 1; i <= daysInMonth; i++) {
-                let dayData = dailyData[i];
-                let profit = dayData ? dayData.total : undefined;
-                let colorClass = getCellColorClass(profit);
-                let displayProfit = profit !== undefined ? fmtMoney(profit, 1) : '-';
-                
-                let tradesHtml = '';
-                if (dayData) {
-                    dayData.trades.sort((a,b) => a.time - b.time).forEach(t => {
-                        let hh = t.time && t.time.getHours ? t.time.getHours().toString().padStart(2, '0') : '--';
-                        let mm = t.time && t.time.getMinutes ? t.time.getMinutes().toString().padStart(2, '0') : '--';
-                        let tProf = t.prof;
-                        let sColorClass = tProf >= 0 ? 'text-green-300' : 'text-red-300';
-                        let sPrefix = tProf > 0 ? '+' : '';
+            if (!isDetailedCalendar) {
+                // ========================================================
+                // VISTA ORIGINAL CON TRADES DETALLADOS (Hora, Simbolo, Profit)
+                // ========================================================
+                let dailyData = {};
+                data.forEach(d => {
+                    if (d.Year === year && d.Month === month && d.Time) {
+                        let day = d.Time.getDate();
+                        if(!dailyData[day]) dailyData[day] = { total: 0, trades: [] };
+                        dailyData[day].total += d.NetProfit || 0;
                         
-                        tradesHtml += `<div class="flex justify-between w-full items-center gap-1 border-b border-white/5 pb-[2px] last:border-0 opacity-90 hover:opacity-100">
-                            <span class="text-[8px] text-gray-500 font-mono tracking-tighter shrink-0" title="Hora de entrada">${hh}:${mm}</span>
-                            <span class="truncate max-w-[35px] text-[8px] text-gray-400" title="${t.sym}">${t.sym}</span>
-                            <span class="${sColorClass} font-mono shrink-0 text-[9px]">${sPrefix}${fmtMoney(tProf, 0)}</span>
+                        dailyData[day].trades.push({
+                            sym: d.Symbol || '-',
+                            prof: d.NetProfit || 0,
+                            time: d.EntryTime || d.Time 
+                        });
+                    }
+                });
+
+                for(let i = 1; i <= daysInMonth; i++) {
+                    let dayData = dailyData[i];
+                    let profit = dayData ? dayData.total : undefined;
+                    let colorClass = getCellColorClass(profit);
+                    let displayProfit = profit !== undefined ? fmtMoney(profit, 2) : '-';
+                    
+                    let tradesHtml = '';
+                    if (dayData) {
+                        dayData.trades.sort((a,b) => a.time - b.time).forEach(t => {
+                            let hh = t.time && t.time.getHours ? t.time.getHours().toString().padStart(2, '0') : '--';
+                            let mm = t.time && t.time.getMinutes ? t.time.getMinutes().toString().padStart(2, '0') : '--';
+                            let tProf = t.prof;
+                            let sColorClass = tProf >= 0 ? 'text-green-300' : 'text-red-300';
+                            let sPrefix = tProf > 0 ? '+' : '';
+                            
+                            tradesHtml += `<div class="flex justify-between w-full items-center gap-1 border-b border-white/5 pb-[2px] last:border-0 opacity-90 hover:opacity-100">
+                                <span class="text-[8px] text-gray-500 font-mono tracking-tighter shrink-0" title="Hora de entrada">${hh}:${mm}</span>
+                                <span class="truncate max-w-[35px] md:max-w-[45px] text-[8px] text-gray-400" title="${t.sym}">${t.sym}</span>
+                                <span class="${sColorClass} font-mono shrink-0 text-[9px]">${sPrefix}${fmtMoney(tProf, 0)}</span>
+                            </div>`;
+                        });
+                    }
+                    
+                    html += `
+                        <div class="min-h-[85px] max-h-[120px] flex flex-col items-center justify-start rounded-lg border ${colorClass} bg-gray-800/60 p-1 transition-transform hover:scale-105 cursor-default overflow-hidden shadow-sm" title="Día ${i}\nNeto: ${profit !== undefined ? fmtMoney(profit, 2) : '0.00'}">
+                            <div class="text-[10px] md:text-xs font-semibold opacity-90 border-b border-white/20 w-full text-center pb-1 mb-1 flex flex-col">
+                                <span class="text-gray-300">${i}</span>
+                                <span class="font-bold text-[10px] md:text-[11px]">${displayProfit}</span>
+                            </div>
+                            <div class="w-full flex flex-col gap-[2px] overflow-y-auto cell-scrollbar px-[2px]">
+                                ${tradesHtml}
+                            </div>
                         </div>`;
-                    });
                 }
+            } else {
+                // ========================================================
+                // VISTA DE RUTA DE TRADES (Líneas Multidía)
+                // ========================================================
+                let monthStartMs = new Date(year, month - 1, 1).getTime();
+                let monthEndMs = new Date(year, month, 0, 23, 59, 59).getTime();
+
+                let monthTrades = data.filter(d => {
+                    let st = d.EntryTime || d.Time;
+                    let et = d.Time;
+                    return st.getTime() <= monthEndMs && et.getTime() >= monthStartMs;
+                });
                 
-                html += `
-                    <div class="min-h-[85px] max-h-[120px] flex flex-col items-center justify-start rounded border ${colorClass} p-1 transition-transform hover:scale-105 cursor-default overflow-hidden" title="Día ${i}\nNeto: ${profit !== undefined ? fmtMoney(profit, 2) : '0.00'}">
-                        <div class="text-[10px] md:text-xs font-semibold opacity-90 border-b border-white/20 w-full text-center pb-1 mb-1 flex flex-col">
-                            <span>${i}</span><span class="font-bold text-[10px] md:text-[11px]">${displayProfit}</span>
-                        </div>
-                        <div class="w-full flex flex-col gap-[2px] overflow-y-auto cell-scrollbar px-[2px]">
-                            ${tradesHtml}
-                        </div>
-                    </div>`;
+                monthTrades.sort((a,b) => (a.EntryTime||a.Time) - (b.EntryTime||b.Time));
+
+                // Algoritmo de asignación de pistas (Tracks)
+                let tracks = [];
+                monthTrades.forEach(t => {
+                    let st = t.EntryTime || t.Time;
+                    let et = t.Time;
+                    
+                    let dStart = 1;
+                    if (st.getFullYear() === year && (st.getMonth()+1) === month) dStart = st.getDate();
+                    
+                    let dEnd = daysInMonth;
+                    if (et.getFullYear() === year && (et.getMonth()+1) === month) dEnd = et.getDate();
+
+                    let trackIdx = 0;
+                    while(true) {
+                        if (!tracks[trackIdx]) { tracks[trackIdx] = []; break; }
+                        let overlaps = tracks[trackIdx].some(interval => !(dEnd < interval.start || dStart > interval.end));
+                        if (!overlaps) break;
+                        trackIdx++;
+                    }
+                    tracks[trackIdx].push({ start: dStart, end: dEnd, trade: t });
+                });
+
+                let numTracks = tracks.length;
+
+                for(let i = 1; i <= daysInMonth; i++) {
+                    let dayHtml = '';
+                    
+                    for(let tr = 0; tr < numTracks; tr++) {
+                        let segment = tracks[tr].find(item => item.start <= i && item.end >= i);
+                        
+                        if (segment) {
+                            let t = segment.trade;
+                            let st = t.EntryTime || t.Time;
+                            let et = t.Time;
+
+                            let isActualStart = (st.getFullYear() === year && (st.getMonth()+1) === month && st.getDate() === i);
+                            let isActualEnd   = (et.getFullYear() === year && (et.getMonth()+1) === month && et.getDate() === i);
+
+                            let isWin = t.NetProfit >= 0;
+                            let bgBase = isWin ? 'bg-green-600/20 text-green-300 border-green-500/50' : 'bg-red-600/20 text-red-300 border-red-500/50';
+
+                            let sTime = st ? `${st.getHours().toString().padStart(2,'0')}:${st.getMinutes().toString().padStart(2,'0')}` : '--:--';
+                            let eTime = et ? `${et.getHours().toString().padStart(2,'0')}:${et.getMinutes().toString().padStart(2,'0')}` : '--:--';
+                            let symStr = t.Symbol || 'UNK';
+                            if(symStr.length > 8) symStr = symStr.substring(0,8) + '..';
+
+                            let content = '';
+                            let classes = `h-[22px] mb-1 text-[9.5px] font-mono flex items-center px-1 border-y border-x truncate shadow-sm transition-opacity hover:opacity-100 ${isActualStart || isActualEnd ? 'opacity-90' : 'opacity-70'}`;
+
+                            if (isActualStart && isActualEnd) {
+                                // Abre y Cierra el mismo día
+                                classes += ` rounded-md ${bgBase} justify-between`;
+                                content = `<span class="truncate pr-1 opacity-80">[${sTime}] ${symStr}</span><span class="font-bold">${fmtMoney(t.NetProfit,0)}</span>`;
+                            } 
+                            else if (isActualStart) {
+                                // Día que Abre (y continúa)
+                                classes += ` rounded-l-md border-r-0 mr-[-6px] ${bgBase} justify-start`;
+                                content = `<span class="font-bold opacity-80">[${sTime}] ${symStr} <span class="text-[8px]">➔</span></span>`;
+                            } 
+                            else if (isActualEnd) {
+                                // Día que Cierra (venía de antes)
+                                classes += ` rounded-r-md border-l-0 ml-[-6px] ${bgBase} justify-between`;
+                                content = `<span class="opacity-40 text-[8px] mr-1">➔</span><span class="font-bold ml-auto">${fmtMoney(t.NetProfit,0)} <span class="opacity-80">[${eTime}]</span></span>`;
+                            } 
+                            else {
+                                // Día Intermedio (en tránsito)
+                                classes += ` rounded-none border-x-0 mx-[-6px] ${bgBase} justify-center bg-opacity-10`;
+                                content = `<span class="opacity-50 tracking-widest uppercase">〰️ ${symStr} 〰️</span>`;
+                            }
+
+                            dayHtml += `<div class="${classes}" title="${t.Symbol}\nApertura: ${sTime}\nCierre: ${eTime}\nDuración: ${formatDurationText(t.DurationHours)}\nGanancia: ${fmtMoney(t.NetProfit)}">${content}</div>`;
+                        } else {
+                            // Espaciador para mantener la alineación vertical de las pistas
+                            dayHtml += `<div class="h-[22px] mb-1"></div>`; 
+                        }
+                    }
+
+                    html += `
+                        <div class="min-h-[100px] flex flex-col rounded-lg border border-gray-700 bg-gray-800/40 p-1.5 shadow-sm overflow-hidden group">
+                            <span class="text-xs font-bold opacity-80 mb-1 border-b border-gray-700/50 pb-1 w-full text-center text-gray-400 group-hover:text-blue-400 transition-colors">${i}</span>
+                            <div class="flex flex-col flex-1 overflow-visible">
+                                ${dayHtml || '<span class="text-[9px] text-gray-600 m-auto italic">Libre</span>'}
+                            </div>
+                        </div>`;
+                }
             }
+            
             html += `</div></div>`; container.innerHTML = html;
         }
 
