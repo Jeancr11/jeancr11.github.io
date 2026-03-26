@@ -26,12 +26,20 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
-        /* SCROLLBARS GENERALES */
-        .cell-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .cell-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .cell-scrollbar::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 6px; }
-        .cell-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.6); }
+        /* SCROLLBARS PERSONALIZADAS */
+        .cell-scrollbar::-webkit-scrollbar {
+            width: 6px; height: 6px;
+        }
+        .cell-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .cell-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.3); /* gray-400 con opacidad */
+            border-radius: 6px;
+        }
+        .cell-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.6);
+        }
         
         .nav-link.active {
             border-bottom: 2px solid #3b82f6;
@@ -46,6 +54,7 @@
             -moz-appearance: textfield;
         }
 
+        /* ESTILOS PARA CHECKBOXES PERSONALIZADOS */
         .custom-checkbox {
             accent-color: #3b82f6;
             width: 1.1rem;
@@ -53,171 +62,22 @@
             cursor: pointer;
         }
 
-        .filter-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
-        .filter-scrollbar::-webkit-scrollbar-track { background: rgba(31, 41, 55, 0.8); border-radius: 8px; }
-        .filter-scrollbar::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.6); border-radius: 8px; border: 2px solid rgba(31, 41, 55, 0.8); }
-        .filter-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.9); }
-
-        /* ==========================================================
-           ESTILOS ESPECÍFICOS DEL NUEVO OPTIMIZADOR
-           ========================================================== */
-        #view-optimizer {
-            --opt-bg: #111827; /* Tailwind gray-900 */
-            --opt-surface: #1f2937; /* Tailwind gray-800 */
-            --opt-border: #374151; /* Tailwind gray-700 */
-            --opt-accent: #3b82f6; /* Tailwind blue-500 */
-            --opt-text: #f3f4f6; /* Tailwind gray-100 */
-            --opt-muted: #9ca3af; /* Tailwind gray-400 */
+        /* ESTILOS DE SCROLLBAR ELEGANTES PARA FILTROS DESPLEGABLES */
+        .filter-scrollbar::-webkit-scrollbar {
+            width: 8px; height: 8px;
         }
-        
-        /* Scrollbars elegantes para el Optimizador */
-        .opt-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
-        .opt-scrollbar::-webkit-scrollbar-track { background: var(--opt-bg); border-radius: 4px; }
-        .opt-scrollbar::-webkit-scrollbar-thumb { background: var(--opt-border); border-radius: 4px; border: 2px solid var(--opt-bg); }
-        .opt-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--opt-accent); }
-        .opt-scrollbar::-webkit-scrollbar-corner { background: var(--opt-bg); }
-
-        #optUploadScreen { min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; padding: 40px; }
-        #optUploadScreen h1 { font-size: 24px; font-weight: 700; color: var(--opt-accent); }
-        #optUploadScreen p { color: var(--opt-muted); font-size: 14px; text-align: center; max-width: 420px; line-height: 1.6; }
-        .opt-drop-zone { width: 420px; border: 2px dashed var(--opt-border); border-radius: 16px; padding: 48px 32px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--opt-surface); }
-        .opt-drop-zone:hover, .opt-drop-zone.drag-over { border-color: var(--opt-accent); background: rgba(59, 130, 246, 0.07); }
-        .opt-drop-zone .icon { font-size: 48px; margin-bottom: 12px; }
-        .opt-drop-zone .label { font-size: 15px; font-weight: 600; color: var(--opt-text); margin-bottom: 6px; }
-        .opt-drop-zone .sub { font-size: 12px; color: var(--opt-muted); }
-        .opt-btn-upload { margin-top: 12px; background: var(--opt-accent); color: #fff; border: none; border-radius: 8px; padding: 10px 28px; font-size: 14px; font-weight: 600; cursor: pointer; }
-        .opt-btn-upload:hover { opacity: 0.85; }
-        
-        #optUploadError { color: #ef4444; font-size: 13px; display: none; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 10px 16px; max-width: 420px; text-align: center; }
-        #optLoadingMsg { display: none; flex-direction: column; align-items: center; gap: 12px; color: var(--opt-muted); font-size: 14px; }
-        .opt-spinner { width: 36px; height: 36px; border: 3px solid var(--opt-border); border-top-color: var(--opt-accent); border-radius: 50%; animation: opt-spin 0.7s linear infinite; }
-        @keyframes opt-spin { to { transform: rotate(360deg); } }
-
-        #optAppScreen header { background: var(--opt-surface); border: 1px solid var(--opt-border); border-radius: 12px 12px 0 0; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-        #optAppScreen header h1 { font-size: 18px; font-weight: 700; color: var(--opt-accent); }
-        #optAppScreen header .meta { color: var(--opt-muted); font-size: 12px; margin-top: 4px; }
-        .opt-btn-reload { background: var(--opt-bg); border: 1px solid var(--opt-border); color: var(--opt-text); border-radius: 6px; padding: 6px 14px; cursor: pointer; font-size: 12px; white-space: nowrap; font-weight: 600; }
-        .opt-btn-reload:hover { border-color: var(--opt-accent); color: var(--opt-accent); }
-
-        .opt-tab-bar { background: var(--opt-surface); border-left: 1px solid var(--opt-border); border-right: 1px solid var(--opt-border); border-bottom: 1px solid var(--opt-border); padding: 0 20px; display: flex; gap: 0; }
-        .opt-tab-btn { background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--opt-muted); padding: 12px 18px; font-size: 14px; font-weight: 600; cursor: pointer; transition: color 0.15s, border-color 0.15s; margin-bottom: -1px; }
-        .opt-tab-btn:hover { color: var(--opt-text); }
-        .opt-tab-btn.active { color: var(--opt-accent); border-bottom-color: var(--opt-accent); }
-
-        .opt-toolbar { background: var(--opt-surface); border-left: 1px solid var(--opt-border); border-right: 1px solid var(--opt-border); border-bottom: 1px solid var(--opt-border); padding: 12px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-        .opt-toolbar label { font-size: 12px; font-weight: 600; color: var(--opt-muted); }
-        .opt-toolbar input, .opt-toolbar select { background: var(--opt-bg); border: 1px solid var(--opt-border); color: var(--opt-text); border-radius: 6px; padding: 6px 10px; font-size: 12px; outline: none; }
-        .opt-toolbar input:focus, .opt-toolbar select:focus { border-color: var(--opt-accent); }
-        .opt-toolbar .sep { width: 1px; height: 22px; background: var(--opt-border); }
-        .opt-toolbar button { background: var(--opt-bg); border: 1px solid var(--opt-border); color: var(--opt-text); border-radius: 6px; padding: 6px 14px; cursor: pointer; font-size: 12px; font-weight: 600;}
-        .opt-toolbar button:hover { border-color: var(--opt-accent); color: var(--opt-accent); }
-        .opt-btn-export { background: var(--opt-accent) !important; border: none !important; color: #fff !important; }
-        .opt-btn-export:hover { opacity: 0.85; color: #fff !important; }
-
-        .opt-stats-bar { background: var(--opt-bg); padding: 8px 20px; display: flex; gap: 20px; border-left: 1px solid var(--opt-border); border-right: 1px solid var(--opt-border); border-bottom: 1px solid var(--opt-border); font-size: 12px; color: var(--opt-muted); flex-wrap: wrap; }
-        .opt-stats-bar span b { color: var(--opt-text); font-weight: 700; }
-
-        .opt-table-wrap { overflow: auto; max-height: calc(100vh - 350px); border-left: 1px solid var(--opt-border); border-right: 1px solid var(--opt-border); background: var(--opt-surface); }
-        #view-optimizer table { border-collapse: collapse; width: 100%; font-size: 12px; }
-        #view-optimizer thead { position: sticky; top: 0; z-index: 10; background: var(--opt-bg); }
-        #view-optimizer th { padding: 8px 12px; text-align: left; white-space: nowrap; cursor: pointer; user-select: none; font-size: 11px; font-weight: 600; color: var(--opt-muted); text-transform: uppercase; letter-spacing: 0.04em; border-right: 1px solid var(--opt-border); border-bottom: 2px solid var(--opt-border); }
-        #view-optimizer th:hover { color: var(--opt-accent); background: rgba(59,130,246,0.07); }
-        #view-optimizer th.sort-asc::after { content: ' ▲'; color: var(--opt-accent); font-size: 10px; }
-        #view-optimizer th.sort-desc::after { content: ' ▼'; color: var(--opt-accent); font-size: 10px; }
-        #view-optimizer th.win-col { background: rgba(34,197,94,0.06); }
-        #view-optimizer th.dd-col { background: rgba(239,68,68,0.06); }
-
-        .opt-filter-row th { padding: 4px 6px; background: var(--opt-surface); cursor: default; border-bottom: 1px solid var(--opt-border); }
-        .opt-filter-row th:hover { background: var(--opt-surface); color: var(--opt-muted); }
-        .opt-filter-row input, .opt-filter-row select { width: 100%; background: var(--opt-bg); border: 1px solid var(--opt-border); color: var(--opt-text); border-radius: 4px; padding: 4px 6px; font-size: 11px; outline: none; }
-        .opt-filter-row input:focus, .opt-filter-row select:focus { border-color: var(--opt-accent); }
-        .opt-filter-row input.dd-input { border-color: rgba(239,68,68,0.4); }
-        .opt-filter-row input.dd-input:focus { border-color: #ef4444; }
-        .opt-filter-row input.min-input { border-color: rgba(59,130,246,0.35); }
-        .opt-filter-row input.min-input:focus { border-color: var(--opt-accent); }
-
-        #view-optimizer tbody tr { border-bottom: 1px solid var(--opt-border); }
-        #view-optimizer tbody tr:hover { background: rgba(59,130,246,0.06); }
-        #view-optimizer tbody tr.even { background: rgba(255,255,255,0.02); }
-        #view-optimizer tbody tr.even:hover { background: rgba(59,130,246,0.06); }
-        #view-optimizer td { padding: 6px 12px; white-space: nowrap; border-right: 1px solid var(--opt-border); font-variant-numeric: tabular-nums; }
-        .win-badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 12px; }
-        .win-bar-bg { display: inline-block; width: 46px; height: 5px; background: var(--opt-border); border-radius: 3px; overflow: hidden; vertical-align: middle; }
-        .win-bar-fill { height: 100%; border-radius: 3px; }
-        .bool-true { color: #22c55e; font-weight: 600; }
-        .bool-false { color: #ef4444; font-weight: 600; }
-
-        .opt-pagination { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: var(--opt-surface); border: 1px solid var(--opt-border); border-radius: 0 0 12px 12px; position: sticky; bottom: 0; }
-        .opt-pagination button { background: var(--opt-bg); border: 1px solid var(--opt-border); color: var(--opt-text); border-radius: 6px; padding: 6px 14px; cursor: pointer; font-size: 12px; font-weight: 600;}
-        .opt-pagination button:hover { border-color: var(--opt-accent); color: var(--opt-accent); }
-        .opt-pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
-        .opt-pagination .page-info { color: var(--opt-muted); font-size: 12px; min-width: 160px; text-align: center; }
-        .opt-pagination select { background: var(--opt-bg); border: 1px solid var(--opt-border); color: var(--opt-text); border-radius: 6px; padding: 6px 10px; font-size: 12px; outline: none; cursor: pointer; }
-
-        /* ── Heatmap Tab ── */
-        #optTabHeatmap { padding: 24px; overflow: auto; max-height: calc(100vh - 250px); background: var(--opt-surface); border-left: 1px solid var(--opt-border); border-right: 1px solid var(--opt-border); border-bottom: 1px solid var(--opt-border); border-radius: 0 0 12px 12px;}
-        .hm-legend { display: flex; gap: 14px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; background: var(--opt-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--opt-border);}
-        .hm-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--opt-text); font-weight: 500;}
-        .hm-legend-dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
-        .hm-info { font-size: 12px; color: var(--opt-muted); margin-bottom: 16px; background: rgba(59,130,246,0.1); padding: 10px 14px; border-radius: 8px; border-left: 3px solid var(--opt-accent);}
-        .hm-no-data { color: var(--opt-muted); font-size: 14px; text-align: center; margin-top: 60px; }
-        .hm-grid-wrap { overflow-x: auto; padding-bottom: 20px;}
-        
-        /* ── HeatMap Blocks Rediseñados (Más grandes) ── */
-        .hm-table { border-collapse: collapse; font-size: 11px; }
-        .hm-table th { font-size: 12px; font-weight: 600; color: var(--opt-muted); padding: 6px 8px; white-space: nowrap; text-align: center; border: none; background: transparent; cursor: default; text-transform: none; letter-spacing: 0; }
-        .hm-table th.hm-row-header { text-align: right; padding-right: 12px; font-size: 12px; color: var(--opt-text); min-width: 60px; font-weight: 700; }
-        .hm-table td {
-            width: 76px;  /* Más ancho */
-            height: 76px; /* Más alto */
-            text-align: left;
-            vertical-align: middle;
-            font-size: 10px;
-            font-weight: 600;
-            border: 1px solid var(--opt-bg);
-            cursor: default;
-            padding: 6px; /* Mayor espaciado interno */
-            overflow: hidden;
-            font-variant-numeric: tabular-nums;
-            transition: transform 0.1s, box-shadow 0.1s, opacity 0.1s;
+        .filter-scrollbar::-webkit-scrollbar-track {
+            background: rgba(31, 41, 55, 0.8); /* bg-gray-800 */
+            border-radius: 8px;
         }
-        .hm-cell-grid { display: flex; flex-direction: column; gap: 2px; height: 100%; justify-content: center; }
-        .hm-metric { display: flex; justify-content: space-between; gap: 4px; line-height: 1.4; }
-        .hm-ml { color: rgba(255,255,255,0.5); font-size: 9px; font-weight: 500; flex-shrink: 0; } /* Letra un poco más grande */
-        .hm-mv { font-size: 10px; font-weight: 700; font-variant-numeric: tabular-nums; } /* Letra un poco más grande */
-        .hm-mv-pos { color: #86efac; }
-        .hm-mv-neg { color: #f87171; }
-        .hm-mv-dd  { color: #fca5a5; }
-        .hm-mv-neu { color: #93c5fd; }
-        
-        /* Hover del HeatMap mejorado */
-        .hm-table td:hover { 
-            outline: 2px solid var(--opt-accent); 
-            outline-offset: -2px; 
-            position: relative; 
-            z-index: 2; 
-            opacity: 1;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-            transform: scale(1.02);
+        .filter-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.6); /* blue-500 */
+            border-radius: 8px;
+            border: 2px solid rgba(31, 41, 55, 0.8);
         }
-
-        /* Status colors */
-        .hm-empty    { background: #1a1d27; color: #2a2d3a; opacity: 0.7;}
-        .hm-losing   { background: #5a1a1a; color: #f87171; }
-        .hm-even     { background: #2a2d3a; color: #94a3b8; }
-        .hm-profit   { background: #1a2e0f; color: #86efac; }
-        .hm-profit-1 { background: #1e3d10; color: #4ade80; }
-        .hm-profit-2 { background: #166534; color: #86efac; }
-        .hm-profit-3 { background: #15803d; color: #dcfce7; }
-        .hm-profit-4 { background: #16a34a; color: #f0fdf4; }
-        .hm-profit-5 { background: #0e7a5a; color: #ccfbf1; }
-        .hm-profit-6 { background: #065f46; color: #99f6e4; }
-
-        .hm-tooltip { position: fixed; background: #1f2937; border: 1px solid #374151; border-radius: 8px; padding: 12px 16px; font-size: 12px; color: #f3f4f6; pointer-events: none; z-index: 9999; display: none; line-height: 1.7; white-space: nowrap; box-shadow: 0 10px 25px rgba(0,0,0,0.7); }
-        .hm-tooltip strong { color: #3b82f6; font-size: 14px;}
-        .hm-tooltip .tt-profit { font-size: 14px; font-weight: 700; }
-        .hm-tooltip .tt-pos { color: #4ade80; }
-        .hm-tooltip .tt-neg { color: #f87171; }
+        .filter-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.9);
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white font-sans min-h-screen">
@@ -247,16 +107,18 @@
                     <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012-2h2a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     <span class="text-xl font-bold tracking-wide">Trading<span class="text-blue-500">Analytics</span></span>
                 </div>
-                <div class="flex gap-4 md:gap-8">
+                <div class="flex gap-4 md:gap-8 items-center">
                     <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-link active font-semibold text-gray-300 hover:text-white pb-1 transition-colors">
                         Dashboard
                     </button>
                     <button onclick="switchTab('comparator')" id="nav-comparator" class="nav-link font-semibold text-gray-300 hover:text-white pb-1 transition-colors">
                         Comparador
                     </button>
-                    <button onclick="switchTab('optimizer')" id="nav-optimizer" class="nav-link font-semibold text-gray-300 hover:text-white pb-1 transition-colors">
+                    <!-- ENLACE EXTERNO PARA OPTIMIZADOR -->
+                    <a href="Jeancarlosrosario.org/Optimizador" target="_blank" rel="noopener noreferrer" class="font-semibold text-gray-300 hover:text-white pb-1 transition-colors flex items-center gap-1">
                         Optimizador
-                    </button>
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </a>
                 </div>
             </div>
         </div>
@@ -554,6 +416,7 @@
                                 <span id="calendarModeIndicator" class="text-xs md:text-sm font-semibold bg-gray-900 border border-gray-600 px-3 py-1 rounded text-blue-400 min-w-[120px] md:min-w-[160px] text-center">Años</span>
                                 <button id="btnCalNext" onclick="calNavigate(1)" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-colors">▶</button>
                                 
+                                <!-- Toggle de Ruta de Trades -->
                                 <button id="btnToggleCalendarDetail" onclick="toggleCalendarDetail()" class="ml-2 md:ml-4 px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs md:text-sm font-semibold transition-colors flex items-center gap-1 shadow-md disabled:opacity-30 disabled:cursor-not-allowed">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
                                     <span class="hidden md:inline">Ver Ruta de Trades</span>
@@ -563,6 +426,7 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"></path></svg>
                                     <span class="hidden md:inline">Alejar</span>
                                 </button>
+                                <!-- El botón acercar (Año -> Mes -> Día) -->
                                 <button id="btnCalZoomIn" onclick="calZoomIn()" class="ml-1 md:ml-2 px-3 py-1 bg-green-600 hover:bg-green-500 text-white rounded text-xs md:text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                                     <span class="hidden md:inline">Acercar</span>
@@ -710,6 +574,7 @@
 
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg w-full">
                     <h2 class="text-lg font-semibold text-gray-300 mb-4">Comparación de Curvas de Capital</h2>
+                    <!-- Alturas reducidas a ~80% del tamaño anterior -->
                     <div class="relative w-full h-[200px] md:h-[240px] lg:h-[280px] xl:h-[320px]">
                         <canvas id="comparatorChart"></canvas>
                     </div>
@@ -732,121 +597,107 @@
             </div>
         </div>
 
-        <!-- ========================================================= -->
-        <!-- PÁGINA 3: NUEVO OPTIMIZADOR RESULTS VIEWER                -->
-        <!-- ========================================================= -->
-        <div id="view-optimizer" class="hidden fade-in">
-            
-            <div id="optUploadScreen">
-              <div style="text-align:center">
-                <h1>📊 Optimizer Results Viewer</h1>
-                <p>Sube una exportación XML del optimizador de MetaTrader para explorar, ordenar y filtrar todas las combinaciones de parámetros.</p>
-              </div>
-              <div class="opt-drop-zone" id="optDropZone" onclick="document.getElementById('optFileInput').click()">
-                <div class="icon">📂</div>
-                <div class="label">Suelta tu archivo XML aquí</div>
-                <div class="sub">o haz clic para explorar</div>
-                <button class="opt-btn-upload" onclick="event.stopPropagation(); document.getElementById('optFileInput').click()">Elegir Archivo</button>
-              </div>
-              <input type="file" id="optFileInput" accept=".xml">
-              <div id="optUploadError"></div>
-              <div id="optLoadingMsg">
-                <div class="opt-spinner"></div>
-                <span id="optLoadingText">Procesando archivo…</span>
-              </div>
-            </div>
-
-            <div id="optAppScreen" style="display:none">
-              <header>
-                <div>
-                  <h1 id="optAppTitle">Optimizer Results</h1>
-                  <div class="meta" id="optAppMeta"></div>
-                </div>
-                <button class="opt-btn-reload" onclick="opt_resetToUpload()">⬆ Cargar Nuevo Archivo</button>
-              </header>
-
-              <div class="opt-tab-bar">
-                <button class="opt-tab-btn active" id="optTabBtnResults" onclick="opt_switchTab('results')">📋 Tabla de Resultados</button>
-                <button class="opt-tab-btn" id="optTabBtnHeatmap" onclick="opt_switchTab('heatmap')">🗺 Heatmap de R:R</button>
-              </div>
-
-              <!-- Results Tab -->
-              <div id="optTabResults">
-                <div class="opt-toolbar">
-                  <label>Buscar:</label>
-                  <input type="text" id="optGlobalSearch" placeholder="Cualquier valor…" style="width:180px" oninput="opt_applyFilters()">
-                  <div class="sep"></div>
-                  <label>Win Rate:</label>
-                  <input type="number" id="optMinWin" placeholder="min %" min="0" max="100" style="width:72px" oninput="opt_applyFilters()">
-                  <span style="color:var(--opt-muted)">–</span>
-                  <input type="number" id="optMaxWin" placeholder="max %" min="0" max="100" style="width:72px" oninput="opt_applyFilters()">
-                  <div class="sep"></div>
-                  <button onclick="opt_clearFilters()">✕ Limpiar</button>
-                  <button class="opt-btn-export" onclick="opt_exportCSV()">⬇ Exportar CSV</button>
-                </div>
-
-                <div class="opt-stats-bar">
-                  <span>Total: <b id="optTotalRows">0</b></span>
-                  <span>Mostrando: <b id="optShownRows">0</b></span>
-                  <span>Ordenado por: <b id="optSortInfo">—</b></span>
-                </div>
-
-                <div class="opt-table-wrap opt-scrollbar">
-                  <table id="optMainTable">
-                    <thead>
-                      <tr id="optHeaderRow"></tr>
-                      <tr class="opt-filter-row" id="optFilterRow"></tr>
-                    </thead>
-                    <tbody id="optTbody"></tbody>
-                  </table>
-                </div>
-
-                <div class="opt-pagination">
-                  <button id="optBtnFirst" onclick="opt_goPage(0)">«</button>
-                  <button id="optBtnPrev" onclick="opt_goPage(opt_currentPage-1)">‹</button>
-                  <div class="page-info" id="optPageInfo"></div>
-                  <button id="optBtnNext" onclick="opt_goPage(opt_currentPage+1)">›</button>
-                  <button id="optBtnLast" onclick="opt_goPage(opt_totalPages-1)">»</button>
-                  <label style="color:var(--opt-muted);font-size:12px;margin-left:12px">Filas/pág:</label>
-                  <select id="optPageSizeSelect" onchange="opt_changePageSize()">
-                    <option value="50">50</option>
-                    <option value="100" selected>100</option>
-                    <option value="200">200</option>
-                    <option value="500">500</option>
-                    <option value="999999">Todas</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Heatmap Tab -->
-              <div id="optTabHeatmap" class="opt-scrollbar" style="display:none">
-                <div id="hm-content">
-                  <div class="hm-no-data">Carga un archivo XML para ver el Heatmap.</div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Tooltip exclusivo del HeatMap -->
-            <div class="hm-tooltip" id="hmTooltip"></div>
-
-        </div>
-
     </div>
 
     <script>
-        // --- VARIABLES GLOBALES (Soluciona el bug de "comparedFiles is not defined") ---
+        // --- NAVEGACIÓN SPA ---
+        function switchTab(tabId) {
+            document.getElementById('view-dashboard').classList.add('hidden');
+            document.getElementById('view-comparator').classList.add('hidden');
+            
+            document.getElementById('nav-dashboard').classList.remove('active');
+            document.getElementById('nav-comparator').classList.remove('active');
+            
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).classList.add('active');
+
+            if(tabId === 'dashboard') {
+                if(equityChartInstance) equityChartInstance.resize();
+                if(compoundChartInstance) compoundChartInstance.resize();
+            }
+            if(tabId === 'comparator' && comparatorChartInstance) comparatorChartInstance.resize();
+        }
+
+        // --- MANEJO DE DROPDOWNS MULTI-SELECT ---
+        document.addEventListener('click', (e) => {
+            if(!e.target.closest('.custom-select-container')) {
+                document.querySelectorAll('.custom-select-dropdown').forEach(el => el.classList.add('hidden'));
+            }
+        });
+
+        function toggleDropdown(id) {
+            const el = document.getElementById(id);
+            const isHidden = el.classList.contains('hidden');
+            document.querySelectorAll('.custom-select-dropdown').forEach(d => d.classList.add('hidden'));
+            if(isHidden) el.classList.remove('hidden');
+        }
+
+        let activeFilters = {
+            symbols: [],
+            years: [],
+            months: []
+        };
+
+        function updateMultiSelect(type, val, checked) {
+            let arr = activeFilters[type];
+            if (val === 'ALL') {
+                // Si hace click en TODOS, limpia el arreglo
+                arr.length = 0;
+                let cbs = document.querySelectorAll(`.cb-${type}`);
+                cbs.forEach(cb => { if(cb.value !== 'ALL') cb.checked = false; else cb.checked = true; });
+            } else {
+                // Desmarcar "ALL" si se marca algo específico
+                document.querySelector(`.cb-${type}[value="ALL"]`).checked = false;
+                
+                if (checked) {
+                    if (!arr.includes(val)) arr.push(val);
+                } else {
+                    arr = arr.filter(v => v !== val);
+                    activeFilters[type] = arr;
+                }
+                
+                // Si desmarcó todo, volver a marcar "ALL"
+                if (arr.length === 0) {
+                    document.querySelector(`.cb-${type}[value="ALL"]`).checked = true;
+                }
+            }
+
+            // Actualizar Label Visual
+            let labelId = type === 'symbols' ? 'labelSymbols' : (type === 'years' ? 'labelYears' : 'labelMonths');
+            let baseText = type === 'symbols' ? 'Pares' : (type === 'years' ? 'Años' : 'Meses');
+            let elLabel = document.getElementById(labelId);
+            
+            if (activeFilters[type].length === 0) {
+                elLabel.innerText = `Todos`;
+                elLabel.classList.remove('text-blue-400', 'font-bold');
+            } else if (activeFilters[type].length === 1) {
+                // Si es mes, mostrar nombre en lugar de número
+                let displayVal = activeFilters[type][0];
+                if (type === 'months') displayVal = monthNames[parseInt(displayVal)-1];
+                elLabel.innerText = displayVal;
+                elLabel.classList.add('text-blue-400', 'font-bold');
+            } else {
+                elLabel.innerText = `${activeFilters[type].length} selec.`;
+                elLabel.classList.add('text-blue-400', 'font-bold');
+            }
+
+            // Aplicar Filtros Globales (pero si es manual, limpiar el badge de portafolio)
+            if (activePortfolioConfig && type === 'symbols') {
+                activePortfolioConfig = null;
+                document.getElementById('activePortfolioBadge').classList.add('hidden');
+            }
+            applyFilters();
+        }
+
+
+        // --- VARIABLES GLOBALES DASHBOARD ---
         let rawData = [];
         let filteredData = [];
         let compChartDataObj = []; 
         let dashFiles = [];
         const storageKey = 'mt5_trading_data_v21'; 
         
-        // Variables para Comparador
-        let comparedFiles = [];
-        let colorPalette = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4', '#f97316', '#ec4899'];
-        let nextColorIndex = 0;
-        
-        let activePortfolioConfig = null; 
+        let activePortfolioConfig = null; // Guardará {name: "...", symbols: ["EURUSD", ...]}
 
         let equityChartInstance = null;
         let compoundChartInstance = null; 
@@ -854,16 +705,23 @@
         let cTH = null, cTD = null, cTM = null; 
         let cPH = null, cPD = null, cPM = null; 
         let scatterChartInstance = null;
-        let comparatorChartInstance = null;
 
-        let calMode = 'YEARS'; 
+        let calMode = 'YEARS'; // YEARS, MONTHS, DAYS
         let calYear = null;
         let calMonth = null;
-        let isDetailedCalendar = false; 
+        
+        let isDetailedCalendar = false; // NUEVO: Estado para alternar la vista de líneas de tiempo en los días
 
         const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
         const daysArrFull = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
         const daysArr = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+
+        const colorPalette = [
+            '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', 
+            '#ec4899', '#06b6d4', '#f97316', '#84cc16', '#6366f1'
+        ];
+        let nextColorIndex = 0;
+        let comparedFiles = [];
 
         // --- HELPERS BÁSICOS Y DESTRUCTORES DE CHARTJS ---
         const safeDestroy = (chart) => {
@@ -898,26 +756,6 @@
             return date.toLocaleDateString('es-ES', {day:'2-digit', month:'short', year:'numeric'});
         }
 
-        // --- NAVEGACIÓN SPA ---
-        function switchTab(tabId) {
-            document.getElementById('view-dashboard').classList.add('hidden');
-            document.getElementById('view-comparator').classList.add('hidden');
-            document.getElementById('view-optimizer').classList.add('hidden'); 
-            
-            document.getElementById('nav-dashboard').classList.remove('active');
-            document.getElementById('nav-comparator').classList.remove('active');
-            document.getElementById('nav-optimizer').classList.remove('active'); 
-            
-            document.getElementById(`view-${tabId}`).classList.remove('hidden');
-            document.getElementById(`nav-${tabId}`).classList.add('active');
-
-            if(tabId === 'dashboard') {
-                if(equityChartInstance) equityChartInstance.resize();
-                if(compoundChartInstance) compoundChartInstance.resize();
-            }
-            if(tabId === 'comparator' && comparatorChartInstance) comparatorChartInstance.resize();
-        }
-
         // --- INICIALIZACIÓN ---
         window.onload = () => {
             const savedData = localStorage.getItem(storageKey);
@@ -929,74 +767,11 @@
             }
         };
 
-        // --- MANEJO DE DROPDOWNS MULTI-SELECT ---
-        document.addEventListener('click', (e) => {
-            if(!e.target.closest('.custom-select-container')) {
-                document.querySelectorAll('.custom-select-dropdown').forEach(el => el.classList.add('hidden'));
-            }
-        });
-
-        function toggleDropdown(id) {
-            const el = document.getElementById(id);
-            const isHidden = el.classList.contains('hidden');
-            document.querySelectorAll('.custom-select-dropdown').forEach(d => d.classList.add('hidden'));
-            if(isHidden) el.classList.remove('hidden');
-        }
-
-        let activeFilters = {
-            symbols: [],
-            years: [],
-            months: []
-        };
-
-        function updateMultiSelect(type, val, checked) {
-            let arr = activeFilters[type];
-            if (val === 'ALL') {
-                arr.length = 0;
-                let cbs = document.querySelectorAll(`.cb-${type}`);
-                cbs.forEach(cb => { if(cb.value !== 'ALL') cb.checked = false; else cb.checked = true; });
-            } else {
-                document.querySelector(`.cb-${type}[value="ALL"]`).checked = false;
-                
-                if (checked) {
-                    if (!arr.includes(val)) arr.push(val);
-                } else {
-                    arr = arr.filter(v => v !== val);
-                    activeFilters[type] = arr;
-                }
-                
-                if (arr.length === 0) {
-                    document.querySelector(`.cb-${type}[value="ALL"]`).checked = true;
-                }
-            }
-
-            let labelId = type === 'symbols' ? 'labelSymbols' : (type === 'years' ? 'labelYears' : 'labelMonths');
-            let baseText = type === 'symbols' ? 'Pares' : (type === 'years' ? 'Años' : 'Meses');
-            let elLabel = document.getElementById(labelId);
-            
-            if (activeFilters[type].length === 0) {
-                elLabel.innerText = `Todos`;
-                elLabel.classList.remove('text-blue-400', 'font-bold');
-            } else if (activeFilters[type].length === 1) {
-                let displayVal = activeFilters[type][0];
-                if (type === 'months') displayVal = monthNames[parseInt(displayVal)-1];
-                elLabel.innerText = displayVal;
-                elLabel.classList.add('text-blue-400', 'font-bold');
-            } else {
-                elLabel.innerText = `${activeFilters[type].length} selec.`;
-                elLabel.classList.add('text-blue-400', 'font-bold');
-            }
-
-            if (activePortfolioConfig && type === 'symbols') {
-                activePortfolioConfig = null;
-                document.getElementById('activePortfolioBadge').classList.add('hidden');
-            }
-            applyFilters();
-        }
-
         // --- LÓGICA DE PARSEO MT5 CLÁSICO (.XLSX) ---
         function parseMT5Data(data) {
             let parsedRows = [];
+            
+            // Intento de detectar el depósito inicial
             let initialDeposit = 10000;
             let depositRow = data.find(r => !(r.Symbol || '').trim() && cleanNumber(r.Profit) > 0);
             if(depositRow) initialDeposit = cleanNumber(depositRow.Profit);
@@ -1010,7 +785,7 @@
                     if (cleanStr.includes(' ')) {
                         let parts = cleanStr.split(' ');
                         cleanStr = parts[0] + 'T' + parts[1];
-                        if (cleanStr.length <= 16) cleanStr += ':00'; 
+                        if (cleanStr.length <= 16) cleanStr += ':00'; // Asegurar segundos
                     }
                     dateObj = new Date(cleanStr);
                 }
@@ -1080,6 +855,9 @@
             return processed;
         }
 
+        // =========================================================
+        // --- NUEVO MOTOR DE LECTURA DE TEXTO PURO (.CSV GRAPH) ---
+        // =========================================================
         function parseRawMT5Graph(csvText, sourceName = 'Estrategia') {
             let lines = csvText.split(/\r?\n/);
             if(lines.length < 2) return [];
@@ -1132,7 +910,7 @@
 
                 if (prevBalance === null) {
                     prevBalance = balance;
-                    continue; 
+                    continue; // No considerar la primera línea (depósito inicial)
                 }
 
                 let netProfit = balance - prevBalance;
@@ -1163,7 +941,9 @@
         function showLoader() { document.getElementById('globalLoader').classList.remove('hidden'); document.getElementById('globalLoader').classList.add('flex'); }
         function hideLoader() { document.getElementById('globalLoader').classList.add('hidden'); document.getElementById('globalLoader').classList.remove('flex'); }
 
-        // --- MANEJADORES DASHBOARD FILES ---
+
+        // --- MANEJADORES GLOBALES DE ARCHIVOS (SUBIDA Y DRAG & DROP) ---
+
         function handleDashboardClassicFiles(files) {
             if (files.length === 0) return;
             showLoader(); 
@@ -1209,7 +989,7 @@
                     setTimeout(() => {
                         try {
                             const text = event.target.result;
-                            const parsedData = parseRawMT5Graph(text, file.name); 
+                            const parsedData = parseRawMT5Graph(text, file.name); // Pasamos el nombre para el compound individual
                             
                             if (parsedData.length > 0) {
                                 dashFiles.push({ id: Date.now() + Math.random(), name: file.name, data: parsedData });
@@ -1230,8 +1010,17 @@
             });
         }
 
-        document.getElementById('dashInputClassic').addEventListener('change', function(e) { handleDashboardClassicFiles(Array.from(e.target.files)); e.target.value = ''; });
-        document.getElementById('dashInputGraph').addEventListener('change', function(e) { handleDashboardGraphFiles(Array.from(e.target.files)); e.target.value = ''; });
+        // 1. DASHBOARD - HISTORIAL CLASSIC (.XLSX)
+        document.getElementById('dashInputClassic').addEventListener('change', function(e) {
+            handleDashboardClassicFiles(Array.from(e.target.files));
+            e.target.value = '';
+        });
+
+        // 2. DASHBOARD - GRÁFICO (.CSV / .TSV)
+        document.getElementById('dashInputGraph').addEventListener('change', function(e) {
+            handleDashboardGraphFiles(Array.from(e.target.files));
+            e.target.value = '';
+        });
 
         function processDashFiles() {
             if(dashFiles.length === 0) return;
@@ -1262,7 +1051,10 @@
 
         function renderDashFilesTags() {
             const listDiv = document.getElementById('dashFilesList');
-            if (dashFiles.length === 0) { listDiv.innerHTML = ''; return; }
+            if (dashFiles.length === 0) {
+                listDiv.innerHTML = '';
+                return;
+            }
             listDiv.innerHTML = dashFiles.map(f => `
                 <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-600 bg-gray-800 shadow-sm">
                     <span class="w-3 h-3 rounded-full bg-blue-500"></span>
@@ -1299,16 +1091,17 @@
             document.getElementById('dashboardContent').classList.remove('hidden');
             document.getElementById('clearBtn').classList.remove('hidden');
 
-            activePortfolioConfig = null; 
+            activePortfolioConfig = null; // Reset portfolio filter en inicio
             document.getElementById('activePortfolioBadge').classList.add('hidden');
 
-            activeFilters = { symbols: [], years: [], months: [] }; 
+            activeFilters = { symbols: [], years: [], months: [] }; // Limpiar arrays visuales
             populateFilters();
-            analyzePortfolios(); 
+            analyzePortfolios(); // Ejecutar motor algorítmico de portafolios
             applyFilters();
         }
 
         function populateFilters() {
+            // Símbolos
             const symbols = [...new Set(rawData.map(d => d.Symbol))].sort();
             const symbolDropdown = document.getElementById('dropdownSymbols');
             let symHtml = `<label class="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-700 rounded cursor-pointer text-sm text-gray-300 transition-colors"><input type="checkbox" class="cb-symbols custom-checkbox" value="ALL" checked onchange="updateMultiSelect('symbols', 'ALL', this.checked)"> Todos los pares</label>`;
@@ -1317,6 +1110,7 @@
             });
             symbolDropdown.innerHTML = symHtml;
 
+            // Años
             const years = [...new Set(rawData.map(d => d.Year))].sort((a,b) => b-a);
             const yearDropdown = document.getElementById('dropdownYears');
             let yrHtml = `<label class="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-700 rounded cursor-pointer text-sm text-gray-300 transition-colors"><input type="checkbox" class="cb-years custom-checkbox" value="ALL" checked onchange="updateMultiSelect('years', 'ALL', this.checked)"> Todos</label>`;
@@ -1325,6 +1119,7 @@
             });
             yearDropdown.innerHTML = yrHtml;
 
+            // Meses
             const monthDropdown = document.getElementById('dropdownMonths');
             let moHtml = `<label class="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-700 rounded cursor-pointer text-sm text-gray-300 transition-colors"><input type="checkbox" class="cb-months custom-checkbox" value="ALL" checked onchange="updateMultiSelect('months', 'ALL', this.checked)"> Todos</label>`;
             monthNames.forEach((m, idx) => {
@@ -1332,13 +1127,20 @@
             });
             monthDropdown.innerHTML = moHtml;
 
+            // Set labels to empty
             document.getElementById('labelSymbols').innerText = `Todos`;
             document.getElementById('labelYears').innerText = `Todos`;
             document.getElementById('labelMonths').innerText = `Todos`;
         }
 
+        // ==========================================
+        // MANEJO DE FILTROS: PORTAFOLIO Y GLOBAL
+        // ==========================================
         function applyPortfolioFilter(name, symbolsArr) {
+            // Aplicar el filtro de portafolio
             activePortfolioConfig = { name, symbols: symbolsArr };
+            
+            // Limpiar selección manual de símbolos visualmente
             activeFilters.symbols = [];
             let cbs = document.querySelectorAll('.cb-symbols');
             cbs.forEach(cb => { if(cb.value === 'ALL') cb.checked = true; else cb.checked = false; });
@@ -1346,8 +1148,10 @@
             elLabel.innerText = `Todos`;
             elLabel.classList.remove('text-blue-400', 'font-bold');
             
+            // Mostrar el badge
             document.getElementById('portfolioBadgeName').innerText = name;
             document.getElementById('activePortfolioBadge').classList.remove('hidden');
+            
             applyFilters();
         }
 
@@ -1360,116 +1164,212 @@
 
         function clearGlobalFilters() {
             activeFilters = { symbols: [], years: [], months: [] };
+            
             ['symbols', 'years', 'months'].forEach(type => {
-                document.querySelectorAll(`.cb-${type}`).forEach(cb => { if(cb.value === 'ALL') cb.checked = true; else cb.checked = false; });
+                document.querySelectorAll(`.cb-${type}`).forEach(cb => {
+                    if(cb.value === 'ALL') cb.checked = true; else cb.checked = false;
+                });
                 let elLabel = document.getElementById(type === 'symbols' ? 'labelSymbols' : (type === 'years' ? 'labelYears' : 'labelMonths'));
                 elLabel.innerText = `Todos`;
                 elLabel.classList.remove('text-blue-400', 'font-bold');
             });
+            
             activePortfolioConfig = null;
             document.getElementById('activePortfolioBadge').classList.add('hidden');
+
             applyFilters();
         }
 
         function applyFilters() {
+            // filteredData ahora afecta a TODO el dashboard excepto Leaderboard y Combinaciones
             filteredData = rawData.filter(d => {
                 let matchSym = true;
+                
                 if (activePortfolioConfig && activePortfolioConfig.symbols.length > 0) {
                     matchSym = activePortfolioConfig.symbols.includes(d.Symbol);
                 } else {
                     matchSym = (activeFilters.symbols.length === 0) ? true : activeFilters.symbols.includes(d.Symbol);
                 }
+
                 let matchYear = (activeFilters.years.length === 0) ? true : (d.Year ? activeFilters.years.includes(d.Year.toString()) : false);
                 let matchMonth = (activeFilters.months.length === 0) ? true : (d.Month ? activeFilters.months.includes(d.Month.toString()) : false);
                 let isNotZero = Math.abs(d.NetProfit || 0) >= 0.00001; 
+                
                 return matchSym && matchYear && matchMonth && isNotZero;
             });
-            updateKPIs(); updateChart(); updateSmartCalendar(); updateAnalyticsCharts(); updateLeaderboard(); 
+
+            updateKPIs();
+            updateChart();
+            updateSmartCalendar();
+            updateAnalyticsCharts(); 
+            
+            // Estas secciones usan SIEMPRE rawData (No son afectadas por filtros)
+            updateLeaderboard(); 
         }
 
+        // ==========================================
+        // MOTOR ALGORÍTMICO DE PORTAFOLIOS (NUEVO)
+        // ==========================================
+        
+        // Helper: Calcula las estadísticas COMBINADAS (curva real) de un grupo de símbolos
         function calcCombinedStats(symbols) {
             if (!symbols || symbols.length === 0) return { prof: 0, maxDD: 0, rec: 0, wr: 0, trades: 0, maxLossStreak: 0 };
+            
+            // Filtrar y ordenar cronológicamente
             let trades = rawData.filter(d => symbols.includes(d.Symbol)).sort((a,b) => a.Time - b.Time);
-            let balance = 0, peak = 0, maxDD = 0, wins = 0, currentLossStreak = 0, maxLossStreak = 0;
+            
+            let balance = 0;
+            let peak = 0;
+            let maxDD = 0;
+            let wins = 0;
+            let currentLossStreak = 0;
+            let maxLossStreak = 0;
+
             trades.forEach(t => {
                 let p = t.NetProfit || 0;
                 balance += p;
-                if (balance > peak) peak = balance;
-                else { let dd = peak - balance; if (dd > maxDD) maxDD = dd; }
-                if (p > 0) { wins++; currentLossStreak = 0; }
-                else if (p < 0) { currentLossStreak++; if (currentLossStreak > maxLossStreak) maxLossStreak = currentLossStreak; }
+                
+                if (balance > peak) {
+                    peak = balance;
+                } else {
+                    let dd = peak - balance;
+                    if (dd > maxDD) maxDD = dd;
+                }
+                
+                if (p > 0) {
+                    wins++;
+                    currentLossStreak = 0;
+                } else if (p < 0) {
+                    currentLossStreak++;
+                    if (currentLossStreak > maxLossStreak) maxLossStreak = currentLossStreak;
+                }
             });
+
             let prof = balance;
             let rec = maxDD > 0 ? prof / maxDD : (prof > 0 ? 999 : 0);
             let wr = trades.length > 0 ? (wins / trades.length) * 100 : 0;
+
             return { prof, maxDD, rec, wr, trades: trades.length, maxLossStreak };
         }
 
         function analyzePortfolios() {
             let allSymbolsInSystem = [...new Set(rawData.map(d => d.Symbol).filter(Boolean))];
             let posSymbols = [];
+            
+            // 1. Descartar pares que pierden dinero individualmente (nunca ayudan a largo plazo)
             allSymbolsInSystem.forEach(sym => {
                 let stats = calcCombinedStats([sym]);
-                if (stats.prof > 0) posSymbols.push({ sym, ...stats });
+                if (stats.prof > 0) {
+                    posSymbols.push({ sym, ...stats });
+                }
             });
+
             const container = document.getElementById('portfoliosContainer');
+
             if (posSymbols.length === 0) {
                 container.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">No hay suficientes datos positivos para buscar combinaciones.</div>';
                 return;
             }
+
             let portfolios = [];
             let seenHashes = new Set();
+
+            // 2. Búsqueda iterativa (Greedy) enfocada en armar bloques de bajo DD
             posSymbols.forEach(startSym => {
                 let currentCombo = [startSym.sym];
                 let currentStats = calcCombinedStats(currentCombo);
                 let available = posSymbols.filter(s => s.sym !== startSym.sym);
-                let tempCombo = [...currentCombo], tempStats = currentStats, avail = [...available];
+
+                let tempCombo = [...currentCombo];
+                let tempStats = currentStats;
+                let avail = [...available];
 
                 while(avail.length > 0) {
-                    let bestNextSym = null, bestNextStats = null, bestScore = -Infinity; 
+                    let bestNextSym = null;
+                    let bestNextStats = null;
+                    let bestScore = -Infinity; 
+
                     avail.forEach(cand => {
                         let testCombo = [...tempCombo, cand.sym];
                         let testStats = calcCombinedStats(testCombo);
+                        
+                        // Queremos que gane más, pero penalizando severamente si aumenta mucho el DD
+                        // Validamos que sea una combinación razonable:
                         if (testStats.rec > tempStats.rec || (testStats.prof > tempStats.prof && testStats.maxDD <= tempStats.maxDD * 1.05)) {
-                            if (testStats.prof > bestScore) { bestScore = testStats.prof; bestNextStats = testStats; bestNextSym = cand.sym; }
+                            // De los que cumplen, nos quedamos con el que aporte mayor Ganancia Neta
+                            if (testStats.prof > bestScore) {
+                                bestScore = testStats.prof;
+                                bestNextStats = testStats;
+                                bestNextSym = cand.sym;
+                            }
                         }
                     });
+
                     if (bestNextSym) {
-                        tempCombo.push(bestNextSym); tempStats = bestNextStats;
+                        tempCombo.push(bestNextSym);
+                        tempStats = bestNextStats;
+                        
                         let hash = [...tempCombo].sort().join(',');
-                        if(!seenHashes.has(hash)) { seenHashes.add(hash); portfolios.push({ symbols: [...tempCombo], stats: tempStats }); }
+                        if(!seenHashes.has(hash)) {
+                            seenHashes.add(hash);
+                            portfolios.push({ symbols: [...tempCombo], stats: tempStats });
+                        }
                         avail = avail.filter(s => s.sym !== bestNextSym);
-                    } else break;
+                    } else {
+                        break;
+                    }
                 }
             });
-            if(portfolios.length === 0) posSymbols.forEach(s => portfolios.push({symbols: [s.sym], stats: calcCombinedStats([s.sym])}));
+
+            // Si por alguna razón no se cruzaron, agregamos las individuales como base
+            if(portfolios.length === 0) {
+                posSymbols.forEach(s => portfolios.push({symbols: [s.sym], stats: calcCombinedStats([s.sym])}));
+            }
+
+            // 3. Ordenar todo del que MÁS gana al que MENOS gana estricto
             portfolios.sort((a,b) => b.stats.prof - a.stats.prof);
+
+            // 4. Mostrar solo el Top 5 para no saturar información
             let topPortfolios = portfolios.slice(0, 5);
+
             if (topPortfolios.length === 0) {
                 container.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">Aún no hay pares suficientes para combinar.</div>';
                 return;
             }
+
             let html = '';
             topPortfolios.forEach((p, index) => {
                 let rank = index + 1;
+                
                 let safeSymbolsArr = JSON.stringify(p.symbols).replace(/"/g, "'");
+
                 let formattedDD = p.stats.maxDD > 0 ? `-$${fmtMoney(p.stats.maxDD, 0).replace('$', '')}` : '$0';
+                
                 let icon = rank === 1 ? '🏆' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : '🏅'));
                 let colorClass = rank === 1 ? 'text-yellow-400' : (rank === 2 ? 'text-gray-300' : (rank === 3 ? 'text-orange-400' : 'text-blue-400'));
+
+                // Calcular pares descartados
                 let discardedSyms = allSymbolsInSystem.filter(s => !p.symbols.includes(s));
+                
+                // Generar texto para el Tooltip
                 let tooltipText = `PARES UTILIZADOS (${p.symbols.length}):\n${p.symbols.join(', ')}\n\nPARES DESCARTADOS (${discardedSyms.length}):\n${discardedSyms.length > 0 ? discardedSyms.join(', ') : 'Ninguno'}`;
 
                 html += `
                     <div onclick="applyPortfolioFilter('Top ${rank}', ${safeSymbolsArr})" title="${tooltipText}" class="bg-gray-700/30 hover:bg-gray-700 cursor-pointer p-3 rounded-lg border border-gray-600 transition-colors group relative shadow-sm">
+                        
                         <div class="flex justify-between items-center mb-1">
-                            <span class="text-sm font-bold ${colorClass} flex items-center gap-1">${icon} Top ${rank}</span>
+                            <span class="text-sm font-bold ${colorClass} flex items-center gap-1">
+                                ${icon} Top ${rank}
+                            </span>
                             <span class="text-sm font-mono font-bold text-green-400">${fmtMoney(p.stats.prof, 0)}</span>
                         </div>
+                        
                         <div class="flex justify-between gap-2 text-[10px] uppercase tracking-wide mb-2 mt-2 bg-gray-900/50 p-1.5 rounded border border-gray-700/50">
                             <span class="flex flex-col text-gray-500">DD Comb: <b class="text-red-400 font-mono tracking-normal text-[11px] mt-0.5">${formattedDD}</b></span>
                             <span class="flex flex-col text-gray-500 border-l border-gray-700 pl-2">Pérd. Seguidas: <b class="text-orange-400 font-mono tracking-normal text-[11px] mt-0.5">${p.stats.maxLossStreak}</b></span>
                             <span class="flex flex-col text-gray-500 border-l border-gray-700 pl-2">Win Rate: <b class="text-blue-400 font-mono tracking-normal text-[11px] mt-0.5">${p.stats.wr.toFixed(1)}%</b></span>
                         </div>
+                        
                         <div class="flex justify-between items-center border-t border-gray-600/50 pt-2 mt-1">
                             <div class="flex items-center gap-2">
                                 <span class="text-[10px] font-bold text-blue-400 bg-blue-900/30 px-2 py-0.5 rounded">${p.symbols.length} Pares Activos</span>
@@ -1477,51 +1377,102 @@
                             </div>
                             <span class="text-[10px] text-gray-500 italic underline decoration-dotted hidden md:inline">Ver Detalles</span>
                         </div>
-                    </div>`;
+                    </div>
+                `;
             });
+
             container.innerHTML = html;
         }
 
+        // ==========================================
+        // CÁLCULO DE MÉTRICAS GLOBALES
+        // ==========================================
         function calculateMetrics(dataArr) {
-            let totalProfit = 0, grossProfit = 0, grossLoss = 0;
-            let winningTrades = 0, losingTrades = 0;
-            let currentWinStreak = 0, currentLossStreak = 0, maxWinStreak = 0, maxLossStreak = 0;
-            let cumulative = 0, peak = 0, winStreaks = [], lossStreaks = [];
-            let currentConsecutiveLoss = 0, maxConsecutiveLoss = 0, balanceAtStreakStart = 0;
-            let maxConsDrawdownPct = 0, maxConsDate = null;
-            let maxSingleLoss = 0, maxSingleLossPct = 0, maxSingleDate = null;
+            let totalProfit = 0; let grossProfit = 0; let grossLoss = 0;
+            let winningTrades = 0; let losingTrades = 0;
+            let currentWinStreak = 0; let currentLossStreak = 0;
+            let maxWinStreak = 0; let maxLossStreak = 0;
+            let cumulative = 0; let peak = 0;
+
+            let winStreaks = [];
+            let lossStreaks = [];
+
+            let currentConsecutiveLoss = 0;
+            let maxConsecutiveLoss = 0;
+            let balanceAtStreakStart = 0;
+            let maxConsDrawdownPct = 0;
+            let maxConsDate = null;
+            
+            let maxSingleLoss = 0; 
+            let maxSingleLossPct = 0;
+            let maxSingleDate = null;
+
             let dayProfits = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
             let dayCounts = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
-            let totalTrades = dataArr.length;
-            let minDate = new Date(8640000000000000), maxDate = new Date(-8640000000000000);
 
+            let totalTrades = dataArr.length;
+            
+            let minDate = new Date(8640000000000000);
+            let maxDate = new Date(-8640000000000000);
+
+            // CALCULAR MAX TRADES SIMULTÁNEOS (Con salvavidas de fechas)
             let simEvents = [];
             dataArr.forEach(d => {
-                if (d.EntryTime && typeof d.EntryTime.getTime === 'function') simEvents.push({ time: d.EntryTime.getTime(), type: 1 });
-                else if (d.Time && typeof d.Time.getTime === 'function') simEvents.push({ time: d.Time.getTime(), type: 1 });
-                if (d.Time && typeof d.Time.getTime === 'function') simEvents.push({ time: d.Time.getTime(), type: -1 });
+                if (d.EntryTime && typeof d.EntryTime.getTime === 'function') {
+                    simEvents.push({ time: d.EntryTime.getTime(), type: 1 });
+                } else if (d.Time && typeof d.Time.getTime === 'function') {
+                    simEvents.push({ time: d.Time.getTime(), type: 1 });
+                }
+                
+                if (d.Time && typeof d.Time.getTime === 'function') {
+                    simEvents.push({ time: d.Time.getTime(), type: -1 });
+                }
             });
+            // Si el tiempo es exacto, procesamos apertura antes que cierre
             simEvents.sort((a, b) => a.time === b.time ? b.type - a.type : a.time - b.time);
-            let currentSimultaneous = 0, maxSimultaneous = 0;
-            simEvents.forEach(e => { currentSimultaneous += e.type; if(currentSimultaneous > maxSimultaneous) maxSimultaneous = currentSimultaneous; });
+            
+            let currentSimultaneous = 0;
+            let maxSimultaneous = 0;
+            simEvents.forEach(e => {
+                currentSimultaneous += e.type;
+                if(currentSimultaneous > maxSimultaneous) maxSimultaneous = currentSimultaneous;
+            });
 
+            // MÉTRICAS PRINCIPALES
             dataArr.forEach(d => {
                 if (d.Time && d.Time < minDate) minDate = d.Time;
                 if (d.Time && d.Time > maxDate) maxDate = d.Time;
 
                 totalProfit += d.NetProfit || 0;
                 cumulative += d.NetProfit || 0;
+
                 if (cumulative > peak) peak = cumulative;
 
-                if (d.DayOfWeek !== undefined) { dayProfits[d.DayOfWeek] += d.NetProfit || 0; dayCounts[d.DayOfWeek]++; }
+                if (d.DayOfWeek !== undefined) {
+                    dayProfits[d.DayOfWeek] += d.NetProfit || 0;
+                    dayCounts[d.DayOfWeek]++;
+                }
 
                 if (d.NetProfit > 0) {
-                    if (currentLossStreak > 0) { lossStreaks.push(currentLossStreak); currentLossStreak = 0; }
-                    winningTrades++; grossProfit += d.NetProfit; currentWinStreak++; currentConsecutiveLoss = 0; 
+                    if (currentLossStreak > 0) {
+                        lossStreaks.push(currentLossStreak);
+                        currentLossStreak = 0;
+                    }
+
+                    winningTrades++;
+                    grossProfit += d.NetProfit; 
+                    currentWinStreak++;
+                    currentConsecutiveLoss = 0; 
                     if(currentWinStreak > maxWinStreak) maxWinStreak = currentWinStreak;
                 } else if (d.NetProfit < 0) {
-                    if (currentWinStreak > 0) { winStreaks.push(currentWinStreak); currentWinStreak = 0; }
-                    losingTrades++; grossLoss += d.NetProfit;
+                    if (currentWinStreak > 0) {
+                        winStreaks.push(currentWinStreak);
+                        currentWinStreak = 0;
+                    }
+
+                    losingTrades++;
+                    grossLoss += d.NetProfit;
+                    
                     if (d.NetProfit < maxSingleLoss) {
                         maxSingleLoss = d.NetProfit;
                         let currentBalance = d.BalanceAfter !== undefined ? d.BalanceAfter : (10000 + cumulative);
@@ -1529,9 +1480,17 @@
                         maxSingleLossPct = balanceBefore > 0 ? (d.NetProfit / balanceBefore) * 100 : 0;
                         maxSingleDate = d.Time;
                     }
-                    if (currentLossStreak === 0) balanceAtStreakStart = d.BalanceAfter !== undefined ? (d.BalanceAfter - d.NetProfit) : (10000 + cumulative - d.NetProfit);
-                    currentLossStreak++; currentWinStreak = 0; currentConsecutiveLoss += Math.abs(d.NetProfit);
+                    
+                    if (currentLossStreak === 0) {
+                        balanceAtStreakStart = d.BalanceAfter !== undefined ? (d.BalanceAfter - d.NetProfit) : (10000 + cumulative - d.NetProfit);
+                    }
+
+                    currentLossStreak++;
+                    currentWinStreak = 0;
+                    currentConsecutiveLoss += Math.abs(d.NetProfit);
+                    
                     if(currentLossStreak > maxLossStreak) maxLossStreak = currentLossStreak;
+
                     if(currentConsecutiveLoss > maxConsecutiveLoss) {
                         maxConsecutiveLoss = currentConsecutiveLoss;
                         let baseCapital = balanceAtStreakStart > 0 ? balanceAtStreakStart : 10000;
@@ -1546,6 +1505,7 @@
 
             const avgWinStreak = winStreaks.length > 0 ? winStreaks.reduce((a, b) => a + b, 0) / winStreaks.length : 0;
             const avgLossStreak = lossStreaks.length > 0 ? lossStreaks.reduce((a, b) => a + b, 0) / lossStreaks.length : 0;
+
             const winRate = totalTrades > 0 ? (winningTrades / totalTrades) * 100 : 0;
             const avgTrade = totalTrades > 0 ? totalProfit / totalTrades : 0;
             const absoluteGrossLoss = Math.abs(grossLoss);
@@ -1554,12 +1514,22 @@
             const avgLoss = losingTrades > 0 ? absoluteGrossLoss / losingTrades : 0;
             const riskReward = avgLoss > 0 ? (avgWin / avgLoss) : (avgWin > 0 ? 99.99 : 0);
 
+            // =====================================================
+            // CÁLCULO DE INTERÉS COMPUESTO (1% Riesgo Real Unificado)
+            // =====================================================
+            
+            // PASO 1: Calcular la pérdida promedio (1R) de forma INDIVIDUAL por cada Símbolo/Archivo
             let symbolStats = {};
             dataArr.forEach(d => {
                 let sym = d.Symbol || 'Estrategia';
                 if(!symbolStats[sym]) symbolStats[sym] = { lossSum: 0, lossCount: 0, winSum: 0, winCount: 0 };
-                if(d.NetProfit < 0) { symbolStats[sym].lossSum += Math.abs(d.NetProfit); symbolStats[sym].lossCount++; } 
-                else if (d.NetProfit > 0) { symbolStats[sym].winSum += d.NetProfit; symbolStats[sym].winCount++; }
+                if(d.NetProfit < 0) {
+                    symbolStats[sym].lossSum += Math.abs(d.NetProfit);
+                    symbolStats[sym].lossCount++;
+                } else if (d.NetProfit > 0) {
+                    symbolStats[sym].winSum += d.NetProfit;
+                    symbolStats[sym].winCount++;
+                }
             });
 
             Object.keys(symbolStats).forEach(sym => {
@@ -1569,16 +1539,38 @@
                 st.oneR = avgL > 0 ? avgL : (avgW > 0 ? avgW : 1); 
             });
 
+            // Aseguramos orden estrictamente cronológico absoluto
             let sortedDataForComp = [...dataArr].sort((a, b) => a.Time - b.Time);
+
+            // PASO 2: Simulación Cronológica Dinámica en 1 sola cuenta de 10k
             let compBalance = 10000; 
             compChartDataObj = []; 
-            let compPeak = 10000, compPeakDate = sortedDataForComp.length > 0 ? sortedDataForComp[0].Time : null;
-            let maxCompDDMoney = 0, maxCompDDPct = 0, maxCompDDStartDate = null, maxCompDDEndDate = null;
-            let compDailyDDs = {}, prevDateStr = null, currentDayPeak = 10000, prevCompBalance = 10000;
             
-            let realBalance = 10000, realPeak = 10000, realPeakDate = sortedDataForComp.length > 0 ? sortedDataForComp[0].Time : null;
-            let maxRealDDMoney = 0, maxRealDDPct = 0, maxRealDDStartDate = null, maxRealDDEndDate = null;
-            let realDailyDDs = {}, prevRealDateStr = null, currentRealDayPeak = 10000, prevRealBalance = 10000;
+            let compPeak = 10000;
+            let compPeakDate = sortedDataForComp.length > 0 ? sortedDataForComp[0].Time : null;
+            let maxCompDDMoney = 0;
+            let maxCompDDPct = 0;
+            let maxCompDDStartDate = null;
+            let maxCompDDEndDate = null;
+            
+            let compDailyDDs = {};
+            let prevDateStr = null;
+            let currentDayPeak = 10000;
+            let prevCompBalance = 10000;
+
+            // Variables para Drawdowns de Capital Real
+            let realBalance = 10000;
+            let realPeak = 10000;
+            let realPeakDate = sortedDataForComp.length > 0 ? sortedDataForComp[0].Time : null;
+            let maxRealDDMoney = 0;
+            let maxRealDDPct = 0;
+            let maxRealDDStartDate = null;
+            let maxRealDDEndDate = null;
+            
+            let realDailyDDs = {};
+            let prevRealDateStr = null;
+            let currentRealDayPeak = 10000;
+            let prevRealBalance = 10000;
 
             sortedDataForComp.forEach(d => {
                 let dateStr = d.DateOnly;
@@ -1587,63 +1579,142 @@
                     dateStr = isNaN(timeVal.getTime()) ? '1970-01-01' : timeVal.toISOString().split('T')[0];
                 }
 
+                // ========================================================
+                // --- CÁLCULO DE DRAWDOWNS PARA EL CAPITAL REAL (NORMAL) ---
+                // ========================================================
                 realBalance += (d.NetProfit || 0);
-                if (realBalance > realPeak) { realPeak = realBalance; realPeakDate = d.Time; } 
-                else {
+
+                if (realBalance > realPeak) {
+                    realPeak = realBalance;
+                    realPeakDate = d.Time;
+                } else {
                     let currentRealDDMoney = realPeak - realBalance;
                     let currentRealDDPct = (currentRealDDMoney / realPeak) * 100;
-                    if (currentRealDDPct > maxRealDDPct) { maxRealDDMoney = currentRealDDMoney; maxRealDDPct = currentRealDDPct; maxRealDDStartDate = realPeakDate; maxRealDDEndDate = d.Time; }
+                    if (currentRealDDPct > maxRealDDPct) {
+                        maxRealDDMoney = currentRealDDMoney;
+                        maxRealDDPct = currentRealDDPct;
+                        maxRealDDStartDate = realPeakDate;
+                        maxRealDDEndDate = d.Time;
+                    }
                 }
 
-                if (dateStr !== prevRealDateStr) { currentRealDayPeak = prevRealBalance; if (!realDailyDDs[dateStr]) realDailyDDs[dateStr] = { maxPct: 0, maxMoney: 0 }; prevRealDateStr = dateStr; }
-                if (realBalance > currentRealDayPeak) currentRealDayPeak = realBalance;
+                if (dateStr !== prevRealDateStr) {
+                    currentRealDayPeak = prevRealBalance;
+                    if (!realDailyDDs[dateStr]) realDailyDDs[dateStr] = { maxPct: 0, maxMoney: 0 };
+                    prevRealDateStr = dateStr;
+                }
+
+                if (realBalance > currentRealDayPeak) {
+                    currentRealDayPeak = realBalance;
+                }
 
                 let currentRealDailyDDMoney = currentRealDayPeak - realBalance;
                 let currentRealDailyDDPct = currentRealDayPeak > 0 ? (currentRealDailyDDMoney / currentRealDayPeak) * 100 : 0;
-                if (currentRealDailyDDPct > realDailyDDs[dateStr].maxPct) { realDailyDDs[dateStr].maxPct = currentRealDailyDDPct; realDailyDDs[dateStr].maxMoney = currentRealDailyDDMoney; }
+
+                if (currentRealDailyDDPct > realDailyDDs[dateStr].maxPct) {
+                    realDailyDDs[dateStr].maxPct = currentRealDailyDDPct;
+                    realDailyDDs[dateStr].maxMoney = currentRealDailyDDMoney;
+                }
+
                 prevRealBalance = realBalance;
 
+
+                // ========================================================
+                // --- CÁLCULO DE DRAWDOWNS PARA LA PROYECCIÓN COMPUESTA ---
+                // ========================================================
                 let sym = d.Symbol || 'Estrategia';
                 let oneR = symbolStats[sym].oneR;
+                
                 let R = d.NetProfit / oneR;
-                if(R > 100) R = 100; if(R < -100) R = -100;
+                if(R > 100) R = 100; 
+                if(R < -100) R = -100;
 
                 compBalance *= (1 + (R * 0.01));
-                if (compBalance < 0) compBalance = 0; if (isNaN(compBalance)) compBalance = 10000; compBalance = Math.min(compBalance, 1000000000000); 
+                
+                if (compBalance < 0) compBalance = 0; 
+                if (isNaN(compBalance)) compBalance = 10000; 
+                compBalance = Math.min(compBalance, 1000000000000); 
 
-                if (compBalance > compPeak) { compPeak = compBalance; compPeakDate = d.Time; } 
-                else {
+                if (compBalance > compPeak) {
+                    compPeak = compBalance;
+                    compPeakDate = d.Time;
+                } else {
                     let currentDDMoney = compPeak - compBalance;
                     let currentDDPct = (currentDDMoney / compPeak) * 100;
-                    if (currentDDPct > maxCompDDPct) { maxCompDDMoney = currentDDMoney; maxCompDDPct = currentDDPct; maxCompDDStartDate = compPeakDate; maxCompDDEndDate = d.Time; }
+                    if (currentDDPct > maxCompDDPct) {
+                        maxCompDDMoney = currentDDMoney;
+                        maxCompDDPct = currentDDPct;
+                        maxCompDDStartDate = compPeakDate;
+                        maxCompDDEndDate = d.Time;
+                    }
                 }
                 
-                if (dateStr !== prevDateStr) { currentDayPeak = prevCompBalance; if (!compDailyDDs[dateStr]) compDailyDDs[dateStr] = { maxPct: 0, maxMoney: 0 }; prevDateStr = dateStr; }
-                if (compBalance > currentDayPeak) currentDayPeak = compBalance;
+                if (dateStr !== prevDateStr) {
+                    currentDayPeak = prevCompBalance; 
+                    if (!compDailyDDs[dateStr]) compDailyDDs[dateStr] = { maxPct: 0, maxMoney: 0 };
+                    prevDateStr = dateStr;
+                }
+
+                if (compBalance > currentDayPeak) {
+                    currentDayPeak = compBalance;
+                }
 
                 let currentDailyDDMoney = currentDayPeak - compBalance;
                 let currentDailyDDPct = currentDayPeak > 0 ? (currentDailyDDMoney / currentDayPeak) * 100 : 0;
-                if (currentDailyDDPct > compDailyDDs[dateStr].maxPct) { compDailyDDs[dateStr].maxPct = currentDailyDDPct; compDailyDDs[dateStr].maxMoney = currentDailyDDMoney; }
+
+                if (currentDailyDDPct > compDailyDDs[dateStr].maxPct) {
+                    compDailyDDs[dateStr].maxPct = currentDailyDDPct;
+                    compDailyDDs[dateStr].maxMoney = currentDailyDDMoney;
+                }
+
                 prevCompBalance = compBalance;
                 
                 compChartDataObj.push({ time: d.Time, balance: compBalance });
             });
             
-            let maxRealDailyDDPct = 0, maxRealDailyDDMoney = 0, sumRealDailyDDPct = 0, sumRealDailyDDMoney = 0, realTradingDaysCount = 0, maxRealDailyDDDate = null;
+            // Estadísticas diarias de DD Real
+            let maxRealDailyDDPct = 0;
+            let maxRealDailyDDMoney = 0;
+            let sumRealDailyDDPct = 0;
+            let sumRealDailyDDMoney = 0;
+            let realTradingDaysCount = 0;
+            let maxRealDailyDDDate = null;
+
             for (let date in realDailyDDs) {
                 let dayStats = realDailyDDs[date];
-                if (dayStats.maxPct > maxRealDailyDDPct) { maxRealDailyDDPct = dayStats.maxPct; maxRealDailyDDMoney = dayStats.maxMoney; maxRealDailyDDDate = date; }
-                sumRealDailyDDPct += dayStats.maxPct; sumRealDailyDDMoney += dayStats.maxMoney; realTradingDaysCount++;
+                if (dayStats.maxPct > maxRealDailyDDPct) {
+                    maxRealDailyDDPct = dayStats.maxPct;
+                    maxRealDailyDDMoney = dayStats.maxMoney;
+                    maxRealDailyDDDate = date;
+                }
+                sumRealDailyDDPct += dayStats.maxPct;
+                sumRealDailyDDMoney += dayStats.maxMoney;
+                realTradingDaysCount++;
             }
+
             let avgRealDailyDDPct = realTradingDaysCount > 0 ? (sumRealDailyDDPct / realTradingDaysCount) : 0;
             let avgRealDailyDDMoney = realTradingDaysCount > 0 ? (sumRealDailyDDMoney / realTradingDaysCount) : 0;
 
-            let maxCompDailyDDPct = 0, maxCompDailyDDMoney = 0, sumCompDailyDDPct = 0, sumCompDailyDDMoney = 0, tradingDaysCount = 0, maxCompDailyDDDate = null;
+            // Estadísticas diarias de DD Compuesto
+            let maxCompDailyDDPct = 0;
+            let maxCompDailyDDMoney = 0;
+            let sumCompDailyDDPct = 0;
+            let sumCompDailyDDMoney = 0;
+            let tradingDaysCount = 0;
+            let maxCompDailyDDDate = null;
+
             for (let date in compDailyDDs) {
                 let dayStats = compDailyDDs[date];
-                if (dayStats.maxPct > maxCompDailyDDPct) { maxCompDailyDDPct = dayStats.maxPct; maxCompDailyDDMoney = dayStats.maxMoney; maxCompDailyDDDate = date; }
-                sumCompDailyDDPct += dayStats.maxPct; sumCompDailyDDMoney += dayStats.maxMoney; tradingDaysCount++;
+                if (dayStats.maxPct > maxCompDailyDDPct) {
+                    maxCompDailyDDPct = dayStats.maxPct;
+                    maxCompDailyDDMoney = dayStats.maxMoney;
+                    maxCompDailyDDDate = date;
+                }
+                sumCompDailyDDPct += dayStats.maxPct;
+                sumCompDailyDDMoney += dayStats.maxMoney;
+                tradingDaysCount++;
             }
+
             let avgCompDailyDDPct = tradingDaysCount > 0 ? (sumCompDailyDDPct / tradingDaysCount) : 0;
             let avgCompDailyDDMoney = tradingDaysCount > 0 ? (sumCompDailyDDMoney / tradingDaysCount) : 0;
 
@@ -1651,10 +1722,16 @@
             const compReturnPct = ((finalCompBalance - 10000) / 10000) * 100;
 
             let monthsSpan = 1;
-            if(totalTrades > 0 && maxDate > minDate) { monthsSpan = (maxDate.getFullYear() - minDate.getFullYear()) * 12 + (maxDate.getMonth() - minDate.getMonth()) + 1; if(monthsSpan <= 0) monthsSpan = 1; }
+            if(totalTrades > 0 && maxDate > minDate) {
+                monthsSpan = (maxDate.getFullYear() - minDate.getFullYear()) * 12 + (maxDate.getMonth() - minDate.getMonth()) + 1;
+                if(monthsSpan <= 0) monthsSpan = 1;
+            }
             const tradesPerMonth = totalTrades > 0 ? (totalTrades / monthsSpan) : 0;
 
-            let maxDayProf = -Infinity, minDayProf = Infinity, bestDayIndex = 0, worstDayIndex = 0, hasDataDay = false;
+            let maxDayProf = -Infinity; let minDayProf = Infinity;
+            let bestDayIndex = 0; let worstDayIndex = 0;
+            let hasDataDay = false;
+            
             for(let i=0; i<=6; i++) {
                 if(dayCounts[i] > 0) {
                     if(dayProfits[i] > maxDayProf) { maxDayProf = dayProfits[i]; bestDayIndex = i; }
@@ -1664,17 +1741,22 @@
             }
 
             return {
-                totalProfit, grossProfit, grossLoss, absoluteGrossLoss, totalTrades, winningTrades, losingTrades, winRate, avgTrade, tradesPerMonth,
+                totalProfit, grossProfit, grossLoss, absoluteGrossLoss,
+                totalTrades, winningTrades, losingTrades, winRate, avgTrade, tradesPerMonth,
                 profitFactor, riskReward, maxConsDrawdownPct, maxConsecutiveLoss, maxConsDate, maxSingleLoss, maxSingleLossPct, maxSingleDate, 
-                maxWinStreak, maxLossStreak, avgWinStreak, avgLossStreak, bestDayIndex, worstDayIndex, hasDataDay,
+                maxWinStreak, maxLossStreak, avgWinStreak, avgLossStreak,
+                bestDayIndex, worstDayIndex, hasDataDay,
                 maxSimultaneous, finalCompBalance, compReturnPct,
-                maxRealDDMoney, maxRealDDPct, maxRealDDStartDate, maxRealDDEndDate, maxRealDailyDDPct, maxRealDailyDDMoney, maxRealDailyDDDate, avgRealDailyDDPct, avgRealDailyDDMoney,
-                maxCompDDMoney, maxCompDDPct, maxCompDDStartDate, maxCompDDEndDate, maxCompDailyDDPct, maxCompDailyDDMoney, maxCompDailyDDDate, avgCompDailyDDPct, avgCompDailyDDMoney
+                maxRealDDMoney, maxRealDDPct, maxRealDDStartDate, maxRealDDEndDate,
+                maxRealDailyDDPct, maxRealDailyDDMoney, maxRealDailyDDDate, avgRealDailyDDPct, avgRealDailyDDMoney,
+                maxCompDDMoney, maxCompDDPct, maxCompDDStartDate, maxCompDDEndDate,
+                maxCompDailyDDPct, maxCompDailyDDMoney, maxCompDailyDDDate, avgCompDailyDDPct, avgCompDailyDDMoney
             };
         }
 
         function updateLeaderboard() {
             const container = document.getElementById('leaderboardContainer');
+            
             let pairData = {};
             rawData.forEach(d => {
                 if(!d.Symbol) return;
@@ -1685,22 +1767,38 @@
 
             let sortedPairs = Object.keys(pairData).sort((a,b) => pairData[b].profit - pairData[a].profit);
             container.innerHTML = '';
-            if (sortedPairs.length === 0) { container.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">Sin operaciones</div>'; return; }
+            
+            if (sortedPairs.length === 0) {
+                container.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">Sin operaciones</div>';
+                return;
+            }
 
             let html = '';
             sortedPairs.forEach((p, index) => {
-                let prof = pairData[p].profit; let count = pairData[p].count; let colorClass = prof >= 0 ? 'text-green-400' : 'text-red-400';
-                let bgClass = index % 2 === 0 ? 'bg-gray-700/30' : 'bg-transparent'; let prefix = prof > 0 ? '+' : '';
-                html += `<div class="flex justify-between items-center text-sm p-3 rounded hover:bg-gray-700 transition-colors ${bgClass}">
-                        <div class="flex items-center gap-2 truncate pr-2"><span class="text-xs font-bold text-gray-500 w-5 shrink-0">${index + 1}.</span><span class="font-semibold text-gray-200 truncate text-sm" title="${p}">${p}</span><span class="text-[11px] text-gray-400 shrink-0 ml-1">${count}</span></div>
+                let prof = pairData[p].profit;
+                let count = pairData[p].count;
+                let colorClass = prof >= 0 ? 'text-green-400' : 'text-red-400';
+                let bgClass = index % 2 === 0 ? 'bg-gray-700/30' : 'bg-transparent';
+                let prefix = prof > 0 ? '+' : '';
+                
+                html += `
+                    <div class="flex justify-between items-center text-sm p-3 rounded hover:bg-gray-700 transition-colors ${bgClass}">
+                        <div class="flex items-center gap-2 truncate pr-2">
+                            <span class="text-xs font-bold text-gray-500 w-5 shrink-0">${index + 1}.</span>
+                            <span class="font-semibold text-gray-200 truncate text-sm" title="${p}">${p}</span>
+                            <span class="text-[11px] text-gray-400 shrink-0 ml-1">${count}</span>
+                        </div>
                         <span class="font-bold font-mono text-sm ${colorClass} shrink-0">${prefix}${fmtMoney(prof, 2)}</span>
-                    </div>`;
+                    </div>
+                `;
             });
+            
             container.innerHTML = html;
         }
 
         function updateKPIs() {
             const metrics = calculateMetrics(filteredData);
+
             document.getElementById('kpiTotalProfit').innerText = fmtMoney(metrics.totalProfit);
             document.getElementById('kpiTotalProfit').className = `text-2xl lg:text-3xl font-bold mt-1 ${metrics.totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}`;
             document.getElementById('kpiGrossProfit').lastElementChild.innerText = fmtMoney(metrics.grossProfit);
@@ -1733,6 +1831,7 @@
             kpiLinearPctEl.innerText = (linearReturnPct > 0 ? '+' : '') + linearReturnPct.toFixed(2) + '%';
             kpiLinearPctEl.className = `text-xs font-semibold block ${linearReturnPct >= 0 ? 'text-blue-400' : 'text-red-400'}`;
 
+            // Drawdowns Reales
             let realDDContainer = document.getElementById('realDDContainer');
             if (metrics.maxRealDDPct > 0) {
                 realDDContainer.classList.remove('hidden');
@@ -1744,7 +1843,9 @@
                 document.getElementById('realDDDailyDiv').title = `Día: ${metrics.maxRealDailyDDDate}`;
                 document.getElementById('kpiRealAvgDailyDDPct').innerText = `-${metrics.avgRealDailyDDPct.toFixed(2)}%`;
                 document.getElementById('kpiRealAvgDailyDDMoney').innerText = `-${fmtMoney(metrics.avgRealDailyDDMoney)}`;
-            } else realDDContainer.classList.add('hidden');
+            } else {
+                realDDContainer.classList.add('hidden');
+            }
 
             let renderComp = isNaN(metrics.finalCompBalance) ? 10000 : metrics.finalCompBalance;
             let renderCompPct = isNaN(metrics.compReturnPct) ? 0 : metrics.compReturnPct;
@@ -1752,6 +1853,7 @@
             document.getElementById('kpiCompPct').innerText = (renderCompPct > 0 ? '+' : '') + renderCompPct.toFixed(2) + '%';
             document.getElementById('kpiCompPct').className = `text-xs font-semibold block ${renderCompPct >= 0 ? 'text-purple-400' : 'text-red-400'}`;
             
+            // Drawdowns Compuestos
             let compDDContainer = document.getElementById('compoundDDContainer');
             if (metrics.maxCompDDPct > 0) {
                 compDDContainer.classList.remove('hidden');
@@ -1763,45 +1865,105 @@
                 document.getElementById('compDDDailyDiv').title = `Día: ${metrics.maxCompDailyDDDate}`;
                 document.getElementById('kpiCompAvgDailyDDPct').innerText = `-${metrics.avgCompDailyDDPct.toFixed(2)}%`;
                 document.getElementById('kpiCompAvgDailyDDMoney').innerText = `-${fmtMoney(metrics.avgCompDailyDDMoney)}`;
-            } else compDDContainer.classList.add('hidden');
+            } else {
+                compDDContainer.classList.add('hidden');
+            }
         }
 
         function updateChart() {
             const ctxEq = document.getElementById('equityChart').getContext('2d');
             let cumulative = 0; let chartLabels = []; let chartData = [];
+
             filteredData.forEach(d => {
                 cumulative += d.NetProfit || 0;
                 let timeVal = d.Time instanceof Date ? d.Time : new Date(d.Time);
                 if(isNaN(timeVal.getTime())) timeVal = new Date();
-                chartLabels.push(timeVal); chartData.push(cumulative);
+                chartLabels.push(timeVal);
+                chartData.push(cumulative);
             });
+
             safeDestroy(equityChartInstance);
+
             equityChartInstance = new Chart(ctxEq, {
-                type: 'line', data: { labels: chartLabels, datasets: [{ label: 'Beneficio Lineal ($)', data: chartData, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderWidth: 2, fill: true, pointRadius: 0, pointHoverRadius: 5, tension: 0.4, cubicInterpolationMode: 'monotone' }] },
-                options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return 'Beneficio: ' + fmtMoney(context.parsed.y); } } } }, scales: { x: { type: 'time', time: { tooltipFormat: 'dd MMM yyyy, HH:mm' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } }, y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) } } } }
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Beneficio Lineal ($)', data: chartData,
+                        borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2, fill: true, pointRadius: 0, pointHoverRadius: 5,
+                        tension: 0.4, cubicInterpolationMode: 'monotone'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return 'Beneficio: ' + fmtMoney(context.parsed.y); } } } },
+                    scales: {
+                        x: { type: 'time', time: { tooltipFormat: 'dd MMM yyyy, HH:mm' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
+                        y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) } }
+                    }
+                }
             });
 
             const ctxComp = document.getElementById('compoundChart').getContext('2d');
-            let compLabels = compChartDataObj.map(d => { let timeVal = d.time instanceof Date ? d.time : new Date(d.time); return isNaN(timeVal.getTime()) ? new Date() : timeVal; });
+            let compLabels = compChartDataObj.map(d => {
+                let timeVal = d.time instanceof Date ? d.time : new Date(d.time);
+                return isNaN(timeVal.getTime()) ? new Date() : timeVal;
+            });
+            
             let compData = compChartDataObj.map(d => isNaN(d.balance) ? 0 : (d.balance - 10000));
+
             safeDestroy(compoundChartInstance);
+
             compoundChartInstance = new Chart(ctxComp, {
-                type: 'line', data: { labels: compLabels, datasets: [{ label: 'Beneficio Compuesto ($)', data: compData, borderColor: '#a855f7', backgroundColor: 'rgba(168, 85, 247, 0.1)', borderWidth: 2, fill: true, pointRadius: 0, pointHoverRadius: 5, tension: 0.4, cubicInterpolationMode: 'monotone' }] },
-                options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return 'Beneficio: ' + fmtMoney(context.parsed.y); } } } }, scales: { x: { type: 'time', time: { tooltipFormat: 'dd MMM yyyy, HH:mm' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } }, y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) } } } }
+                type: 'line',
+                data: {
+                    labels: compLabels,
+                    datasets: [{
+                        label: 'Beneficio Compuesto ($)', data: compData,
+                        borderColor: '#a855f7', backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                        borderWidth: 2, fill: true, pointRadius: 0, pointHoverRadius: 5,
+                        tension: 0.4, cubicInterpolationMode: 'monotone'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return 'Beneficio: ' + fmtMoney(context.parsed.y); } } } },
+                    scales: {
+                        x: { type: 'time', time: { tooltipFormat: 'dd MMM yyyy, HH:mm' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
+                        y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) } }
+                    }
+                }
             });
         }
 
         function updateAnalyticsCharts() {
-            let tHour = new Array(24).fill(0), pHourWin = new Array(24).fill(0), pHourLoss = new Array(24).fill(0);
-            let tDay = new Array(7).fill(0), pDayWin = new Array(7).fill(0), pDayLoss = new Array(7).fill(0);
-            let tMonth = new Array(12).fill(0), pMonthWin = new Array(12).fill(0), pMonthLoss = new Array(12).fill(0);
-            let scatterData = [], realTradesCount = 0, totalDur = 0, maxDur = 0, minDur = Infinity;
+            let tHour = new Array(24).fill(0); 
+            let pHourWin = new Array(24).fill(0);
+            let pHourLoss = new Array(24).fill(0);
+            
+            let tDay = new Array(7).fill(0);  
+            let pDayWin = new Array(7).fill(0);
+            let pDayLoss = new Array(7).fill(0);
+            
+            let tMonth = new Array(12).fill(0); 
+            let pMonthWin = new Array(12).fill(0);
+            let pMonthLoss = new Array(12).fill(0);
+            
+            let scatterData = [];
+            
+            let realTradesCount = 0;
+            let totalDur = 0; let maxDur = 0; let minDur = Infinity;
 
             filteredData.forEach(d => {
                 realTradesCount++;
+                
                 if (d.EntryHour !== undefined) tHour[d.EntryHour]++;  
                 if (d.DayOfWeek !== undefined) tDay[d.DayOfWeek]++;   
                 if (d.ExitMonth !== undefined) tMonth[d.ExitMonth]++; 
+                
                 if(d.NetProfit > 0) {
                     if (d.EntryHour !== undefined) pHourWin[d.EntryHour] += d.NetProfit;
                     if (d.DayOfWeek !== undefined) pDayWin[d.DayOfWeek] += d.NetProfit;
@@ -1811,30 +1973,82 @@
                     if (d.DayOfWeek !== undefined) pDayLoss[d.DayOfWeek] += Math.abs(d.NetProfit);
                     if (d.ExitMonth !== undefined) pMonthLoss[d.ExitMonth] += Math.abs(d.NetProfit);
                 }
+                
                 let dur = d.DurationHours;
                 if (dur === undefined || isNaN(dur) || !isFinite(dur)) dur = 0;
                 scatterData.push({ x: dur, y: d.NetProfit || 0 });
-                totalDur += dur; if(dur > maxDur) maxDur = dur; if(dur < minDur) minDur = dur;
+                
+                totalDur += dur;
+                if(dur > maxDur) maxDur = dur;
+                if(dur < minDur) minDur = dur;
             });
 
-            if(realTradesCount === 0) { minDur = 0; maxDur = 0; avgDur = 0; }
+            if(realTradesCount === 0) {
+                minDur = 0; maxDur = 0; avgDur = 0;
+            }
+            
             let avgDur = realTradesCount > 0 ? (totalDur / realTradesCount) : 0;
-            document.getElementById('statHoldMin').innerText = formatDurationText(minDur); document.getElementById('statHoldAvg').innerText = formatDurationText(avgDur); document.getElementById('statHoldMax').innerText = formatDurationText(maxDur);
 
-            const barOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#9ca3af', font: {size: 10} } }, y: { grid: { color: '#374151', drawBorder: false }, ticks: { color: '#9ca3af', font: {size: 10} } } } };
-            const barOptionsMoneyGrouped = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'top', labels: { color: '#9ca3af', boxWidth: 10, font: {size: 10} } }, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmtMoney(ctx.raw)}` } } }, scales: { x: { grid: { display: false }, ticks: { color: '#9ca3af', font: {size: 10} } }, y: { grid: { color: '#374151', drawBorder: false }, ticks: { color: '#9ca3af', font: {size: 10}, callback: (v) => fmtMoney(v, 0) } } } };
-            let hourColors = tHour.map((_, h) => { if (h >= 8 && h < 13) return '#3b82f6'; if (h >= 13 && h < 22) return '#10b981'; return '#8b5cf6'; });
+            document.getElementById('statHoldMin').innerText = formatDurationText(minDur);
+            document.getElementById('statHoldAvg').innerText = formatDurationText(avgDur);
+            document.getElementById('statHoldMax').innerText = formatDurationText(maxDur);
+
+            const barOptions = {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    x: { grid: { display: false }, ticks: { color: '#9ca3af', font: {size: 10} } },
+                    y: { grid: { color: '#374151', drawBorder: false }, ticks: { color: '#9ca3af', font: {size: 10} } }
+                }
+            };
+            
+            const barOptionsMoneyGrouped = {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { 
+                    legend: { display: true, position: 'top', labels: { color: '#9ca3af', boxWidth: 10, font: {size: 10} } },
+                    tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmtMoney(ctx.raw)}` } }
+                },
+                scales: { 
+                    x: { grid: { display: false }, ticks: { color: '#9ca3af', font: {size: 10} } },
+                    y: { grid: { color: '#374151', drawBorder: false }, ticks: { color: '#9ca3af', font: {size: 10}, callback: (v) => fmtMoney(v, 0) } }
+                }
+            };
+
+            let hourColors = tHour.map((_, h) => {
+                if (h >= 8 && h < 13) return '#3b82f6';
+                if (h >= 13 && h < 22) return '#10b981';
+                return '#8b5cf6';
+            });
             let hourLabels = Array.from({length: 24}, (_, i) => i + 'h');
 
             safeDestroy(cTH); cTH = new Chart(document.getElementById('cTradesHour'), { type: 'bar', data: { labels: hourLabels, datasets: [{ data: tHour, backgroundColor: hourColors, borderRadius: 2 }] }, options: barOptions });
             safeDestroy(cTD); cTD = new Chart(document.getElementById('cTradesDay'), { type: 'bar', data: { labels: daysArr, datasets: [{ data: tDay, backgroundColor: '#3b82f6', borderRadius: 2 }] }, options: barOptions });
             safeDestroy(cTM); cTM = new Chart(document.getElementById('cTradesMonth'), { type: 'bar', data: { labels: monthNames, datasets: [{ data: tMonth, backgroundColor: '#3b82f6', borderRadius: 2 }] }, options: barOptions });
+
             safeDestroy(cPH); cPH = new Chart(document.getElementById('cProfitHour'), { type: 'bar', data: { labels: hourLabels, datasets: [ { label: 'Ganancia', data: pHourWin, backgroundColor: '#10b981', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 }, { label: 'Pérdida.', data: pHourLoss, backgroundColor: '#ef4444', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 } ] }, options: barOptionsMoneyGrouped });
             safeDestroy(cPD); cPD = new Chart(document.getElementById('cProfitDay'), { type: 'bar', data: { labels: daysArr, datasets: [ { label: 'Ganancia', data: pDayWin, backgroundColor: '#10b981', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 }, { label: 'Pérdida.', data: pDayLoss, backgroundColor: '#ef4444', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 } ] }, options: barOptionsMoneyGrouped });
             safeDestroy(cPM); cPM = new Chart(document.getElementById('cProfitMonth'), { type: 'bar', data: { labels: monthNames, datasets: [ { label: 'Ganancia', data: pMonthWin, backgroundColor: '#10b981', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 }, { label: 'Pérdida.', data: pMonthLoss, backgroundColor: '#ef4444', borderRadius: 2, barPercentage: 0.9, categoryPercentage: 0.8 } ] }, options: barOptionsMoneyGrouped });
 
             safeDestroy(scatterChartInstance);
-            scatterChartInstance = new Chart(document.getElementById('scatterChart'), { type: 'scatter', data: { datasets: [{ label: 'Operación', data: scatterData, backgroundColor: scatterData.map(d => d.y >= 0 ? 'rgba(16, 185, 129, 0.6)' : 'rgba(239, 68, 68, 0.6)'), borderColor: scatterData.map(d => d.y >= 0 ? 'rgb(16, 185, 129)' : 'rgb(239, 68, 68)'), borderWidth: 1, pointRadius: 4, pointHoverRadius: 6 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { let timeStr = formatDurationText(ctx.parsed.x); return `Retención: ${timeStr} | Profit: ${fmtMoney(ctx.parsed.y)}`; } } } }, scales: { x: { title: { display: true, text: 'Tiempo retenido (Horas)', color: '#9ca3af' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } }, y: { title: { display: true, text: 'Profit ($)', color: '#9ca3af' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) } } } } });
+            scatterChartInstance = new Chart(document.getElementById('scatterChart'), {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Operación', data: scatterData,
+                        backgroundColor: scatterData.map(d => d.y >= 0 ? 'rgba(16, 185, 129, 0.6)' : 'rgba(239, 68, 68, 0.6)'),
+                        borderColor: scatterData.map(d => d.y >= 0 ? 'rgb(16, 185, 129)' : 'rgb(239, 68, 68)'),
+                        borderWidth: 1, pointRadius: 4, pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { let timeStr = formatDurationText(ctx.parsed.x); return `Retención: ${timeStr} | Profit: ${fmtMoney(ctx.parsed.y)}`; } } } },
+                    scales: {
+                        x: { title: { display: true, text: 'Tiempo retenido (Horas)', color: '#9ca3af' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
+                        y: { title: { display: true, text: 'Profit ($)', color: '#9ca3af' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) } }
+                    }
+                }
+            });
         }
 
         // --- DASHBOARD: CALENDARIO ---
@@ -1846,15 +2060,29 @@
 
         window.calZoomInYear = function(year) { calYear = parseInt(year); calMode = 'MONTHS'; updateSmartCalendar(); };
         window.calZoomInMonth = function(month) { calMonth = parseInt(month); calMode = 'DAYS'; updateSmartCalendar(); };
-        window.calZoomOut = function() { if (calMode === 'DAYS') calMode = 'MONTHS'; else if (calMode === 'MONTHS') calMode = 'YEARS'; updateSmartCalendar(); };
+        window.calZoomOut = function() {
+            if (calMode === 'DAYS') calMode = 'MONTHS';
+            else if (calMode === 'MONTHS') calMode = 'YEARS';
+            updateSmartCalendar();
+        };
         window.calZoomIn = function() {
             let calData = filteredData; 
-            if (calMode === 'YEARS') { let years = [...new Set(calData.map(d => d.Year).filter(Boolean))].sort((a,b) => b-a); if (years.length > 0) calZoomInYear(years[0]); } 
-            else if (calMode === 'MONTHS') { let months = [...new Set(calData.filter(d => d.Year === calYear).map(d => d.Month).filter(Boolean))].sort((a,b) => b-a); if (months.length > 0) calZoomInMonth(months[0]); else calZoomInMonth(1); }
+            if (calMode === 'YEARS') {
+                let years = [...new Set(calData.map(d => d.Year).filter(Boolean))].sort((a,b) => b-a);
+                if (years.length > 0) calZoomInYear(years[0]);
+            } else if (calMode === 'MONTHS') {
+                let months = [...new Set(calData.filter(d => d.Year === calYear).map(d => d.Month).filter(Boolean))].sort((a,b) => b-a);
+                if (months.length > 0) calZoomInMonth(months[0]);
+                else calZoomInMonth(1);
+            }
         };
         window.calNavigate = function(dir) {
             if (calMode === 'MONTHS') calYear += dir;
-            else if (calMode === 'DAYS') { calMonth += dir; if (calMonth > 12) { calMonth = 1; calYear++; } if (calMonth < 1) { calMonth = 12; calYear--; } }
+            else if (calMode === 'DAYS') {
+                calMonth += dir;
+                if (calMonth > 12) { calMonth = 1; calYear++; }
+                if (calMonth < 1) { calMonth = 12; calYear--; }
+            }
             updateSmartCalendar();
         };
 
@@ -1874,95 +2102,257 @@
         function updateSmartCalendar() {
             const container = document.getElementById('calendarContainer');
             const indicator = document.getElementById('calendarModeIndicator');
-            const btnPrev = document.getElementById('btnCalPrev'), btnNext = document.getElementById('btnCalNext');
-            const btnZoomOut = document.getElementById('btnCalZoomOut'), btnZoomIn = document.getElementById('btnCalZoomIn'), btnDetail = document.getElementById('btnToggleCalendarDetail');
+            const btnPrev = document.getElementById('btnCalPrev');
+            const btnNext = document.getElementById('btnCalNext');
+            const btnZoomOut = document.getElementById('btnCalZoomOut');
+            const btnZoomIn = document.getElementById('btnCalZoomIn');
+            const btnDetail = document.getElementById('btnToggleCalendarDetail');
 
             let calData = filteredData; 
             container.innerHTML = ''; 
-            btnPrev.disabled = (calMode === 'YEARS'); btnNext.disabled = (calMode === 'YEARS'); btnZoomOut.disabled = (calMode === 'YEARS');
-            if (btnZoomIn) btnZoomIn.disabled = (calMode === 'DAYS');
-            if (btnDetail) { btnDetail.disabled = (calMode !== 'DAYS'); if (calMode !== 'DAYS') btnDetail.classList.add('opacity-30', 'cursor-not-allowed'); else btnDetail.classList.remove('opacity-30', 'cursor-not-allowed'); }
 
-            if (calData.length === 0) { indicator.innerText = "Sin Datos"; container.innerHTML = '<div class="text-gray-500 py-8 text-center border border-dashed border-gray-700 rounded-xl">No hay operaciones registradas.</div>'; return; }
-            if (calMode === 'YEARS') { indicator.innerText = "Vista: Años"; renderYearsGrid(container, calData); } 
-            else if (calMode === 'MONTHS') { indicator.innerText = `Año ${calYear}`; renderMonthsGrid(container, calData, calYear); } 
-            else if (calMode === 'DAYS') { indicator.innerText = `${monthNames[(calMonth || 1)-1]} ${calYear}`; renderDaysGrid(container, calData, calYear, calMonth); }
+            btnPrev.disabled = (calMode === 'YEARS');
+            btnNext.disabled = (calMode === 'YEARS');
+            btnZoomOut.disabled = (calMode === 'YEARS');
+            if (btnZoomIn) btnZoomIn.disabled = (calMode === 'DAYS');
+            
+            // Solo habilitar botón de ruta en vista de Días
+            if (btnDetail) {
+                btnDetail.disabled = (calMode !== 'DAYS');
+                if (calMode !== 'DAYS') btnDetail.classList.add('opacity-30', 'cursor-not-allowed');
+                else btnDetail.classList.remove('opacity-30', 'cursor-not-allowed');
+            }
+
+            if (calData.length === 0) {
+                indicator.innerText = "Sin Datos";
+                container.innerHTML = '<div class="text-gray-500 py-8 text-center border border-dashed border-gray-700 rounded-xl">No hay operaciones registradas.</div>';
+                return;
+            }
+
+            if (calMode === 'YEARS') {
+                indicator.innerText = "Vista: Años"; renderYearsGrid(container, calData);
+            } else if (calMode === 'MONTHS') {
+                indicator.innerText = `Año ${calYear}`; renderMonthsGrid(container, calData, calYear);
+            } else if (calMode === 'DAYS') {
+                indicator.innerText = `${monthNames[(calMonth || 1)-1]} ${calYear}`; renderDaysGrid(container, calData, calYear, calMonth);
+            }
         }
 
         function renderYearsGrid(container, data) {
-            let yearlyData = {}; data.forEach(d => { if(!d.Year) return; if(!yearlyData[d.Year]) yearlyData[d.Year] = 0; yearlyData[d.Year] += d.NetProfit || 0; });
+            let yearlyData = {};
+            data.forEach(d => {
+                if(!d.Year) return;
+                if(!yearlyData[d.Year]) yearlyData[d.Year] = 0;
+                yearlyData[d.Year] += d.NetProfit || 0;
+            });
             let years = Object.keys(yearlyData).sort((a,b) => b - a); 
             let html = `<div class="grid grid-cols-2 md:grid-cols-4 gap-4 fade-in">`;
             years.forEach(year => {
-                let profit = yearlyData[year]; let colorClass = getCellColorClass(profit);
-                html += `<div onclick="calZoomInYear('${year}')" class="h-28 flex flex-col items-center justify-center rounded-xl border ${colorClass} p-4 transition-transform hover:-translate-y-1 cursor-pointer relative group"><span class="absolute top-2 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/30 px-2 py-1 rounded">Ver Meses 🔍</span><span class="text-sm font-semibold mb-2 opacity-75">Año ${year}</span><span class="text-2xl font-bold truncate-text w-full text-center">${fmtMoney(profit, 2)}</span></div>`;
+                let profit = yearlyData[year];
+                let colorClass = getCellColorClass(profit);
+                html += `
+                    <div onclick="calZoomInYear('${year}')" class="h-28 flex flex-col items-center justify-center rounded-xl border ${colorClass} p-4 transition-transform hover:-translate-y-1 cursor-pointer relative group">
+                        <span class="absolute top-2 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/30 px-2 py-1 rounded">Ver Meses 🔍</span>
+                        <span class="text-sm font-semibold mb-2 opacity-75">Año ${year}</span>
+                        <span class="text-2xl font-bold truncate-text w-full text-center">${fmtMoney(profit, 2)}</span>
+                    </div>`;
             });
             html += `</div>`; container.innerHTML = html;
         }
 
         function renderMonthsGrid(container, data, year) {
-            let monthlyData = {}; let monthlyTrades = {};
-            data.forEach(d => { if (d.Year === year && d.Month) { if(!monthlyData[d.Month]) { monthlyData[d.Month] = 0; monthlyTrades[d.Month] = 0; } monthlyData[d.Month] += d.NetProfit || 0; monthlyTrades[d.Month]++; } });
+            let monthlyData = {};
+            let monthlyTrades = {};
+            data.forEach(d => {
+                if (d.Year === year && d.Month) {
+                    if(!monthlyData[d.Month]) { monthlyData[d.Month] = 0; monthlyTrades[d.Month] = 0; }
+                    monthlyData[d.Month] += d.NetProfit || 0;
+                    monthlyTrades[d.Month]++;
+                }
+            });
             let html = `<div class="grid grid-cols-3 md:grid-cols-4 gap-4 fade-in">`;
             for(let i = 1; i <= 12; i++) {
-                let profit = monthlyData[i]; let trades = monthlyTrades[i] || 0; let colorClass = getCellColorClass(profit); let displayProfit = profit !== undefined ? fmtMoney(profit, 2) : 'Sin trades';
-                html += `<div onclick="calZoomInMonth('${i}')" class="h-24 flex flex-col items-center justify-center rounded-xl border ${colorClass} p-2 transition-transform hover:-translate-y-1 cursor-pointer relative group"><span class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/30 px-2 py-1 rounded">Ver Días 🔍</span><span class="text-xs font-semibold mb-1 opacity-75 uppercase">${monthNames[i-1]}</span><span class="text-lg font-bold truncate-text w-full text-center">${displayProfit}</span><span class="text-[10px] text-gray-400 mt-1">${trades} trades</span></div>`;
+                let profit = monthlyData[i];
+                let trades = monthlyTrades[i] || 0;
+                let colorClass = getCellColorClass(profit);
+                let displayProfit = profit !== undefined ? fmtMoney(profit, 2) : 'Sin trades';
+                html += `
+                    <div onclick="calZoomInMonth('${i}')" class="h-24 flex flex-col items-center justify-center rounded-xl border ${colorClass} p-2 transition-transform hover:-translate-y-1 cursor-pointer relative group">
+                        <span class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-black/30 px-2 py-1 rounded">Ver Días 🔍</span>
+                        <span class="text-xs font-semibold mb-1 opacity-75 uppercase">${monthNames[i-1]}</span>
+                        <span class="text-lg font-bold truncate-text w-full text-center">${displayProfit}</span>
+                        <span class="text-[10px] text-gray-400 mt-1">${trades} trades</span>
+                    </div>`;
             }
             html += `</div>`; container.innerHTML = html;
         }
 
         function renderDaysGrid(container, data, year, month) {
-            let daysInMonth = new Date(year, month, 0).getDate(); let firstDay = new Date(year, month - 1, 1).getDay();
-            let html = `<div class="w-full max-w-6xl mx-auto fade-in"><div class="grid grid-cols-7 text-center text-xs text-gray-400 font-bold mb-2">`;
-            daysArr.forEach(d => html += `<div class="py-2">${d}</div>`); html += `</div><div class="grid grid-cols-7 gap-1 md:gap-2">`;
+            let daysInMonth = new Date(year, month, 0).getDate();
+            let firstDay = new Date(year, month - 1, 1).getDay();
+
+            let html = `<div class="w-full max-w-6xl mx-auto fade-in">`;
+            html += `<div class="grid grid-cols-7 text-center text-xs text-gray-400 font-bold mb-2">`;
+            daysArr.forEach(d => html += `<div class="py-2">${d}</div>`);
+            html += `</div><div class="grid grid-cols-7 gap-1 md:gap-2">`;
+            
             for(let i = 0; i < firstDay; i++) { html += `<div class="min-h-[80px] rounded border border-transparent"></div>`; }
 
             if (!isDetailedCalendar) {
+                // ========================================================
+                // VISTA ORIGINAL CON TRADES DETALLADOS (Hora, Simbolo, Profit)
+                // ========================================================
                 let dailyData = {};
-                data.forEach(d => { if (d.Year === year && d.Month === month && d.Time) { let day = d.Time.getDate(); if(!dailyData[day]) dailyData[day] = { total: 0, trades: [] }; dailyData[day].total += d.NetProfit || 0; dailyData[day].trades.push({ sym: d.Symbol || '-', prof: d.NetProfit || 0, time: d.EntryTime || d.Time }); } });
+                data.forEach(d => {
+                    if (d.Year === year && d.Month === month && d.Time) {
+                        let day = d.Time.getDate();
+                        if(!dailyData[day]) dailyData[day] = { total: 0, trades: [] };
+                        dailyData[day].total += d.NetProfit || 0;
+                        
+                        dailyData[day].trades.push({
+                            sym: d.Symbol || '-',
+                            prof: d.NetProfit || 0,
+                            time: d.EntryTime || d.Time 
+                        });
+                    }
+                });
+
                 for(let i = 1; i <= daysInMonth; i++) {
-                    let dayData = dailyData[i]; let profit = dayData ? dayData.total : undefined; let colorClass = getCellColorClass(profit); let displayProfit = profit !== undefined ? fmtMoney(profit, 2) : '-';
+                    let dayData = dailyData[i];
+                    let profit = dayData ? dayData.total : undefined;
+                    let colorClass = getCellColorClass(profit);
+                    let displayProfit = profit !== undefined ? fmtMoney(profit, 2) : '-';
+                    
                     let tradesHtml = '';
-                    if (dayData) { dayData.trades.sort((a,b) => a.time - b.time).forEach(t => { let hh = t.time && t.time.getHours ? t.time.getHours().toString().padStart(2, '0') : '--'; let mm = t.time && t.time.getMinutes ? t.time.getMinutes().toString().padStart(2, '0') : '--'; let tProf = t.prof; let sColorClass = tProf >= 0 ? 'text-green-300' : 'text-red-300'; let sPrefix = tProf > 0 ? '+' : ''; tradesHtml += `<div class="flex justify-between w-full items-center gap-1 border-b border-white/5 pb-[2px] last:border-0 opacity-90 hover:opacity-100"><span class="text-[8px] text-gray-500 font-mono tracking-tighter shrink-0" title="Hora de entrada">${hh}:${mm}</span><span class="truncate max-w-[35px] md:max-w-[45px] text-[8px] text-gray-400" title="${t.sym}">${t.sym}</span><span class="${sColorClass} font-mono shrink-0 text-[9px]">${sPrefix}${fmtMoney(tProf, 0)}</span></div>`; }); }
-                    html += `<div class="min-h-[85px] max-h-[120px] flex flex-col items-center justify-start rounded-lg border ${colorClass} bg-gray-800/60 p-1 transition-transform hover:scale-105 cursor-default overflow-hidden shadow-sm" title="Día ${i}\nNeto: ${profit !== undefined ? fmtMoney(profit, 2) : '0.00'}"><div class="text-[10px] md:text-xs font-semibold opacity-90 border-b border-white/20 w-full text-center pb-1 mb-1 flex flex-col"><span class="text-gray-300">${i}</span><span class="font-bold text-[10px] md:text-[11px]">${displayProfit}</span></div><div class="w-full flex flex-col gap-[2px] overflow-y-auto cell-scrollbar px-[2px]">${tradesHtml}</div></div>`;
+                    if (dayData) {
+                        dayData.trades.sort((a,b) => a.time - b.time).forEach(t => {
+                            let hh = t.time && t.time.getHours ? t.time.getHours().toString().padStart(2, '0') : '--';
+                            let mm = t.time && t.time.getMinutes ? t.time.getMinutes().toString().padStart(2, '0') : '--';
+                            let tProf = t.prof;
+                            let sColorClass = tProf >= 0 ? 'text-green-300' : 'text-red-300';
+                            let sPrefix = tProf > 0 ? '+' : '';
+                            
+                            tradesHtml += `<div class="flex justify-between w-full items-center gap-1 border-b border-white/5 pb-[2px] last:border-0 opacity-90 hover:opacity-100">
+                                <span class="text-[8px] text-gray-500 font-mono tracking-tighter shrink-0" title="Hora de entrada">${hh}:${mm}</span>
+                                <span class="truncate max-w-[35px] md:max-w-[45px] text-[8px] text-gray-400" title="${t.sym}">${t.sym}</span>
+                                <span class="${sColorClass} font-mono shrink-0 text-[9px]">${sPrefix}${fmtMoney(tProf, 0)}</span>
+                            </div>`;
+                        });
+                    }
+                    
+                    html += `
+                        <div class="min-h-[85px] max-h-[120px] flex flex-col items-center justify-start rounded-lg border ${colorClass} bg-gray-800/60 p-1 transition-transform hover:scale-105 cursor-default overflow-hidden shadow-sm" title="Día ${i}\nNeto: ${profit !== undefined ? fmtMoney(profit, 2) : '0.00'}">
+                            <div class="text-[10px] md:text-xs font-semibold opacity-90 border-b border-white/20 w-full text-center pb-1 mb-1 flex flex-col">
+                                <span class="text-gray-300">${i}</span>
+                                <span class="font-bold text-[10px] md:text-[11px]">${displayProfit}</span>
+                            </div>
+                            <div class="w-full flex flex-col gap-[2px] overflow-y-auto cell-scrollbar px-[2px]">
+                                ${tradesHtml}
+                            </div>
+                        </div>`;
                 }
             } else {
-                let monthStartMs = new Date(year, month - 1, 1).getTime(); let monthEndMs = new Date(year, month, 0, 23, 59, 59).getTime();
-                let monthTrades = data.filter(d => { let st = d.EntryTime || d.Time; let et = d.Time; return st.getTime() <= monthEndMs && et.getTime() >= monthStartMs; });
+                // ========================================================
+                // VISTA DE RUTA DE TRADES (Líneas Multidía)
+                // ========================================================
+                let monthStartMs = new Date(year, month - 1, 1).getTime();
+                let monthEndMs = new Date(year, month, 0, 23, 59, 59).getTime();
+
+                let monthTrades = data.filter(d => {
+                    let st = d.EntryTime || d.Time;
+                    let et = d.Time;
+                    return st.getTime() <= monthEndMs && et.getTime() >= monthStartMs;
+                });
+                
                 monthTrades.sort((a,b) => (a.EntryTime||a.Time) - (b.EntryTime||b.Time));
+
+                // Algoritmo de asignación de pistas (Tracks)
                 let tracks = [];
                 monthTrades.forEach(t => {
-                    let st = t.EntryTime || t.Time; let et = t.Time;
-                    let dStart = 1; if (st.getFullYear() === year && (st.getMonth()+1) === month) dStart = st.getDate();
-                    let dEnd = daysInMonth; if (et.getFullYear() === year && (et.getMonth()+1) === month) dEnd = et.getDate();
+                    let st = t.EntryTime || t.Time;
+                    let et = t.Time;
+                    
+                    let dStart = 1;
+                    if (st.getFullYear() === year && (st.getMonth()+1) === month) dStart = st.getDate();
+                    
+                    let dEnd = daysInMonth;
+                    if (et.getFullYear() === year && (et.getMonth()+1) === month) dEnd = et.getDate();
+
                     let trackIdx = 0;
-                    while(true) { if (!tracks[trackIdx]) { tracks[trackIdx] = []; break; } let overlaps = tracks[trackIdx].some(interval => !(dEnd < interval.start || dStart > interval.end)); if (!overlaps) break; trackIdx++; }
+                    while(true) {
+                        if (!tracks[trackIdx]) { tracks[trackIdx] = []; break; }
+                        let overlaps = tracks[trackIdx].some(interval => !(dEnd < interval.start || dStart > interval.end));
+                        if (!overlaps) break;
+                        trackIdx++;
+                    }
                     tracks[trackIdx].push({ start: dStart, end: dEnd, trade: t });
                 });
+
                 let numTracks = tracks.length;
+
                 for(let i = 1; i <= daysInMonth; i++) {
                     let dayHtml = '';
+                    
                     for(let tr = 0; tr < numTracks; tr++) {
                         let segment = tracks[tr].find(item => item.start <= i && item.end >= i);
+                        
                         if (segment) {
-                            let t = segment.trade; let st = t.EntryTime || t.Time; let et = t.Time;
+                            let t = segment.trade;
+                            let st = t.EntryTime || t.Time;
+                            let et = t.Time;
+
                             let isActualStart = (st.getFullYear() === year && (st.getMonth()+1) === month && st.getDate() === i);
                             let isActualEnd   = (et.getFullYear() === year && (et.getMonth()+1) === month && et.getDate() === i);
-                            let isWin = t.NetProfit >= 0; let bgBase = isWin ? 'bg-green-600/20 text-green-300 border-green-500/50' : 'bg-red-600/20 text-red-300 border-red-500/50';
+
+                            let isWin = t.NetProfit >= 0;
+                            let bgBase = isWin ? 'bg-green-600/20 text-green-300 border-green-500/50' : 'bg-red-600/20 text-red-300 border-red-500/50';
+
                             let sTime = st ? `${st.getHours().toString().padStart(2,'0')}:${st.getMinutes().toString().padStart(2,'0')}` : '--:--';
                             let eTime = et ? `${et.getHours().toString().padStart(2,'0')}:${et.getMinutes().toString().padStart(2,'0')}` : '--:--';
-                            let symStr = t.Symbol || 'UNK'; if(symStr.length > 8) symStr = symStr.substring(0,8) + '..';
-                            let content = '', classes = `h-[22px] mb-1 text-[9.5px] font-mono flex items-center px-1 border-y border-x truncate shadow-sm transition-opacity hover:opacity-100 ${isActualStart || isActualEnd ? 'opacity-90' : 'opacity-70'}`;
-                            if (isActualStart && isActualEnd) { classes += ` rounded-md ${bgBase} justify-between`; content = `<span class="truncate pr-1 opacity-80">[${sTime}] ${symStr}</span><span class="font-bold">${fmtMoney(t.NetProfit,0)}</span>`; } 
-                            else if (isActualStart) { classes += ` rounded-l-md border-r-0 mr-[-6px] ${bgBase} justify-start`; content = `<span class="font-bold opacity-80">[${sTime}] ${symStr} <span class="text-[8px]">➔</span></span>`; } 
-                            else if (isActualEnd) { classes += ` rounded-r-md border-l-0 ml-[-6px] ${bgBase} justify-between`; content = `<span class="opacity-40 text-[8px] mr-1">➔</span><span class="font-bold ml-auto">${fmtMoney(t.NetProfit,0)} <span class="opacity-80">[${eTime}]</span></span>`; } 
-                            else { classes += ` rounded-none border-x-0 mx-[-6px] ${bgBase} justify-center bg-opacity-10`; content = `<span class="opacity-50 tracking-widest uppercase">〰️ ${symStr} 〰️</span>`; }
+                            let symStr = t.Symbol || 'UNK';
+                            if(symStr.length > 8) symStr = symStr.substring(0,8) + '..';
+
+                            let content = '';
+                            let classes = `h-[22px] mb-1 text-[9.5px] font-mono flex items-center px-1 border-y border-x truncate shadow-sm transition-opacity hover:opacity-100 ${isActualStart || isActualEnd ? 'opacity-90' : 'opacity-70'}`;
+
+                            if (isActualStart && isActualEnd) {
+                                // Abre y Cierra el mismo día
+                                classes += ` rounded-md ${bgBase} justify-between`;
+                                content = `<span class="truncate pr-1 opacity-80">[${sTime}] ${symStr}</span><span class="font-bold">${fmtMoney(t.NetProfit,0)}</span>`;
+                            } 
+                            else if (isActualStart) {
+                                // Día que Abre (y continúa)
+                                classes += ` rounded-l-md border-r-0 mr-[-6px] ${bgBase} justify-start`;
+                                content = `<span class="font-bold opacity-80">[${sTime}] ${symStr} <span class="text-[8px]">➔</span></span>`;
+                            } 
+                            else if (isActualEnd) {
+                                // Día que Cierra (venía de antes)
+                                classes += ` rounded-r-md border-l-0 ml-[-6px] ${bgBase} justify-between`;
+                                content = `<span class="opacity-40 text-[8px] mr-1">➔</span><span class="font-bold ml-auto">${fmtMoney(t.NetProfit,0)} <span class="opacity-80">[${eTime}]</span></span>`;
+                            } 
+                            else {
+                                // Día Intermedio (en tránsito)
+                                classes += ` rounded-none border-x-0 mx-[-6px] ${bgBase} justify-center bg-opacity-10`;
+                                content = `<span class="opacity-50 tracking-widest uppercase">〰️ ${symStr} 〰️</span>`;
+                            }
+
                             dayHtml += `<div class="${classes}" title="${t.Symbol}\nApertura: ${sTime}\nCierre: ${eTime}\nDuración: ${formatDurationText(t.DurationHours)}\nGanancia: ${fmtMoney(t.NetProfit)}">${content}</div>`;
-                        } else dayHtml += `<div class="h-[22px] mb-1"></div>`; 
+                        } else {
+                            // Espaciador para mantener la alineación vertical de las pistas
+                            dayHtml += `<div class="h-[22px] mb-1"></div>`; 
+                        }
                     }
-                    html += `<div class="min-h-[100px] flex flex-col rounded-lg border border-gray-700 bg-gray-800/40 p-1.5 shadow-sm overflow-hidden group"><span class="text-xs font-bold opacity-80 mb-1 border-b border-gray-700/50 pb-1 w-full text-center text-gray-400 group-hover:text-blue-400 transition-colors">${i}</span><div class="flex flex-col flex-1 overflow-visible">${dayHtml || '<span class="text-[9px] text-gray-600 m-auto italic">Libre</span>'}</div></div>`;
+
+                    html += `
+                        <div class="min-h-[100px] flex flex-col rounded-lg border border-gray-700 bg-gray-800/40 p-1.5 shadow-sm overflow-hidden group">
+                            <span class="text-xs font-bold opacity-80 mb-1 border-b border-gray-700/50 pb-1 w-full text-center text-gray-400 group-hover:text-blue-400 transition-colors">${i}</span>
+                            <div class="flex flex-col flex-1 overflow-visible">
+                                ${dayHtml || '<span class="text-[9px] text-gray-600 m-auto italic">Libre</span>'}
+                            </div>
+                        </div>`;
                 }
             }
+            
             html += `</div></div>`; container.innerHTML = html;
         }
 
@@ -1979,14 +2369,21 @@
         function syncMainFileToComparator() {
             if(rawData && rawData.length > 0) {
                 let idx = comparedFiles.findIndex(f => f.name.includes("Principal"));
-                if(idx > -1) { comparedFiles[idx].data = rawData; comparedFiles[idx].filteredData = rawData; } 
-                else { addFileToComparator("Estrategia Principal", rawData); }
+                if(idx > -1) { 
+                    comparedFiles[idx].data = rawData; 
+                    comparedFiles[idx].filteredData = rawData; 
+                } else { 
+                    addFileToComparator("Estrategia Principal", rawData); 
+                }
                 populateComparatorFilters();
             }
         }
 
         function handleComparatorClassicFiles(files) {
-            if (files.length === 0) return; showLoader(); let processedCount = 0;
+            if (files.length === 0) return;
+            showLoader();
+            let processedCount = 0;
+
             files.forEach(file => {
                 const reader = new FileReader();
                 reader.onload = function(event) {
@@ -1995,8 +2392,17 @@
                             const workbook = XLSX.read(new Uint8Array(event.target.result), { type: 'array', cellDates: true });
                             const jsonResult = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {defval: ""});
                             const extractedData = parseMT5Data(jsonResult);
-                            if (extractedData.length > 0) addFileToComparator(file.name, extractedData); else alert(`El archivo ${file.name} no contiene operaciones compatibles.`);
-                        } catch (err) { console.error(`Error procesando ${file.name}`, err); } finally { processedCount++; if (processedCount === files.length) hideLoader(); }
+                            
+                            if (extractedData.length > 0) {
+                                addFileToComparator(file.name, extractedData);
+                            } else {
+                                alert(`El archivo ${file.name} no contiene operaciones compatibles.`);
+                            }
+                        } catch (err) { console.error(`Error procesando ${file.name}`, err); } 
+                        finally {
+                            processedCount++;
+                            if (processedCount === files.length) hideLoader();
+                        }
                     }, 50);
                 };
                 reader.readAsArrayBuffer(file);
@@ -2004,67 +2410,149 @@
         }
 
         function handleComparatorGraphFiles(files) {
-            if (files.length === 0) return; showLoader(); let processedCount = 0;
+            if (files.length === 0) return;
+            showLoader();
+            let processedCount = 0;
+
             files.forEach(file => {
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     setTimeout(() => {
                         try {
-                            const text = event.target.result; const extractedData = parseRawMT5Graph(text, file.name);
-                            if (extractedData.length > 0) addFileToComparator(file.name, extractedData); else alert(`El archivo ${file.name} no contiene un Gráfico válido.`);
-                        } catch (err) { console.error(`Error procesando ${file.name}`, err); } finally { processedCount++; if (processedCount === files.length) hideLoader(); }
+                            const text = event.target.result;
+                            const extractedData = parseRawMT5Graph(text, file.name);
+                            
+                            if (extractedData.length > 0) {
+                                addFileToComparator(file.name, extractedData);
+                            } else {
+                                alert(`El archivo ${file.name} no contiene un Gráfico válido.`);
+                            }
+                        } catch (err) { console.error(`Error procesando ${file.name}`, err); } 
+                        finally {
+                            processedCount++;
+                            if (processedCount === files.length) hideLoader();
+                        }
                     }, 50);
                 };
                 reader.readAsText(file);
             });
         }
 
-        document.getElementById('compInputClassic').addEventListener('change', function(e) { handleComparatorClassicFiles(Array.from(e.target.files)); e.target.value = ''; });
-        document.getElementById('compInputGraph').addEventListener('change', function(e) { handleComparatorGraphFiles(Array.from(e.target.files)); e.target.value = ''; });
+        // 3. COMPARADOR - HISTORIAL CLASSIC (.XLSX)
+        document.getElementById('compInputClassic').addEventListener('change', function(e) {
+            handleComparatorClassicFiles(Array.from(e.target.files));
+            e.target.value = '';
+        });
+
+        // 4. COMPARADOR - GRÁFICO (.CSV)
+        document.getElementById('compInputGraph').addEventListener('change', function(e) {
+            handleComparatorGraphFiles(Array.from(e.target.files));
+            e.target.value = '';
+        });
 
         function addFileToComparator(name, dataArr) {
-            let color = colorPalette[nextColorIndex % colorPalette.length]; nextColorIndex++; 
+            let color = colorPalette[nextColorIndex % colorPalette.length];
+            nextColorIndex++; 
             comparedFiles.push({ id: Date.now() + Math.random(), name, data: dataArr, filteredData: dataArr, color });
-            populateComparatorFilters(); applyComparatorFilters();
+            populateComparatorFilters();
+            applyComparatorFilters();
         }
 
-        function removeFileFromComparator(id) { comparedFiles = comparedFiles.filter(f => f.id !== id); populateComparatorFilters(); applyComparatorFilters(); }
-        function clearComparisons() { comparedFiles = []; nextColorIndex = 0; renderComparator(); }
+        function removeFileFromComparator(id) {
+            comparedFiles = comparedFiles.filter(f => f.id !== id);
+            populateComparatorFilters();
+            applyComparatorFilters();
+        }
+
+        function clearComparisons() {
+            comparedFiles = [];
+            nextColorIndex = 0; 
+            renderComparator();
+        }
 
         function populateComparatorFilters() {
-            let allSymbols = new Set(), allYears = new Set();
-            comparedFiles.forEach(file => { file.data.forEach(d => { if (d.Symbol) allSymbols.add(d.Symbol); if (d.Year) allYears.add(d.Year); }); });
-            document.getElementById('compFilterSymbol').innerHTML = '<option value="ALL">Todos los Pares</option>' + [...allSymbols].sort().map(s => `<option value="${s}">${s}</option>`).join('');
-            document.getElementById('compFilterYear').innerHTML = '<option value="ALL">Todos los Años</option>' + [...allYears].sort((a,b)=>b-a).map(y => `<option value="${y}">${y}</option>`).join('');
-            document.getElementById('compFilterMonth').innerHTML = '<option value="ALL">Todos los Meses</option>' + monthNames.map((m, i) => `<option value="${i+1}">${m}</option>`).join('');
-        }
+            let allSymbols = new Set();
+            let allYears = new Set();
 
-        function resetComparatorFilters() { document.getElementById('compFilterSymbol').value = 'ALL'; document.getElementById('compFilterYear').value = 'ALL'; document.getElementById('compFilterMonth').value = 'ALL'; applyComparatorFilters(); }
-
-        function applyComparatorFilters() {
-            const sym = document.getElementById('compFilterSymbol').value, year = document.getElementById('compFilterYear').value, month = document.getElementById('compFilterMonth').value;
             comparedFiles.forEach(file => {
-                file.filteredData = file.data.filter(d => {
-                    let matchSym = (sym === "ALL") ? true : d.Symbol === sym; let matchYear = (year === "ALL") ? true : (d.Year ? d.Year.toString() === year : false); let matchMonth = (month === "ALL") ? true : (d.Month ? d.Month.toString() === month : false);
-                    let isNotZero = Math.abs(d.NetProfit || 0) >= 0.00001; return matchSym && matchYear && matchMonth && isNotZero;
+                file.data.forEach(d => {
+                    if (d.Symbol) allSymbols.add(d.Symbol);
+                    if (d.Year) allYears.add(d.Year);
                 });
             });
+
+            const symSelect = document.getElementById('compFilterSymbol');
+            symSelect.innerHTML = '<option value="ALL">Todos los Pares</option>' + [...allSymbols].sort().map(s => `<option value="${s}">${s}</option>`).join('');
+
+            const yrSelect = document.getElementById('compFilterYear');
+            yrSelect.innerHTML = '<option value="ALL">Todos los Años</option>' + [...allYears].sort((a,b)=>b-a).map(y => `<option value="${y}">${y}</option>`).join('');
+
+            const moSelect = document.getElementById('compFilterMonth');
+            moSelect.innerHTML = '<option value="ALL">Todos los Meses</option>' + monthNames.map((m, i) => `<option value="${i+1}">${m}</option>`).join('');
+        }
+
+        function resetComparatorFilters() {
+            document.getElementById('compFilterSymbol').value = 'ALL';
+            document.getElementById('compFilterYear').value = 'ALL';
+            document.getElementById('compFilterMonth').value = 'ALL';
+            applyComparatorFilters();
+        }
+
+        function applyComparatorFilters() {
+            const sym = document.getElementById('compFilterSymbol').value;
+            const year = document.getElementById('compFilterYear').value;
+            const month = document.getElementById('compFilterMonth').value;
+
+            comparedFiles.forEach(file => {
+                file.filteredData = file.data.filter(d => {
+                    let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
+                    let matchYear = (year === "ALL") ? true : (d.Year ? d.Year.toString() === year : false);
+                    let matchMonth = (month === "ALL") ? true : (d.Month ? d.Month.toString() === month : false);
+                    let isNotZero = Math.abs(d.NetProfit || 0) >= 0.00001; 
+                    
+                    return matchSym && matchYear && matchMonth && isNotZero;
+                });
+            });
+
             renderComparator();
         }
 
         function renderComparator() {
-            const listDiv = document.getElementById('comparedFilesList'); const compContent = document.getElementById('comparatorContent');
-            if (comparedFiles.length === 0) { listDiv.innerHTML = '<div class="text-sm text-gray-500 italic mt-2">Sube archivos para comparar.</div>'; compContent.classList.add('hidden'); return; }
-            listDiv.innerHTML = comparedFiles.map(f => `<div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-600 bg-gray-800 shadow-sm"><span class="w-3 h-3 rounded-full" style="background-color: ${f.color}"></span><span class="text-sm font-semibold truncate max-w-[150px]" title="${f.name}">${f.name}</span><button onclick="removeFileFromComparator(${f.id})" class="ml-1 text-gray-400 hover:text-red-500 font-bold">×</button></div>`).join('');
-            compContent.classList.remove('hidden'); renderComparatorTable(); renderComparatorChart();
+            const listDiv = document.getElementById('comparedFilesList');
+            const compContent = document.getElementById('comparatorContent');
+            
+            if (comparedFiles.length === 0) {
+                listDiv.innerHTML = '<div class="text-sm text-gray-500 italic mt-2">Sube archivos para comparar.</div>';
+                compContent.classList.add('hidden');
+                return;
+            }
+
+            listDiv.innerHTML = comparedFiles.map(f => `
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-600 bg-gray-800 shadow-sm">
+                    <span class="w-3 h-3 rounded-full" style="background-color: ${f.color}"></span>
+                    <span class="text-sm font-semibold truncate max-w-[150px]" title="${f.name}">${f.name}</span>
+                    <button onclick="removeFileFromComparator(${f.id})" class="ml-1 text-gray-400 hover:text-red-500 font-bold">×</button>
+                </div>
+            `).join('');
+
+            compContent.classList.remove('hidden');
+
+            renderComparatorTable();
+            renderComparatorChart();
         }
 
         function renderComparatorTable() {
-            const head = document.getElementById('compTableHeader'), body = document.getElementById('compTableBody');
+            const head = document.getElementById('compTableHeader');
+            const body = document.getElementById('compTableBody');
+
             const allMetrics = comparedFiles.map(f => calculateMetrics(f.filteredData));
+
             let headHTML = '<th class="p-4 font-bold text-gray-300 bg-gray-800">Métricas Principales</th>';
-            comparedFiles.forEach(f => { headHTML += `<th class="p-4"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background-color: ${f.color}"></span><span class="truncate max-w-[120px]" title="${f.name}">${f.name}</span></div></th>`; });
+            comparedFiles.forEach(f => {
+                headHTML += `<th class="p-4"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background-color: ${f.color}"></span><span class="truncate max-w-[120px]" title="${f.name}">${f.name}</span></div></th>`;
+            });
             head.innerHTML = headHTML;
+
             const rowsConfig = [
                 { label: 'Beneficio Neto', key: 'totalProfit', fmt: v => `<span class="${v>=0?'text-green-400':'text-red-400'} font-bold">${fmtMoney(v)}</span>` },
                 { label: 'Total Trades', key: 'totalTrades', fmt: v => v },
@@ -2079,6 +2567,7 @@
                 { label: 'Peor Racha', key: 'maxLossStreak', fmt: v => `<span class="text-red-400">${v} Loss</span>` },
                 { label: 'Proyección Compuesta (1%)', key: 'compReturnPct', fmt: (v, m) => `<span class="${v>=0?'text-purple-400':'text-red-400'} font-bold">${v>0?'+':''}${v.toFixed(2)}% <span class="text-[10px] block leading-tight">(${fmtMoney(m.finalCompBalance)})</span></span>` }
             ];
+
             body.innerHTML = rowsConfig.map((row, idx) => {
                 let bgClass = idx % 2 === 0 ? 'bg-gray-800/50' : 'bg-transparent';
                 let tds = allMetrics.map(m => `<td class="p-4 font-mono text-sm">${row.fmt(m[row.key], m)}</td>`).join('');
@@ -2088,557 +2577,60 @@
 
         function renderComparatorChart() {
             const ctx = document.getElementById('comparatorChart').getContext('2d');
+            
             let datasets = comparedFiles.map(file => {
                 let cumulative = 0;
-                let dataPoints = file.filteredData.map(d => { cumulative += d.NetProfit || 0; let timeVal = d.Time instanceof Date ? d.Time : new Date(d.Time); return { x: timeVal, y: cumulative }; });
-                return { label: file.name, data: dataPoints, borderColor: file.color, backgroundColor: file.color + '20', borderWidth: 2, fill: false, pointRadius: 0, pointHoverRadius: 6, tension: 0.1, stepped: 'middle' };
+                let dataPoints = file.filteredData.map(d => {
+                    cumulative += d.NetProfit || 0;
+                    let timeVal = d.Time instanceof Date ? d.Time : new Date(d.Time);
+                    return { x: timeVal, y: cumulative };
+                });
+                
+                return {
+                    label: file.name,
+                    data: dataPoints,
+                    borderColor: file.color,
+                    backgroundColor: file.color + '20', 
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0,
+                    pointHoverRadius: 6,
+                    tension: 0.1,
+                    stepped: 'middle' 
+                };
             });
+
             safeDestroy(comparatorChartInstance);
+
             comparatorChartInstance = new Chart(ctx, {
-                type: 'line', data: { datasets: datasets },
-                options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'nearest', axis: 'x', intersect: false }, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmtMoney(ctx.raw.y)}` } } }, scales: { x: { type: 'time', time: { tooltipFormat: 'dd MMM yyyy, HH:mm' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af' }, title: { display: true, text: 'Cronología de Operaciones', color: '#6b7280' } }, y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) }, title: { display: true, text: 'Capital Acumulado ($)', color: '#6b7280' } } } }
+                type: 'line',
+                data: { datasets: datasets },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'nearest', axis: 'x', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmtMoney(ctx.raw.y)}` } }
+                    },
+                    scales: {
+                        x: { 
+                            type: 'time', 
+                            time: { tooltipFormat: 'dd MMM yyyy, HH:mm' }, 
+                            grid: { color: '#374151' }, ticks: { color: '#9ca3af' },
+                            title: { display: true, text: 'Cronología de Operaciones', color: '#6b7280' }
+                        },
+                        y: { 
+                            grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) },
+                            title: { display: true, text: 'Capital Acumulado ($)', color: '#6b7280' }
+                        }
+                    }
+                }
             });
         }
 
         // ==========================================
-        // --- NUEVO OPTIMIZADOR LÓGICA ---
-        // ==========================================
-        let opt_HEADERS = [], opt_DATA = [], opt_NUM_COLS = new Set(), opt_BOOL_COLS = new Set(), opt_DD_COLS = new Set();
-        let opt_sortCol = 0, opt_sortDir = -1, opt_currentPage = 0, opt_pageSize = 100, opt_totalPages = 1;
-        let opt_filtered = [], opt_columnFilters = {};
-
-        const opt_DD_PATTERNS = [/drawdown/i, /dd/i, /equity.?dd/i, /max.?dd/i, /risk/i, /loss/i];
-        function opt_isDrawdownCol(name) { return opt_DD_PATTERNS.some(p => p.test(name)); }
-
-        function opt_switchTab(tab) {
-            document.getElementById('optTabResults').style.display = tab === 'results' ? 'block' : 'none';
-            document.getElementById('optTabHeatmap').style.display  = tab === 'heatmap'  ? 'block' : 'none';
-            document.getElementById('optTabBtnResults').classList.toggle('active', tab === 'results');
-            document.getElementById('optTabBtnHeatmap').classList.toggle('active', tab === 'heatmap');
-        }
-
-        const optDropZone = document.getElementById('optDropZone');
-        const optFileInput = document.getElementById('optFileInput');
-        optDropZone.addEventListener('dragover', e => { e.preventDefault(); optDropZone.classList.add('drag-over'); });
-        optDropZone.addEventListener('dragleave', () => optDropZone.classList.remove('drag-over'));
-        optDropZone.addEventListener('drop', e => { e.preventDefault(); optDropZone.classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f) opt_handleFile(f); });
-        optFileInput.addEventListener('change', () => { if (optFileInput.files[0]) opt_handleFile(optFileInput.files[0]); });
-
-        function opt_showError(msg) {
-            const el = document.getElementById('optUploadError');
-            el.textContent = '⚠ ' + msg;
-            el.style.display = 'block';
-            document.getElementById('optLoadingMsg').style.display = 'none';
-        }
-
-        function opt_handleFile(file) {
-            document.getElementById('optUploadError').style.display = 'none';
-            if (!file.name.toLowerCase().endsWith('.xml')) { opt_showError('Por favor sube un archivo XML (.xml)'); return; }
-            document.getElementById('optLoadingMsg').style.display = 'flex';
-            document.getElementById('optLoadingText').textContent = 'Leyendo archivo…';
-            const reader = new FileReader();
-            reader.onload = e => {
-                document.getElementById('optLoadingText').textContent = 'Analizando XML…';
-                setTimeout(() => opt_parseXML(e.target.result, file.name), 30);
-            };
-            reader.onerror = () => opt_showError('No se pudo leer el archivo.');
-            reader.readAsText(file, 'UTF-8');
-        }
-
-        function opt_parseXML(text, filename) {
-            try {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(text, 'application/xml');
-                if (doc.querySelector('parsererror')) { opt_showError('Archivo XML inválido.'); return; }
-
-                const getDocProp = tag => doc.querySelector(tag)?.textContent || '';
-                const title = getDocProp('Title') || filename;
-                const deposit = getDocProp('Deposit');
-                const leverage = getDocProp('Leverage');
-                const server = getDocProp('Server');
-
-                const rows = Array.from(doc.querySelectorAll('Row'));
-                if (rows.length < 2) { opt_showError('No se encontraron filas de datos en este XML.'); return; }
-
-                document.getElementById('optLoadingText').textContent = `Procesando ${rows.length.toLocaleString()} resultados…`;
-
-                const rawHeaders = Array.from(rows[0].querySelectorAll('Cell')).map(c => c.querySelector('Data')?.textContent || '');
-                if (!rawHeaders.length) { opt_showError('No se encontraron encabezados.'); return; }
-
-                const rawData = [];
-                for (let i = 1; i < rows.length; i++) {
-                    const cells = Array.from(rows[i].querySelectorAll('Cell'));
-                    rawData.push(cells.map(cell => {
-                        const d = cell.querySelector('Data');
-                        if (!d) return '';
-                        const val = d.textContent;
-                        const type = d.getAttribute('ss:Type') || d.getAttributeNS('urn:schemas-microsoft-com:office:spreadsheet','Type') || '';
-                        if (type === 'Number') { const n = parseFloat(val); return isNaN(n) ? val : n; }
-                        return val;
-                    }));
-                }
-
-                const resultIdx = rawHeaders.findIndex(h => h.toLowerCase() === 'result');
-
-                if (resultIdx >= 0) {
-                    opt_HEADERS = ['Win Rate %', ...rawHeaders];
-                    opt_DATA = rawData.map(row => {
-                        const result = row[resultIdx];
-                        const wr = typeof result === 'number' ? parseFloat(((result % 1) * 100).toFixed(4)) : null;
-                        return [wr, ...row];
-                    });
-                } else {
-                    opt_HEADERS = rawHeaders;
-                    opt_DATA = rawData;
-                }
-
-                opt_NUM_COLS = new Set();
-                opt_BOOL_COLS = new Set();
-                opt_DD_COLS = new Set();
-
-                opt_HEADERS.forEach((h, i) => {
-                    if (i === 0 && resultIdx >= 0) { opt_NUM_COLS.add(0); return; }
-                    for (let r = 0; r < Math.min(20, opt_DATA.length); r++) {
-                        const v = opt_DATA[r][i];
-                        if (typeof v === 'number') { opt_NUM_COLS.add(i); break; }
-                        if (v === 'true' || v === 'false') { opt_BOOL_COLS.add(i); break; }
-                    }
-                    if (opt_NUM_COLS.has(i) && opt_isDrawdownCol(h)) opt_DD_COLS.add(i);
-                });
-
-                opt_sortCol = 0; opt_sortDir = -1; opt_currentPage = 0; opt_pageSize = parseInt(document.getElementById('optPageSizeSelect').value) || 100;
-                opt_columnFilters = {};
-
-                document.getElementById('optAppTitle').textContent = '📊 ' + title;
-                document.getElementById('optAppMeta').textContent = [
-                    deposit ? 'Deposit: ' + deposit : '',
-                    leverage ? 'Leverage: 1:' + leverage : '',
-                    server ? 'Server: ' + server : '',
-                    rawData.length.toLocaleString() + ' passes'
-                ].filter(Boolean).join('  |  ');
-
-                document.getElementById('optUploadScreen').style.display = 'none';
-                document.getElementById('optAppScreen').style.display = 'block';
-
-                opt_buildHeaders();
-                opt_applyFilters();
-                opt_buildHeatmap();
-
-            } catch(err) { opt_showError('Error inesperado: ' + err.message); }
-        }
-
-        function opt_resetToUpload() {
-            document.getElementById('optAppScreen').style.display = 'none';
-            document.getElementById('optUploadScreen').style.display = 'flex';
-            document.getElementById('optUploadError').style.display = 'none';
-            document.getElementById('optLoadingMsg').style.display = 'none';
-            document.getElementById('optFileInput').value = '';
-            opt_HEADERS = []; opt_DATA = [];
-            opt_switchTab('results');
-        }
-
-        function opt_buildHeaders() {
-            const hr = document.getElementById('optHeaderRow');
-            const fr = document.getElementById('optFilterRow');
-            hr.innerHTML = ''; fr.innerHTML = '';
-
-            opt_HEADERS.forEach((h, i) => {
-                const th = document.createElement('th');
-                th.textContent = h === 'Win Rate %' ? '🏆 Win Rate' : h;
-                th.dataset.col = i;
-                if (i === 0 && h === 'Win Rate %') th.classList.add('win-col');
-                if (opt_DD_COLS.has(i)) th.classList.add('dd-col');
-                th.onclick = () => opt_sortBy(i);
-                hr.appendChild(th);
-
-                const tf = document.createElement('th');
-
-                if (opt_BOOL_COLS.has(i)) {
-                    const sel = document.createElement('select');
-                    sel.innerHTML = '<option value="">All</option><option value="true">✓ true</option><option value="false">✗ false</option>';
-                    sel.dataset.col = i;
-                    sel.oninput = () => { opt_columnFilters[i] = sel.value; opt_currentPage = 0; opt_applyFilters(); };
-                    tf.appendChild(sel);
-                } else if (opt_NUM_COLS.has(i)) {
-                    const inp = document.createElement('input');
-                    inp.type = 'number';
-                    inp.step = 'any';
-                    inp.dataset.col = i;
-                    if (opt_DD_COLS.has(i)) {
-                        inp.placeholder = '≤ max';
-                        inp.classList.add('dd-input');
-                        inp.title = 'Mostrar filas donde ' + h + ' sea ≤ a este valor';
-                    } else {
-                        inp.placeholder = '≥ min';
-                        inp.classList.add('min-input');
-                        inp.title = 'Mostrar filas donde ' + h + ' sea ≥ a este valor';
-                    }
-                    inp.oninput = () => { opt_columnFilters[i] = inp.value.trim(); opt_currentPage = 0; opt_applyFilters(); };
-                    tf.appendChild(inp);
-                } else {
-                    const inp = document.createElement('input');
-                    inp.type = 'text';
-                    inp.placeholder = '…';
-                    inp.dataset.col = i;
-                    inp.oninput = () => { opt_columnFilters[i] = inp.value.trim(); opt_currentPage = 0; opt_applyFilters(); };
-                    tf.appendChild(inp);
-                }
-                fr.appendChild(tf);
-            });
-            opt_updateSortIndicators();
-        }
-
-        function opt_sortBy(col) {
-            if (opt_sortCol === col) opt_sortDir *= -1;
-            else { opt_sortCol = col; opt_sortDir = -1; }
-            opt_currentPage = 0;
-            opt_applyFilters();
-        }
-
-        function opt_updateSortIndicators() {
-            document.querySelectorAll('#optHeaderRow th').forEach(th => {
-                th.classList.remove('sort-asc', 'sort-desc');
-                if (parseInt(th.dataset.col) === opt_sortCol)
-                    th.classList.add(opt_sortDir === 1 ? 'sort-asc' : 'sort-desc');
-            });
-            document.getElementById('optSortInfo').textContent =
-                (opt_HEADERS[opt_sortCol] || '') + (opt_sortDir === 1 ? ' ▲' : ' ▼');
-        }
-
-        function opt_applyFilters() {
-            const globalQ = document.getElementById('optGlobalSearch').value.toLowerCase();
-            const minWin = parseFloat(document.getElementById('optMinWin').value);
-            const maxWin = parseFloat(document.getElementById('optMaxWin').value);
-
-            opt_filtered = opt_DATA.filter(row => {
-                if (opt_HEADERS[0] === 'Win Rate %') {
-                    const wr = row[0];
-                    if (!isNaN(minWin) && (wr === null || wr < minWin)) return false;
-                    if (!isNaN(maxWin) && (wr === null || wr > maxWin)) return false;
-                }
-                for (const [ci, fv] of Object.entries(opt_columnFilters)) {
-                    if (fv === '' || fv === null || fv === undefined) continue;
-                    const i = parseInt(ci);
-                    const cell = row[i];
-                    if (opt_BOOL_COLS.has(i)) {
-                        if (String(cell) !== fv) return false;
-                    } else if (opt_NUM_COLS.has(i)) {
-                        const threshold = parseFloat(fv);
-                        if (isNaN(threshold)) continue;
-                        const n = Number(cell);
-                        if (opt_DD_COLS.has(i)) { if (n > threshold) return false; }
-                        else { if (n < threshold) return false; }
-                    } else {
-                        if (!String(cell).toLowerCase().includes(fv.toLowerCase())) return false;
-                    }
-                }
-                if (globalQ && !row.join(' ').toLowerCase().includes(globalQ)) return false;
-                return true;
-            });
-
-            opt_filtered.sort((a, b) => {
-                let va = a[opt_sortCol] ?? -Infinity, vb = b[opt_sortCol] ?? -Infinity;
-                if (typeof va === 'number' && typeof vb === 'number') return opt_sortDir * (va - vb);
-                return opt_sortDir * String(va).localeCompare(String(vb));
-            });
-
-            document.getElementById('optTotalRows').textContent = opt_DATA.length.toLocaleString();
-            document.getElementById('optShownRows').textContent = opt_filtered.length.toLocaleString();
-            opt_totalPages = Math.max(1, Math.ceil(opt_filtered.length / opt_pageSize));
-            if (opt_currentPage >= opt_totalPages) opt_currentPage = 0;
-            opt_renderPage();
-            opt_updateSortIndicators();
-        }
-
-        function opt_getWinColor(wr) {
-            if (wr >= 60) return '#22c55e';
-            if (wr >= 50) return '#eab308';
-            return '#ef4444';
-        }
-
-        function opt_renderPage() {
-            const tbody = document.getElementById('optTbody');
-            const slice = opt_filtered.slice(opt_currentPage * opt_pageSize, (opt_currentPage + 1) * opt_pageSize);
-            tbody.innerHTML = '';
-
-            slice.forEach((row, ri) => {
-                const tr = document.createElement('tr');
-                if (ri % 2 === 1) tr.classList.add('even');
-                row.forEach((val, ci) => {
-                    const td = document.createElement('td');
-                    if (ci === 0 && opt_HEADERS[0] === 'Win Rate %') {
-                        if (val !== null) {
-                            const c = opt_getWinColor(val);
-                            td.innerHTML = `<div class="win-badge"><span style="color:${c}">${val.toFixed(1)}%</span><span class="win-bar-bg"><span class="win-bar-fill" style="width:${Math.min(val,100)}%;background:${c}"></span></span></div>`;
-                        } else td.textContent = '—';
-                    } else if (opt_BOOL_COLS.has(ci)) {
-                        td.innerHTML = val === 'true' ? '<span class="bool-true">✓ true</span>' : '<span class="bool-false">✗ false</span>';
-                    } else if (typeof val === 'number') {
-                        td.textContent = Number.isInteger(val) ? val : parseFloat(val.toFixed(5));
-                        td.style.textAlign = 'right';
-                    } else {
-                        td.textContent = val;
-                    }
-                    tr.appendChild(td);
-                });
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('optBtnFirst').disabled = opt_currentPage === 0;
-            document.getElementById('optBtnPrev').disabled = opt_currentPage === 0;
-            document.getElementById('optBtnNext').disabled = opt_currentPage >= opt_totalPages - 1;
-            document.getElementById('optBtnLast').disabled = opt_currentPage >= opt_totalPages - 1;
-            document.getElementById('optPageInfo').textContent =
-                `Página ${opt_currentPage+1} de ${opt_totalPages} (${opt_filtered.length.toLocaleString()} filas)`;
-        }
-
-        function opt_goPage(p) {
-            if (p < 0 || p >= opt_totalPages) return;
-            opt_currentPage = p;
-            opt_renderPage();
-            document.querySelector('.opt-table-wrap').scrollTop = 0;
-        }
-        function opt_changePageSize() { opt_pageSize = parseInt(document.getElementById('optPageSizeSelect').value); opt_currentPage = 0; opt_renderPage(); }
-        function opt_clearFilters() {
-            document.getElementById('optGlobalSearch').value = '';
-            document.getElementById('optMinWin').value = '';
-            document.getElementById('optMaxWin').value = '';
-            opt_columnFilters = {};
-            document.querySelectorAll('.opt-filter-row input').forEach(el => el.value = '');
-            document.querySelectorAll('.opt-filter-row select').forEach(el => el.value = '');
-            opt_currentPage = 0;
-            opt_applyFilters();
-        }
-        function opt_exportCSV() {
-            const rows = [opt_HEADERS, ...opt_filtered];
-            const csv = rows.map(r => r.map(v =>
-                typeof v === 'string' && (v.includes(',') || v.includes('"')) ? `"${v.replace(/"/g,'""')}"` : v
-            ).join(',')).join('\n');
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
-            a.download = 'optimizer_filtered.csv';
-            a.click();
-        }
-
-        // ── R:R Heatmap ──
-        function opt_buildHeatmap() {
-            const container = document.getElementById('hm-content');
-
-            const wrIdx      = opt_HEADERS.findIndex(h => h === 'Win Rate %');
-            const resultIdx2 = opt_HEADERS.findIndex(h => h.toLowerCase() === 'result');
-            const profitIdx  = opt_HEADERS.findIndex(h => h.toLowerCase() === 'profit');
-            const rrIdx      = opt_HEADERS.findIndex(h => h.toLowerCase() === 'inptpmultiplier');
-            const countIdx   = opt_HEADERS.findIndex(h => h.toLowerCase() === 'trades');
-            const pfIdx      = opt_HEADERS.findIndex(h => /profit.?factor/i.test(h));
-            const ddIdx      = opt_HEADERS.findIndex(h => (/drawdown/i.test(h) || /\bdd\b/i.test(h)) && !/recovery/i.test(h));
-            const rfIdx      = opt_HEADERS.findIndex(h => /recovery.?factor/i.test(h));
-            const sharpeIdx  = opt_HEADERS.findIndex(h => /sharpe/i.test(h));
-
-            if (wrIdx < 0 || profitIdx < 0 || rrIdx < 0) {
-                container.innerHTML = `<div class="hm-no-data">⚠ No se encontraron las columnas requeridas.<br><span style="font-size:11px;color:#64748b">Necesitas: Win Rate %, Profit, InpTPMultiplier</span></div>`;
-                return;
-            }
-
-            const RRS = [];
-            for (let r = 0.5; r <= 10.01; r += 0.5) RRS.push(Math.round(r * 10) / 10);
-
-            const WRS = [];
-            for (let w = 10; w <= 90; w += 2) WRS.push(w);
-
-            const buckets = new Map();
-            opt_DATA.forEach(row => {
-                const wr     = row[wrIdx];
-                const rr     = row[rrIdx];
-                const profit = row[profitIdx];
-                if (wr === null || typeof wr !== 'number' || typeof rr !== 'number' || typeof profit !== 'number') return;
-                const rrSnap = Math.round(rr * 2) / 2;
-                if (rrSnap < 0.5 || rrSnap > 10) return;
-                const wrSnap = Math.round(wr / 2) * 2;
-                if (wrSnap < 10 || wrSnap > 90) return;
-                const key    = rrSnap + '|' + wrSnap;
-                const result = resultIdx2 >= 0 ? row[resultIdx2] : null;
-                const trades = countIdx  >= 0 ? row[countIdx]  : null;
-                const pf     = pfIdx     >= 0 ? row[pfIdx]     : null;
-                const dd     = ddIdx     >= 0 ? row[ddIdx]     : null;
-                const rf     = rfIdx     >= 0 ? row[rfIdx]     : null;
-                const sharpe = sharpeIdx >= 0 ? row[sharpeIdx] : null;
-                if (!buckets.has(key)) buckets.set(key, []);
-                buckets.get(key).push({ profit, result, trades, pf, dd, rf, sharpe });
-            });
-
-            const cellMap = new Map();
-            buckets.forEach((candidates, key) => {
-                const pfs     = candidates.map(c => c.pf).filter(v => typeof v === 'number' && isFinite(v));
-                const rfs     = candidates.map(c => c.rf).filter(v => typeof v === 'number' && isFinite(v));
-                const sharpes = candidates.map(c => c.sharpe).filter(v => typeof v === 'number' && isFinite(v));
-                const dds     = candidates.map(c => c.dd).filter(v => typeof v === 'number' && isFinite(v));
-
-                const minOf = arr => Math.min(...arr);
-                const maxOf = arr => Math.max(...arr);
-                const norm  = (v, lo, hi) => (hi === lo) ? 0.5 : (v - lo) / (hi - lo);
-
-                const pfLo  = minOf(pfs),     pfHi  = maxOf(pfs);
-                const rfLo  = minOf(rfs),     rfHi  = maxOf(rfs);
-                const srLo  = minOf(sharpes), srHi  = maxOf(sharpes);
-                const ddLo  = minOf(dds),     ddHi  = maxOf(dds);
-
-                let best = null, bestScore = -Infinity;
-                candidates.forEach(c => {
-                    let score = 0, count = 0;
-                    if (pfs.length     && typeof c.pf     === 'number') { score += norm(c.pf,     pfLo, pfHi);        count++; }
-                    if (rfs.length     && typeof c.rf     === 'number') { score += norm(c.rf,     rfLo, rfHi);        count++; }
-                    if (sharpes.length && typeof c.sharpe === 'number') { score += norm(c.sharpe, srLo, srHi);        count++; }
-                    if (dds.length     && typeof c.dd     === 'number') { score += norm(ddHi - c.dd + ddLo, ddLo, ddHi); count++; } 
-                    const avg = count > 0 ? score / count : 0;
-                    if (avg > bestScore) { bestScore = avg; best = c; }
-                });
-
-                if (best) cellMap.set(key, best);
-            });
-
-            function getStatus(wr, rr) {
-                const be = 1 / (1 + rr) * 100;
-                const ev = (wr / 100) * rr - (1 - wr / 100);
-                const diff = wr - be;
-                if (Math.abs(diff) <= 1)   return { cls: 'hm-even',     ev, be, label: '~' };
-                if (diff < 0)               return { cls: 'hm-losing',   ev, be, label: '✕' };
-                if (ev < 0.25)              return { cls: 'hm-profit',   ev, be, label: '+' };
-                if (ev < 0.5)               return { cls: 'hm-profit-1', ev, be, label: '++' };
-                if (ev < 1)                 return { cls: 'hm-profit-2', ev, be, label: '+++' };
-                if (ev < 2)                 return { cls: 'hm-profit-3', ev, be, label: '++++' };
-                if (ev < 4)                 return { cls: 'hm-profit-4', ev, be, label: '+++++' };
-                if (ev < 8)                 return { cls: 'hm-profit-5', ev, be, label: '++++++' };
-                return                             { cls: 'hm-profit-6', ev, be, label: '+++++++' };
-            }
-
-            const statusNames = {
-                'hm-losing': 'Losing', 'hm-even': 'Break even', 'hm-profit': 'Profitable',
-                'hm-profit-1': 'Strong', 'hm-profit-2': 'High', 'hm-profit-3': 'Elite',
-                'hm-profit-4': 'Exceptional', 'hm-profit-5': 'Legendary', 'hm-profit-6': 'Godlike'
-            };
-
-            function fmtProfitHM(v) {
-                if (v === undefined || v === null) return '—';
-                const abs = Math.abs(v);
-                const sign = v < 0 ? '-' : '';
-                if (abs >= 1000000) return sign + (abs / 1000000).toFixed(1) + 'M';
-                if (abs >= 1000)    return sign + (abs / 1000).toFixed(1) + 'k';
-                return sign + Math.round(abs);
-            }
-
-            const legendHTML = `
-                <div class="hm-legend">
-                  <span style="font-size:12px;font-weight:700;color:var(--opt-muted);">Status:</span>
-                  <div class="hm-legend-item"><div class="hm-legend-dot hm-losing"></div> Losing</div>
-                  <div class="hm-legend-item"><div class="hm-legend-dot hm-even"></div> Break even</div>
-                  <div class="hm-legend-item"><div class="hm-legend-dot hm-profit"></div> Profitable (0–0.25R)</div>
-                  <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-1"></div> Strong (0.25–0.5R)</div>
-                  <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-2"></div> High (0.5–1R)</div>
-                  <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-3"></div> Elite (1–2R)</div>
-                  <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-4"></div> Exceptional (2–4R)</div>
-                  <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-5"></div> Legendary (4–8R)</div>
-                  <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-6"></div> Godlike (&gt;8R)</div>
-                  <div class="hm-legend-item"><div class="hm-legend-dot hm-empty" style="border:1px solid #374151"></div> Sin datos</div>
-                </div>
-                <div class="hm-info">Color = nivel de esperanza matemática (R:R × Win Rate). Cada celda muestra la mejor fila <em>equilibrada</em> de ese bloque (puntuada usando PF + RF + Sharpe − DD). Pasa el mouse para ver detalles completos.</div>
-            `;
-
-            const table = document.createElement('table');
-            table.className = 'hm-table';
-
-            const headTr = document.createElement('tr');
-            const cornerTh = document.createElement('th');
-            cornerTh.className = 'hm-row-header';
-            cornerTh.textContent = 'R:R \\ WR%';
-            headTr.appendChild(cornerTh);
-            WRS.forEach(w => {
-                const th = document.createElement('th');
-                th.textContent = w + '%';
-                headTr.appendChild(th);
-            });
-            table.appendChild(headTr);
-
-            RRS.forEach(rr => {
-                const tr = document.createElement('tr');
-                const rowTh = document.createElement('th');
-                rowTh.className = 'hm-row-header';
-                rowTh.textContent = '1:' + rr;
-                tr.appendChild(rowTh);
-
-                WRS.forEach(wrBucket => {
-                    const td = document.createElement('td');
-                    const key = rr + '|' + wrBucket;
-                    const cell = cellMap.get(key);
-                    const st = getStatus(wrBucket, rr);
-
-                    const fmtV   = (v, dec=2) => (v !== null && typeof v === 'number') ? v.toFixed(dec) : '—';
-                    const fmtPnl = v => { if (v === null || typeof v !== 'number') return '—'; const s = v >= 0 ? '+' : ''; return s + fmtProfitHM(v); };
-                    const tipRow = (label, val, cls='') => `<tr><td style="color:#9ca3af;padding-right:12px;padding-bottom:2px">${label}</td><td style="font-weight:700${cls ? ';color:'+cls : ''};padding-bottom:2px">${val}</td></tr>`;
-
-                    if (!cell) {
-                        td.className = 'hm-empty';
-                        td.innerHTML = '<div style="text-align:center;color:#374151;font-size:12px;height:100%;display:flex;align-items:center;justify-content:center">—</div>';
-                        td.addEventListener('mousemove', e => {
-                            const tip = document.getElementById('hmTooltip');
-                            tip.style.display = 'block';
-                            tip.style.left = (e.clientX + 16) + 'px';
-                            tip.style.top  = (e.clientY + 16) + 'px';
-                            tip.innerHTML = `<strong>R:R 1:${rr} | WR ~${wrBucket}%</strong><br>No hay datos en este bloque<br><span style="color:#9ca3af">Break-even WR: ${st.be.toFixed(1)}% &nbsp;|&nbsp; EV: ${st.ev >= 0 ? '+' : ''}${st.ev.toFixed(2)}R</span>`;
-                        });
-                    } else {
-                        td.className = st.cls;
-                        const pf_val     = cell.pf     !== null && typeof cell.pf     === 'number' ? cell.pf.toFixed(2)     : '—';
-                        const rf_val     = cell.rf     !== null && typeof cell.rf     === 'number' ? cell.rf.toFixed(2)     : '—';
-                        const sharpe_val = cell.sharpe !== null && typeof cell.sharpe === 'number' ? cell.sharpe.toFixed(2) : '—';
-                        const dd_val     = cell.dd     !== null && typeof cell.dd     === 'number' ? cell.dd.toFixed(1)+'%' : '—';
-                        const profit_abbr = fmtPnl(cell.profit);
-                        const profit_cls  = (cell.profit !== null && typeof cell.profit === 'number' && cell.profit >= 0) ? 'hm-mv-pos' : 'hm-mv-neg';
-                        td.innerHTML = `<div class="hm-cell-grid">
-                            <div class="hm-metric"><span class="hm-ml">P&L</span><span class="hm-mv ${profit_cls}">${profit_abbr}</span></div>
-                            <div class="hm-metric"><span class="hm-ml">PF</span><span class="hm-mv hm-mv-neu">${pf_val}</span></div>
-                            <div class="hm-metric"><span class="hm-ml">RF</span><span class="hm-mv hm-mv-neu">${rf_val}</span></div>
-                            <div class="hm-metric"><span class="hm-ml">SR</span><span class="hm-mv hm-mv-neu">${sharpe_val}</span></div>
-                            <div class="hm-metric"><span class="hm-ml">DD</span><span class="hm-mv hm-mv-dd">${dd_val}</span></div>
-                        </div>`;
-                        td.addEventListener('mousemove', e => {
-                            const tip = document.getElementById('hmTooltip');
-                            const isPos = cell.profit >= 0;
-                            const pnlCol = isPos ? '#4ade80' : '#f87171';
-                            tip.style.display = 'block';
-                            tip.style.left = (e.clientX + 16) + 'px';
-                            tip.style.top  = (e.clientY + 16) + 'px';
-                            tip.innerHTML = `<strong>R:R 1:${rr} | WR ~${wrBucket}%</strong>
-                                <span style="color:#9ca3af;font-size:12px"> &nbsp;|&nbsp; BE: ${st.be.toFixed(1)}% &nbsp;EV: ${st.ev >= 0 ? '+' : ''}${st.ev.toFixed(2)}R &nbsp;→ <strong style="color:#f3f4f6">${statusNames[st.cls]}</strong></span>
-                                <div style="margin-top:10px;border-top:1px solid #374151;padding-top:10px">
-                                    <div style="font-size:12px;font-weight:700;color:#d1d5db;margin-bottom:8px">⚖ Mejor Fila Equilibrada</div>
-                                    <table style="border-collapse:collapse;font-size:12px;width:100%;">
-                                        ${tipRow('Profit',          fmtPnl(cell.profit),   pnlCol)}
-                                        ${cell.result !== null && typeof cell.result === 'number' ? tipRow('Result', cell.result.toFixed(2), '#f3f4f6') : ''}
-                                        ${cell.pf     !== null ? tipRow('Profit Factor',   fmtV(cell.pf),         '#93c5fd') : ''}
-                                        ${cell.rf     !== null ? tipRow('Recovery Factor', fmtV(cell.rf),         '#93c5fd') : ''}
-                                        ${cell.sharpe !== null ? tipRow('Sharpe Ratio',    fmtV(cell.sharpe),     '#93c5fd') : ''}
-                                        ${cell.dd     !== null ? tipRow('Equity DD %',     fmtV(cell.dd) + '%',   '#f87171') : ''}
-                                        ${cell.trades !== null ? tipRow('Trades',          cell.trades,           '')        : ''}
-                                    </table>
-                                </div>`;
-                        });
-                    }
-
-                    td.addEventListener('mouseleave', () => { document.getElementById('hmTooltip').style.display = 'none'; });
-                    tr.appendChild(td);
-                });
-
-                table.appendChild(tr);
-            });
-
-            container.innerHTML = legendHTML;
-            const gridWrap = document.createElement('div');
-            gridWrap.className = 'hm-grid-wrap opt-scrollbar';
-            gridWrap.appendChild(table);
-            container.appendChild(gridWrap);
-        }
-
         // --- MOTOR DE DRAG AND DROP (ARRASTRAR Y SOLTAR) GLOBAL ---
+        // ==========================================
         let dragCounter = 0;
         
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
@@ -2671,7 +2663,6 @@
 
             let activeTab = 'dashboard';
             if(!document.getElementById('view-comparator').classList.contains('hidden')) activeTab = 'comparator';
-            if(!document.getElementById('view-optimizer').classList.contains('hidden')) activeTab = 'optimizer';
 
             if (activeTab === 'dashboard') {
                 let classicFiles = files.filter(f => f.name.match(/\.(xlsx|xls)$/i));
@@ -2685,15 +2676,6 @@
                 if(classicFiles.length) handleComparatorClassicFiles(classicFiles);
                 if(graphFiles.length) handleComparatorGraphFiles(graphFiles);
             } 
-            else if (activeTab === 'optimizer') {
-                // El nuevo optimizador solo soporta archivos .xml
-                let xmlFiles = files.filter(f => f.name.match(/\.(xml)$/i));
-                if(xmlFiles.length) {
-                    opt_handleFile(xmlFiles[0]); // Procesa de uno en uno en el nuevo visualizador
-                } else {
-                    alert("Por favor, suelta un archivo XML (.xml) generado por el Optimizador de MetaTrader.");
-                }
-            }
         });
 
     </script>
