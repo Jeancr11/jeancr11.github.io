@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Optimizer Results Viewer</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --border: #2a2d3a;
+    --accent: #4f8ef7;
+    --text: #e2e8f0;
+    --muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; }
+
+  #uploadScreen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 40px;
+  }
+  #uploadScreen h1 { font-size: 22px; font-weight: 700; color: var(--accent); }
+  #uploadScreen p { color: var(--muted); font-size: 14px; text-align: center; max-width: 420px; line-height: 1.6; }
+  .drop-zone {
+    width: 420px;
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 48px 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--surface);
+  }
+  .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: rgba(79,142,247,0.07); }
+  .drop-zone .icon { font-size: 48px; margin-bottom: 12px; }
+  .drop-zone .label { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .drop-zone .sub { font-size: 12px; color: var(--muted); }
+  #fileInput { display: none; }
+  .btn-upload {
+    margin-top: 12px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-upload:hover { opacity: 0.85; }
+  #uploadError {
+    color: #ef4444;
+    font-size: 13px;
+    display: none;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 8px;
+    padding: 10px 16px;
+    max-width: 420px;
+    text-align: center;
+  }
+  #loadingMsg { display: none; flex-direction: column; align-items: center; gap: 12px; color: var(--muted); font-size: 14px; }
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  #appScreen { display: none; }
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  header h1 { font-size: 15px; font-weight: 700; color: var(--accent); }
+  header .meta { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .btn-reload {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 5px 14px;
+    cursor: pointer;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .btn-reload:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── Tabs ── */
+  .tab-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    gap: 0;
+  }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── Results tab ── */
+  .toolbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .toolbar label { font-size: 12px; color: var(--muted); }
+  .toolbar input, .toolbar select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    outline: none;
+  }
+  .toolbar input:focus, .toolbar select:focus { border-color: var(--accent); }
+  .toolbar .sep { width: 1px; height: 22px; background: var(--border); }
+  .toolbar button {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 5px 12px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-export { background: var(--accent) !important; border: none !important; color: #fff !important; }
+  .btn-export:hover { opacity: 0.85; color: #fff !important; }
+
+  .stats-bar {
+    background: var(--bg);
+    padding: 6px 20px;
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .stats-bar span b { color: var(--text); }
+
+  .table-wrap { overflow: auto; max-height: calc(100vh - 215px); }
+  table { border-collapse: collapse; width: 100%; }
+  thead { position: sticky; top: 0; z-index: 10; background: var(--surface); }
+  th {
+    padding: 7px 10px;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-right: 1px solid var(--border);
+    border-bottom: 2px solid var(--border);
+  }
+  th:hover { color: var(--accent); background: rgba(79,142,247,0.07); }
+  th.sort-asc::after { content: ' ▲'; color: var(--accent); font-size: 10px; }
+  th.sort-desc::after { content: ' ▼'; color: var(--accent); font-size: 10px; }
+  th.win-col { background: rgba(34,197,94,0.06); }
+  th.dd-col { background: rgba(239,68,68,0.06); }
+
+  .filter-row th {
+    padding: 4px 5px;
+    background: var(--bg);
+    cursor: default;
+    border-bottom: 1px solid var(--border);
+  }
+  .filter-row th:hover { background: var(--bg); color: var(--muted); }
+  .filter-row input, .filter-row select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 4px;
+    padding: 3px 5px;
+    font-size: 11px;
+    outline: none;
+  }
+  .filter-row input:focus, .filter-row select:focus { border-color: var(--accent); }
+  .filter-row input.dd-input { border-color: rgba(239,68,68,0.4); }
+  .filter-row input.dd-input:focus { border-color: #ef4444; }
+  .filter-row input.min-input { border-color: rgba(79,142,247,0.35); }
+  .filter-row input.min-input:focus { border-color: var(--accent); }
+
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:hover { background: rgba(79,142,247,0.06); }
+  tbody tr.even { background: rgba(255,255,255,0.02); }
+  tbody tr.even:hover { background: rgba(79,142,247,0.06); }
+  td {
+    padding: 5px 10px;
+    white-space: nowrap;
+    border-right: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+  }
+  .win-badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 12px; }
+  .win-bar-bg { display: inline-block; width: 46px; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; vertical-align: middle; }
+  .win-bar-fill { height: 100%; border-radius: 3px; }
+  .bool-true { color: #22c55e; font-weight: 600; }
+  .bool-false { color: #ef4444; font-weight: 600; }
+
+  .pagination {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; padding: 10px;
+    background: var(--surface); border-top: 1px solid var(--border);
+    position: sticky; bottom: 0;
+  }
+  .pagination button {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    border-radius: 6px; padding: 5px 12px; cursor: pointer; font-size: 12px;
+  }
+  .pagination button:hover { border-color: var(--accent); color: var(--accent); }
+  .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
+  .pagination .page-info { color: var(--muted); font-size: 12px; min-width: 160px; text-align: center; }
+  .pagination select {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    border-radius: 6px; padding: 5px 8px; font-size: 12px; outline: none; cursor: pointer;
+  }
+
+  /* ── Heatmap Tab ── */
+  #tab-heatmap {
+    padding: 16px 20px;
+    overflow: auto;
+    max-height: calc(100vh - 130px);
+  }
+  .hm-legend {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .hm-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .hm-legend-dot {
+    width: 11px; height: 11px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .hm-info {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .hm-no-data {
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+    margin-top: 60px;
+  }
+  .hm-grid-wrap { overflow-x: auto; }
+  .hm-table { border-collapse: collapse; font-size: 9px; }
+  .hm-table th {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--muted);
+    padding: 3px 4px;
+    white-space: nowrap;
+    text-align: center;
+    border: none;
+    background: transparent;
+    cursor: default;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .hm-table th.hm-row-header {
+    text-align: right;
+    padding-right: 8px;
+    font-size: 10px;
+    color: var(--text);
+    min-width: 48px;
+    font-weight: 600;
+  }
+  .hm-table td {
+    width: 82px;
+    height: 82px;
+    text-align: left;
+    vertical-align: top;
+    font-size: 8px;
+    font-weight: 600;
+    border: 1px solid #0f1117;
+    cursor: default;
+    padding: 2px 3px;
+    overflow: hidden;
+    font-variant-numeric: tabular-nums;
+    display: table-cell;
+  }
+  .hm-cell-grid { display: flex; flex-direction: column; gap: 1px; }
+  .hm-metric { display: flex; justify-content: space-between; gap: 3px; line-height: 1.5; }
+  .hm-ml { color: rgba(255,255,255,0.38); font-size: 7px; font-weight: 500; flex-shrink: 0; }
+  .hm-mv { font-size: 7.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .hm-mv-pos { color: #86efac; }
+  .hm-mv-neg { color: #f87171; }
+  .hm-mv-dd  { color: #fca5a5; }
+  .hm-mv-neu { color: #93c5fd; }
+  .hm-table td:hover { outline: 1.5px solid #e2e8f0; outline-offset: -1px; position: relative; z-index: 2; opacity: 0.85; }
+
+  /* ── Result tier – left border accent (10 grades) ── */
+  .hm-res-f   { border-left: 3px solid #374151 !important; }
+  .hm-res-e   { border-left: 3px solid #7f1d1d !important; }
+  .hm-res-d   { border-left: 3px solid #c2410c !important; }
+  .hm-res-c   { border-left: 3px solid #b45309 !important; }
+  .hm-res-b   { border-left: 3px solid #166534 !important; }
+  .hm-res-a   { border-left: 3px solid #155e75 !important; }
+  .hm-res-s   { border-left: 3px solid #1d4ed8 !important; }
+  .hm-res-ss  { border-left: 3px solid #5b21b6 !important; }
+  .hm-res-sss { border-left: 3px solid #9d174d !important; }
+  .hm-res-z   { border-left: 3px solid #b45309 !important; }
+
+  /* ── Result tier – value text colors ── */
+  .hm-mv-res-f   { color: #6b7280; }
+  .hm-mv-res-e   { color: #fca5a5; }
+  .hm-mv-res-d   { color: #fb923c; }
+  .hm-mv-res-c   { color: #fcd34d; }
+  .hm-mv-res-b   { color: #86efac; }
+  .hm-mv-res-a   { color: #67e8f9; }
+  .hm-mv-res-s   { color: #93c5fd; }
+  .hm-mv-res-ss  { color: #c4b5fd; }
+  .hm-mv-res-sss { color: #f9a8d4; }
+  .hm-mv-res-z   { color: #fef08a; }
+
+  /* ── Grade badge colors ── */
+  .hm-grade-f   { color: #6b7280; }
+  .hm-grade-e   { color: #fca5a5; }
+  .hm-grade-d   { color: #fb923c; }
+  .hm-grade-c   { color: #fcd34d; }
+  .hm-grade-b   { color: #86efac; }
+  .hm-grade-a   { color: #67e8f9; }
+  .hm-grade-s   { color: #93c5fd; }
+  .hm-grade-ss  { color: #c4b5fd; }
+  .hm-grade-sss { color: #f9a8d4; }
+  .hm-grade-z   { color: #fef08a; text-shadow: 0 0 8px rgba(254,240,138,0.7); }
+
+  /* ── Sub-threshold dim ── */
+  .hm-dim { opacity: 0.28; }
+  .hm-dim:hover { opacity: 0.6; }
+
+  /* ── Result fill bar (top of cell) ── */
+  .hm-res-bar { width: 100%; height: 2px; background: rgba(255,255,255,0.06); margin-bottom: 2px; border-radius: 1px; overflow: hidden; }
+  .hm-res-bar-fill { height: 100%; border-radius: 1px; }
+  .hm-res-bar-fill.hm-res-f   { background: #374151; }
+  .hm-res-bar-fill.hm-res-e   { background: #7f1d1d; }
+  .hm-res-bar-fill.hm-res-d   { background: #c2410c; }
+  .hm-res-bar-fill.hm-res-c   { background: #b45309; }
+  .hm-res-bar-fill.hm-res-b   { background: #166534; }
+  .hm-res-bar-fill.hm-res-a   { background: #155e75; }
+  .hm-res-bar-fill.hm-res-s   { background: #1d4ed8; }
+  .hm-res-bar-fill.hm-res-ss  { background: #5b21b6; }
+  .hm-res-bar-fill.hm-res-sss { background: #9d174d; }
+  .hm-res-bar-fill.hm-res-z   { background: #b45309; }
+
+  /* ── Cell body layout (metrics + grade badge) ── */
+  .hm-cell-body { display: flex; align-items: stretch; gap: 2px; flex: 1; }
+  .hm-cell-grade-col { width: 24px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-left: 1px solid rgba(255,255,255,0.07); padding-left: 2px; }
+  .hm-grade-badge { font-weight: 900; text-align: center; line-height: 1; letter-spacing: -0.5px; }
+
+  /* ── RES row separator ── */
+  .hm-metric-result { border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 2px; margin-bottom: 1px; }
+
+  /* Status colors – dark-theme tuned */
+  .hm-empty    { background: #1a1d27; color: #2a2d3a; }
+  .hm-losing   { background: #5a1a1a; color: #f87171; }
+  .hm-even     { background: #2a2d3a; color: #94a3b8; }
+  .hm-profit   { background: #1a2e0f; color: #86efac; }
+  .hm-profit-1 { background: #1e3d10; color: #4ade80; }
+  .hm-profit-2 { background: #166534; color: #86efac; }
+  .hm-profit-3 { background: #15803d; color: #dcfce7; }
+  .hm-profit-4 { background: #16a34a; color: #f0fdf4; }
+  .hm-profit-5 { background: #0e7a5a; color: #ccfbf1; }
+  .hm-profit-6 { background: #065f46; color: #99f6e4; }
+
+  .hm-tooltip {
+    position: fixed;
+    background: #1a1d27;
+    border: 1px solid #2a2d3a;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #e2e8f0;
+    pointer-events: none;
+    z-index: 9999;
+    display: none;
+    line-height: 1.7;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  }
+  .hm-tooltip strong { color: #4f8ef7; }
+  .hm-tooltip .tt-profit { font-size: 13px; font-weight: 700; }
+  .hm-tooltip .tt-pos { color: #4ade80; }
+  .hm-tooltip .tt-neg { color: #f87171; }
+</style>
+</head>
+<body>
+
+<div id="uploadScreen">
+  <div style="text-align:center">
+    <h1>📊 Optimizer Results Viewer</h1>
+    <p>Upload a MetaTrader optimizer XML export to explore, sort, and filter all parameter combinations.</p>
+  </div>
+  <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+    <div class="icon">📂</div>
+    <div class="label">Drop your XML file here</div>
+    <div class="sub">or click to browse</div>
+    <button class="btn-upload" onclick="event.stopPropagation(); document.getElementById('fileInput').click()">Choose File</button>
+  </div>
+  <input type="file" id="fileInput" accept=".xml">
+  <div id="uploadError"></div>
+  <div id="loadingMsg">
+    <div class="spinner"></div>
+    <span id="loadingText">Parsing file…</span>
+  </div>
+</div>
+
+<div id="appScreen">
+  <header>
+    <div>
+      <h1 id="appTitle">Optimizer Results</h1>
+      <div class="meta" id="appMeta"></div>
+    </div>
+    <button class="btn-reload" onclick="resetToUpload()">⬆ Load New File</button>
+  </header>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tabBtnResults" onclick="switchTab('results')">📋 Results Table</button>
+    <button class="tab-btn" id="tabBtnHeatmap" onclick="switchTab('heatmap')">🗺 R:R Heatmap</button>
+  </div>
+
+  <!-- Results Tab -->
+  <div id="tab-results">
+    <div class="toolbar">
+      <label>Search:</label>
+      <input type="text" id="globalSearch" placeholder="Any value…" style="width:180px">
+      <div class="sep"></div>
+      <label>Win Rate:</label>
+      <input type="number" id="minWin" placeholder="min %" min="0" max="100" style="width:72px">
+      <span style="color:var(--muted)">–</span>
+      <input type="number" id="maxWin" placeholder="max %" min="0" max="100" style="width:72px">
+      <div class="sep"></div>
+      <button onclick="clearFilters()">✕ Clear</button>
+      <button class="btn-export" onclick="exportCSV()">⬇ Export CSV</button>
+    </div>
+
+    <div class="stats-bar">
+      <span>Total: <b id="totalRows">0</b></span>
+      <span>Showing: <b id="shownRows">0</b></span>
+      <span>Sorted by: <b id="sortInfo">—</b></span>
+    </div>
+
+    <div class="table-wrap">
+      <table id="mainTable">
+        <thead>
+          <tr id="headerRow"></tr>
+          <tr class="filter-row" id="filterRow"></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <button id="btnFirst" onclick="goPage(0)">«</button>
+      <button id="btnPrev" onclick="goPage(currentPage-1)">‹</button>
+      <div class="page-info" id="pageInfo"></div>
+      <button id="btnNext" onclick="goPage(currentPage+1)">›</button>
+      <button id="btnLast" onclick="goPage(totalPages-1)">»</button>
+      <label style="color:var(--muted);font-size:12px;margin-left:12px">Rows/page:</label>
+      <select id="pageSizeSelect" onchange="changePageSize()">
+        <option value="50">50</option>
+        <option value="100" selected>100</option>
+        <option value="200">200</option>
+        <option value="500">500</option>
+        <option value="999999">All</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Heatmap Tab -->
+  <div id="tab-heatmap" style="display:none">
+    <div id="hm-content">
+      <div class="hm-no-data">Load an XML file to see the heatmap.</div>
+    </div>
+  </div>
+</div>
+
+<div class="hm-tooltip" id="hmTooltip"></div>
+
+<script>
+let HEADERS = [], DATA = [], NUM_COLS = new Set(), BOOL_COLS = new Set(), DD_COLS = new Set();
+let sortCol = 0, sortDir = -1, currentPage = 0, pageSize = 100, totalPages = 1;
+let filtered = [], columnFilters = {};
+
+const DD_PATTERNS = [/drawdown/i, /dd/i, /equity.?dd/i, /max.?dd/i, /risk/i, /loss/i];
+function isDrawdownCol(name) { return DD_PATTERNS.some(p => p.test(name)); }
+
+// ── Tab switching ──
+function switchTab(tab) {
+  document.getElementById('tab-results').style.display = tab === 'results' ? 'block' : 'none';
+  document.getElementById('tab-heatmap').style.display  = tab === 'heatmap'  ? 'block' : 'none';
+  document.getElementById('tabBtnResults').classList.toggle('active', tab === 'results');
+  document.getElementById('tabBtnHeatmap').classList.toggle('active', tab === 'heatmap');
+}
+
+// ── Upload / Drop ──
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f) handleFile(f); });
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+function showError(msg) {
+  const el = document.getElementById('uploadError');
+  el.textContent = '⚠ ' + msg;
+  el.style.display = 'block';
+  document.getElementById('loadingMsg').style.display = 'none';
+}
+
+function handleFile(file) {
+  document.getElementById('uploadError').style.display = 'none';
+  if (!file.name.toLowerCase().endsWith('.xml')) { showError('Please upload an XML file (.xml)'); return; }
+  document.getElementById('loadingMsg').style.display = 'flex';
+  document.getElementById('loadingText').textContent = 'Reading file…';
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('loadingText').textContent = 'Parsing XML…';
+    setTimeout(() => parseXML(e.target.result, file.name), 30);
+  };
+  reader.onerror = () => showError('Could not read file.');
+  reader.readAsText(file, 'UTF-8');
+}
+
+function parseXML(text, filename) {
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'application/xml');
+    if (doc.querySelector('parsererror')) { showError('Invalid XML file.'); return; }
+
+    const getDocProp = tag => doc.querySelector(tag)?.textContent || '';
+    const title = getDocProp('Title') || filename;
+    const deposit = getDocProp('Deposit');
+    const leverage = getDocProp('Leverage');
+    const server = getDocProp('Server');
+
+    const rows = Array.from(doc.querySelectorAll('Row'));
+    if (rows.length < 2) { showError('No data rows found in this XML.'); return; }
+
+    document.getElementById('loadingText').textContent = `Processing ${rows.length.toLocaleString()} rows…`;
+
+    const rawHeaders = Array.from(rows[0].querySelectorAll('Cell')).map(c => c.querySelector('Data')?.textContent || '');
+    if (!rawHeaders.length) { showError('Could not find column headers.'); return; }
+
+    const rawData = [];
+    for (let i = 1; i < rows.length; i++) {
+      const cells = Array.from(rows[i].querySelectorAll('Cell'));
+      rawData.push(cells.map(cell => {
+        const d = cell.querySelector('Data');
+        if (!d) return '';
+        const val = d.textContent;
+        const type = d.getAttribute('ss:Type') || d.getAttributeNS('urn:schemas-microsoft-com:office:spreadsheet','Type') || '';
+        if (type === 'Number') { const n = parseFloat(val); return isNaN(n) ? val : n; }
+        return val;
+      }));
+    }
+
+    const resultIdx = rawHeaders.findIndex(h => h.toLowerCase() === 'result');
+
+    if (resultIdx >= 0) {
+      HEADERS = ['Win Rate %', ...rawHeaders];
+      DATA = rawData.map(row => {
+        const result = row[resultIdx];
+        const wr = typeof result === 'number' ? parseFloat(((result % 1) * 100).toFixed(4)) : null;
+        return [wr, ...row];
+      });
+    } else {
+      HEADERS = rawHeaders;
+      DATA = rawData;
+    }
+
+    NUM_COLS = new Set();
+    BOOL_COLS = new Set();
+    DD_COLS = new Set();
+
+    HEADERS.forEach((h, i) => {
+      if (i === 0 && resultIdx >= 0) { NUM_COLS.add(0); return; }
+      for (let r = 0; r < Math.min(20, DATA.length); r++) {
+        const v = DATA[r][i];
+        if (typeof v === 'number') { NUM_COLS.add(i); break; }
+        if (v === 'true' || v === 'false') { BOOL_COLS.add(i); break; }
+      }
+      if (NUM_COLS.has(i) && isDrawdownCol(h)) DD_COLS.add(i);
+    });
+
+    sortCol = 0; sortDir = -1; currentPage = 0; pageSize = 100;
+    columnFilters = {};
+
+    document.getElementById('appTitle').textContent = '📊 ' + title;
+    document.getElementById('appMeta').textContent = [
+      deposit ? 'Deposit: ' + deposit : '',
+      leverage ? 'Leverage: 1:' + leverage : '',
+      server ? 'Server: ' + server : '',
+      rawData.length.toLocaleString() + ' passes'
+    ].filter(Boolean).join('  |  ');
+
+    document.getElementById('uploadScreen').style.display = 'none';
+    document.getElementById('appScreen').style.display = 'block';
+
+    buildHeaders();
+    applyFilters();
+    buildHeatmap();
+
+  } catch(err) { showError('Unexpected error: ' + err.message); }
+}
+
+function resetToUpload() {
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('uploadScreen').style.display = 'flex';
+  document.getElementById('uploadError').style.display = 'none';
+  document.getElementById('loadingMsg').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+  HEADERS = []; DATA = [];
+  switchTab('results');
+}
+
+// ── Table Building ──
+function buildHeaders() {
+  const hr = document.getElementById('headerRow');
+  const fr = document.getElementById('filterRow');
+  hr.innerHTML = ''; fr.innerHTML = '';
+
+  HEADERS.forEach((h, i) => {
+    const th = document.createElement('th');
+    th.textContent = h === 'Win Rate %' ? '🏆 Win Rate' : h;
+    th.dataset.col = i;
+    if (i === 0 && h === 'Win Rate %') th.classList.add('win-col');
+    if (DD_COLS.has(i)) th.classList.add('dd-col');
+    th.onclick = () => sortBy(i);
+    hr.appendChild(th);
+
+    const tf = document.createElement('th');
+
+    if (BOOL_COLS.has(i)) {
+      const sel = document.createElement('select');
+      sel.innerHTML = '<option value="">All</option><option value="true">✓ true</option><option value="false">✗ false</option>';
+      sel.dataset.col = i;
+      sel.oninput = () => { columnFilters[i] = sel.value; currentPage = 0; applyFilters(); };
+      tf.appendChild(sel);
+    } else if (NUM_COLS.has(i)) {
+      const inp = document.createElement('input');
+      inp.type = 'number';
+      inp.step = 'any';
+      inp.dataset.col = i;
+      if (DD_COLS.has(i)) {
+        inp.placeholder = '≤ max';
+        inp.classList.add('dd-input');
+        inp.title = 'Show rows where ' + h + ' is ≤ this value';
+      } else {
+        inp.placeholder = '≥ min';
+        inp.classList.add('min-input');
+        inp.title = 'Show rows where ' + h + ' is ≥ this value';
+      }
+      inp.oninput = () => { columnFilters[i] = inp.value.trim(); currentPage = 0; applyFilters(); };
+      tf.appendChild(inp);
+    } else {
+      const inp = document.createElement('input');
+      inp.type = 'text';
+      inp.placeholder = '…';
+      inp.dataset.col = i;
+      inp.oninput = () => { columnFilters[i] = inp.value.trim(); currentPage = 0; applyFilters(); };
+      tf.appendChild(inp);
+    }
+
+    fr.appendChild(tf);
+  });
+  updateSortIndicators();
+}
+
+// ── Sorting & Filtering ──
+function sortBy(col) {
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = -1; }
+  currentPage = 0;
+  applyFilters();
+}
+
+function updateSortIndicators() {
+  document.querySelectorAll('#headerRow th').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (parseInt(th.dataset.col) === sortCol)
+      th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+  });
+  document.getElementById('sortInfo').textContent =
+    (HEADERS[sortCol] || '') + (sortDir === 1 ? ' ▲' : ' ▼');
+}
+
+function applyFilters() {
+  const globalQ = document.getElementById('globalSearch').value.toLowerCase();
+  const minWin = parseFloat(document.getElementById('minWin').value);
+  const maxWin = parseFloat(document.getElementById('maxWin').value);
+
+  filtered = DATA.filter(row => {
+    if (HEADERS[0] === 'Win Rate %') {
+      const wr = row[0];
+      if (!isNaN(minWin) && (wr === null || wr < minWin)) return false;
+      if (!isNaN(maxWin) && (wr === null || wr > maxWin)) return false;
+    }
+    for (const [ci, fv] of Object.entries(columnFilters)) {
+      if (fv === '' || fv === null || fv === undefined) continue;
+      const i = parseInt(ci);
+      const cell = row[i];
+      if (BOOL_COLS.has(i)) {
+        if (String(cell) !== fv) return false;
+      } else if (NUM_COLS.has(i)) {
+        const threshold = parseFloat(fv);
+        if (isNaN(threshold)) continue;
+        const n = Number(cell);
+        if (DD_COLS.has(i)) { if (n > threshold) return false; }
+        else { if (n < threshold) return false; }
+      } else {
+        if (!String(cell).toLowerCase().includes(fv.toLowerCase())) return false;
+      }
+    }
+    if (globalQ && !row.join(' ').toLowerCase().includes(globalQ)) return false;
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    let va = a[sortCol] ?? -Infinity, vb = b[sortCol] ?? -Infinity;
+    if (typeof va === 'number' && typeof vb === 'number') return sortDir * (va - vb);
+    return sortDir * String(va).localeCompare(String(vb));
+  });
+
+  document.getElementById('totalRows').textContent = DATA.length.toLocaleString();
+  document.getElementById('shownRows').textContent = filtered.length.toLocaleString();
+  totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  if (currentPage >= totalPages) currentPage = 0;
+  renderPage();
+  updateSortIndicators();
+}
+
+// ── Rendering ──
+function getWinColor(wr) {
+  if (wr >= 60) return '#22c55e';
+  if (wr >= 50) return '#eab308';
+  return '#ef4444';
+}
+
+function renderPage() {
+  const tbody = document.getElementById('tbody');
+  const slice = filtered.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
+  tbody.innerHTML = '';
+
+  slice.forEach((row, ri) => {
+    const tr = document.createElement('tr');
+    if (ri % 2 === 1) tr.classList.add('even');
+    row.forEach((val, ci) => {
+      const td = document.createElement('td');
+      if (ci === 0 && HEADERS[0] === 'Win Rate %') {
+        if (val !== null) {
+          const c = getWinColor(val);
+          td.innerHTML = `<div class="win-badge"><span style="color:${c}">${val.toFixed(1)}%</span><span class="win-bar-bg"><span class="win-bar-fill" style="width:${Math.min(val,100)}%;background:${c}"></span></span></div>`;
+        } else td.textContent = '—';
+      } else if (BOOL_COLS.has(ci)) {
+        td.innerHTML = val === 'true' ? '<span class="bool-true">✓ true</span>' : '<span class="bool-false">✗ false</span>';
+      } else if (typeof val === 'number') {
+        td.textContent = Number.isInteger(val) ? val : parseFloat(val.toFixed(5));
+        td.style.textAlign = 'right';
+      } else {
+        td.textContent = val;
+      }
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('btnFirst').disabled = currentPage === 0;
+  document.getElementById('btnPrev').disabled = currentPage === 0;
+  document.getElementById('btnNext').disabled = currentPage >= totalPages - 1;
+  document.getElementById('btnLast').disabled = currentPage >= totalPages - 1;
+  document.getElementById('pageInfo').textContent =
+    `Page ${currentPage+1} of ${totalPages} (${filtered.length.toLocaleString()} rows)`;
+}
+
+function goPage(p) {
+  if (p < 0 || p >= totalPages) return;
+  currentPage = p;
+  renderPage();
+  document.querySelector('.table-wrap').scrollTop = 0;
+}
+function changePageSize() { pageSize = parseInt(document.getElementById('pageSizeSelect').value); currentPage = 0; renderPage(); }
+function clearFilters() {
+  document.getElementById('globalSearch').value = '';
+  document.getElementById('minWin').value = '';
+  document.getElementById('maxWin').value = '';
+  columnFilters = {};
+  document.querySelectorAll('.filter-row input').forEach(el => el.value = '');
+  document.querySelectorAll('.filter-row select').forEach(el => el.value = '');
+  currentPage = 0;
+  applyFilters();
+}
+function exportCSV() {
+  const rows = [HEADERS, ...filtered];
+  const csv = rows.map(r => r.map(v =>
+    typeof v === 'string' && (v.includes(',') || v.includes('"')) ? `"${v.replace(/"/g,'""')}"` : v
+  ).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+  a.download = 'optimizer_filtered.csv';
+  a.click();
+}
+
+document.getElementById('globalSearch').oninput = () => { currentPage = 0; applyFilters(); };
+document.getElementById('minWin').oninput = () => { currentPage = 0; applyFilters(); };
+document.getElementById('maxWin').oninput = () => { currentPage = 0; applyFilters(); };
+
+// ── R:R Heatmap ──
+function buildHeatmap() {
+  const container = document.getElementById('hm-content');
+
+  // Find needed column indices
+  const wrIdx     = HEADERS.findIndex(h => h === 'Win Rate %');
+  const resultIdx2 = HEADERS.findIndex(h => h.toLowerCase() === 'result');
+  const profitIdx = HEADERS.findIndex(h => h.toLowerCase() === 'profit');
+  const rrIdx     = HEADERS.findIndex(h => h.toLowerCase() === 'inptpmultiplier');
+  const countIdx  = HEADERS.findIndex(h => h.toLowerCase() === 'trades');
+  const pfIdx     = HEADERS.findIndex(h => /profit.?factor/i.test(h));
+  const ddIdx     = HEADERS.findIndex(h => (/drawdown/i.test(h) || /\bdd\b/i.test(h)) && !/recovery/i.test(h));
+  const rfIdx     = HEADERS.findIndex(h => /recovery.?factor/i.test(h));
+  const sharpeIdx = HEADERS.findIndex(h => /sharpe/i.test(h));
+
+  if (wrIdx < 0 || profitIdx < 0 || rrIdx < 0) {
+    container.innerHTML = `<div class="hm-no-data">⚠ Could not find required columns.<br><span style="font-size:11px;color:#64748b">Need: Win Rate %, Profit, InpTPMultiplier</span></div>`;
+    return;
+  }
+
+  // Axes
+  const RRS = [];
+  for (let r = 0.5; r <= 10.01; r += 0.5) RRS.push(Math.round(r * 10) / 10);
+
+  const WRS = [];
+  for (let w = 10; w <= 90; w += 2) WRS.push(w);
+
+  // ── Two-pass balanced scoring ──────────────────────────────────────────────
+  // Pass 1: bucket all candidates
+  const buckets = new Map();
+  DATA.forEach(row => {
+    const wr     = row[wrIdx];
+    const rr     = row[rrIdx];
+    const profit = row[profitIdx];
+    if (wr === null || typeof wr !== 'number' || typeof rr !== 'number' || typeof profit !== 'number') return;
+    const rrSnap = Math.round(rr * 2) / 2;
+    if (rrSnap < 0.5 || rrSnap > 10) return;
+    const wrSnap = Math.round(wr / 2) * 2;
+    if (wrSnap < 10 || wrSnap > 90) return;
+    const key    = rrSnap + '|' + wrSnap;
+    const result = resultIdx2 >= 0 ? row[resultIdx2] : null;
+    const trades = countIdx  >= 0 ? row[countIdx]  : null;
+    const pf     = pfIdx     >= 0 ? row[pfIdx]     : null;
+    const dd     = ddIdx     >= 0 ? row[ddIdx]     : null;
+    const rf     = rfIdx     >= 0 ? row[rfIdx]     : null;
+    const sharpe = sharpeIdx >= 0 ? row[sharpeIdx] : null;
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key).push({ profit, result, trades, pf, dd, rf, sharpe });
+  });
+
+  // Pass 2: per-bucket min-max normalise → composite score → pick winner
+  const cellMap = new Map();
+  buckets.forEach((candidates, key) => {
+    // collect finite values for each metric
+    const pfs     = candidates.map(c => c.pf).filter(v => typeof v === 'number' && isFinite(v));
+    const rfs     = candidates.map(c => c.rf).filter(v => typeof v === 'number' && isFinite(v));
+    const sharpes = candidates.map(c => c.sharpe).filter(v => typeof v === 'number' && isFinite(v));
+    const dds     = candidates.map(c => c.dd).filter(v => typeof v === 'number' && isFinite(v));
+
+    const minOf = arr => Math.min(...arr);
+    const maxOf = arr => Math.max(...arr);
+    const norm  = (v, lo, hi) => (hi === lo) ? 0.5 : (v - lo) / (hi - lo);
+
+    const pfLo  = minOf(pfs),     pfHi  = maxOf(pfs);
+    const rfLo  = minOf(rfs),     rfHi  = maxOf(rfs);
+    const srLo  = minOf(sharpes), srHi  = maxOf(sharpes);
+    const ddLo  = minOf(dds),     ddHi  = maxOf(dds);
+
+    let best = null, bestScore = -Infinity;
+    candidates.forEach(c => {
+      let score = 0, count = 0;
+      if (pfs.length     && typeof c.pf     === 'number') { score += norm(c.pf,     pfLo, pfHi);        count++; }
+      if (rfs.length     && typeof c.rf     === 'number') { score += norm(c.rf,     rfLo, rfHi);        count++; }
+      if (sharpes.length && typeof c.sharpe === 'number') { score += norm(c.sharpe, srLo, srHi);        count++; }
+      if (dds.length     && typeof c.dd     === 'number') { score += norm(ddHi - c.dd + ddLo, ddLo, ddHi); count++; } // invert DD
+      const avg = count > 0 ? score / count : 0;
+      if (avg > bestScore) { bestScore = avg; best = c; }
+    });
+
+    if (best) cellMap.set(key, best);
+  });
+
+  // Result grades: F(<200), E(200-400), D(400-600), C(600-800), B(800-1000),
+  //                A(1000-1150), S(1150-1300), SS(1300-1450), SSS(1450-1600), Z(1600+)
+  const RESULT_MAX = 1600; // visual scale ceiling
+  function getResultTier(r) {
+    if (r === null || typeof r !== 'number' || !isFinite(r) || r < 200)
+      return { cls: 'hm-res-f',   mvCls: 'hm-mv-res-f',   gradeCls: 'hm-grade-f',   grade: 'F',   label: '< 200',       dim: true  };
+    if (r < 400)
+      return { cls: 'hm-res-e',   mvCls: 'hm-mv-res-e',   gradeCls: 'hm-grade-e',   grade: 'E',   label: '200–400',     dim: false };
+    if (r < 600)
+      return { cls: 'hm-res-d',   mvCls: 'hm-mv-res-d',   gradeCls: 'hm-grade-d',   grade: 'D',   label: '400–600',     dim: false };
+    if (r < 800)
+      return { cls: 'hm-res-c',   mvCls: 'hm-mv-res-c',   gradeCls: 'hm-grade-c',   grade: 'C',   label: '600–800',     dim: false };
+    if (r < 1000)
+      return { cls: 'hm-res-b',   mvCls: 'hm-mv-res-b',   gradeCls: 'hm-grade-b',   grade: 'B',   label: '800–1000',    dim: false };
+    if (r < 1150)
+      return { cls: 'hm-res-a',   mvCls: 'hm-mv-res-a',   gradeCls: 'hm-grade-a',   grade: 'A',   label: '1000–1150',   dim: false };
+    if (r < 1300)
+      return { cls: 'hm-res-s',   mvCls: 'hm-mv-res-s',   gradeCls: 'hm-grade-s',   grade: 'S',   label: '1150–1300',   dim: false };
+    if (r < 1450)
+      return { cls: 'hm-res-ss',  mvCls: 'hm-mv-res-ss',  gradeCls: 'hm-grade-ss',  grade: 'SS',  label: '1300–1450',   dim: false };
+    if (r < 1600)
+      return { cls: 'hm-res-sss', mvCls: 'hm-mv-res-sss', gradeCls: 'hm-grade-sss', grade: 'SSS', label: '1450–1600',   dim: false };
+    return   { cls: 'hm-res-z',   mvCls: 'hm-mv-res-z',   gradeCls: 'hm-grade-z',   grade: 'Z',   label: '1600+ ★',     dim: false };
+  }
+
+  // Status tiers
+  function getStatus(wr, rr) {
+    const be = 1 / (1 + rr) * 100;
+    const ev = (wr / 100) * rr - (1 - wr / 100);
+    const diff = wr - be;
+    if (Math.abs(diff) <= 1)   return { cls: 'hm-even',     ev, be, label: '~' };
+    if (diff < 0)               return { cls: 'hm-losing',   ev, be, label: '✕' };
+    if (ev < 0.25)              return { cls: 'hm-profit',   ev, be, label: '+' };
+    if (ev < 0.5)               return { cls: 'hm-profit-1', ev, be, label: '++' };
+    if (ev < 1)                 return { cls: 'hm-profit-2', ev, be, label: '+++' };
+    if (ev < 2)                 return { cls: 'hm-profit-3', ev, be, label: '++++' };
+    if (ev < 4)                 return { cls: 'hm-profit-4', ev, be, label: '+++++' };
+    if (ev < 8)                 return { cls: 'hm-profit-5', ev, be, label: '++++++' };
+    return                             { cls: 'hm-profit-6', ev, be, label: '+++++++' };
+  }
+
+  const statusNames = {
+    'hm-losing': 'Losing', 'hm-even': 'Break even', 'hm-profit': 'Profitable',
+    'hm-profit-1': 'Strong', 'hm-profit-2': 'High', 'hm-profit-3': 'Elite',
+    'hm-profit-4': 'Exceptional', 'hm-profit-5': 'Legendary', 'hm-profit-6': 'Godlike'
+  };
+
+  function fmtProfit(v) {
+    if (v === undefined || v === null) return '—';
+    const abs = Math.abs(v);
+    const sign = v < 0 ? '-' : '';
+    if (abs >= 1000000) return sign + (abs / 1000000).toFixed(1) + 'M';
+    if (abs >= 1000)    return sign + (abs / 1000).toFixed(1) + 'k';
+    return sign + Math.round(abs);
+  }
+
+
+  // Legend HTML
+  const legendHTML = `
+    <div class="hm-legend">
+      <span style="font-size:11px;font-weight:600;color:#64748b;">EV Status:</span>
+      <div class="hm-legend-item"><div class="hm-legend-dot hm-losing"></div> Losing</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot hm-even"></div> Break even</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit"></div> Profitable (0–0.25R)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-1"></div> Strong (0.25–0.5R)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-2"></div> High (0.5–1R)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-3"></div> Elite (1–2R)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-4"></div> Exceptional (2–4R)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-5"></div> Legendary (4–8R)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-6"></div> Godlike (&gt;8R)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot hm-empty"></div> No data</div>
+    </div>
+    <div class="hm-legend" style="margin-top:-6px">
+      <span style="font-size:11px;font-weight:600;color:#64748b;">Result Score Grade:</span>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#6b7280">F</span><span style="color:#4b5563;margin-left:3px">&lt; 200 (sub-threshold)</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fca5a5">E</span><span style="color:#fca5a5;margin-left:3px">200–400</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fb923c">D</span><span style="color:#fb923c;margin-left:3px">400–600</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fcd34d">C</span><span style="color:#fcd34d;margin-left:3px">600–800</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#86efac">B</span><span style="color:#86efac;margin-left:3px">800–1000</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#67e8f9">A</span><span style="color:#67e8f9;margin-left:3px">1000–1150</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#93c5fd">S</span><span style="color:#93c5fd;margin-left:3px">1150–1300</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#c4b5fd">SS</span><span style="color:#c4b5fd;margin-left:3px">1300–1450</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#f9a8d4">SSS</span><span style="color:#f9a8d4;margin-left:3px">1450–1600</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fef08a;text-shadow:0 0 6px rgba(254,240,138,0.7)">Z</span><span style="color:#fef08a;margin-left:3px">1600+ ★</span></div>
+    </div>
+    <div class="hm-info">Cell background = EV tier (R:R × Win Rate). Left border + top bar + grade letter = Result score (F→Z scale, 200–1600+). Dimmed cells are sub-threshold (F grade). Hover for full details.</div>
+  `;
+
+  // Build table
+  const table = document.createElement('table');
+  table.className = 'hm-table';
+
+  // Header row
+  const headTr = document.createElement('tr');
+  const cornerTh = document.createElement('th');
+  cornerTh.className = 'hm-row-header';
+  cornerTh.textContent = 'R:R \\ WR%';
+  headTr.appendChild(cornerTh);
+  WRS.forEach(w => {
+    const th = document.createElement('th');
+    th.textContent = w + '%';
+    headTr.appendChild(th);
+  });
+  table.appendChild(headTr);
+
+  // Data rows
+  RRS.forEach(rr => {
+    const tr = document.createElement('tr');
+    const rowTh = document.createElement('th');
+    rowTh.className = 'hm-row-header';
+    rowTh.textContent = '1:' + rr;
+    tr.appendChild(rowTh);
+
+    WRS.forEach(wrBucket => {
+      const td = document.createElement('td');
+      const key = rr + '|' + wrBucket;
+      const cell = cellMap.get(key);
+      const st = getStatus(wrBucket, rr);
+
+      // helpers
+      const fmtV   = (v, dec=2) => (v !== null && typeof v === 'number') ? v.toFixed(dec) : '—';
+      const fmtPnl = v => { if (v === null || typeof v !== 'number') return '—'; const s = v >= 0 ? '+' : ''; return s + fmtProfit(v); };
+      const tipRow = (label, val, cls='') => `<tr><td style="color:#64748b;padding-right:10px">${label}</td><td style="font-weight:700${cls ? ';color:'+cls : ''}">${val}</td></tr>`;
+
+      if (!cell) {
+        td.className = 'hm-empty';
+        td.innerHTML = '<div style="text-align:center;color:#2a2d3a;font-size:9px">—</div>';
+        td.addEventListener('mousemove', e => {
+          const tip = document.getElementById('hmTooltip');
+          tip.style.display = 'block';
+          tip.style.left = (e.clientX + 14) + 'px';
+          tip.style.top  = (e.clientY + 14) + 'px';
+          tip.innerHTML = `<strong>R:R 1:${rr} | WR ~${wrBucket}%</strong><br>No data in this bucket<br><span style="color:#64748b">Break-even WR: ${st.be.toFixed(1)}% &nbsp;|&nbsp; EV: ${st.ev >= 0 ? '+' : ''}${st.ev.toFixed(2)}R</span>`;
+        });
+      } else {
+        const rt = getResultTier(cell.result);
+        td.className = st.cls + ' ' + rt.cls;
+        if (rt.dim) td.classList.add('hm-dim');
+
+        const pf_val     = cell.pf     !== null && typeof cell.pf     === 'number' ? cell.pf.toFixed(2)     : '—';
+        const rf_val     = cell.rf     !== null && typeof cell.rf     === 'number' ? cell.rf.toFixed(2)     : '—';
+        const sharpe_val = cell.sharpe !== null && typeof cell.sharpe === 'number' ? cell.sharpe.toFixed(2) : '—';
+        const dd_val     = cell.dd     !== null && typeof cell.dd     === 'number' ? cell.dd.toFixed(1)+'%' : '—';
+        const profit_abbr = fmtPnl(cell.profit);
+        const profit_cls  = (cell.profit !== null && typeof cell.profit === 'number' && cell.profit >= 0) ? 'hm-mv-pos' : 'hm-mv-neg';
+        const res_val     = cell.result !== null && typeof cell.result === 'number' ? Math.round(cell.result) : '—';
+        const res_pct     = cell.result !== null && typeof cell.result === 'number'
+                            ? Math.min(Math.max(cell.result / RESULT_MAX, 0), 1) * 100
+                            : 0;
+        const gradeFontSize = rt.grade.length === 1 ? '20px' : rt.grade.length === 2 ? '14px' : '10px';
+        td.innerHTML = `<div class="hm-res-bar"><div class="hm-res-bar-fill ${rt.cls}" style="width:${res_pct.toFixed(1)}%"></div></div>
+        <div class="hm-cell-body">
+          <div class="hm-cell-grid">
+            <div class="hm-metric hm-metric-result"><span class="hm-ml">RES</span><span class="hm-mv ${rt.mvCls}">${res_val}</span></div>
+            <div class="hm-metric"><span class="hm-ml">P&L</span><span class="hm-mv ${profit_cls}">${profit_abbr}</span></div>
+            <div class="hm-metric"><span class="hm-ml">PF</span><span class="hm-mv hm-mv-neu">${pf_val}</span></div>
+            <div class="hm-metric"><span class="hm-ml">RF</span><span class="hm-mv hm-mv-neu">${rf_val}</span></div>
+            <div class="hm-metric"><span class="hm-ml">SR</span><span class="hm-mv hm-mv-neu">${sharpe_val}</span></div>
+            <div class="hm-metric"><span class="hm-ml">DD</span><span class="hm-mv hm-mv-dd">${dd_val}</span></div>
+          </div>
+          <div class="hm-cell-grade-col">
+            <span class="hm-grade-badge ${rt.gradeCls}" style="font-size:${gradeFontSize}">${rt.grade}</span>
+          </div>
+        </div>`;
+        td.addEventListener('mousemove', e => {
+          const tip = document.getElementById('hmTooltip');
+          const isPos = cell.profit >= 0;
+          const pnlCol = isPos ? '#4ade80' : '#f87171';
+          tip.style.display = 'block';
+          tip.style.left = (e.clientX + 14) + 'px';
+          tip.style.top  = (e.clientY + 14) + 'px';
+          tip.innerHTML = `<strong>R:R 1:${rr} | WR ~${wrBucket}%</strong>
+            <span style="color:#64748b;font-size:10px"> &nbsp;|&nbsp; BE: ${st.be.toFixed(1)}% &nbsp;EV: ${st.ev >= 0 ? '+' : ''}${st.ev.toFixed(2)}R &nbsp;→ <strong style="color:#e2e8f0">${statusNames[st.cls]}</strong></span>
+            <div style="margin-top:5px;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.04);display:flex;align-items:center;gap:8px">
+              <span style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.05em">Result</span>
+              <span style="font-size:15px;font-weight:800;letter-spacing:-0.5px" class="${rt.mvCls}">${res_val}</span>
+              <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,0.06);font-weight:900" class="${rt.gradeCls}">${rt.grade}</span>
+              <span style="font-size:9px;color:#64748b">${rt.label}</span>
+              ${rt.dim ? '<span style="font-size:9px;color:#ef4444;font-weight:600">⚠ sub-threshold</span>' : ''}
+            </div>
+            <div style="margin-top:7px;border-top:1px solid #2a2d3a;padding-top:6px">
+              <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">⚖ Best Balanced Row</div>
+              <table style="border-collapse:collapse;font-size:10px">
+                ${tipRow('Profit',          fmtPnl(cell.profit),   pnlCol)}
+                ${cell.result !== null && typeof cell.result === 'number' ? tipRow('Result', cell.result.toFixed(2), '#e2e8f0') : ''}
+                ${cell.pf     !== null ? tipRow('Profit Factor',   fmtV(cell.pf),         '#93c5fd') : ''}
+                ${cell.rf     !== null ? tipRow('Recovery Factor', fmtV(cell.rf),         '#93c5fd') : ''}
+                ${cell.sharpe !== null ? tipRow('Sharpe Ratio',    fmtV(cell.sharpe),     '#93c5fd') : ''}
+                ${cell.dd     !== null ? tipRow('Equity DD %',     fmtV(cell.dd) + '%',   '#f87171') : ''}
+                ${cell.trades !== null ? tipRow('Trades',          cell.trades,           '')        : ''}
+              </table>
+            </div>`;
+        });
+      }
+
+      td.addEventListener('mouseleave', () => { document.getElementById('hmTooltip').style.display = 'none'; });
+      tr.appendChild(td);
+    });
+
+    table.appendChild(tr);
+  });
+
+  container.innerHTML = legendHTML;
+  const gridWrap = document.createElement('div');
+  gridWrap.className = 'hm-grid-wrap';
+  gridWrap.appendChild(table);
+  container.appendChild(gridWrap);
+}
+</script>
+</body>
+</html>
