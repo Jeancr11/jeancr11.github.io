@@ -252,7 +252,6 @@
 
   /* ── Heatmap Tab ── */
   #tab-heatmap {
-    padding: 16px 20px;
     overflow: auto;
     max-height: calc(100vh - 130px);
   }
@@ -280,6 +279,51 @@
     color: var(--muted);
     margin-bottom: 10px;
   }
+  .hm-range-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .hm-range-bar label { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .hm-range-bar span  { font-size: 11px; color: var(--muted); }
+  .hm-range-bar input {
+    width: 80px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    outline: none;
+  }
+  .hm-range-bar input:focus { border-color: var(--accent); }
+  .hm-range-bar .btn-apply {
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    border-radius: 6px;
+    padding: 5px 14px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .hm-range-bar .btn-apply:hover { opacity: 0.85; }
+  .hm-range-bar .btn-reset {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .hm-range-bar .btn-reset:hover { border-color: var(--accent); color: var(--accent); }
   .hm-no-data {
     color: var(--muted);
     font-size: 14px;
@@ -407,6 +451,13 @@
   .hm-profit-5 { background: #0e7a5a; color: #ccfbf1; }
   .hm-profit-6 { background: #065f46; color: #99f6e4; }
 
+  /* ── Cell click highlight states ── */
+  .hm-table td { cursor: pointer; }
+  .hm-hl-1 { box-shadow: inset 0 0 0 3px #ffffff, inset 0 0 8px 1px rgba(255,255,255,0.55), 0 0 6px 2px rgba(255,255,255,0.35) !important; }
+  .hm-hl-2 { box-shadow: inset 0 0 0 3px #3b82f6, inset 0 0 8px 1px rgba(59,130,246,0.55), 0 0 6px 2px rgba(59,130,246,0.45) !important; }
+  .hm-hl-3 { box-shadow: inset 0 0 0 3px #fbbf24, inset 0 0 8px 1px rgba(251,191,36,0.55), 0 0 6px 2px rgba(251,191,36,0.45) !important; }
+  .hm-hl-4 { box-shadow: inset 0 0 0 3px #ef4444, inset 0 0 8px 1px rgba(239,68,68,0.55), 0 0 6px 2px rgba(239,68,68,0.45) !important; }
+
   .hm-tooltip {
     position: fixed;
     background: #1a1d27;
@@ -513,7 +564,20 @@
 
   <!-- Heatmap Tab -->
   <div id="tab-heatmap" style="display:none">
-    <div id="hm-content">
+    <div id="hm-controls" style="padding:12px 20px 0">
+      <div class="hm-range-bar">
+        <label>Score Range:</label>
+        <span>F &amp; below ≤</span>
+        <input type="number" id="hmMinScore" value="200" min="0" max="99999" title="Scores at or below this value are graded F (dimmed)">
+        <span style="color:var(--border);font-size:14px">—</span>
+        <span>Z &amp; above ≥</span>
+        <input type="number" id="hmMaxScore" value="1600" min="1" max="999999" title="Scores at or above this value are graded Z">
+        <button class="btn-apply" onclick="buildHeatmap()">Apply</button>
+        <button class="btn-reset" onclick="document.getElementById('hmMinScore').value=200;document.getElementById('hmMaxScore').value=1600;buildHeatmap()">Reset</button>
+        <span id="hm-range-hint" style="font-size:10px;color:var(--muted);margin-left:4px">Press Enter or Apply to update</span>
+      </div>
+    </div>
+    <div id="hm-content" style="padding:0 20px 16px">
       <div class="hm-no-data">Load an XML file to see the heatmap.</div>
     </div>
   </div>
@@ -849,6 +913,12 @@ document.getElementById('globalSearch').oninput = () => { currentPage = 0; apply
 document.getElementById('minWin').oninput = () => { currentPage = 0; applyFilters(); };
 document.getElementById('maxWin').oninput = () => { currentPage = 0; applyFilters(); };
 
+// Allow pressing Enter on heatmap range inputs to trigger rebuild
+['hmMinScore','hmMaxScore'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') buildHeatmap(); });
+});
+
 // ── R:R Heatmap ──
 function buildHeatmap() {
   const container = document.getElementById('hm-content');
@@ -931,29 +1001,40 @@ function buildHeatmap() {
     if (best) cellMap.set(key, best);
   });
 
-  // Result grades: F(<200), E(200-400), D(400-600), C(600-800), B(800-1000),
-  //                A(1000-1150), S(1150-1300), SS(1300-1450), SSS(1450-1600), Z(1600+)
-  const RESULT_MAX = 1600; // visual scale ceiling
+  // Dynamic score range from controls
+  const _hmMin = parseFloat(document.getElementById('hmMinScore')?.value) || 200;
+  const _hmMax = parseFloat(document.getElementById('hmMaxScore')?.value) || 1600;
+  const RESULT_MAX = _hmMax; // visual scale ceiling
   function getResultTier(r) {
-    if (r === null || typeof r !== 'number' || !isFinite(r) || r < 200)
-      return { cls: 'hm-res-f',   mvCls: 'hm-mv-res-f',   gradeCls: 'hm-grade-f',   grade: 'F',   label: '< 200',       dim: true  };
-    if (r < 400)
-      return { cls: 'hm-res-e',   mvCls: 'hm-mv-res-e',   gradeCls: 'hm-grade-e',   grade: 'E',   label: '200–400',     dim: false };
-    if (r < 600)
-      return { cls: 'hm-res-d',   mvCls: 'hm-mv-res-d',   gradeCls: 'hm-grade-d',   grade: 'D',   label: '400–600',     dim: false };
-    if (r < 800)
-      return { cls: 'hm-res-c',   mvCls: 'hm-mv-res-c',   gradeCls: 'hm-grade-c',   grade: 'C',   label: '600–800',     dim: false };
-    if (r < 1000)
-      return { cls: 'hm-res-b',   mvCls: 'hm-mv-res-b',   gradeCls: 'hm-grade-b',   grade: 'B',   label: '800–1000',    dim: false };
-    if (r < 1150)
-      return { cls: 'hm-res-a',   mvCls: 'hm-mv-res-a',   gradeCls: 'hm-grade-a',   grade: 'A',   label: '1000–1150',   dim: false };
-    if (r < 1300)
-      return { cls: 'hm-res-s',   mvCls: 'hm-mv-res-s',   gradeCls: 'hm-grade-s',   grade: 'S',   label: '1150–1300',   dim: false };
-    if (r < 1450)
-      return { cls: 'hm-res-ss',  mvCls: 'hm-mv-res-ss',  gradeCls: 'hm-grade-ss',  grade: 'SS',  label: '1300–1450',   dim: false };
-    if (r < 1600)
-      return { cls: 'hm-res-sss', mvCls: 'hm-mv-res-sss', gradeCls: 'hm-grade-sss', grade: 'SSS', label: '1450–1600',   dim: false };
-    return   { cls: 'hm-res-z',   mvCls: 'hm-mv-res-z',   gradeCls: 'hm-grade-z',   grade: 'Z',   label: '1600+ ★',     dim: false };
+    const minS = _hmMin, maxS = _hmMax;
+    const span = Math.max(maxS - minS, 1);
+    // Normalized breakpoints based on original distribution across [minS, maxS]
+    // Original fractions: E@0, D@200/1400, C@400/1400, B@600/1400,
+    //                     A@800/1400, S@950/1400, SS@1100/1400, SSS@1250/1400, Z@1400/1400
+    const t  = f  => minS + f * span;
+    const f  = v  => Math.round(v);
+    const tE   = t(200/1400),  tD   = t(400/1400),  tC   = t(600/1400);
+    const tB   = t(800/1400),  tA   = t(950/1400),  tS   = t(1100/1400);
+    const tSS  = t(1250/1400);
+    if (r === null || typeof r !== 'number' || !isFinite(r) || r < minS)
+      return { cls: 'hm-res-f',   mvCls: 'hm-mv-res-f',   gradeCls: 'hm-grade-f',   grade: 'F',   label: `< ${f(minS)}`,              dim: true  };
+    if (r < tE)
+      return { cls: 'hm-res-e',   mvCls: 'hm-mv-res-e',   gradeCls: 'hm-grade-e',   grade: 'E',   label: `${f(minS)}–${f(tE)}`,       dim: false };
+    if (r < tD)
+      return { cls: 'hm-res-d',   mvCls: 'hm-mv-res-d',   gradeCls: 'hm-grade-d',   grade: 'D',   label: `${f(tE)}–${f(tD)}`,         dim: false };
+    if (r < tC)
+      return { cls: 'hm-res-c',   mvCls: 'hm-mv-res-c',   gradeCls: 'hm-grade-c',   grade: 'C',   label: `${f(tD)}–${f(tC)}`,         dim: false };
+    if (r < tB)
+      return { cls: 'hm-res-b',   mvCls: 'hm-mv-res-b',   gradeCls: 'hm-grade-b',   grade: 'B',   label: `${f(tC)}–${f(tB)}`,         dim: false };
+    if (r < tA)
+      return { cls: 'hm-res-a',   mvCls: 'hm-mv-res-a',   gradeCls: 'hm-grade-a',   grade: 'A',   label: `${f(tB)}–${f(tA)}`,         dim: false };
+    if (r < tS)
+      return { cls: 'hm-res-s',   mvCls: 'hm-mv-res-s',   gradeCls: 'hm-grade-s',   grade: 'S',   label: `${f(tA)}–${f(tS)}`,         dim: false };
+    if (r < tSS)
+      return { cls: 'hm-res-ss',  mvCls: 'hm-mv-res-ss',  gradeCls: 'hm-grade-ss',  grade: 'SS',  label: `${f(tS)}–${f(tSS)}`,        dim: false };
+    if (r < maxS)
+      return { cls: 'hm-res-sss', mvCls: 'hm-mv-res-sss', gradeCls: 'hm-grade-sss', grade: 'SSS', label: `${f(tSS)}–${f(maxS)}`,      dim: false };
+    return   { cls: 'hm-res-z',   mvCls: 'hm-mv-res-z',   gradeCls: 'hm-grade-z',   grade: 'Z',   label: `${f(maxS)}+ ★`,             dim: false };
   }
 
   // Status tiers
@@ -988,7 +1069,9 @@ function buildHeatmap() {
   }
 
 
-  // Legend HTML
+  // Legend HTML (dynamic, reflects current range)
+  const _span2 = Math.max(_hmMax - _hmMin, 1);
+  const _t2 = f => Math.round(_hmMin + f * _span2);
   const legendHTML = `
     <div class="hm-legend">
       <span style="font-size:11px;font-weight:600;color:#64748b;">EV Status:</span>
@@ -1005,18 +1088,18 @@ function buildHeatmap() {
     </div>
     <div class="hm-legend" style="margin-top:-6px">
       <span style="font-size:11px;font-weight:600;color:#64748b;">Result Score Grade:</span>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#6b7280">F</span><span style="color:#4b5563;margin-left:3px">&lt; 200 (sub-threshold)</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fca5a5">E</span><span style="color:#fca5a5;margin-left:3px">200–400</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fb923c">D</span><span style="color:#fb923c;margin-left:3px">400–600</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fcd34d">C</span><span style="color:#fcd34d;margin-left:3px">600–800</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#86efac">B</span><span style="color:#86efac;margin-left:3px">800–1000</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#67e8f9">A</span><span style="color:#67e8f9;margin-left:3px">1000–1150</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#93c5fd">S</span><span style="color:#93c5fd;margin-left:3px">1150–1300</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#c4b5fd">SS</span><span style="color:#c4b5fd;margin-left:3px">1300–1450</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#f9a8d4">SSS</span><span style="color:#f9a8d4;margin-left:3px">1450–1600</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fef08a;text-shadow:0 0 6px rgba(254,240,138,0.7)">Z</span><span style="color:#fef08a;margin-left:3px">1600+ ★</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#6b7280">F</span><span style="color:#4b5563;margin-left:3px">&lt; ${_hmMin} (sub-threshold)</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fca5a5">E</span><span style="color:#fca5a5;margin-left:3px">${_hmMin}–${_t2(200/1400)}</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fb923c">D</span><span style="color:#fb923c;margin-left:3px">${_t2(200/1400)}–${_t2(400/1400)}</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fcd34d">C</span><span style="color:#fcd34d;margin-left:3px">${_t2(400/1400)}–${_t2(600/1400)}</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#86efac">B</span><span style="color:#86efac;margin-left:3px">${_t2(600/1400)}–${_t2(800/1400)}</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#67e8f9">A</span><span style="color:#67e8f9;margin-left:3px">${_t2(800/1400)}–${_t2(950/1400)}</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#93c5fd">S</span><span style="color:#93c5fd;margin-left:3px">${_t2(950/1400)}–${_t2(1100/1400)}</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#c4b5fd">SS</span><span style="color:#c4b5fd;margin-left:3px">${_t2(1100/1400)}–${_t2(1250/1400)}</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#f9a8d4">SSS</span><span style="color:#f9a8d4;margin-left:3px">${_t2(1250/1400)}–${_hmMax}</span></div>
+      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fef08a;text-shadow:0 0 6px rgba(254,240,138,0.7)">Z</span><span style="color:#fef08a;margin-left:3px">${_hmMax}+ ★</span></div>
     </div>
-    <div class="hm-info">Cell background = EV tier (R:R × Win Rate). Left border + top bar + grade letter = Result score (F→Z scale, 200–1600+). Dimmed cells are sub-threshold (F grade). Hover for full details.</div>
+    <div class="hm-info">Cell background = EV tier (R:R × Win Rate). Left border + top bar + grade letter = Result score (F→Z scale, ${_hmMin}–${_hmMax}+). Dimmed cells are sub-threshold (F grade). Hover for full details. <span style="color:#4f8ef7">Click cells to cycle highlight: ⬜ white → 🟦 blue → 🟨 yellow → 🟥 red → off</span></div>
   `;
 
   // Build table
@@ -1125,6 +1208,19 @@ function buildHeatmap() {
             </div>`;
         });
       }
+
+      // Click-to-highlight cycling (white → green → yellow → red → off)
+      const hlClasses = ['hm-hl-1', 'hm-hl-2', 'hm-hl-3', 'hm-hl-4'];
+      let _hlState = -1;
+      td.addEventListener('click', () => {
+        if (_hlState >= 0) td.classList.remove(hlClasses[_hlState]);
+        _hlState++;
+        if (_hlState < hlClasses.length) {
+          td.classList.add(hlClasses[_hlState]);
+        } else {
+          _hlState = -1;
+        }
+      });
 
       td.addEventListener('mouseleave', () => { document.getElementById('hmTooltip').style.display = 'none'; });
       tr.appendChild(td);
