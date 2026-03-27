@@ -970,30 +970,25 @@ function buildHeatmap() {
   });
 
   // Pass 2: per-bucket min-max normalise → composite score → pick winner
+  // Uses Profit + Result equally: Profit = raw dollar performance,
+  // Result = MetaTrader's composite metric (incorporates all quality factors).
   const cellMap = new Map();
   buckets.forEach((candidates, key) => {
-    // collect finite values for each metric
-    const pfs     = candidates.map(c => c.pf).filter(v => typeof v === 'number' && isFinite(v));
-    const rfs     = candidates.map(c => c.rf).filter(v => typeof v === 'number' && isFinite(v));
-    const sharpes = candidates.map(c => c.sharpe).filter(v => typeof v === 'number' && isFinite(v));
-    const dds     = candidates.map(c => c.dd).filter(v => typeof v === 'number' && isFinite(v));
+    const profits = candidates.map(c => c.profit).filter(v => typeof v === 'number' && isFinite(v));
+    const results = candidates.map(c => c.result).filter(v => typeof v === 'number' && isFinite(v));
 
     const minOf = arr => Math.min(...arr);
     const maxOf = arr => Math.max(...arr);
     const norm  = (v, lo, hi) => (hi === lo) ? 0.5 : (v - lo) / (hi - lo);
 
-    const pfLo  = minOf(pfs),     pfHi  = maxOf(pfs);
-    const rfLo  = minOf(rfs),     rfHi  = maxOf(rfs);
-    const srLo  = minOf(sharpes), srHi  = maxOf(sharpes);
-    const ddLo  = minOf(dds),     ddHi  = maxOf(dds);
+    const profitLo = minOf(profits), profitHi = maxOf(profits);
+    const resultLo = minOf(results), resultHi = maxOf(results);
 
     let best = null, bestScore = -Infinity;
     candidates.forEach(c => {
       let score = 0, count = 0;
-      if (pfs.length     && typeof c.pf     === 'number') { score += norm(c.pf,     pfLo, pfHi);        count++; }
-      if (rfs.length     && typeof c.rf     === 'number') { score += norm(c.rf,     rfLo, rfHi);        count++; }
-      if (sharpes.length && typeof c.sharpe === 'number') { score += norm(c.sharpe, srLo, srHi);        count++; }
-      if (dds.length     && typeof c.dd     === 'number') { score += norm(ddHi - c.dd + ddLo, ddLo, ddHi); count++; } // invert DD
+      if (profits.length && typeof c.profit === 'number') { score += norm(c.profit, profitLo, profitHi); count++; }
+      if (results.length && typeof c.result === 'number') { score += norm(c.result, resultLo, resultHi); count++; }
       const avg = count > 0 ? score / count : 0;
       if (avg > bestScore) { bestScore = avg; best = c; }
     });
