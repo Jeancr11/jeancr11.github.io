@@ -26,34 +26,114 @@
     padding: 40px;
   }
   #uploadScreen h1 { font-size: 22px; font-weight: 700; color: var(--accent); }
-  #uploadScreen p { color: var(--muted); font-size: 14px; text-align: center; max-width: 420px; line-height: 1.6; }
-  .drop-zone {
-    width: 420px;
-    border: 2px dashed var(--border);
-    border-radius: 16px;
-    padding: 48px 32px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
+  #uploadScreen p { color: var(--muted); font-size: 14px; text-align: center; max-width: 460px; line-height: 1.6; }
+
+  /* Folder picker card */
+  .folder-picker-card {
+    width: 460px;
     background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
   }
-  .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); background: rgba(79,142,247,0.07); }
-  .drop-zone .icon { font-size: 48px; margin-bottom: 12px; }
-  .drop-zone .label { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-  .drop-zone .sub { font-size: 12px; color: var(--muted); }
-  #fileInput { display: none; }
-  .btn-upload {
-    margin-top: 12px;
+  .folder-picker-top {
+    padding: 24px 28px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+  .folder-icon { font-size: 40px; }
+  .btn-choose-folder {
     background: var(--accent);
     color: #fff;
     border: none;
     border-radius: 8px;
-    padding: 10px 28px;
+    padding: 10px 26px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.15s;
   }
-  .btn-upload:hover { opacity: 0.85; }
+  .btn-choose-folder:hover { opacity: 0.85; }
+  .folder-hint { font-size: 11px; color: var(--muted); }
+
+  /* File list inside the card */
+  #fileListPanel { display: none; }
+  .file-list-header {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(79,142,247,0.05);
+    border-bottom: 1px solid var(--border);
+  }
+  .file-list-header .folder-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .file-list-header .file-count { font-size: 11px; color: var(--muted); }
+  .file-list-scroll {
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .file-list-scroll::-webkit-scrollbar { width: 5px; }
+  .file-list-scroll::-webkit-scrollbar-track { background: transparent; }
+  .file-list-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .xml-file-row {
+    padding: 9px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(42,45,58,0.5);
+    transition: background 0.12s;
+  }
+  .xml-file-row:hover { background: rgba(79,142,247,0.09); }
+  .xml-file-row:last-child { border-bottom: none; }
+  .xml-file-icon { font-size: 14px; flex-shrink: 0; }
+  .xml-file-name { flex: 1; font-size: 12px; font-weight: 500; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .xml-file-size { font-size: 11px; color: var(--muted); flex-shrink: 0; }
+  .xml-file-load-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.12s;
+  }
+  .folder-name-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 5px var(--accent);
+    animation: pulse-dot 1.8s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.35; transform: scale(0.7); }
+  }
+  .file-list-empty {
+    padding: 28px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
   #uploadError {
     color: #ef4444;
     font-size: 13px;
@@ -62,7 +142,7 @@
     border: 1px solid rgba(239,68,68,0.3);
     border-radius: 8px;
     padding: 10px 16px;
-    max-width: 420px;
+    max-width: 460px;
     text-align: center;
   }
   #loadingMsg { display: none; flex-direction: column; align-items: center; gap: 12px; color: var(--muted); font-size: 14px; }
@@ -74,6 +154,7 @@
     animation: spin 0.7s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+  #folderFallbackInput { display: none; }
 
   #appScreen { display: none; }
   header {
@@ -484,15 +565,33 @@
 <div id="uploadScreen">
   <div style="text-align:center">
     <h1>📊 Optimizer Results Viewer</h1>
-    <p>Upload a MetaTrader optimizer XML export to explore, sort, and filter all parameter combinations.</p>
+    <p>Choose a folder containing MetaTrader optimizer XML exports — all files will be listed so you can load one at a time.</p>
   </div>
-  <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-    <div class="icon">📂</div>
-    <div class="label">Drop your XML file here</div>
-    <div class="sub">or click to browse</div>
-    <button class="btn-upload" onclick="event.stopPropagation(); document.getElementById('fileInput').click()">Choose File</button>
+
+  <div class="folder-picker-card">
+    <div class="folder-picker-top">
+      <div class="folder-icon">📁</div>
+      <button class="btn-choose-folder" onclick="openXmlFolderPicker()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Choose Folder
+      </button>
+      <div class="folder-hint">Works in Chrome · Edge · Opera</div>
+    </div>
+
+    <div id="fileListPanel">
+      <div class="file-list-header">
+        <span class="folder-name">
+          <span class="folder-name-dot" id="folderWatchDot" style="display:none"></span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <span id="folderDisplayName">—</span>
+        </span>
+        <span class="file-count"><span id="xmlFileCount">0</span> XML files &nbsp;·&nbsp; <button onclick="openXmlFolderPicker()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:11px;padding:0">Change folder</button></span>
+      </div>
+      <div class="file-list-scroll" id="xmlFileList"></div>
+    </div>
   </div>
-  <input type="file" id="fileInput" accept=".xml">
+
+  <input type="file" id="folderFallbackInput" webkitdirectory accept=".xml">
   <div id="uploadError"></div>
   <div id="loadingMsg">
     <div class="spinner"></div>
@@ -506,7 +605,7 @@
       <h1 id="appTitle">Optimizer Results</h1>
       <div class="meta" id="appMeta"></div>
     </div>
-    <button class="btn-reload" onclick="resetToUpload()">⬆ Load New File</button>
+    <button class="btn-reload" onclick="resetToUpload()">📁 File List</button>
   </header>
 
   <div class="tab-bar">
@@ -601,13 +700,11 @@ function switchTab(tab) {
   document.getElementById('tabBtnHeatmap').classList.toggle('active', tab === 'heatmap');
 }
 
-// ── Upload / Drop ──
-const dropZone = document.getElementById('dropZone');
-const fileInput = document.getElementById('fileInput');
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f) handleFile(f); });
-fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+let _xmlFolderHandle  = null;   // File System Access API dirHandle
+let _xmlFileEntries   = [];    // [{name, file}] sorted list shown in UI
+let _xmlKnownNames    = new Set(); // names already in list (to detect new arrivals)
+let _xmlWatchInterval = null;  // setInterval id for auto-scan
+let _xmlFolderName    = '';
 
 function showError(msg) {
   const el = document.getElementById('uploadError');
@@ -616,18 +713,107 @@ function showError(msg) {
   document.getElementById('loadingMsg').style.display = 'none';
 }
 
-function handleFile(file) {
+// ── Folder Picker ──
+async function openXmlFolderPicker() {
+  if ('showDirectoryPicker' in window) {
+    try {
+      const dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+      _stopXmlWatcher();
+      _xmlFolderHandle  = dirHandle;
+      _xmlKnownNames    = new Set();
+      _xmlFileEntries   = [];
+      _xmlFolderName    = dirHandle.name;
+      await _scanXmlFolder();
+      // Start polling every 3 s for new files
+      _xmlWatchInterval = setInterval(_scanXmlFolder, 3000);
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+      // fall through to webkitdirectory fallback
+    }
+  }
+  document.getElementById('folderFallbackInput').click();
+}
+
+async function _scanXmlFolder() {
+  if (!_xmlFolderHandle) return;
+  const newEntries = [];
+  try {
+    for await (const [name, handle] of _xmlFolderHandle.entries()) {
+      if (handle.kind === 'file' && /\.xml$/i.test(name) && !_xmlKnownNames.has(name)) {
+        try {
+          const file = await handle.getFile();
+          newEntries.push({ name, file });
+          _xmlKnownNames.add(name);
+        } catch (_) {}
+      }
+    }
+  } catch (_) {
+    // Folder no longer accessible — stop watching
+    _stopXmlWatcher();
+    return;
+  }
+  if (newEntries.length === 0) return;
+  _xmlFileEntries = [..._xmlFileEntries, ...newEntries]
+    .sort((a, b) => a.name.localeCompare(b.name));
+  renderXmlFileList();
+}
+
+function _stopXmlWatcher() {
+  if (_xmlWatchInterval) { clearInterval(_xmlWatchInterval); _xmlWatchInterval = null; }
+  _xmlFolderHandle = null;
+  _xmlKnownNames   = new Set();
+}
+
+// Fallback: webkitdirectory (no live polling possible, but shows list)
+document.getElementById('folderFallbackInput').addEventListener('change', function(e) {
+  const allFiles = [...e.target.files];
+  e.target.value = '';
+  const xmlFiles = allFiles.filter(f => /\.xml$/i.test(f.name));
+  if (!xmlFiles.length) { showError('No .xml files found in that folder.'); return; }
+  xmlFiles.sort((a, b) => a.name.localeCompare(b.name));
+  _xmlFileEntries = xmlFiles.map(f => ({ name: f.name, file: f }));
+  _xmlFolderName  = xmlFiles[0].webkitRelativePath.split('/')[0] || 'Folder';
+  renderXmlFileList();
+});
+
+function renderXmlFileList() {
+  document.getElementById('folderDisplayName').textContent = _xmlFolderName;
+  document.getElementById('xmlFileCount').textContent = _xmlFileEntries.length;
+  // Show pulsing dot only when live-polling is active (File System Access API)
+  const dot = document.getElementById('folderWatchDot');
+  if (dot) dot.style.display = _xmlWatchInterval ? 'inline-block' : 'none';
+  const listEl = document.getElementById('xmlFileList');
+  if (_xmlFileEntries.length === 0) {
+    listEl.innerHTML = '<div class="file-list-empty">No XML files found in this folder.</div>';
+  } else {
+    listEl.innerHTML = _xmlFileEntries.map((f, i) => {
+      const kb = f.file.size ? (f.file.size / 1024).toFixed(0) + ' KB' : '';
+      return `<div class="xml-file-row" onclick="loadXmlEntry(${i})">
+        <span class="xml-file-icon">📄</span>
+        <span class="xml-file-name" title="${f.name}">${f.name}</span>
+        <span class="xml-file-size">${kb}</span>
+        <button class="xml-file-load-btn" onclick="event.stopPropagation();loadXmlEntry(${i})">Load</button>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('fileListPanel').style.display = 'block';
   document.getElementById('uploadError').style.display = 'none';
-  if (!file.name.toLowerCase().endsWith('.xml')) { showError('Please upload an XML file (.xml)'); return; }
+}
+
+function loadXmlEntry(idx) {
+  const entry = _xmlFileEntries[idx];
+  if (!entry) return;
+  document.getElementById('uploadError').style.display = 'none';
   document.getElementById('loadingMsg').style.display = 'flex';
   document.getElementById('loadingText').textContent = 'Reading file…';
   const reader = new FileReader();
   reader.onload = e => {
     document.getElementById('loadingText').textContent = 'Parsing XML…';
-    setTimeout(() => parseXML(e.target.result, file.name), 30);
+    setTimeout(() => parseXML(e.target.result, entry.name), 30);
   };
   reader.onerror = () => showError('Could not read file.');
-  reader.readAsText(file, 'UTF-8');
+  reader.readAsText(entry.file, 'UTF-8');
 }
 
 function parseXML(text, filename) {
@@ -717,7 +903,6 @@ function resetToUpload() {
   document.getElementById('uploadScreen').style.display = 'flex';
   document.getElementById('uploadError').style.display = 'none';
   document.getElementById('loadingMsg').style.display = 'none';
-  document.getElementById('fileInput').value = '';
   HEADERS = []; DATA = [];
   switchTab('results');
 }
@@ -969,30 +1154,27 @@ function buildHeatmap() {
     buckets.get(key).push({ profit, result, trades, pf, dd, rf, sharpe });
   });
 
-  // Pass 2: per-bucket min-max normalise → composite score → pick winner
-  // Uses Profit + Result equally: Profit = raw dollar performance,
-  // Result = MetaTrader's composite metric (incorporates all quality factors).
+  // Pass 2: per-bucket pick the row with the highest Result score.
+  // Falls back to highest Profit if no row has a numeric Result.
   const cellMap = new Map();
   buckets.forEach((candidates, key) => {
-    const profits = candidates.map(c => c.profit).filter(v => typeof v === 'number' && isFinite(v));
-    const results = candidates.map(c => c.result).filter(v => typeof v === 'number' && isFinite(v));
-
-    const minOf = arr => Math.min(...arr);
-    const maxOf = arr => Math.max(...arr);
-    const norm  = (v, lo, hi) => (hi === lo) ? 0.5 : (v - lo) / (hi - lo);
-
-    const profitLo = minOf(profits), profitHi = maxOf(profits);
-    const resultLo = minOf(results), resultHi = maxOf(results);
-
-    let best = null, bestScore = -Infinity;
+    let best = null, bestResult = -Infinity;
     candidates.forEach(c => {
-      let score = 0, count = 0;
-      if (profits.length && typeof c.profit === 'number') { score += norm(c.profit, profitLo, profitHi); count++; }
-      if (results.length && typeof c.result === 'number') { score += norm(c.result, resultLo, resultHi); count++; }
-      const avg = count > 0 ? score / count : 0;
-      if (avg > bestScore) { bestScore = avg; best = c; }
+      if (typeof c.result === 'number' && isFinite(c.result) && c.result > bestResult) {
+        bestResult = c.result;
+        best = c;
+      }
     });
-
+    // Fallback: no result values → pick highest profit
+    if (!best) {
+      let bestProfit = -Infinity;
+      candidates.forEach(c => {
+        if (typeof c.profit === 'number' && isFinite(c.profit) && c.profit > bestProfit) {
+          bestProfit = c.profit;
+          best = c;
+        }
+      });
+    }
     if (best) cellMap.set(key, best);
   });
 
@@ -1094,7 +1276,7 @@ function buildHeatmap() {
       <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#f9a8d4">SSS</span><span style="color:#f9a8d4;margin-left:3px">${_t2(1250/1400)}–${_hmMax}</span></div>
       <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fef08a;text-shadow:0 0 6px rgba(254,240,138,0.7)">Z</span><span style="color:#fef08a;margin-left:3px">${_hmMax}+ ★</span></div>
     </div>
-    <div class="hm-info">Cell background = EV tier (R:R × Win Rate). Left border + top bar + grade letter = Result score (F→Z scale, ${_hmMin}–${_hmMax}+). Dimmed cells are sub-threshold (F grade). Hover for full details. <span style="color:#4f8ef7">Click cells to cycle highlight: ⬜ white → 🟦 blue → 🟨 yellow → 🟥 red → off</span></div>
+    <div class="hm-info">Cell background = EV tier (R:R × Win Rate). Left border + top bar + grade letter = Result score (F→Z scale, ${_hmMin}–${_hmMax}+). Each cell shows the row with the highest Result score in that bucket. Dimmed cells are sub-threshold (F grade). Hover for full details. <span style="color:#4f8ef7">Click cells to cycle highlight: ⬜ white → 🟦 blue → 🟨 yellow → 🟥 red → off</span></div>
   `;
 
   // Build table
@@ -1190,7 +1372,7 @@ function buildHeatmap() {
               ${rt.dim ? '<span style="font-size:9px;color:#ef4444;font-weight:600">⚠ sub-threshold</span>' : ''}
             </div>
             <div style="margin-top:7px;border-top:1px solid #2a2d3a;padding-top:6px">
-              <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">⚖ Best Balanced Row</div>
+              <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">★ Highest Result Row</div>
               <table style="border-collapse:collapse;font-size:10px">
                 ${tipRow('Profit',          fmtPnl(cell.profit),   pnlCol)}
                 ${cell.result !== null && typeof cell.result === 'number' ? tipRow('Result', cell.result.toFixed(2), '#e2e8f0') : ''}
