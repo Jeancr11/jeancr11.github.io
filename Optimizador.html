@@ -561,14 +561,15 @@
   .bm-cell-wrap { display:flex; flex-direction:column; height:100%; }
   .bm-score-bar { width:100%; height:3px; border-radius:1px; margin-bottom:3px; flex-shrink:0; transition:width 0.2s; }
   .bm-score-main { display:flex; align-items:center; justify-content:space-between; flex:1; gap:2px; padding:0 1px; }
-  .bm-score-pct { font-size:22px; font-weight:900; line-height:1; letter-spacing:-1px; font-variant-numeric:tabular-nums; flex-shrink:0; }
+  .bm-score-left { display:flex; flex-direction:column; align-items:flex-start; gap:1px; flex-shrink:0; }
+  .bm-score-pct { font-size:22px; font-weight:900; line-height:1; letter-spacing:-1px; font-variant-numeric:tabular-nums; }
   .bm-score-pct.bm-full { text-shadow:0 0 10px currentColor; }
+  .bm-result-val { font-size:8px; font-weight:700; font-variant-numeric:tabular-nums; opacity:0.75; letter-spacing:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:52px; }
   .bm-checks { display:flex; flex-direction:column; gap:2px; font-size:7px; font-weight:700; flex-shrink:0; }
   .bm-check-row { display:flex; gap:3px; }
   .bm-chk { display:flex; align-items:center; gap:1px; }
   .bm-chk-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
   .bm-chk-lbl { font-size:6.5px; font-weight:600; opacity:0.7; }
-  .bm-result-line { font-size:7px; font-variant-numeric:tabular-nums; opacity:0.6; margin-top:2px; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .bm-no-data-cell { display:flex; align-items:center; justify-content:center; height:100%; font-size:9px; opacity:0.25; }
 
   /* tier backgrounds dark-adapted */
@@ -1249,6 +1250,11 @@ function buildHeatmap() {
   }
 
   // ── Per-result threshold compliance score (0–1 per metric, average = total) ──
+  // Metrics are rounded to 2 decimal places before scoring so that values MT5
+  // displays identically (e.g. PF 4.873 and 4.868 both shown as 4.87) are
+  // treated as equal here — preventing a sub-display-precision edge in one
+  // metric from masking genuinely better performance in the others.
+  function r2(v) { return Math.round(v * 100) / 100; }
   function computeScore(wr, rr, pf, rf, sharpe, dd) {
     const reqPF     = bmPF(wr, rr);
     const reqRF     = bmMinRF(wr, rr);
@@ -1257,20 +1263,21 @@ function buildHeatmap() {
     const scores = [], pass = { pf: null, rf: null, sharpe: null, dd: null };
 
     if (typeof pf === 'number' && isFinite(pf)) {
-      const s = Math.min(pf / reqPF, 1);
-      scores.push(s); pass.pf = s >= 1;
+      const s = Math.min(r2(pf) / reqPF, 1);
+      scores.push(s); pass.pf = pf >= reqPF;
     }
     if (typeof rf === 'number' && isFinite(rf)) {
-      const s = Math.min(rf / reqRF, 1);
-      scores.push(s); pass.rf = s >= 1;
+      const s = Math.min(r2(rf) / reqRF, 1);
+      scores.push(s); pass.rf = rf >= reqRF;
     }
     if (typeof sharpe === 'number' && isFinite(sharpe)) {
-      const s = Math.min(sharpe / reqSharpe, 1);
-      scores.push(s); pass.sharpe = s >= 1;
+      const s = Math.min(r2(sharpe) / reqSharpe, 1);
+      scores.push(s); pass.sharpe = sharpe >= reqSharpe;
     }
     if (typeof dd === 'number' && isFinite(dd)) {
-      const s = dd <= reqDD ? 1 : reqDD / dd;
-      scores.push(s); pass.dd = s >= 1;
+      const v = r2(dd);
+      const s = v <= reqDD ? 1 : reqDD / v;
+      scores.push(s); pass.dd = dd <= reqDD;
     }
     if (!scores.length) return { total: null, pass };
     const total = scores.reduce((a, b) => a + b, 0) / scores.length;
@@ -1321,7 +1328,24 @@ function buildHeatmap() {
     buckets.get(key).push({ result, profit, pf, rf, sharpe, dd, trades, wr, rr: rrKey, ...sc });
   });
 
-  // ── Per bucket: pick best (highest total score; tie-break by result) ──
+  // ── Uncapped metric composite (used as final tiebreaker) ──
+  // Unlike the capped total, this rewards genuinely higher metrics even when
+  // both already pass a threshold, giving a proper signal when totals are tied.
+  function uncappedScore(x) {
+    const reqPF = bmPF(x.wr, x.rr), reqRF = bmMinRF(x.wr, x.rr);
+    const reqSR = bmMinSharpe(x.wr, x.rr), reqDD = bmMaxDD(x.wr, x.rr);
+    let s = 0, n = 0;
+    if (typeof x.pf     === 'number' && isFinite(x.pf))                { s += r2(x.pf)     / reqPF; n++; }
+    if (typeof x.rf     === 'number' && isFinite(x.rf))                { s += r2(x.rf)     / reqRF; n++; }
+    if (typeof x.sharpe === 'number' && isFinite(x.sharpe))            { s += r2(x.sharpe) / reqSR; n++; }
+    if (typeof x.dd     === 'number' && isFinite(x.dd) && x.dd > 0)   { s += reqDD / r2(x.dd);     n++; }
+    return n > 0 ? s / n : -1;
+  }
+
+  // ── Per bucket: pick best ──
+  //   Tier 1 — highest capped total score (metrics rounded to 2dp, matching MT5).
+  //   Tier 2 — same total → MT5-rounded result (2dp); higher wins.
+  //   Tier 3 — still tied → uncapped metric composite decides.
   const cellMap = new Map();
   buckets.forEach((candidates, key) => {
     let best = null;
@@ -1329,7 +1353,13 @@ function buildHeatmap() {
       if (!best) { best = c; return; }
       const cs = c.total ?? -1, bs = best.total ?? -1;
       if (cs > bs) { best = c; return; }
-      if (cs === bs && (c.result ?? -Infinity) > (best.result ?? -Infinity)) best = c;
+      if (cs < bs) return;
+      // Tier 2: compare MT5-rounded result
+      const cr = c.result    != null ? Math.round(c.result    * 100) : null;
+      const br = best.result != null ? Math.round(best.result * 100) : null;
+      if (cr !== null && br !== null && cr !== br) { if (cr > br) best = c; return; }
+      // Tier 3: uncapped composite
+      if (uncappedScore(c) > uncappedScore(best)) best = c;
     });
     if (best) cellMap.set(key, best);
   });
@@ -1437,7 +1467,10 @@ function buildHeatmap() {
           <div class="bm-cell-wrap">
             <div class="bm-score-bar ${bar}" style="width:${Math.min(pct,100)}%"></div>
             <div class="bm-score-main">
-              <span class="bm-score-pct${isFull ? ' bm-full' : ''}">${pct}%</span>
+              <div class="bm-score-left">
+                <span class="bm-score-pct${isFull ? ' bm-full' : ''}">${pct}%</span>
+                <div class="bm-result-val">${cell.result !== null ? Math.floor(cell.result) : '—'}</div>
+              </div>
               <div class="bm-checks">
                 <div class="bm-check-row">
                   ${dotHTML(cell.pass.pf,     'PF')}
@@ -1449,7 +1482,6 @@ function buildHeatmap() {
                 </div>
               </div>
             </div>
-            <div class="bm-result-line">res ${cell.result !== null ? Math.floor(cell.result) : '—'}</div>
           </div>`;
 
         // Tooltip
