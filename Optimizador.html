@@ -553,11 +553,44 @@
     line-height: 1.7;
     white-space: nowrap;
     box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    min-width: 280px;
+    max-width: 360px;
   }
   .hm-tooltip strong { color: #4f8ef7; }
-  .hm-tooltip .tt-profit { font-size: 13px; font-weight: 700; }
-  .hm-tooltip .tt-pos { color: #4ade80; }
-  .hm-tooltip .tt-neg { color: #f87171; }
+  /* ── Benchmark score cell styles ── */
+  .bm-cell-wrap { display:flex; flex-direction:column; height:100%; }
+  .bm-score-bar { width:100%; height:3px; border-radius:1px; margin-bottom:3px; flex-shrink:0; transition:width 0.2s; }
+  .bm-score-main { display:flex; align-items:center; justify-content:space-between; flex:1; gap:2px; padding:0 1px; }
+  .bm-score-pct { font-size:22px; font-weight:900; line-height:1; letter-spacing:-1px; font-variant-numeric:tabular-nums; flex-shrink:0; }
+  .bm-score-pct.bm-full { text-shadow:0 0 10px currentColor; }
+  .bm-checks { display:flex; flex-direction:column; gap:2px; font-size:7px; font-weight:700; flex-shrink:0; }
+  .bm-check-row { display:flex; gap:3px; }
+  .bm-chk { display:flex; align-items:center; gap:1px; }
+  .bm-chk-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+  .bm-chk-lbl { font-size:6.5px; font-weight:600; opacity:0.7; }
+  .bm-result-line { font-size:7px; font-variant-numeric:tabular-nums; opacity:0.6; margin-top:2px; flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .bm-no-data-cell { display:flex; align-items:center; justify-content:center; height:100%; font-size:9px; opacity:0.25; }
+
+  /* tier backgrounds dark-adapted */
+  .bm-tier-unprof  { background:#2d1212 !important; color:#f87171; }
+  .bm-tier-marg    { background:#2d200a !important; color:#fbbf24; }
+  .bm-tier-ok      { background:#122510 !important; color:#86efac; }
+  .bm-tier-good    { background:#163510 !important; color:#4ade80; }
+  .bm-tier-great   { background:#1a4a12 !important; color:#22d55a; }
+  .bm-tier-excep   { background:#0d4a22 !important; color:#34d399; }
+  .bm-tier-cap     { background:#252840 !important; color:#a5b4fc; }
+
+  /* score bar colors */
+  .bm-bar-0  { background:#ef4444; }
+  .bm-bar-25 { background:#f97316; }
+  .bm-bar-50 { background:#eab308; }
+  .bm-bar-75 { background:#22c55e; }
+  .bm-bar-100{ background:#10b981; box-shadow:0 0 4px #10b981; }
+
+  /* check dot colors */
+  .bm-dot-pass { background:#22c55e; }
+  .bm-dot-fail { background:#ef4444; }
+  .bm-dot-na   { background:#4b5563; }
 </style>
 </head>
 <body>
@@ -665,15 +698,9 @@
   <div id="tab-heatmap" style="display:none">
     <div id="hm-controls" style="padding:12px 20px 0">
       <div class="hm-range-bar">
-        <label>Score Range:</label>
-        <span>F &amp; below ≤</span>
-        <input type="number" id="hmMinScore" value="200" min="0" max="99999" title="Scores at or below this value are graded F (dimmed)">
-        <span style="color:var(--border);font-size:14px">—</span>
-        <span>Z &amp; above ≥</span>
-        <input type="number" id="hmMaxScore" value="1600" min="1" max="999999" title="Scores at or above this value are graded Z">
-        <button class="btn-apply" onclick="buildHeatmap()">Apply</button>
-        <button class="btn-reset" onclick="document.getElementById('hmMinScore').value=200;document.getElementById('hmMaxScore').value=1600;buildHeatmap()">Reset</button>
-        <span id="hm-range-hint" style="font-size:10px;color:var(--muted);margin-left:4px">Press Enter or Apply to update</span>
+        <label>Heatmap mode:</label>
+        <span style="color:var(--text);font-size:12px;">Threshold compliance — each cell shows best result decoded from <code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;font-size:11px">CCCCCCWW.RR</code> (<b>Custom</b> column) and how close it is to meeting PF · RF · Sharpe · DD benchmarks.</span>
+        <span style="margin-left:auto;color:var(--muted);font-size:11px;">100% = all 4 thresholds met</span>
       </div>
     </div>
     <div id="hm-content" style="padding:0 20px 16px">
@@ -849,14 +876,21 @@ function parseXML(text, filename) {
       }));
     }
 
-    const resultIdx = rawHeaders.findIndex(h => h.toLowerCase() === 'result');
+    // WR/RR encoding lives in the 'Custom' column (CCCCCCWW.RR format).
+    // Fall back to 'Result' for older files that store it there.
+    const customIdx = rawHeaders.findIndex(h => h.toLowerCase() === 'custom');
+    const encIdx = customIdx >= 0 ? customIdx : rawHeaders.findIndex(h => h.toLowerCase() === 'result');
 
-    if (resultIdx >= 0) {
-      HEADERS = ['Win Rate %', ...rawHeaders];
+    if (encIdx >= 0) {
+      HEADERS = ['Win Rate %', 'RR', ...rawHeaders];
       DATA = rawData.map(row => {
-        const result = row[resultIdx];
-        const wr = typeof result === 'number' ? parseFloat(((result % 1) * 100).toFixed(4)) : null;
-        return [wr, ...row];
+        const enc = row[encIdx];
+        let wr = null, rr = null;
+        if (typeof enc === 'number' && isFinite(enc) && enc > 0) {
+          wr = Math.floor(enc) % 100;             // last 2 digits of integer part = WR%
+          rr = Math.round((enc % 1) * 100) / 10;  // decimal part × 10 = RR
+        }
+        return [wr, rr, ...row];
       });
     } else {
       HEADERS = rawHeaders;
@@ -868,7 +902,7 @@ function parseXML(text, filename) {
     DD_COLS = new Set();
 
     HEADERS.forEach((h, i) => {
-      if (i === 0 && resultIdx >= 0) { NUM_COLS.add(0); return; }
+      if ((i === 0 && h === 'Win Rate %') || (i === 1 && h === 'RR')) { NUM_COLS.add(i); return; }
       for (let r = 0; r < Math.min(20, DATA.length); r++) {
         const v = DATA[r][i];
         if (typeof v === 'number') { NUM_COLS.add(i); break; }
@@ -915,9 +949,10 @@ function buildHeaders() {
 
   HEADERS.forEach((h, i) => {
     const th = document.createElement('th');
-    th.textContent = h === 'Win Rate %' ? '🏆 Win Rate' : h;
+    th.textContent = h === 'Win Rate %' ? '🏆 Win Rate' : h === 'RR' ? '⚖ RR' : h;
     th.dataset.col = i;
     if (i === 0 && h === 'Win Rate %') th.classList.add('win-col');
+    if (i === 1 && h === 'RR') th.classList.add('win-col');
     if (DD_COLS.has(i)) th.classList.add('dd-col');
     th.onclick = () => sortBy(i);
     hr.appendChild(th);
@@ -1043,8 +1078,11 @@ function renderPage() {
       if (ci === 0 && HEADERS[0] === 'Win Rate %') {
         if (val !== null) {
           const c = getWinColor(val);
-          td.innerHTML = `<div class="win-badge"><span style="color:${c}">${val.toFixed(1)}%</span><span class="win-bar-bg"><span class="win-bar-fill" style="width:${Math.min(val,100)}%;background:${c}"></span></span></div>`;
+          td.innerHTML = `<div class="win-badge"><span style="color:${c}">${val.toFixed(0)}%</span><span class="win-bar-bg"><span class="win-bar-fill" style="width:${Math.min(val,100)}%;background:${c}"></span></span></div>`;
         } else td.textContent = '—';
+      } else if (ci === 1 && HEADERS[1] === 'RR') {
+        td.textContent = val !== null ? '1:' + val.toFixed(1) : '—';
+        td.style.textAlign = 'right';
       } else if (BOOL_COLS.has(ci)) {
         td.innerHTML = val === 'true' ? '<span class="bool-true">✓ true</span>' : '<span class="bool-false">✗ false</span>';
       } else if (typeof val === 'number') {
@@ -1104,182 +1142,238 @@ document.getElementById('maxWin').oninput = () => { currentPage = 0; applyFilter
   if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') buildHeatmap(); });
 });
 
-// ── R:R Heatmap ──
+// ── R:R Heatmap (Benchmark Compliance) ──
 function buildHeatmap() {
   const container = document.getElementById('hm-content');
 
-  // Find needed column indices
-  const wrIdx     = HEADERS.findIndex(h => h === 'Win Rate %');
-  const resultIdx2 = HEADERS.findIndex(h => h.toLowerCase() === 'result');
-  const profitIdx = HEADERS.findIndex(h => h.toLowerCase() === 'profit');
-  const rrIdx     = HEADERS.findIndex(h => h.toLowerCase() === 'inptpmultiplier');
-  const countIdx  = HEADERS.findIndex(h => h.toLowerCase() === 'trades');
+  // ── Benchmark threshold functions (mirrors mt5_benchmark_matrix) ──
+  function bmPF(wr, rr)     { return (wr * rr) / (1 - wr); }
+  function bmEV(wr, rr)     { return wr * rr - (1 - wr); }
+  function bmMinRF(wr, rr) {
+    if (rr <= 0.4) return wr >= 0.84 ? 5 : 3;
+    if (rr <= 0.8) return wr >= 0.80 ? 7 : 5;
+    if (rr <= 1.2) return wr >= 0.74 ? 9 : wr >= 0.55 ? 7 : 5;
+    if (rr <= 1.8) return wr >= 0.55 ? 10 : 7;
+    if (rr <= 2.4) return wr >= 0.55 ? 12 : 9;
+    return 14;
+  }
+  function bmMinSharpe(wr, rr) {
+    if (rr <= 0.4) return wr >= 0.86 ? 18 : wr >= 0.82 ? 14 : 10;
+    if (rr <= 0.8) return wr >= 0.84 ? 14 : wr >= 0.78 ? 10 : 7;
+    if (rr <= 1.2) return wr >= 0.78 ? 9  : wr >= 0.70 ? 7  : wr >= 0.55 ? 5 : 3;
+    if (rr <= 1.8) return wr >= 0.76 ? 9  : wr >= 0.68 ? 8  : wr >= 0.55 ? 6 : 4;
+    if (rr <= 2.4) return wr >= 0.55 ? 8 : 5;
+    return wr >= 0.55 ? 9 : 6;
+  }
+  function bmMaxDD(wr, rr) {
+    if (wr >= 0.84) return rr <= 1.0 ? 3.0 : 4.0;
+    if (wr >= 0.78) return rr <= 1.2 ? 4.0 : 5.0;
+    if (wr >= 0.70) return rr <= 1.4 ? 5.0 : 6.0;
+    if (wr >= 0.55) return rr <= 2.0 ? 7.0 : 9.0;
+    return rr <= 2.0 ? 10.0 : 15.0;
+  }
+  function bmTier(wr, rr) {
+    const p = bmPF(wr, rr), e = bmEV(wr, rr);
+    if (e <= 0) return { cls: 'bm-tier-unprof', label: 'Unprofitable' };
+    if (p < 1.5) return { cls: 'bm-tier-marg',  label: 'Marginal'     };
+    if (p < 2.5) return { cls: 'bm-tier-ok',    label: 'Acceptable'   };
+    if (p < 3.5) return { cls: 'bm-tier-good',  label: 'Good'         };
+    if (p < 5.0) return { cls: 'bm-tier-great', label: 'Great'        };
+    if (p < 6.0) return { cls: 'bm-tier-excep', label: 'Exceptional'  };
+    return               { cls: 'bm-tier-cap',  label: '⚠ Overfit?'   };
+  }
+
+  // ── Trade-analysis benchmark helpers (from mt5_benchmark_matrix) ──
+  function bmMinTrades(wr) { const z=1.96; return Math.ceil(z*z*wr*(1-wr)/(0.05*0.05)); }
+  function bmMinLRC(rr)    { return rr<=0.8 ? 0.990 : rr<=1.4 ? 0.982 : 0.975; }
+  function bmCorrPMFE(rr) {
+    if(rr<=0.4) return [0.35,0.65]; if(rr<=0.6) return [0.42,0.72];
+    if(rr<=0.8) return [0.65,0.85]; if(rr<=1.0) return [0.80,0.92];
+    if(rr<=1.4) return [0.85,0.93]; if(rr<=2.0) return [0.88,0.94];
+    if(rr<=2.6) return [0.89,0.95]; return [0.90,0.96];
+  }
+  function bmCorrPMAE(rr) {
+    if(rr<=0.4) return [0.55,0.90]; if(rr<=0.6) return [0.50,0.85];
+    if(rr<=0.8) return [0.42,0.72]; if(rr<=1.0) return [0.36,0.58];
+    if(rr<=1.4) return [0.30,0.50]; if(rr<=2.0) return [0.25,0.42];
+    if(rr<=2.6) return [0.18,0.32]; return [0.12,0.25];
+  }
+  function bmCorrMM(rr) {
+    if(rr<=0.4) return [0.30,0.68]; if(rr<=0.6) return [0.25,0.60];
+    if(rr<=0.8) return [0.20,0.50]; if(rr<=1.0) return [0.15,0.38];
+    if(rr<=1.4) return [0.10,0.28]; if(rr<=2.0) return [0.05,0.20];
+    if(rr<=2.6) return [0.03,0.12]; return [0.01,0.08];
+  }
+  // Inline mini-bar for tooltip (0–1 scale)
+  function corrBar(range, hex) {
+    const lo = (range[0]*100).toFixed(0), wi = ((range[1]-range[0])*100).toFixed(0);
+    return `<div style="flex:1;height:5px;background:#2a2d3a;border-radius:3px;position:relative;margin:0 6px">
+      <div style="position:absolute;left:${lo}%;width:${wi}%;height:100%;border-radius:3px;background:${hex}"></div>
+    </div>`;
+  }
+  function tradeAnalysisHTML(wr, rr) {
+    const mt  = bmMinTrades(wr);
+    const lrc = bmMinLRC(rr);
+    const pmfe = bmCorrPMFE(rr), pmae = bmCorrPMAE(rr), mm = bmCorrMM(rr);
+    const maxLoss = Math.ceil(Math.log(mt) / Math.log(1/(1-wr)));
+    const corrRow = (lbl, range, hex, valStr) =>
+      `<tr><td style="color:#64748b;padding-right:6px;white-space:nowrap">${lbl}</td>
+            <td style="width:80px">${corrBar(range,hex)}</td>
+            <td style="color:#94a3b8;font-size:9px;white-space:nowrap">${valStr}</td></tr>`;
+    return `
+      <div style="border-top:1px solid #2a2d3a;margin-top:6px;padding-top:5px">
+        <div style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px">What to expect in trade analysis</div>
+        <table style="border-collapse:collapse;font-size:10px;width:100%">
+          ${corrRow('Corr(Profits,MFE)', pmfe, '#4f8ef7', pmfe[0].toFixed(2)+'–'+pmfe[1].toFixed(2))}
+          ${corrRow('Corr(Profits,MAE)', pmae, '#f97316', pmae[0].toFixed(2)+'–'+pmae[1].toFixed(2))}
+          ${corrRow('Corr(MFE,MAE)',     mm,   '#64748b', mm[0].toFixed(2)+'–'+mm[1].toFixed(2))}
+          <tr><td style="color:#64748b;padding-right:6px">LR Correlation</td>
+              <td>${corrBar([lrc,1.0],'#22c55e')}</td>
+              <td style="color:#94a3b8;font-size:9px">&gt; ${lrc.toFixed(3)}</td></tr>
+          <tr><td style="color:#64748b;padding-right:6px">Max consec. losses</td>
+              <td colspan="2" style="color:#fbbf24;font-size:10px;font-weight:700">≤ ${maxLoss}</td></tr>
+        </table>
+      </div>`;
+  }
+
+  // ── Decode CCCWW.RR → WR% and RR ──
+  // Integer part last 2 digits = WR%, decimal × 10 = RR
+  function decodeResult(result) {
+    if (typeof result !== 'number' || !isFinite(result) || result <= 0) return null;
+    const intPart = Math.floor(result);
+    const wrPct   = intPart % 100;                              // e.g. 70
+    const rr      = Math.round((result % 1) * 100) / 10;       // e.g. .15 → 1.5
+    if (wrPct < 20 || wrPct > 100) return null;
+    if (rr < 0.1 || rr > 3.0)    return null;
+    return { wrPct, rr: Math.round(rr * 10) / 10 };
+  }
+
+  // ── Per-result threshold compliance score (0–1 per metric, average = total) ──
+  function computeScore(wr, rr, pf, rf, sharpe, dd) {
+    const reqPF     = bmPF(wr, rr);
+    const reqRF     = bmMinRF(wr, rr);
+    const reqSharpe = bmMinSharpe(wr, rr);
+    const reqDD     = bmMaxDD(wr, rr);
+    const scores = [], pass = { pf: null, rf: null, sharpe: null, dd: null };
+
+    if (typeof pf === 'number' && isFinite(pf)) {
+      const s = Math.min(pf / reqPF, 1);
+      scores.push(s); pass.pf = s >= 1;
+    }
+    if (typeof rf === 'number' && isFinite(rf)) {
+      const s = Math.min(rf / reqRF, 1);
+      scores.push(s); pass.rf = s >= 1;
+    }
+    if (typeof sharpe === 'number' && isFinite(sharpe)) {
+      const s = Math.min(sharpe / reqSharpe, 1);
+      scores.push(s); pass.sharpe = s >= 1;
+    }
+    if (typeof dd === 'number' && isFinite(dd)) {
+      const s = dd <= reqDD ? 1 : reqDD / dd;
+      scores.push(s); pass.dd = s >= 1;
+    }
+    if (!scores.length) return { total: null, pass };
+    const total = scores.reduce((a, b) => a + b, 0) / scores.length;
+    return { total, pass };
+  }
+
+  // ── Find column indices ──
+  const customColIdx = HEADERS.findIndex(h => h.toLowerCase() === 'custom');
+  const resultIdx = customColIdx >= 0 ? customColIdx : HEADERS.findIndex(h => h.toLowerCase() === 'result');
   const pfIdx     = HEADERS.findIndex(h => /profit.?factor/i.test(h));
-  const ddIdx     = HEADERS.findIndex(h => (/drawdown/i.test(h) || /\bdd\b/i.test(h)) && !/recovery/i.test(h));
+  const profitIdx = HEADERS.findIndex(h => /^profit$/i.test(h));
   const rfIdx     = HEADERS.findIndex(h => /recovery.?factor/i.test(h));
   const sharpeIdx = HEADERS.findIndex(h => /sharpe/i.test(h));
+  const ddIdx     = HEADERS.findIndex(h => (/equity.?dd|drawdown/i.test(h)) && !/recovery/i.test(h));
+  const tradesIdx = HEADERS.findIndex(h => h.toLowerCase() === 'trades');
 
-  if (wrIdx < 0 || profitIdx < 0 || rrIdx < 0) {
-    container.innerHTML = `<div class="hm-no-data">⚠ Could not find required columns.<br><span style="font-size:11px;color:#64748b">Need: Win Rate %, Profit, InpTPMultiplier</span></div>`;
+  if (resultIdx < 0) {
+    container.innerHTML = `<div class="hm-no-data">⚠ No <em>Custom</em> (or <em>Result</em>) column found.<br><span style="font-size:11px;color:#64748b">The heatmap needs a Custom column in CCCCCCWW.RR format.</span></div>`;
     return;
   }
 
-  // Axes
-  const RRS = [];
-  for (let r = 0.5; r <= 10.01; r += 0.5) RRS.push(Math.round(r * 10) / 10);
+  // ── Grid axes (matches benchmark matrix) ──
+  const WRS = []; for (let w = 20; w <= 100; w++) WRS.push(w);       // 20–100 %
+  const RRS = []; for (let r = 30; r >= 2; r--) RRS.push(r / 10);    // 3.0 down to 0.2
 
-  const WRS = [];
-  for (let w = 10; w <= 90; w += 2) WRS.push(w);
-
-  // ── Two-pass balanced scoring ──────────────────────────────────────────────
-  // Pass 1: bucket all candidates
+  // ── Bucket all rows by decoded (WR, RR) ──
   const buckets = new Map();
   DATA.forEach(row => {
-    const wr     = row[wrIdx];
-    const rr     = row[rrIdx];
-    const profit = row[profitIdx];
-    if (wr === null || typeof wr !== 'number' || typeof rr !== 'number' || typeof profit !== 'number') return;
-    const rrSnap = Math.round(rr * 2) / 2;
-    if (rrSnap < 0.5 || rrSnap > 10) return;
-    const wrSnap = Math.round(wr / 2) * 2;
-    if (wrSnap < 10 || wrSnap > 90) return;
-    const key    = rrSnap + '|' + wrSnap;
-    const result = resultIdx2 >= 0 ? row[resultIdx2] : null;
-    const trades = countIdx  >= 0 ? row[countIdx]  : null;
+    // WR and RR are pre-decoded into cols 0 and 1 during parsing
+    const wrPct = row[0];
+    const rr    = row[1];
+    if (wrPct === null || rr === null) return;
+    if (wrPct < 20 || wrPct > 100) return;
+    if (rr < 0.1 || rr > 5.0) return;
+    const wr  = wrPct / 100;
     const pf     = pfIdx     >= 0 ? row[pfIdx]     : null;
-    const dd     = ddIdx     >= 0 ? row[ddIdx]     : null;
+    const profit = profitIdx >= 0 ? row[profitIdx] : null;
     const rf     = rfIdx     >= 0 ? row[rfIdx]     : null;
     const sharpe = sharpeIdx >= 0 ? row[sharpeIdx] : null;
+    const dd     = ddIdx     >= 0 ? row[ddIdx]     : null;
+    const trades = tradesIdx >= 0 ? row[tradesIdx] : null;
+    const result = resultIdx >= 0 ? row[resultIdx] : null;
+    const sc     = computeScore(wr, rr, pf, rf, sharpe, dd);
+
+    const rrKey = Math.round(rr * 10) / 10;
+    const key = wrPct + '|' + rrKey;
     if (!buckets.has(key)) buckets.set(key, []);
-    buckets.get(key).push({ profit, result, trades, pf, dd, rf, sharpe });
+    buckets.get(key).push({ result, profit, pf, rf, sharpe, dd, trades, wr, rr: rrKey, ...sc });
   });
 
-  // Pass 2: per-bucket pick the row with the highest Result score.
-  // Falls back to highest Profit if no row has a numeric Result.
+  // ── Per bucket: pick best (highest total score; tie-break by result) ──
   const cellMap = new Map();
   buckets.forEach((candidates, key) => {
-    let best = null, bestResult = -Infinity;
+    let best = null;
     candidates.forEach(c => {
-      if (typeof c.result === 'number' && isFinite(c.result) && c.result > bestResult) {
-        bestResult = c.result;
-        best = c;
-      }
+      if (!best) { best = c; return; }
+      const cs = c.total ?? -1, bs = best.total ?? -1;
+      if (cs > bs) { best = c; return; }
+      if (cs === bs && (c.result ?? -Infinity) > (best.result ?? -Infinity)) best = c;
     });
-    // Fallback: no result values → pick highest profit
-    if (!best) {
-      let bestProfit = -Infinity;
-      candidates.forEach(c => {
-        if (typeof c.profit === 'number' && isFinite(c.profit) && c.profit > bestProfit) {
-          bestProfit = c.profit;
-          best = c;
-        }
-      });
-    }
     if (best) cellMap.set(key, best);
   });
 
-  // Dynamic score range from controls
-  const _hmMin = parseFloat(document.getElementById('hmMinScore')?.value) || 200;
-  const _hmMax = parseFloat(document.getElementById('hmMaxScore')?.value) || 1600;
-  const RESULT_MAX = _hmMax; // visual scale ceiling
-  function getResultTier(r) {
-    const minS = _hmMin, maxS = _hmMax;
-    const span = Math.max(maxS - minS, 1);
-    // Normalized breakpoints based on original distribution across [minS, maxS]
-    // Original fractions: E@0, D@200/1400, C@400/1400, B@600/1400,
-    //                     A@800/1400, S@950/1400, SS@1100/1400, SSS@1250/1400, Z@1400/1400
-    const t  = f  => minS + f * span;
-    const f  = v  => Math.round(v);
-    const tE   = t(200/1400),  tD   = t(400/1400),  tC   = t(600/1400);
-    const tB   = t(800/1400),  tA   = t(950/1400),  tS   = t(1100/1400);
-    const tSS  = t(1250/1400);
-    if (r === null || typeof r !== 'number' || !isFinite(r) || r < minS)
-      return { cls: 'hm-res-f',   mvCls: 'hm-mv-res-f',   gradeCls: 'hm-grade-f',   grade: 'F',   label: `< ${f(minS)}`,              dim: true  };
-    if (r < tE)
-      return { cls: 'hm-res-e',   mvCls: 'hm-mv-res-e',   gradeCls: 'hm-grade-e',   grade: 'E',   label: `${f(minS)}–${f(tE)}`,       dim: false };
-    if (r < tD)
-      return { cls: 'hm-res-d',   mvCls: 'hm-mv-res-d',   gradeCls: 'hm-grade-d',   grade: 'D',   label: `${f(tE)}–${f(tD)}`,         dim: false };
-    if (r < tC)
-      return { cls: 'hm-res-c',   mvCls: 'hm-mv-res-c',   gradeCls: 'hm-grade-c',   grade: 'C',   label: `${f(tD)}–${f(tC)}`,         dim: false };
-    if (r < tB)
-      return { cls: 'hm-res-b',   mvCls: 'hm-mv-res-b',   gradeCls: 'hm-grade-b',   grade: 'B',   label: `${f(tC)}–${f(tB)}`,         dim: false };
-    if (r < tA)
-      return { cls: 'hm-res-a',   mvCls: 'hm-mv-res-a',   gradeCls: 'hm-grade-a',   grade: 'A',   label: `${f(tB)}–${f(tA)}`,         dim: false };
-    if (r < tS)
-      return { cls: 'hm-res-s',   mvCls: 'hm-mv-res-s',   gradeCls: 'hm-grade-s',   grade: 'S',   label: `${f(tA)}–${f(tS)}`,         dim: false };
-    if (r < tSS)
-      return { cls: 'hm-res-ss',  mvCls: 'hm-mv-res-ss',  gradeCls: 'hm-grade-ss',  grade: 'SS',  label: `${f(tS)}–${f(tSS)}`,        dim: false };
-    if (r < maxS)
-      return { cls: 'hm-res-sss', mvCls: 'hm-mv-res-sss', gradeCls: 'hm-grade-sss', grade: 'SSS', label: `${f(tSS)}–${f(maxS)}`,      dim: false };
-    return   { cls: 'hm-res-z',   mvCls: 'hm-mv-res-z',   gradeCls: 'hm-grade-z',   grade: 'Z',   label: `${f(maxS)}+ ★`,             dim: false };
+  // ── Score bar CSS class ──
+  function barCls(pct) {
+    if (pct >= 100) return 'bm-bar-100';
+    if (pct >= 75)  return 'bm-bar-75';
+    if (pct >= 50)  return 'bm-bar-50';
+    if (pct >= 25)  return 'bm-bar-25';
+    return 'bm-bar-0';
   }
 
-  // Status tiers
-  function getStatus(wr, rr) {
-    const be = 1 / (1 + rr) * 100;
-    const ev = (wr / 100) * rr - (1 - wr / 100);
-    const diff = wr - be;
-    if (Math.abs(diff) <= 1)   return { cls: 'hm-even',     ev, be, label: '~' };
-    if (diff < 0)               return { cls: 'hm-losing',   ev, be, label: '✕' };
-    if (ev < 0.25)              return { cls: 'hm-profit',   ev, be, label: '+' };
-    if (ev < 0.5)               return { cls: 'hm-profit-1', ev, be, label: '++' };
-    if (ev < 1)                 return { cls: 'hm-profit-2', ev, be, label: '+++' };
-    if (ev < 2)                 return { cls: 'hm-profit-3', ev, be, label: '++++' };
-    if (ev < 4)                 return { cls: 'hm-profit-4', ev, be, label: '+++++' };
-    if (ev < 8)                 return { cls: 'hm-profit-5', ev, be, label: '++++++' };
-    return                             { cls: 'hm-profit-6', ev, be, label: '+++++++' };
+  // ── Dot HTML helper ──
+  function dotHTML(pass, lbl) {
+    const cls = pass === null ? 'bm-dot-na' : pass ? 'bm-dot-pass' : 'bm-dot-fail';
+    return `<div class="bm-chk"><div class="bm-chk-dot ${cls}"></div><span class="bm-chk-lbl">${lbl}</span></div>`;
   }
 
-  const statusNames = {
-    'hm-losing': 'Losing', 'hm-even': 'Break even', 'hm-profit': 'Profitable',
-    'hm-profit-1': 'Strong', 'hm-profit-2': 'High', 'hm-profit-3': 'Elite',
-    'hm-profit-4': 'Exceptional', 'hm-profit-5': 'Legendary', 'hm-profit-6': 'Godlike'
-  };
-
-  function fmtProfit(v) {
-    if (v === undefined || v === null) return '—';
-    const abs = Math.abs(v);
-    const sign = v < 0 ? '-' : '';
-    if (abs >= 1000000) return sign + (abs / 1000000).toFixed(1) + 'M';
-    if (abs >= 1000)    return sign + (abs / 1000).toFixed(1) + 'k';
-    return sign + Math.round(abs);
-  }
-
-
-  // Legend HTML (dynamic, reflects current range)
-  const _span2 = Math.max(_hmMax - _hmMin, 1);
-  const _t2 = f => Math.round(_hmMin + f * _span2);
+  // ── Legend ──
   const legendHTML = `
-    <div class="hm-legend">
-      <span style="font-size:11px;font-weight:600;color:#64748b;">EV Status:</span>
-      <div class="hm-legend-item"><div class="hm-legend-dot hm-losing"></div> Losing</div>
-      <div class="hm-legend-item"><div class="hm-legend-dot hm-even"></div> Break even</div>
-      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit"></div> Profitable (0–0.25R)</div>
-      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-1"></div> Strong (0.25–0.5R)</div>
-      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-2"></div> High (0.5–1R)</div>
-      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-3"></div> Elite (1–2R)</div>
-      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-4"></div> Exceptional (2–4R)</div>
-      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-5"></div> Legendary (4–8R)</div>
-      <div class="hm-legend-item"><div class="hm-legend-dot hm-profit-6"></div> Godlike (&gt;8R)</div>
-      <div class="hm-legend-item"><div class="hm-legend-dot hm-empty"></div> No data</div>
+    <div class="hm-legend" style="flex-wrap:wrap;gap:8px 16px;margin-bottom:8px">
+      <span style="font-size:11px;font-weight:600;color:#64748b;">Cell bg = theoretical PF tier:</span>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#2d1212"></div> Unprofitable</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#2d200a"></div> Marginal (PF &lt;1.5)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#122510"></div> Acceptable (1.5–2.5)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#163510"></div> Good (2.5–3.5)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#1a4a12"></div> Great (3.5–5.0)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#0d4a22"></div> Exceptional (5.0–6.0)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#252840"></div> ⚠ Overfit? (&gt;6.0)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#1a1d27;border:1px solid #2a2d3a"></div> No data</div>
     </div>
-    <div class="hm-legend" style="margin-top:-6px">
-      <span style="font-size:11px;font-weight:600;color:#64748b;">Result Score Grade:</span>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#6b7280">F</span><span style="color:#4b5563;margin-left:3px">&lt; ${_hmMin} (sub-threshold)</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fca5a5">E</span><span style="color:#fca5a5;margin-left:3px">${_hmMin}–${_t2(200/1400)}</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fb923c">D</span><span style="color:#fb923c;margin-left:3px">${_t2(200/1400)}–${_t2(400/1400)}</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fcd34d">C</span><span style="color:#fcd34d;margin-left:3px">${_t2(400/1400)}–${_t2(600/1400)}</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#86efac">B</span><span style="color:#86efac;margin-left:3px">${_t2(600/1400)}–${_t2(800/1400)}</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#67e8f9">A</span><span style="color:#67e8f9;margin-left:3px">${_t2(800/1400)}–${_t2(950/1400)}</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#93c5fd">S</span><span style="color:#93c5fd;margin-left:3px">${_t2(950/1400)}–${_t2(1100/1400)}</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#c4b5fd">SS</span><span style="color:#c4b5fd;margin-left:3px">${_t2(1100/1400)}–${_t2(1250/1400)}</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#f9a8d4">SSS</span><span style="color:#f9a8d4;margin-left:3px">${_t2(1250/1400)}–${_hmMax}</span></div>
-      <div class="hm-legend-item"><span style="font-weight:900;font-size:12px;color:#fef08a;text-shadow:0 0 6px rgba(254,240,138,0.7)">Z</span><span style="color:#fef08a;margin-left:3px">${_hmMax}+ ★</span></div>
+    <div class="hm-legend" style="gap:8px 16px;margin-bottom:10px">
+      <span style="font-size:11px;font-weight:600;color:#64748b;">Score bar = threshold compliance:</span>
+      <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:#ef4444"></div> 0–25%</div>
+      <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:#f97316"></div> 25–50%</div>
+      <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:#eab308"></div> 50–75%</div>
+      <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:#22c55e"></div> 75–99%</div>
+      <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:#10b981;box-shadow:0 0 4px #10b981"></div> 100% ✓ all met</div>
     </div>
-    <div class="hm-info">Cell background = EV tier (R:R × Win Rate). Left border + top bar + grade letter = Result score (F→Z scale, ${_hmMin}–${_hmMax}+). Each cell shows the row with the highest Result score in that bucket. Dimmed cells are sub-threshold (F grade). Hover for full details. <span style="color:#4f8ef7">Click cells to cycle highlight: ⬜ white → 🟦 blue → 🟨 yellow → 🟥 red → off</span></div>
+    <div class="hm-info">Cell background = theoretical PF tier for that WR×RR. Score % = how close the best result in that cell meets all 4 benchmarks (PF · RF · Sharpe · DD). Dots: <span style="color:#22c55e">●</span> pass <span style="color:#ef4444">●</span> fail <span style="color:#4b5563">●</span> n/a. <span style="color:#4f8ef7">Click to cycle highlight.</span></div>
   `;
 
-  // Build table
+  // ── Build table ──
   const table = document.createElement('table');
   table.className = 'hm-table';
 
@@ -1287,7 +1381,7 @@ function buildHeatmap() {
   const headTr = document.createElement('tr');
   const cornerTh = document.createElement('th');
   cornerTh.className = 'hm-row-header';
-  cornerTh.textContent = 'R:R \\ WR%';
+  cornerTh.textContent = 'RR \\ WR%';
   headTr.appendChild(cornerTh);
   WRS.forEach(w => {
     const th = document.createElement('th');
@@ -1301,102 +1395,108 @@ function buildHeatmap() {
     const tr = document.createElement('tr');
     const rowTh = document.createElement('th');
     rowTh.className = 'hm-row-header';
-    rowTh.textContent = '1:' + rr;
+    rowTh.textContent = '1:' + rr.toFixed(1);
     tr.appendChild(rowTh);
 
-    WRS.forEach(wrBucket => {
+    WRS.forEach(wrPct => {
       const td = document.createElement('td');
-      const key = rr + '|' + wrBucket;
+      const wr = wrPct / 100;
+      const tier = bmTier(wr, rr);
+      td.className = tier.cls;
+
+      const key  = wrPct + '|' + rr;
       const cell = cellMap.get(key);
-      const st = getStatus(wrBucket, rr);
 
-      // helpers
-      const fmtV   = (v, dec=2) => (v !== null && typeof v === 'number') ? v.toFixed(dec) : '—';
-      const fmtPnl = v => { if (v === null || typeof v !== 'number') return '—'; const s = v >= 0 ? '+' : ''; return s + fmtProfit(v); };
-      const tipRow = (label, val, cls='') => `<tr><td style="color:#64748b;padding-right:10px">${label}</td><td style="font-weight:700${cls ? ';color:'+cls : ''}">${val}</td></tr>`;
+      const fmtV = (v, d = 2) => (typeof v === 'number' && isFinite(v)) ? v.toFixed(d) : '—';
 
-      if (!cell) {
-        td.className = 'hm-empty';
-        td.innerHTML = '<div style="text-align:center;color:#2a2d3a;font-size:9px">—</div>';
+      if (!cell || cell.total === null) {
+        td.innerHTML = `<div class="bm-no-data-cell">—</div>`;
+        // Tooltip for empty
         td.addEventListener('mousemove', e => {
           const tip = document.getElementById('hmTooltip');
+          const reqPF  = bmPF(wr, rr), reqRF = bmMinRF(wr, rr);
+          const reqSR  = bmMinSharpe(wr, rr), reqDD = bmMaxDD(wr, rr);
           tip.style.display = 'block';
-          tip.style.left = (e.clientX + 14) + 'px';
-          tip.style.top  = (e.clientY + 14) + 'px';
-          tip.innerHTML = `<strong>R:R 1:${rr} | WR ~${wrBucket}%</strong><br>No data in this bucket<br><span style="color:#64748b">Break-even WR: ${st.be.toFixed(1)}% &nbsp;|&nbsp; EV: ${st.ev >= 0 ? '+' : ''}${st.ev.toFixed(2)}R</span>`;
+          tip.innerHTML = `<strong>WR ${wrPct}% &nbsp;·&nbsp; RR 1:${rr.toFixed(1)}</strong>
+            <span style="color:#64748b;font-size:10px"> &nbsp;${tier.label}</span><br>
+            <span style="color:#64748b">No results decoded to this cell.</span><br>
+            <span style="font-size:10px;color:#475569;margin-top:4px;display:block">Thresholds: PF ${reqPF.toFixed(2)} · RF>${reqRF} · SR>${reqSR} · DD<${reqDD}%</span>
+            ${tradeAnalysisHTML(wr, rr)}`;
+          const tw = tip.offsetWidth, th2 = tip.offsetHeight;
+          tip.style.left = Math.max(4, e.clientX - tw - 14) + 'px';
+          tip.style.top  = Math.max(4, e.clientY - th2 - 14) + 'px';
         });
       } else {
-        const rt = getResultTier(cell.result);
-        td.className = st.cls + ' ' + rt.cls;
-        if (rt.dim) td.classList.add('hm-dim');
+        const pct    = Math.round(cell.total * 100);
+        const isFull = pct >= 100;
+        const bar    = barCls(pct);
+        const reqPF  = bmPF(wr, rr), reqRF = bmMinRF(wr, rr);
+        const reqSR  = bmMinSharpe(wr, rr), reqDD = bmMaxDD(wr, rr);
 
-        const pf_val     = cell.pf     !== null && typeof cell.pf     === 'number' ? cell.pf.toFixed(2)     : '—';
-        const rf_val     = cell.rf     !== null && typeof cell.rf     === 'number' ? cell.rf.toFixed(2)     : '—';
-        const sharpe_val = cell.sharpe !== null && typeof cell.sharpe === 'number' ? cell.sharpe.toFixed(2) : '—';
-        const dd_val     = cell.dd     !== null && typeof cell.dd     === 'number' ? cell.dd.toFixed(1)+'%' : '—';
-        const profit_abbr = fmtPnl(cell.profit);
-        const profit_cls  = (cell.profit !== null && typeof cell.profit === 'number' && cell.profit >= 0) ? 'hm-mv-pos' : 'hm-mv-neg';
-        const res_val     = cell.result !== null && typeof cell.result === 'number' ? Math.round(cell.result) : '—';
-        const res_pct     = cell.result !== null && typeof cell.result === 'number'
-                            ? Math.min(Math.max(cell.result / RESULT_MAX, 0), 1) * 100
-                            : 0;
-        const gradeFontSize = rt.grade.length === 1 ? '20px' : rt.grade.length === 2 ? '14px' : '10px';
-        td.innerHTML = `<div class="hm-res-bar"><div class="hm-res-bar-fill ${rt.cls}" style="width:${res_pct.toFixed(1)}%"></div></div>
-        <div class="hm-cell-body">
-          <div class="hm-cell-grid">
-            <div class="hm-metric hm-metric-result"><span class="hm-ml">RES</span><span class="hm-mv ${rt.mvCls}">${res_val}</span></div>
-            <div class="hm-metric"><span class="hm-ml">P&L</span><span class="hm-mv ${profit_cls}">${profit_abbr}</span></div>
-            <div class="hm-metric"><span class="hm-ml">PF</span><span class="hm-mv hm-mv-neu">${pf_val}</span></div>
-            <div class="hm-metric"><span class="hm-ml">RF</span><span class="hm-mv hm-mv-neu">${rf_val}</span></div>
-            <div class="hm-metric"><span class="hm-ml">SR</span><span class="hm-mv hm-mv-neu">${sharpe_val}</span></div>
-            <div class="hm-metric"><span class="hm-ml">DD</span><span class="hm-mv hm-mv-dd">${dd_val}</span></div>
-          </div>
-          <div class="hm-cell-grade-col">
-            <span class="hm-grade-badge ${rt.gradeCls}" style="font-size:${gradeFontSize}">${rt.grade}</span>
-          </div>
-        </div>`;
+        td.innerHTML = `
+          <div class="bm-cell-wrap">
+            <div class="bm-score-bar ${bar}" style="width:${Math.min(pct,100)}%"></div>
+            <div class="bm-score-main">
+              <span class="bm-score-pct${isFull ? ' bm-full' : ''}">${pct}%</span>
+              <div class="bm-checks">
+                <div class="bm-check-row">
+                  ${dotHTML(cell.pass.pf,     'PF')}
+                  ${dotHTML(cell.pass.rf,     'RF')}
+                </div>
+                <div class="bm-check-row">
+                  ${dotHTML(cell.pass.sharpe, 'SR')}
+                  ${dotHTML(cell.pass.dd,     'DD')}
+                </div>
+              </div>
+            </div>
+            <div class="bm-result-line">res ${cell.result !== null ? Math.floor(cell.result) : '—'}</div>
+          </div>`;
+
+        // Tooltip
         td.addEventListener('mousemove', e => {
           const tip = document.getElementById('hmTooltip');
-          const isPos = cell.profit >= 0;
-          const pnlCol = isPos ? '#4ade80' : '#f87171';
+          const mk = (lbl, actual, req, pass, invert=false) => {
+            const col = pass === null ? '#64748b' : pass ? '#4ade80' : '#f87171';
+            const sym = pass === null ? '—' : pass ? '✓' : '✗';
+            return `<tr>
+              <td style="color:#64748b;padding-right:8px">${lbl}</td>
+              <td style="font-weight:700;color:${col}">${sym} ${actual}</td>
+              <td style="color:#475569;font-size:10px">${invert ? '<' : '>'} ${req}</td>
+            </tr>`;
+          };
           tip.style.display = 'block';
-          tip.style.left = (e.clientX + 14) + 'px';
-          tip.style.top  = (e.clientY + 14) + 'px';
-          tip.innerHTML = `<strong>R:R 1:${rr} | WR ~${wrBucket}%</strong>
-            <span style="color:#64748b;font-size:10px"> &nbsp;|&nbsp; BE: ${st.be.toFixed(1)}% &nbsp;EV: ${st.ev >= 0 ? '+' : ''}${st.ev.toFixed(2)}R &nbsp;→ <strong style="color:#e2e8f0">${statusNames[st.cls]}</strong></span>
-            <div style="margin-top:5px;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.04);display:flex;align-items:center;gap:8px">
-              <span style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.05em">Result</span>
-              <span style="font-size:15px;font-weight:800;letter-spacing:-0.5px" class="${rt.mvCls}">${res_val}</span>
-              <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,0.06);font-weight:900" class="${rt.gradeCls}">${rt.grade}</span>
-              <span style="font-size:9px;color:#64748b">${rt.label}</span>
-              ${rt.dim ? '<span style="font-size:9px;color:#ef4444;font-weight:600">⚠ sub-threshold</span>' : ''}
+          tip.innerHTML = `<strong>WR ${wrPct}% &nbsp;·&nbsp; RR 1:${rr.toFixed(1)}</strong>
+            <span style="color:#64748b;font-size:10px"> &nbsp;${tier.label}</span>
+            <div style="margin:5px 0 3px;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.04);display:flex;align-items:center;gap:8px">
+              <span style="font-size:9px;color:#64748b">Best score</span>
+              <span style="font-size:18px;font-weight:900;color:${isFull ? '#10b981' : pct>=75 ? '#22c55e' : pct>=50 ? '#eab308' : pct>=25 ? '#f97316' : '#ef4444'}">${pct}%</span>
+              ${isFull ? '<span style="font-size:9px;color:#10b981;font-weight:700">✓ all thresholds met</span>' : ''}
             </div>
-            <div style="margin-top:7px;border-top:1px solid #2a2d3a;padding-top:6px">
-              <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">★ Highest Result Row</div>
+            <div style="border-top:1px solid #2a2d3a;padding-top:5px;margin-top:2px">
+              <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">Best result: ${cell.result !== null ? cell.result.toFixed(2) : '—'}</div>
               <table style="border-collapse:collapse;font-size:10px">
-                ${tipRow('Profit',          fmtPnl(cell.profit),   pnlCol)}
-                ${cell.result !== null && typeof cell.result === 'number' ? tipRow('Result', cell.result.toFixed(2), '#e2e8f0') : ''}
-                ${cell.pf     !== null ? tipRow('Profit Factor',   fmtV(cell.pf),         '#93c5fd') : ''}
-                ${cell.rf     !== null ? tipRow('Recovery Factor', fmtV(cell.rf),         '#93c5fd') : ''}
-                ${cell.sharpe !== null ? tipRow('Sharpe Ratio',    fmtV(cell.sharpe),     '#93c5fd') : ''}
-                ${cell.dd     !== null ? tipRow('Equity DD %',     fmtV(cell.dd) + '%',   '#f87171') : ''}
-                ${cell.trades !== null ? tipRow('Trades',          cell.trades,           '')        : ''}
+                ${cell.profit !== null && cell.profit !== undefined ? `<tr><td style="color:#64748b;padding-right:8px">Profit</td><td style="font-weight:700;color:#4ade80">$${fmtV(cell.profit, 2)}</td><td></td></tr>` : ''}
+                ${mk('Profit Factor', fmtV(cell.pf),     reqPF.toFixed(2),  cell.pass.pf)}
+                ${mk('Recovery Factor', fmtV(cell.rf),   reqRF,             cell.pass.rf)}
+                ${mk('Sharpe Ratio',  fmtV(cell.sharpe), reqSR,             cell.pass.sharpe)}
+                ${mk('Equity DD %',   fmtV(cell.dd)+'%', reqDD+'%',         cell.pass.dd, true)}
+                ${cell.trades !== null ? `<tr><td style="color:#64748b;padding-right:8px">Trades</td><td style="font-weight:700;color:#e2e8f0">${cell.trades}</td><td></td></tr>` : ''}
               </table>
-            </div>`;
+            </div>
+            ${tradeAnalysisHTML(wr, rr)}`;
+          const tw = tip.offsetWidth, th2 = tip.offsetHeight;
+          tip.style.left = Math.max(4, e.clientX - tw - 14) + 'px';
+          tip.style.top  = Math.max(4, e.clientY - th2 - 14) + 'px';
         });
       }
 
-      // Click-to-highlight cycling (white → green → yellow → red → off)
-      const hlClasses = ['hm-hl-1', 'hm-hl-2', 'hm-hl-3', 'hm-hl-4'];
+      // Click-to-highlight cycling
+      const hlClasses = ['hm-hl-1','hm-hl-2','hm-hl-3','hm-hl-4'];
       let _hlState = -1;
       td.addEventListener('click', () => {
         if (_hlState >= 0) td.classList.remove(hlClasses[_hlState]);
-        _hlState++;
-        if (_hlState < hlClasses.length) {
-          td.classList.add(hlClasses[_hlState]);
-        } else {
-          _hlState = -1;
-        }
+        _hlState = (_hlState + 1) < hlClasses.length ? _hlState + 1 : -1;
+        if (_hlState >= 0) td.classList.add(hlClasses[_hlState]);
       });
 
       td.addEventListener('mouseleave', () => { document.getElementById('hmTooltip').style.display = 'none'; });
