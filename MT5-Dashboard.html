@@ -181,7 +181,7 @@
                                 Mejores Combinaciones
                             </div>
                         </h2>
-                        <p class="text-[10px] text-gray-500 mb-3 leading-tight">Top de combinaciones matemáticas que logran la mayor relación de ganancia asumiendo el menor Drawdown combinado posible.</p>
+                        <p class="text-[10px] text-gray-500 mb-3 leading-tight">Eliminación Inteligente: Observa cómo mejora tu estrategia al ir quitando paso a paso los peores pares.</p>
                         <div id="portfoliosContainer" class="mt-1 flex-1 overflow-y-auto cell-scrollbar pr-1 flex flex-col gap-3">
                             <!-- Los portafolios se inyectan aquí -->
                         </div>
@@ -1208,22 +1208,19 @@
         }
 
         // ==========================================
-        // MOTOR ALGORÍTMICO DE PORTAFOLIOS (NUEVO)
+        // MOTOR ALGORÍTMICO DE PORTAFOLIOS (REESCRITO CON ELIMINACIÓN INVERSA)
         // ==========================================
         
         // Helper: Calcula las estadísticas COMBINADAS (curva real) de un grupo de símbolos
         function calcCombinedStats(symbols) {
-            if (!symbols || symbols.length === 0) return { prof: 0, maxDD: 0, rec: 0, wr: 0, trades: 0, maxLossStreak: 0 };
+            if (!symbols || symbols.length === 0) return { prof: 0, maxDD: 0, rec: 0, wr: 0, trades: 0, maxLossStreak: 0, maxWinStreak: 0 };
             
             // Filtrar y ordenar cronológicamente
             let trades = rawData.filter(d => symbols.includes(d.Symbol)).sort((a,b) => a.Time - b.Time);
             
-            let balance = 0;
-            let peak = 0;
-            let maxDD = 0;
-            let wins = 0;
-            let currentLossStreak = 0;
-            let maxLossStreak = 0;
+            let balance = 0, peak = 0, maxDD = 0, wins = 0;
+            let currentLossStreak = 0, maxLossStreak = 0;
+            let currentWinStreak = 0, maxWinStreak = 0;
 
             trades.forEach(t => {
                 let p = t.NetProfit || 0;
@@ -1239,8 +1236,11 @@
                 if (p > 0) {
                     wins++;
                     currentLossStreak = 0;
+                    currentWinStreak++;
+                    if (currentWinStreak > maxWinStreak) maxWinStreak = currentWinStreak;
                 } else if (p < 0) {
                     currentLossStreak++;
+                    currentWinStreak = 0;
                     if (currentLossStreak > maxLossStreak) maxLossStreak = currentLossStreak;
                 }
             });
@@ -1249,125 +1249,103 @@
             let rec = maxDD > 0 ? prof / maxDD : (prof > 0 ? 999 : 0);
             let wr = trades.length > 0 ? (wins / trades.length) * 100 : 0;
 
-            return { prof, maxDD, rec, wr, trades: trades.length, maxLossStreak };
+            return { prof, maxDD, rec, wr, trades: trades.length, maxLossStreak, maxWinStreak };
         }
 
         function analyzePortfolios() {
             let allSymbolsInSystem = [...new Set(rawData.map(d => d.Symbol).filter(Boolean))];
-            let posSymbols = [];
-            
-            // 1. Descartar pares que pierden dinero individualmente (nunca ayudan a largo plazo)
-            allSymbolsInSystem.forEach(sym => {
-                let stats = calcCombinedStats([sym]);
-                if (stats.prof > 0) {
-                    posSymbols.push({ sym, ...stats });
-                }
-            });
-
             const container = document.getElementById('portfoliosContainer');
 
-            if (posSymbols.length === 0) {
-                container.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">No hay suficientes datos positivos para buscar combinaciones.</div>';
+            if (allSymbolsInSystem.length === 0) {
+                container.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">No hay suficientes datos.</div>';
                 return;
             }
 
             let portfolios = [];
-            let seenHashes = new Set();
+            
+            let currentCombo = [...allSymbolsInSystem];
 
-            // 2. Búsqueda iterativa (Greedy) enfocada en armar bloques de bajo DD
-            posSymbols.forEach(startSym => {
-                let currentCombo = [startSym.sym];
-                let currentStats = calcCombinedStats(currentCombo);
-                let available = posSymbols.filter(s => s.sym !== startSym.sym);
+            // 2. Backward Elimination (Eliminación Inversa)
+            // Quitamos el "peor" par uno a uno, y guardamos el resultado como una nueva opción.
+            // maxSteps limita a que quitemos como máximo 9 pares (para mostrar el Top 10) o hasta quedarnos con 1 par.
+            let maxSteps = Math.min(9, allSymbolsInSystem.length - 1);
+            
+            for (let step = 1; step <= maxSteps; step++) {
+                let bestScore = -Infinity;
+                let bestCombo = null;
+                let bestStats = null;
 
-                let tempCombo = [...currentCombo];
-                let tempStats = currentStats;
-                let avail = [...available];
+                // Ensayar qué pasa si quitamos 1 par específico de los que quedan
+                for (let i = 0; i < currentCombo.length; i++) {
+                    let testCombo = [...currentCombo];
+                    testCombo.splice(i, 1); // Remover temporalmente
+                    let testStats = calcCombinedStats(testCombo);
+                    
+                    // Queremos la combinación resultante que tenga MEJOR WinRate, MENOS perdidas seguidas y MEJOR profit
+                    let score = (testStats.wr * 100) - (testStats.maxLossStreak * 50) + (testStats.prof * 0.001);
 
-                while(avail.length > 0) {
-                    let bestNextSym = null;
-                    let bestNextStats = null;
-                    let bestScore = -Infinity; 
-
-                    avail.forEach(cand => {
-                        let testCombo = [...tempCombo, cand.sym];
-                        let testStats = calcCombinedStats(testCombo);
-                        
-                        // Queremos que gane más, pero penalizando severamente si aumenta mucho el DD
-                        // Validamos que sea una combinación razonable:
-                        if (testStats.rec > tempStats.rec || (testStats.prof > tempStats.prof && testStats.maxDD <= tempStats.maxDD * 1.05)) {
-                            // De los que cumplen, nos quedamos con el que aporte mayor Ganancia Neta
-                            if (testStats.prof > bestScore) {
-                                bestScore = testStats.prof;
-                                bestNextStats = testStats;
-                                bestNextSym = cand.sym;
-                            }
-                        }
-                    });
-
-                    if (bestNextSym) {
-                        tempCombo.push(bestNextSym);
-                        tempStats = bestNextStats;
-                        
-                        let hash = [...tempCombo].sort().join(',');
-                        if(!seenHashes.has(hash)) {
-                            seenHashes.add(hash);
-                            portfolios.push({ symbols: [...tempCombo], stats: tempStats });
-                        }
-                        avail = avail.filter(s => s.sym !== bestNextSym);
-                    } else {
-                        break;
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestCombo = testCombo;
+                        bestStats = testStats;
                     }
                 }
+
+                // Guardamos la mejor combinación lograda en este paso (con N-1 pares)
+                if (bestCombo) {
+                    currentCombo = bestCombo;
+                    portfolios.push({
+                        name: `Óptimo -${step} Par${step > 1 ? 'es' : ''}`,
+                        symbols: [...currentCombo],
+                        stats: bestStats
+                    });
+                } else {
+                    break;
+                }
+            }
+
+            // Ordenamiento por Prioridades (Req. 2):
+            // 1) Winrate (Mayor primero)
+            // 2) Pérdidas consecutivas (Menor primero)
+            // 3) Profit (Mayor primero) para desempatar
+            portfolios.sort((a, b) => {
+                if (b.stats.wr !== a.stats.wr) {
+                    return b.stats.wr - a.stats.wr;
+                }
+                if (a.stats.maxLossStreak !== b.stats.maxLossStreak) {
+                    return a.stats.maxLossStreak - b.stats.maxLossStreak;
+                }
+                return b.stats.prof - a.stats.prof;
             });
-
-            // Si por alguna razón no se cruzaron, agregamos las individuales como base
-            if(portfolios.length === 0) {
-                posSymbols.forEach(s => portfolios.push({symbols: [s.sym], stats: calcCombinedStats([s.sym])}));
-            }
-
-            // 3. Ordenar todo del que MÁS gana al que MENOS gana estricto
-            portfolios.sort((a,b) => b.stats.prof - a.stats.prof);
-
-            // 4. Mostrar solo el Top 5 para no saturar información
-            let topPortfolios = portfolios.slice(0, 5);
-
-            if (topPortfolios.length === 0) {
-                container.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">Aún no hay pares suficientes para combinar.</div>';
-                return;
-            }
-
+            
             let html = '';
-            topPortfolios.forEach((p, index) => {
-                let rank = index + 1;
-                
+            portfolios.forEach((p, index) => {
                 let safeSymbolsArr = JSON.stringify(p.symbols).replace(/"/g, "'");
 
-                let formattedDD = p.stats.maxDD > 0 ? `-$${fmtMoney(p.stats.maxDD, 0).replace('$', '')}` : '$0';
-                
-                let icon = rank === 1 ? '🏆' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : '🏅'));
-                let colorClass = rank === 1 ? 'text-yellow-400' : (rank === 2 ? 'text-gray-300' : (rank === 3 ? 'text-orange-400' : 'text-blue-400'));
+                // Iconos y colores basados en su nueva posición ordenada (el #1 tendrá la gráfica o el fueguito)
+                let icon = index === 0 ? '📊' : (index === 1 ? '🔥' : (index === 2 ? '⚡' : '✨'));
+                let colorClass = index === 0 ? 'text-blue-400' : (index === 1 ? 'text-orange-400' : (index === 2 ? 'text-yellow-400' : 'text-purple-400'));
 
-                // Calcular pares descartados
+                // Calcular pares descartados visualmente
                 let discardedSyms = allSymbolsInSystem.filter(s => !p.symbols.includes(s));
                 
                 // Generar texto para el Tooltip
                 let tooltipText = `PARES UTILIZADOS (${p.symbols.length}):\n${p.symbols.join(', ')}\n\nPARES DESCARTADOS (${discardedSyms.length}):\n${discardedSyms.length > 0 ? discardedSyms.join(', ') : 'Ninguno'}`;
 
                 html += `
-                    <div onclick="applyPortfolioFilter('Top ${rank}', ${safeSymbolsArr})" title="${tooltipText}" class="bg-gray-700/30 hover:bg-gray-700 cursor-pointer p-3 rounded-lg border border-gray-600 transition-colors group relative shadow-sm">
+                    <div onclick="applyPortfolioFilter('${p.name}', ${safeSymbolsArr})" title="${tooltipText}" class="bg-gray-700/30 hover:bg-gray-700 cursor-pointer p-3 rounded-lg border border-gray-600 transition-colors group relative shadow-sm">
                         
                         <div class="flex justify-between items-center mb-1">
                             <span class="text-sm font-bold ${colorClass} flex items-center gap-1">
-                                ${icon} Top ${rank}
+                                ${icon} ${p.name}
                             </span>
-                            <span class="text-sm font-mono font-bold text-green-400">${fmtMoney(p.stats.prof, 0)}</span>
+                            <span class="text-sm font-mono font-bold ${p.stats.prof >= 0 ? 'text-green-400' : 'text-red-400'}">${fmtMoney(p.stats.prof, 0)}</span>
                         </div>
                         
-                        <div class="flex justify-between gap-2 text-[10px] uppercase tracking-wide mb-2 mt-2 bg-gray-900/50 p-1.5 rounded border border-gray-700/50">
-                            <span class="flex flex-col text-gray-500">DD Comb: <b class="text-red-400 font-mono tracking-normal text-[11px] mt-0.5">${formattedDD}</b></span>
-                            <span class="flex flex-col text-gray-500 border-l border-gray-700 pl-2">Pérd. Seguidas: <b class="text-orange-400 font-mono tracking-normal text-[11px] mt-0.5">${p.stats.maxLossStreak}</b></span>
-                            <span class="flex flex-col text-gray-500 border-l border-gray-700 pl-2">Win Rate: <b class="text-blue-400 font-mono tracking-normal text-[11px] mt-0.5">${p.stats.wr.toFixed(1)}%</b></span>
+                        <div class="flex justify-between gap-1 text-[9px] md:text-[10px] uppercase tracking-wide mb-2 mt-2 bg-gray-900/50 p-1.5 rounded border border-gray-700/50">
+                            <span class="flex flex-col text-gray-500">Win Rate: <b class="text-blue-400 font-mono tracking-normal text-[11px] mt-0.5">${p.stats.wr.toFixed(1)}%</b></span>
+                            <span class="flex flex-col text-gray-500 border-l border-gray-700 pl-1.5">Pérd. Seq: <b class="text-red-400 font-mono tracking-normal text-[11px] mt-0.5">${p.stats.maxLossStreak}</b></span>
+                            <span class="flex flex-col text-gray-500 border-l border-gray-700 pl-1.5">Gana Seq: <b class="text-green-400 font-mono tracking-normal text-[11px] mt-0.5">${p.stats.maxWinStreak}</b></span>
                         </div>
                         
                         <div class="flex justify-between items-center border-t border-gray-600/50 pt-2 mt-1">
