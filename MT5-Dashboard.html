@@ -7,7 +7,6 @@
     
     <link rel="icon" href="https://res.cloudinary.com/dlo3r0you/image/upload/v1754687755/logo_oyr4yr.png" type="image/png">
 
-    <!-- Librerías: Tailwind (CSS), SheetJS (Excel), Chart.js (Gráficos) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -82,7 +81,6 @@
 </head>
 <body class="bg-gray-900 text-white font-sans min-h-screen">
 
-    <!-- PANTALLA DE CARGA GLOBAL -->
     <div id="globalLoader" class="fixed inset-0 z-[9999] bg-gray-900/90 backdrop-blur-sm hidden flex-col items-center justify-center transition-opacity">
         <svg class="animate-spin h-16 w-16 text-blue-500 mb-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -92,14 +90,12 @@
         <p class="text-gray-400 text-sm mt-2 font-medium">Dependiendo del tamaño de los archivos, esto puede tomar unos segundos.</p>
     </div>
 
-    <!-- PANTALLA DRAG AND DROP (GLOBAL) -->
     <div id="dndOverlay" class="fixed inset-0 z-[9998] bg-blue-900/60 backdrop-blur-md hidden flex-col items-center justify-center transition-all border-[6px] border-dashed border-blue-400 pointer-events-none">
         <svg class="w-24 h-24 text-blue-400 mb-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
         <h2 class="text-4xl font-bold text-white tracking-wide">Suelta tus archivos aquí</h2>
         <p class="text-blue-200 text-lg mt-4 font-medium">Se procesarán automáticamente en la sección que tienes activa.</p>
     </div>
 
-    <!-- BARRA DE NAVEGACIÓN PRINCIPAL -->
     <nav class="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
@@ -114,7 +110,6 @@
                     <button onclick="switchTab('comparator')" id="nav-comparator" class="nav-link font-semibold text-gray-300 hover:text-white pb-1 transition-colors">
                         Comparador
                     </button>
-                    <!-- ENLACE EXTERNO PARA OPTIMIZADOR -->
                     <a href="Optimizador" target="_blank" rel="noopener noreferrer" class="font-semibold text-gray-300 hover:text-white pb-1 transition-colors flex items-center gap-1">
                         Optimizador
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
@@ -126,9 +121,6 @@
 
     <div class="p-4 md:p-8">
 
-        <!-- ========================================================= -->
-        <!-- PÁGINA 1: DASHBOARD PRINCIPAL -->
-        <!-- ========================================================= -->
         <div id="view-dashboard" class="fade-in block">
             
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-gray-800 py-3 px-5 rounded-xl shadow-lg border border-gray-700">
@@ -136,7 +128,6 @@
                     <h1 class="text-2xl font-bold text-blue-400">📊 Trading Performance</h1>
                     <p class="text-gray-400 text-xs mt-0.5">Analizador de Historial MT5</p>
                 </div>
-                <!-- BOTONES DIVIDIDOS DASHBOARD -->
                 <div class="mt-3 md:mt-0 flex flex-wrap gap-3">
                     <input type="file" id="dashInputClassic" accept=".xlsx, .xls" multiple class="hidden" />
                     <input type="file" id="dashInputGraph" accept=".csv, .tsv, .txt" multiple class="hidden" />
@@ -157,14 +148,11 @@
                 </div>
             </div>
 
-            <!-- CONTENEDOR DE ARCHIVOS DEL DASHBOARD -->
             <div id="dashFilesList" class="flex flex-wrap gap-3 mb-4"></div>
 
-            <!-- Contenedor Principal (Oculto hasta que haya datos) -->
             <div id="dashboardContent" class="hidden fade-in flex flex-col lg:flex-row gap-4 items-stretch">
                 
                 <div class="w-full lg:w-64 xl:w-80 shrink-0 flex flex-col gap-4">
-                    <!-- Leaderboard -->
                     <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex flex-col min-h-[350px] max-h-[400px]">
                         <h2 class="text-base font-semibold text-gray-300 mb-3 border-b border-gray-700 pb-2 flex items-center gap-2">
                             <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
@@ -173,7 +161,6 @@
                         <div id="leaderboardContainer" class="mt-1 flex-1 overflow-y-auto cell-scrollbar pr-1 flex flex-col gap-1"></div>
                     </div>
 
-                    <!-- Portafolios Óptimos (MOTOR ALGORÍTMICO) -->
                     <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex flex-col flex-1 min-h-[300px]">
                         <h2 class="text-base font-semibold text-gray-300 mb-1 border-b border-gray-700 pb-2 flex items-center justify-between gap-2">
                             <div class="flex items-center gap-2">
@@ -183,20 +170,17 @@
                         </h2>
                         <p class="text-[10px] text-gray-500 mb-3 leading-tight">Eliminación Inteligente: Observa cómo mejora tu estrategia al ir quitando paso a paso los peores pares.</p>
                         <div id="portfoliosContainer" class="mt-1 flex-1 overflow-y-auto cell-scrollbar pr-1 flex flex-col gap-3">
-                            <!-- Los portafolios se inyectan aquí -->
-                        </div>
+                            </div>
                     </div>
                 </div>
 
                 <div class="flex-1 min-w-0 flex flex-col gap-4">
 
-                    <!-- SECCIÓN DE FILTROS MULTI-SELECCIÓN -->
                     <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg flex flex-col md:flex-row items-center gap-4 justify-between relative z-40">
                         <div class="flex items-center gap-2 text-gray-300 font-semibold w-full md:w-auto">
                             <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                             <span>Filtros Globales</span>
                             
-                            <!-- INDICADOR DE PORTAFOLIO ACTIVO -->
                             <div id="activePortfolioBadge" class="hidden ml-2 bg-purple-900/40 border border-purple-500 text-purple-300 text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-[0_0_8px_rgba(168,85,247,0.3)] max-w-[150px] md:max-w-none truncate">
                                 <span id="portfolioBadgeName" class="truncate">Portafolio Activo</span>
                                 <button onclick="clearPortfolioFilter(event)" class="hover:text-red-400 rounded-full bg-purple-900/80 px-1 ml-1 leading-none transition-colors" title="Quitar filtro de portafolio">&times;</button>
@@ -205,7 +189,6 @@
                         
                         <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto flex-1 md:justify-end">
                             
-                            <!-- Custom Multi-Select Símbolos -->
                             <div class="custom-select-container relative flex flex-col md:flex-row items-start md:items-center gap-2">
                                 <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Símbolos:</label>
                                 <button onclick="toggleDropdown('dropdownSymbols')" class="w-full md:w-44 bg-gray-700 text-white text-sm rounded py-1.5 px-3 border border-gray-600 focus:outline-none hover:border-blue-500 cursor-pointer flex justify-between items-center transition-colors">
@@ -213,11 +196,9 @@
                                     <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                 </button>
                                 <div id="dropdownSymbols" class="custom-select-dropdown hidden absolute top-full left-0 md:left-auto right-0 mt-1 w-full md:w-56 bg-gray-800 border border-gray-600 rounded-md shadow-xl max-h-60 overflow-y-auto filter-scrollbar z-50 p-2">
-                                    <!-- Options injected here -->
-                                </div>
+                                    </div>
                             </div>
 
-                            <!-- Custom Multi-Select Años -->
                             <div class="custom-select-container relative flex flex-col md:flex-row items-start md:items-center gap-2">
                                 <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Años:</label>
                                 <button onclick="toggleDropdown('dropdownYears')" class="w-full md:w-36 bg-gray-700 text-white text-sm rounded py-1.5 px-3 border border-gray-600 focus:outline-none hover:border-blue-500 cursor-pointer flex justify-between items-center transition-colors">
@@ -225,11 +206,9 @@
                                     <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                 </button>
                                 <div id="dropdownYears" class="custom-select-dropdown hidden absolute top-full left-0 md:left-auto right-0 mt-1 w-full md:w-40 bg-gray-800 border border-gray-600 rounded-md shadow-xl max-h-60 overflow-y-auto filter-scrollbar z-50 p-2">
-                                    <!-- Options injected here -->
-                                </div>
+                                    </div>
                             </div>
 
-                            <!-- Custom Multi-Select Meses -->
                             <div class="custom-select-container relative flex flex-col md:flex-row items-start md:items-center gap-2">
                                 <label class="text-xs text-gray-400 uppercase tracking-wide whitespace-nowrap">Meses:</label>
                                 <button onclick="toggleDropdown('dropdownMonths')" class="w-full md:w-36 bg-gray-700 text-white text-sm rounded py-1.5 px-3 border border-gray-600 focus:outline-none hover:border-blue-500 cursor-pointer flex justify-between items-center transition-colors">
@@ -237,8 +216,7 @@
                                     <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                 </button>
                                 <div id="dropdownMonths" class="custom-select-dropdown hidden absolute top-full left-0 md:left-auto right-0 mt-1 w-full md:w-40 bg-gray-800 border border-gray-600 rounded-md shadow-xl max-h-60 overflow-y-auto filter-scrollbar z-50 p-2">
-                                    <!-- Options injected here -->
-                                </div>
+                                    </div>
                             </div>
 
                             <button onclick="clearGlobalFilters()" class="bg-gray-700 hover:bg-red-600 hover:text-white text-gray-300 text-xs font-semibold py-1.5 px-3 rounded border border-gray-600 hover:border-red-500 transition-all flex items-center justify-center gap-1 mt-2 md:mt-0">
@@ -317,7 +295,6 @@
                     </div>
 
                     <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                        <!-- Gráfico Lineal -->
                         <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full relative">
                             <div class="flex justify-between items-start mb-4">
                                 <div>
@@ -332,7 +309,6 @@
                                 </div>
                             </div>
 
-                            <!-- BARRA DE RIESGO INTEGRADA (Capital Real) -->
                             <div id="realDDContainer" class="hidden w-full mb-4 bg-gray-900/60 rounded-lg border border-gray-700/50 py-2 px-3 grid grid-cols-3 gap-2 divide-x divide-gray-700/60 shadow-inner">
                                 <div id="realDDHistDiv" class="flex flex-col justify-center px-1 md:px-2 group transition-colors rounded cursor-help">
                                     <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Max DD Histórico</span>
@@ -362,7 +338,6 @@
                             </div>
                         </div>
 
-                        <!-- Gráfico Compuesto 1% -->
                         <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full relative">
                             <div class="flex justify-between items-start mb-4">
                                 <div>
@@ -377,7 +352,6 @@
                                 </div>
                             </div>
 
-                            <!-- BARRA DE RIESGO INTEGRADA (Elegante y Compacta) -->
                             <div id="compoundDDContainer" class="hidden w-full mb-4 bg-gray-900/60 rounded-lg border border-gray-700/50 py-2 px-3 grid grid-cols-3 gap-2 divide-x divide-gray-700/60 shadow-inner">
                                 <div id="compDDHistDiv" class="flex flex-col justify-center px-1 md:px-2 group transition-colors rounded cursor-help">
                                     <span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 group-hover:text-gray-300 transition-colors">Max DD Histórico</span>
@@ -416,7 +390,6 @@
                                 <span id="calendarModeIndicator" class="text-xs md:text-sm font-semibold bg-gray-900 border border-gray-600 px-3 py-1 rounded text-blue-400 min-w-[120px] md:min-w-[160px] text-center">Años</span>
                                 <button id="btnCalNext" onclick="calNavigate(1)" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 text-white rounded font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-colors">▶</button>
                                 
-                                <!-- Toggle de Ruta de Trades -->
                                 <button id="btnToggleCalendarDetail" onclick="toggleCalendarDetail()" class="ml-2 md:ml-4 px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs md:text-sm font-semibold transition-colors flex items-center gap-1 shadow-md disabled:opacity-30 disabled:cursor-not-allowed">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
                                     <span class="hidden md:inline">Ver Ruta de Trades</span>
@@ -426,7 +399,6 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"></path></svg>
                                     <span class="hidden md:inline">Alejar</span>
                                 </button>
-                                <!-- El botón acercar (Año -> Mes -> Día) -->
                                 <button id="btnCalZoomIn" onclick="calZoomIn()" class="ml-1 md:ml-2 px-3 py-1 bg-green-600 hover:bg-green-500 text-white rounded text-xs md:text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-colors flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                                     <span class="hidden md:inline">Acercar</span>
@@ -492,7 +464,6 @@
 
             </div>
 
-            <!-- Pantalla de Bienvenida -->
             <div id="welcomeScreen" class="flex flex-col items-center justify-center mt-20 text-center">
                 <div class="bg-gray-800 p-10 rounded-2xl border border-gray-700 max-w-2xl shadow-2xl">
                     <svg class="w-20 h-20 text-green-500 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
@@ -514,9 +485,6 @@
         </div> 
 
 
-        <!-- ========================================================= -->
-        <!-- PÁGINA 2: COMPARADOR DE ARCHIVOS Y ESTRATEGIAS            -->
-        <!-- ========================================================= -->
         <div id="view-comparator" class="hidden fade-in">
             
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-gray-800 py-3 px-5 rounded-xl shadow-lg border border-gray-700">
@@ -524,7 +492,6 @@
                     <h1 class="text-2xl font-bold text-purple-400">⚔️ Comparador de Estrategias</h1>
                     <p class="text-gray-400 text-xs mt-0.5">Sube múltiples archivos y aplica filtros para comparar métricas</p>
                 </div>
-                <!-- BOTONES DIVIDIDOS COMPARADOR -->
                 <div class="mt-3 md:mt-0 flex flex-wrap gap-2">
                     <input type="file" id="compInputClassic" accept=".xlsx, .xls" multiple class="hidden" />
                     <input type="file" id="compInputGraph" accept=".csv, .tsv, .txt" multiple class="hidden" />
@@ -574,7 +541,6 @@
 
                 <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg w-full">
                     <h2 class="text-lg font-semibold text-gray-300 mb-4">Comparación de Curvas de Capital</h2>
-                    <!-- Alturas reducidas a ~80% del tamaño anterior -->
                     <div class="relative w-full h-[200px] md:h-[240px] lg:h-[280px] xl:h-[320px]">
                         <canvas id="comparatorChart"></canvas>
                     </div>
@@ -1208,7 +1174,7 @@
         }
 
         // ==========================================
-        // MOTOR ALGORÍTMICO DE PORTAFOLIOS (REESCRITO CON ELIMINACIÓN INVERSA)
+        // MOTOR ALGORÍTMICO DE PORTAFOLIOS
         // ==========================================
         
         // Helper: Calcula las estadísticas COMBINADAS (curva real) de un grupo de símbolos
@@ -1267,7 +1233,6 @@
 
             // 2. Backward Elimination (Eliminación Inversa)
             // Quitamos el "peor" par uno a uno, y guardamos el resultado como una nueva opción.
-            // maxSteps limita a que quitemos como máximo 9 pares (para mostrar el Top 10) o hasta quedarnos con 1 par.
             let maxSteps = Math.min(9, allSymbolsInSystem.length - 1);
             
             for (let step = 1; step <= maxSteps; step++) {
@@ -1275,13 +1240,11 @@
                 let bestCombo = null;
                 let bestStats = null;
 
-                // Ensayar qué pasa si quitamos 1 par específico de los que quedan
                 for (let i = 0; i < currentCombo.length; i++) {
                     let testCombo = [...currentCombo];
                     testCombo.splice(i, 1); // Remover temporalmente
                     let testStats = calcCombinedStats(testCombo);
                     
-                    // Queremos la combinación resultante que tenga MEJOR WinRate, MENOS perdidas seguidas y MEJOR profit
                     let score = (testStats.wr * 100) - (testStats.maxLossStreak * 50) + (testStats.prof * 0.001);
 
                     if (score > bestScore) {
@@ -1291,7 +1254,6 @@
                     }
                 }
 
-                // Guardamos la mejor combinación lograda en este paso (con N-1 pares)
                 if (bestCombo) {
                     currentCombo = bestCombo;
                     portfolios.push({
@@ -1304,18 +1266,14 @@
                 }
             }
 
-            // Ordenamiento por Prioridades (Req. 2):
-            // 1) Winrate (Mayor primero)
-            // 2) Pérdidas consecutivas (Menor primero)
-            // 3) Profit (Mayor primero) para desempatar
+            // --- AQUI ESTA LA CORRECCION #1 ---
+            // Ordenamiento Forma Normal: Mayor Net Profit primero.
             portfolios.sort((a, b) => {
-                if (b.stats.wr !== a.stats.wr) {
-                    return b.stats.wr - a.stats.wr;
+                if (b.stats.prof !== a.stats.prof) {
+                    return b.stats.prof - a.stats.prof;
                 }
-                if (a.stats.maxLossStreak !== b.stats.maxLossStreak) {
-                    return a.stats.maxLossStreak - b.stats.maxLossStreak;
-                }
-                return b.stats.prof - a.stats.prof;
+                // Si empatan en profit, evaluamos WinRate
+                return b.stats.wr - a.stats.wr;
             });
             
             let html = '';
@@ -1326,10 +1284,7 @@
                 let icon = index === 0 ? '📊' : (index === 1 ? '🔥' : (index === 2 ? '⚡' : '✨'));
                 let colorClass = index === 0 ? 'text-blue-400' : (index === 1 ? 'text-orange-400' : (index === 2 ? 'text-yellow-400' : 'text-purple-400'));
 
-                // Calcular pares descartados visualmente
                 let discardedSyms = allSymbolsInSystem.filter(s => !p.symbols.includes(s));
-                
-                // Generar texto para el Tooltip
                 let tooltipText = `PARES UTILIZADOS (${p.symbols.length}):\n${p.symbols.join(', ')}\n\nPARES DESCARTADOS (${discardedSyms.length}):\n${discardedSyms.length > 0 ? discardedSyms.join(', ') : 'Ninguno'}`;
 
                 html += `
@@ -1493,28 +1448,37 @@
             const riskReward = avgLoss > 0 ? (avgWin / avgLoss) : (avgWin > 0 ? 99.99 : 0);
 
             // =====================================================
+            // --- AQUI ESTA LA CORRECCION #2 ---
             // CÁLCULO DE INTERÉS COMPUESTO (1% Riesgo Real Unificado)
             // =====================================================
             
-            // PASO 1: Calcular la pérdida promedio (1R) de forma INDIVIDUAL por cada Símbolo/Archivo
-            let symbolStats = {};
+            // PASO 1: Calcular la pérdida promedio real (1R)
+            let symTrades = {};
             dataArr.forEach(d => {
                 let sym = d.Symbol || 'Estrategia';
-                if(!symbolStats[sym]) symbolStats[sym] = { lossSum: 0, lossCount: 0, winSum: 0, winCount: 0 };
-                if(d.NetProfit < 0) {
-                    symbolStats[sym].lossSum += Math.abs(d.NetProfit);
-                    symbolStats[sym].lossCount++;
-                } else if (d.NetProfit > 0) {
-                    symbolStats[sym].winSum += d.NetProfit;
-                    symbolStats[sym].winCount++;
-                }
+                if(!symTrades[sym]) symTrades[sym] = { wins: [], losses: [] };
+                if(d.NetProfit < 0) symTrades[sym].losses.push(Math.abs(d.NetProfit));
+                else if(d.NetProfit > 0) symTrades[sym].wins.push(d.NetProfit);
             });
 
-            Object.keys(symbolStats).forEach(sym => {
-                let st = symbolStats[sym];
-                let avgL = st.lossCount > 0 ? st.lossSum / st.lossCount : 0;
-                let avgW = st.winCount > 0 ? st.winSum / st.winCount : 0;
-                st.oneR = avgL > 0 ? avgL : (avgW > 0 ? avgW : 1); 
+            let symbolStats = {};
+            Object.keys(symTrades).forEach(sym => {
+                let losses = symTrades[sym].losses.sort((a,b) => b - a); // Ordenar de mayor a menor
+                let wins = symTrades[sym].wins;
+
+                let oneR = 1;
+                if(losses.length > 0) {
+                    // Para encontrar el verdadero "Stop Loss" (1R), promediamos el 25% de las pérdidas más grandes.
+                    // Esto elimina el sesgo de los break-evens y cierres parciales diminutos.
+                    let topCount = Math.max(1, Math.ceil(losses.length * 0.25));
+                    let sum = 0;
+                    for(let i=0; i<topCount; i++) sum += losses[i];
+                    oneR = sum / topCount;
+                } else if (wins.length > 0) {
+                    let sum = wins.reduce((a,b) => a+b, 0);
+                    oneR = sum / wins.length;
+                }
+                symbolStats[sym] = { oneR: oneR };
             });
 
             // Aseguramos orden estrictamente cronológico absoluto
@@ -1604,8 +1568,10 @@
                 let oneR = symbolStats[sym].oneR;
                 
                 let R = d.NetProfit / oneR;
-                if(R > 100) R = 100; 
-                if(R < -100) R = -100;
+                
+                // Límites estrictos para evitar que eventos anómalos rompan la curva exponencial
+                if(R > 30) R = 30;  // Máximo +30R (Ej. un super trend)
+                if(R < -15) R = -15; // Máximo -15R (Ej. flash crash o deslizamiento grave)
 
                 compBalance *= (1 + (R * 0.01));
                 
@@ -2373,289 +2339,310 @@
                             
                             if (extractedData.length > 0) {
                                 addFileToComparator(file.name, extractedData);
-                            } else {
-                                alert(`El archivo ${file.name} no contiene operaciones compatibles.`);
-                            }
-                        } catch (err) { console.error(`Error procesando ${file.name}`, err); } 
-                        finally {
-                            processedCount++;
-                            if (processedCount === files.length) hideLoader();
-                        }
-                    }, 50);
-                };
-                reader.readAsArrayBuffer(file);
-            });
-        }
+                                } else {
+                                alert(`No se encontraron operaciones compatibles en el archivo: ${file.name}`);
+                            }
+                        } catch (err) { 
+                            alert(`Error al leer el archivo Excel: ${file.name}`); 
+                            console.error(err); 
+                        } finally { 
+                            processedCount++;
+                            if (processedCount === files.length) {
+                                hideLoader();
+                            }
+                        }
+                    }, 50);
+                };
+                reader.readAsArrayBuffer(file);
+            });
+        }
 
-        function handleComparatorGraphFiles(files) {
-            if (files.length === 0) return;
-            showLoader();
-            let processedCount = 0;
+        function handleComparatorGraphFiles(files) {
+            if (files.length === 0) return;
+            showLoader();
+            let processedCount = 0;
 
-            files.forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    setTimeout(() => {
-                        try {
-                            const text = event.target.result;
-                            const extractedData = parseRawMT5Graph(text, file.name);
-                            
-                            if (extractedData.length > 0) {
-                                addFileToComparator(file.name, extractedData);
-                            } else {
-                                alert(`El archivo ${file.name} no contiene un Gráfico válido.`);
-                            }
-                        } catch (err) { console.error(`Error procesando ${file.name}`, err); } 
-                        finally {
-                            processedCount++;
-                            if (processedCount === files.length) hideLoader();
-                        }
-                    }, 50);
-                };
-                reader.readAsText(file);
-            });
-        }
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    setTimeout(() => {
+                        try {
+                            const text = event.target.result;
+                            const extractedData = parseRawMT5Graph(text, file.name);
+                            
+                            if (extractedData.length > 0) {
+                                addFileToComparator(file.name, extractedData);
+                            } else {
+                                alert(`El archivo ${file.name} está vacío o no es válido.`);
+                            }
+                        } catch (err) { 
+                            alert(`Error al leer el archivo de Gráfico: ${file.name}`); 
+                            console.error(err); 
+                        } finally { 
+                            processedCount++;
+                            if (processedCount === files.length) {
+                                hideLoader();
+                            }
+                        }
+                    }, 50);
+                };
+                reader.readAsText(file);
+            });
+        }
 
-        // 3. COMPARADOR - HISTORIAL CLASSIC (.XLSX)
-        document.getElementById('compInputClassic').addEventListener('change', function(e) {
-            handleComparatorClassicFiles(Array.from(e.target.files));
-            e.target.value = '';
-        });
+        document.getElementById('compInputClassic').addEventListener('change', function(e) {
+            handleComparatorClassicFiles(Array.from(e.target.files));
+            e.target.value = '';
+        });
 
-        // 4. COMPARADOR - GRÁFICO (.CSV)
-        document.getElementById('compInputGraph').addEventListener('change', function(e) {
-            handleComparatorGraphFiles(Array.from(e.target.files));
-            e.target.value = '';
-        });
+        document.getElementById('compInputGraph').addEventListener('change', function(e) {
+            handleComparatorGraphFiles(Array.from(e.target.files));
+            e.target.value = '';
+        });
 
-        function addFileToComparator(name, dataArr) {
-            let color = colorPalette[nextColorIndex % colorPalette.length];
-            nextColorIndex++; 
-            comparedFiles.push({ id: Date.now() + Math.random(), name, data: dataArr, filteredData: dataArr, color });
-            populateComparatorFilters();
-            applyComparatorFilters();
-        }
+        function addFileToComparator(name, dataArr) {
+            let color = colorPalette[nextColorIndex % colorPalette.length];
+            nextColorIndex++;
+            
+            let cleanName = name.replace(/\.[^/.]+$/, "");
+            
+            comparedFiles.push({
+                id: Date.now() + Math.random(),
+                name: cleanName,
+                data: dataArr,
+                filteredData: dataArr,
+                color: color
+            });
+            
+            populateComparatorFilters();
+            updateComparatorUI();
+        }
 
-        function removeFileFromComparator(id) {
-            comparedFiles = comparedFiles.filter(f => f.id !== id);
-            populateComparatorFilters();
-            applyComparatorFilters();
-        }
+        function removeFileFromComparator(id) {
+            comparedFiles = comparedFiles.filter(f => f.id !== id);
+            populateComparatorFilters();
+            updateComparatorUI();
+        }
 
-        function clearComparisons() {
-            comparedFiles = [];
-            nextColorIndex = 0; 
-            renderComparator();
-        }
+        function clearComparisons() {
+            comparedFiles = [];
+            nextColorIndex = 0;
+            resetComparatorFilters();
+            updateComparatorUI();
+        }
 
-        function populateComparatorFilters() {
-            let allSymbols = new Set();
-            let allYears = new Set();
+        function updateComparatorUI() {
+            const listDiv = document.getElementById('comparedFilesList');
+            const contentDiv = document.getElementById('comparatorContent');
+            
+            if (comparedFiles.length < 1) {
+                listDiv.innerHTML = '<div class="text-sm text-gray-500 italic mt-2">Aún no hay archivos en el comparador. Sube al menos dos para comparar.</div>';
+                contentDiv.classList.add('hidden');
+                contentDiv.classList.remove('flex');
+                return;
+            }
+            
+            contentDiv.classList.remove('hidden');
+            contentDiv.classList.add('flex');
+            
+            listDiv.innerHTML = comparedFiles.map(f => `
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-600 bg-gray-800 shadow-sm transition-transform hover:scale-105">
+                    <span class="w-3 h-3 rounded-full" style="background-color: ${f.color}"></span>
+                    <span class="text-sm font-semibold truncate max-w-[150px] md:max-w-[200px]" title="${f.name}">${f.name}</span>
+                    ${!f.name.includes("Estrategia Principal") ? `<button onclick="removeFileFromComparator(${f.id})" class="ml-1 text-gray-400 hover:text-red-500 font-bold focus:outline-none">×</button>` : ''}
+                </div>
+            `).join('');
+            
+            applyComparatorFilters();
+        }
 
-            comparedFiles.forEach(file => {
-                file.data.forEach(d => {
-                    if (d.Symbol) allSymbols.add(d.Symbol);
-                    if (d.Year) allYears.add(d.Year);
-                });
-            });
+        function populateComparatorFilters() {
+            let allSymbols = new Set();
+            let allYears = new Set();
+            let allMonths = new Set();
+            
+            comparedFiles.forEach(f => {
+                f.data.forEach(d => {
+                    if(d.Symbol) allSymbols.add(d.Symbol);
+                    if(d.Year) allYears.add(d.Year);
+                    if(d.Month) allMonths.add(d.Month);
+                });
+            });
+            
+            const symSelect = document.getElementById('compFilterSymbol');
+            const currentSym = symSelect.value;
+            symSelect.innerHTML = '<option value="ALL">Todos los Pares</option>' + 
+                Array.from(allSymbols).sort().map(s => `<option value="${s}">${s}</option>`).join('');
+            if(Array.from(allSymbols).includes(currentSym)) symSelect.value = currentSym;
+            
+            const yearSelect = document.getElementById('compFilterYear');
+            const currentYear = yearSelect.value;
+            yearSelect.innerHTML = '<option value="ALL">Todos los Años</option>' + 
+                Array.from(allYears).sort((a,b)=>b-a).map(y => `<option value="${y}">${y}</option>`).join('');
+            if(Array.from(allYears).includes(parseInt(currentYear))) yearSelect.value = currentYear;
+            
+            const monthSelect = document.getElementById('compFilterMonth');
+            const currentMonth = monthSelect.value;
+            monthSelect.innerHTML = '<option value="ALL">Todos los Meses</option>' + 
+                Array.from(allMonths).sort((a,b)=>a-b).map(m => `<option value="${m}">${monthNames[m-1]}</option>`).join('');
+            if(Array.from(allMonths).includes(parseInt(currentMonth))) monthSelect.value = currentMonth;
+        }
 
-            const symSelect = document.getElementById('compFilterSymbol');
-            symSelect.innerHTML = '<option value="ALL">Todos los Pares</option>' + [...allSymbols].sort().map(s => `<option value="${s}">${s}</option>`).join('');
+        function resetComparatorFilters() {
+            document.getElementById('compFilterSymbol').value = 'ALL';
+            document.getElementById('compFilterYear').value = 'ALL';
+            document.getElementById('compFilterMonth').value = 'ALL';
+            applyComparatorFilters();
+        }
 
-            const yrSelect = document.getElementById('compFilterYear');
-            yrSelect.innerHTML = '<option value="ALL">Todos los Años</option>' + [...allYears].sort((a,b)=>b-a).map(y => `<option value="${y}">${y}</option>`).join('');
+        function applyComparatorFilters() {
+            const symFilter = document.getElementById('compFilterSymbol').value;
+            const yearFilter = document.getElementById('compFilterYear').value;
+            const monthFilter = document.getElementById('compFilterMonth').value;
+            
+            comparedFiles.forEach(f => {
+                f.filteredData = f.data.filter(d => {
+                    let matchSym = symFilter === 'ALL' || d.Symbol === symFilter;
+                    let matchYear = yearFilter === 'ALL' || d.Year == yearFilter;
+                    let matchMonth = monthFilter === 'ALL' || d.Month == monthFilter;
+                    let isNotZero = Math.abs(d.NetProfit || 0) >= 0.00001;
+                    return matchSym && matchYear && matchMonth && isNotZero;
+                });
+            });
+            
+            updateComparatorChart();
+            updateComparatorTable();
+        }
 
-            const moSelect = document.getElementById('compFilterMonth');
-            moSelect.innerHTML = '<option value="ALL">Todos los Meses</option>' + monthNames.map((m, i) => `<option value="${i+1}">${m}</option>`).join('');
-        }
+        let comparatorChartInstance = null;
+        function updateComparatorChart() {
+            const ctx = document.getElementById('comparatorChart').getContext('2d');
+            
+            let datasets = comparedFiles.map(f => {
+                let cumulative = 0;
+                let chartData = [];
+                f.filteredData.forEach(d => {
+                    cumulative += d.NetProfit || 0;
+                    chartData.push({ x: d.Time, y: cumulative });
+                });
+                return {
+                    label: f.name,
+                    data: chartData,
+                    borderColor: f.color,
+                    backgroundColor: f.color + '20',
+                    borderWidth: 2, fill: false, pointRadius: 0, pointHoverRadius: 4,
+                    tension: 0.2
+                };
+            });
 
-        function resetComparatorFilters() {
-            document.getElementById('compFilterSymbol').value = 'ALL';
-            document.getElementById('compFilterYear').value = 'ALL';
-            document.getElementById('compFilterMonth').value = 'ALL';
-            applyComparatorFilters();
-        }
+            safeDestroy(comparatorChartInstance);
 
-        function applyComparatorFilters() {
-            const sym = document.getElementById('compFilterSymbol').value;
-            const year = document.getElementById('compFilterYear').value;
-            const month = document.getElementById('compFilterMonth').value;
+            comparatorChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: { datasets: datasets },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'nearest', axis: 'x', intersect: false },
+                    plugins: { 
+                        legend: { display: true, position: 'top', labels: { color: '#d1d5db', usePointStyle: true, boxWidth: 8 } },
+                        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmtMoney(ctx.parsed.y)}` } }
+                    },
+                    scales: {
+                        x: { type: 'time', time: { tooltipFormat: 'dd MMM yyyy' }, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
+                        y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) } }
+                    }
+                }
+            });
+        }
 
-            comparedFiles.forEach(file => {
-                file.filteredData = file.data.filter(d => {
-                    let matchSym = (sym === "ALL") ? true : d.Symbol === sym;
-                    let matchYear = (year === "ALL") ? true : (d.Year ? d.Year.toString() === year : false);
-                    let matchMonth = (month === "ALL") ? true : (d.Month ? d.Month.toString() === month : false);
-                    let isNotZero = Math.abs(d.NetProfit || 0) >= 0.00001; 
-                    
-                    return matchSym && matchYear && matchMonth && isNotZero;
-                });
-            });
+        function updateComparatorTable() {
+            const headerTr = document.getElementById('compTableHeader');
+            const bodyTbody = document.getElementById('compTableBody');
+            
+            headerTr.innerHTML = '<th class="p-3 text-left w-1/4">Métrica</th>';
+            comparedFiles.forEach(f => {
+                headerTr.innerHTML += `<th class="p-3 text-center truncate max-w-[150px]" style="color: ${f.color}">${f.name}</th>`;
+            });
+            
+            let metricsMap = [
+                { id: 'totalProfit', name: 'Ganancia Neta', formatter: v => `<span class="${v>=0?'text-green-400':'text-red-400'} font-bold">${fmtMoney(v)}</span>` },
+                { id: 'totalTrades', name: 'Total Trades', formatter: v => v },
+                { id: 'winRate', name: 'Win Rate (%)', formatter: v => `<span class="${v>=50?'text-blue-400':'text-orange-400'}">${v.toFixed(2)}%</span>` },
+                { id: 'profitFactor', name: 'Profit Factor', formatter: v => `<span class="${v>=1.5?'text-green-400':(v>=1?'text-blue-400':'text-red-400')}">${v===99.99?'∞':v.toFixed(2)}</span>` },
+                { id: 'maxRealDDPct', name: 'Max Drawdown (%)', formatter: v => `<span class="text-red-400">-${v.toFixed(2)}%</span>` },
+                { id: 'avgTrade', name: 'Promedio x Trade', formatter: v => `<span class="${v>=0?'text-green-400':'text-red-400'}">${fmtMoney(v)}</span>` },
+                { id: 'maxWinStreak', name: 'Racha Ganadora', formatter: v => `<span class="text-green-400">${v}</span>` },
+                { id: 'maxLossStreak', name: 'Racha Perdedora', formatter: v => `<span class="text-red-400">${v}</span>` },
+                { id: 'compReturnPct', name: 'Retorno Compuesto', formatter: v => `<span class="${v>=0?'text-purple-400':'text-red-400'} font-bold">${(v>0?'+':'')}${v.toFixed(2)}%</span>` }
+            ];
 
-            renderComparator();
-        }
+            let calculatedMetrics = comparedFiles.map(f => calculateMetrics(f.filteredData));
+            
+            let rowsHtml = '';
+            metricsMap.forEach((m, i) => {
+                let bgClass = i % 2 === 0 ? 'bg-gray-800/50' : 'bg-transparent';
+                rowsHtml += `<tr class="hover:bg-gray-700/50 transition-colors ${bgClass}">
+                    <td class="p-3 font-medium text-gray-300">${m.name}</td>`;
+                calculatedMetrics.forEach(cm => {
+                    rowsHtml += `<td class="p-3 text-center font-mono text-sm">${m.formatter(cm[m.id])}</td>`;
+                });
+                rowsHtml += `</tr>`;
+            });
+            
+            bodyTbody.innerHTML = rowsHtml;
+        }
 
-        function renderComparator() {
-            const listDiv = document.getElementById('comparedFilesList');
-            const compContent = document.getElementById('comparatorContent');
-            
-            if (comparedFiles.length === 0) {
-                listDiv.innerHTML = '<div class="text-sm text-gray-500 italic mt-2">Sube archivos para comparar.</div>';
-                compContent.classList.add('hidden');
-                return;
-            }
+        // ==========================================
+        // DRAG AND DROP GLOBAL
+        // ==========================================
+        const dndOverlay = document.getElementById('dndOverlay');
+        let dragCounter = 0;
 
-            listDiv.innerHTML = comparedFiles.map(f => `
-                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-600 bg-gray-800 shadow-sm">
-                    <span class="w-3 h-3 rounded-full" style="background-color: ${f.color}"></span>
-                    <span class="text-sm font-semibold truncate max-w-[150px]" title="${f.name}">${f.name}</span>
-                    <button onclick="removeFileFromComparator(${f.id})" class="ml-1 text-gray-400 hover:text-red-500 font-bold">×</button>
-                </div>
-            `).join('');
+        window.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            dragCounter++;
+            if (dragCounter === 1) {
+                dndOverlay.classList.remove('hidden');
+                dndOverlay.classList.add('flex');
+            }
+        });
 
-            compContent.classList.remove('hidden');
+        window.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dragCounter--;
+            if (dragCounter === 0) {
+                dndOverlay.classList.add('hidden');
+                dndOverlay.classList.remove('flex');
+            }
+        });
 
-            renderComparatorTable();
-            renderComparatorChart();
-        }
+        window.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
 
-        function renderComparatorTable() {
-            const head = document.getElementById('compTableHeader');
-            const body = document.getElementById('compTableBody');
+        window.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dragCounter = 0;
+            dndOverlay.classList.add('hidden');
+            dndOverlay.classList.remove('flex');
 
-            const allMetrics = comparedFiles.map(f => calculateMetrics(f.filteredData));
+            const files = Array.from(e.dataTransfer.files);
+            if(files.length === 0) return;
 
-            let headHTML = '<th class="p-4 font-bold text-gray-300 bg-gray-800">Métricas Principales</th>';
-            comparedFiles.forEach(f => {
-                headHTML += `<th class="p-4"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background-color: ${f.color}"></span><span class="truncate max-w-[120px]" title="${f.name}">${f.name}</span></div></th>`;
-            });
-            head.innerHTML = headHTML;
+            let xlsxFiles = files.filter(f => f.name.toLowerCase().endsWith('.xlsx') || f.name.toLowerCase().endsWith('.xls'));
+            let csvFiles = files.filter(f => f.name.toLowerCase().endsWith('.csv') || f.name.toLowerCase().endsWith('.txt') || f.name.toLowerCase().endsWith('.tsv'));
 
-            const rowsConfig = [
-                { label: 'Beneficio Neto', key: 'totalProfit', fmt: v => `<span class="${v>=0?'text-green-400':'text-red-400'} font-bold">${fmtMoney(v)}</span>` },
-                { label: 'Total Trades', key: 'totalTrades', fmt: v => v },
-                { label: 'Win Rate', key: 'winRate', fmt: v => `<span class="text-blue-400">${v.toFixed(1)}%</span>` },
-                { label: 'Profit Factor', key: 'profitFactor', fmt: v => v===99.99?'∞':v.toFixed(2) },
-                { label: 'Máx. Cons. DD', key: 'maxConsDrawdownPct', fmt: (v, m) => `<span class="text-red-400">-${v.toFixed(2)}% <span class="text-[10px] text-gray-500 block leading-tight">(-${fmtMoney(m.maxConsecutiveLoss)})</span></span>` },
-                { label: 'Máx. Single Loss', key: 'maxSingleLossPct', fmt: (v, m) => `<span class="text-red-400">${v <= 0 ? v.toFixed(2) : '-'+v.toFixed(2)}% <span class="text-[10px] text-gray-500 block leading-tight">(${fmtMoney(m.maxSingleLoss)})</span></span>` },
-                { label: 'Promedio x Trade', key: 'avgTrade', fmt: v => fmtMoney(v) },
-                { label: 'Trades / Mes', key: 'tradesPerMonth', fmt: v => `<span class="text-blue-400 font-bold">${v.toFixed(1)}</span>` },
-                { label: 'Risk / Reward', key: 'riskReward', fmt: v => v===99.99?'1:∞':`1:${v.toFixed(2)}` },
-                { label: 'Mejor Racha', key: 'maxWinStreak', fmt: v => `<span class="text-green-400">${v} Wins</span>` },
-                { label: 'Peor Racha', key: 'maxLossStreak', fmt: v => `<span class="text-red-400">${v} Loss</span>` },
-                { label: 'Proyección Compuesta (1%)', key: 'compReturnPct', fmt: (v, m) => `<span class="${v>=0?'text-purple-400':'text-red-400'} font-bold">${v>0?'+':''}${v.toFixed(2)}% <span class="text-[10px] block leading-tight">(${fmtMoney(m.finalCompBalance)})</span></span>` }
-            ];
+            const isDashboardActive = !document.getElementById('view-dashboard').classList.contains('hidden');
 
-            body.innerHTML = rowsConfig.map((row, idx) => {
-                let bgClass = idx % 2 === 0 ? 'bg-gray-800/50' : 'bg-transparent';
-                let tds = allMetrics.map(m => `<td class="p-4 font-mono text-sm">${row.fmt(m[row.key], m)}</td>`).join('');
-                return `<tr class="${bgClass} hover:bg-gray-700 transition-colors"><td class="p-4 font-semibold text-gray-300 border-r border-gray-700">${row.label}</td>${tds}</tr>`;
-            }).join('');
-        }
+            if (isDashboardActive) {
+                if(xlsxFiles.length > 0) handleDashboardClassicFiles(xlsxFiles);
+                if(csvFiles.length > 0) handleDashboardGraphFiles(csvFiles);
+            } else {
+                if(xlsxFiles.length > 0) handleComparatorClassicFiles(xlsxFiles);
+                if(csvFiles.length > 0) handleComparatorGraphFiles(csvFiles);
+            }
+        });
 
-        function renderComparatorChart() {
-            const ctx = document.getElementById('comparatorChart').getContext('2d');
-            
-            let datasets = comparedFiles.map(file => {
-                let cumulative = 0;
-                let dataPoints = file.filteredData.map(d => {
-                    cumulative += d.NetProfit || 0;
-                    let timeVal = d.Time instanceof Date ? d.Time : new Date(d.Time);
-                    return { x: timeVal, y: cumulative };
-                });
-                
-                return {
-                    label: file.name,
-                    data: dataPoints,
-                    borderColor: file.color,
-                    backgroundColor: file.color + '20', 
-                    borderWidth: 2,
-                    fill: false,
-                    pointRadius: 0,
-                    pointHoverRadius: 6,
-                    tension: 0.1,
-                    stepped: 'middle' 
-                };
-            });
-
-            safeDestroy(comparatorChartInstance);
-
-            comparatorChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: { datasets: datasets },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    interaction: { mode: 'nearest', axis: 'x', intersect: false },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmtMoney(ctx.raw.y)}` } }
-                    },
-                    scales: {
-                        x: { 
-                            type: 'time', 
-                            time: { tooltipFormat: 'dd MMM yyyy, HH:mm' }, 
-                            grid: { color: '#374151' }, ticks: { color: '#9ca3af' },
-                            title: { display: true, text: 'Cronología de Operaciones', color: '#6b7280' }
-                        },
-                        y: { 
-                            grid: { color: '#374151' }, ticks: { color: '#9ca3af', callback: (v) => fmtMoney(v, 0) },
-                            title: { display: true, text: 'Capital Acumulado ($)', color: '#6b7280' }
-                        }
-                    }
-                }
-            });
-        }
-
-        // ==========================================
-        // --- MOTOR DE DRAG AND DROP (ARRASTRAR Y SOLTAR) GLOBAL ---
-        // ==========================================
-        let dragCounter = 0;
-        
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
-            document.body.addEventListener(evt, e => { e.preventDefault(); e.stopPropagation(); });
-        });
-
-        document.body.addEventListener('dragenter', e => {
-            dragCounter++;
-            if (dragCounter === 1) {
-                document.getElementById('dndOverlay').classList.remove('hidden');
-                document.getElementById('dndOverlay').classList.add('flex');
-            }
-        });
-
-        document.body.addEventListener('dragleave', e => {
-            dragCounter--;
-            if (dragCounter === 0) {
-                document.getElementById('dndOverlay').classList.add('hidden');
-                document.getElementById('dndOverlay').classList.remove('flex');
-            }
-        });
-
-        document.body.addEventListener('drop', e => {
-            dragCounter = 0;
-            document.getElementById('dndOverlay').classList.add('hidden');
-            document.getElementById('dndOverlay').classList.remove('flex');
-
-            const files = Array.from(e.dataTransfer.files);
-            if(files.length === 0) return;
-
-            let activeTab = 'dashboard';
-            if(!document.getElementById('view-comparator').classList.contains('hidden')) activeTab = 'comparator';
-
-            if (activeTab === 'dashboard') {
-                let classicFiles = files.filter(f => f.name.match(/\.(xlsx|xls)$/i));
-                let graphFiles = files.filter(f => f.name.match(/\.(csv|tsv|txt)$/i));
-                if(classicFiles.length) handleDashboardClassicFiles(classicFiles);
-                if(graphFiles.length) handleDashboardGraphFiles(graphFiles);
-            } 
-            else if (activeTab === 'comparator') {
-                let classicFiles = files.filter(f => f.name.match(/\.(xlsx|xls)$/i));
-                let graphFiles = files.filter(f => f.name.match(/\.(csv|tsv|txt)$/i));
-                if(classicFiles.length) handleComparatorClassicFiles(classicFiles);
-                if(graphFiles.length) handleComparatorGraphFiles(graphFiles);
-            } 
-        });
-
-    </script>
+    </script>
 </body>
 </html>
