@@ -700,7 +700,7 @@
     <div id="hm-controls" style="padding:12px 20px 0">
       <div class="hm-range-bar">
         <label>Heatmap mode:</label>
-        <span style="color:var(--text);font-size:12px;">Threshold compliance — each cell shows best result decoded from <code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;font-size:11px">CCCCCCWW.RR</code> (<b>Custom</b> column) and how close it is to meeting PF · RF · Sharpe · DD benchmarks.</span>
+        <span style="color:var(--text);font-size:12px;">Threshold compliance — each cell shows best result decoded from <code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;font-size:11px">SSSSDDDWW.RR</code> (<b>Custom</b> column) and how close it is to meeting PF · RF · Sharpe · DD benchmarks. DDD = Equity DD Rel% × 10 (3 digits, e.g. 023 = 2.3%).</span>
         <span style="margin-left:auto;color:var(--muted);font-size:11px;">100% = all 4 thresholds met</span>
       </div>
     </div>
@@ -1237,16 +1237,19 @@ function buildHeatmap() {
       </div>`;
   }
 
-  // ── Decode CCCWW.RR → WR% and RR ──
-  // Integer part last 2 digits = WR%, decimal × 10 = RR
+  // ── Decode SSSSDDDWW.RR → WR%, RR, and Equity DD Relative % ──
+  // Integer: last 2 digits = WR%, next 3 digits / 10 = DD Rel%, rest = score
+  // Decimal × 10 = RR
   function decodeResult(result) {
     if (typeof result !== 'number' || !isFinite(result) || result <= 0) return null;
     const intPart = Math.floor(result);
-    const wrPct   = intPart % 100;                              // e.g. 70
-    const rr      = Math.round((result % 1) * 100) / 10;       // e.g. .15 → 1.5
+    const wrPct   = intPart % 100;                              // last 2 digits = WR%
+    const ddRaw   = Math.floor(intPart / 100) % 1000;          // next 3 digits e.g. 023
+    const ddRel   = ddRaw / 10;                                 // → 2.3%
+    const rr      = Math.round((result % 1) * 100) / 10;       // decimal × 10 = RR
     if (wrPct < 20 || wrPct > 100) return null;
     if (rr < 0.1 || rr > 3.0)    return null;
-    return { wrPct, rr: Math.round(rr * 10) / 10 };
+    return { wrPct, rr: Math.round(rr * 10) / 10, ddRel };
   }
 
   // ── Per-result threshold compliance score (0–1 per metric, average = total) ──
@@ -1313,13 +1316,20 @@ function buildHeatmap() {
     if (wrPct < 20 || wrPct > 100) return;
     if (rr < 0.1 || rr > 5.0) return;
     const wr  = wrPct / 100;
+    const result = resultIdx >= 0 ? row[resultIdx] : null;
     const pf     = pfIdx     >= 0 ? row[pfIdx]     : null;
     const profit = profitIdx >= 0 ? row[profitIdx] : null;
     const rf     = rfIdx     >= 0 ? row[rfIdx]     : null;
     const sharpe = sharpeIdx >= 0 ? row[sharpeIdx] : null;
-    const dd     = ddIdx     >= 0 ? row[ddIdx]     : null;
     const trades = tradesIdx >= 0 ? row[tradesIdx] : null;
-    const result = resultIdx >= 0 ? row[resultIdx] : null;
+    // Decode Equity DD Relative from encoded Custom value: SSSSDDDWW.RR
+    // DD digits = floor(result / 100) % 1000  →  divide by 10 to get % (e.g. 023 → 2.3%, 118 → 11.8%)
+    let dd = null;
+    if (typeof result === 'number' && isFinite(result) && result > 0) {
+      const ddRaw = Math.floor(result / 100) % 1000;  // 3 encoded digits
+      if (ddRaw > 0) dd = ddRaw / 10;                 // → DD%
+    }
+    if (dd === null && ddIdx >= 0) dd = row[ddIdx];   // fallback to XML column if not encoded
     const sc     = computeScore(wr, rr, pf, rf, sharpe, dd);
 
     const rrKey = Math.round(rr * 10) / 10;
@@ -1511,7 +1521,7 @@ function buildHeatmap() {
                 ${mk('Profit Factor', fmtV(cell.pf),     reqPF.toFixed(2),  cell.pass.pf)}
                 ${mk('Recovery Factor', fmtV(cell.rf),   reqRF,             cell.pass.rf)}
                 ${mk('Sharpe Ratio',  fmtV(cell.sharpe), reqSR,             cell.pass.sharpe)}
-                ${mk('Equity DD %',   fmtV(cell.dd)+'%', reqDD+'%',         cell.pass.dd, true)}
+                ${mk('Eq.DD Rel%',    fmtV(cell.dd)+'%', reqDD+'%',         cell.pass.dd, true)}
                 ${cell.trades !== null ? `<tr><td style="color:#64748b;padding-right:8px">Trades</td><td style="font-weight:700;color:#e2e8f0">${cell.trades}</td><td></td></tr>` : ''}
               </table>
             </div>
