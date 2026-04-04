@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -411,8 +412,8 @@
     text-align: center;
     margin-top: 60px;
   }
-  .hm-grid-wrap { overflow-x: auto; }
-  .hm-table { border-collapse: collapse; font-size: 9px; }
+  .hm-grid-wrap { overflow-x: auto; will-change: scroll-position; }
+  .hm-table { border-collapse: collapse; font-size: 9px; transform: translateZ(0); }
   .hm-table th {
     font-size: 9px;
     font-weight: 500;
@@ -435,6 +436,7 @@
     font-weight: 600;
   }
   .hm-table td {
+    contain: layout style paint;
     width: 82px;
     height: 82px;
     text-align: left;
@@ -448,6 +450,7 @@
     font-variant-numeric: tabular-nums;
     display: table-cell;
   }
+  .hm-table tr { contain: layout style; }
   .hm-cell-grid { display: flex; flex-direction: column; gap: 1px; }
   .hm-metric { display: flex; justify-content: space-between; gap: 3px; line-height: 1.5; }
   .hm-ml { color: rgba(255,255,255,0.38); font-size: 7px; font-weight: 500; flex-shrink: 0; }
@@ -541,6 +544,9 @@
 
   .hm-tooltip {
     position: fixed;
+    left: 0;
+    top: 0;
+    will-change: transform;
     background: #1a1d27;
     border: 1px solid #2a2d3a;
     border-radius: 8px;
@@ -559,7 +565,7 @@
   .hm-tooltip strong { color: #4f8ef7; }
   /* ── Benchmark score cell styles ── */
   .bm-cell-wrap { display:flex; flex-direction:column; height:100%; }
-  .bm-score-bar { width:100%; height:3px; border-radius:1px; margin-bottom:3px; flex-shrink:0; transition:width 0.2s; }
+  .bm-score-bar { width:100%; height:3px; border-radius:1px; margin-bottom:3px; flex-shrink:0; }
   .bm-score-main { display:flex; align-items:center; justify-content:space-between; flex:1; gap:2px; padding:0 1px; }
   .bm-score-left { display:flex; flex-direction:column; align-items:flex-start; gap:1px; flex-shrink:0; }
   .bm-score-pct { font-size:22px; font-weight:900; line-height:1; letter-spacing:-1px; font-variant-numeric:tabular-nums; }
@@ -716,6 +722,7 @@
 let HEADERS = [], DATA = [], NUM_COLS = new Set(), BOOL_COLS = new Set(), DD_COLS = new Set();
 let sortCol = 0, sortDir = -1, currentPage = 0, pageSize = 100, totalPages = 1;
 let filtered = [], columnFilters = {};
+let hmRecalcVisible = null;  // set by buildHeatmap; called on tab switch
 
 const DD_PATTERNS = [/drawdown/i, /dd/i, /equity.?dd/i, /max.?dd/i, /risk/i, /loss/i];
 function isDrawdownCol(name) { return DD_PATTERNS.some(p => p.test(name)); }
@@ -726,6 +733,8 @@ function switchTab(tab) {
   document.getElementById('tab-heatmap').style.display  = tab === 'heatmap'  ? 'block' : 'none';
   document.getElementById('tabBtnResults').classList.toggle('active', tab === 'results');
   document.getElementById('tabBtnHeatmap').classList.toggle('active', tab === 'heatmap');
+  // Re-evaluate visible rows after the tab becomes visible
+  if (tab === 'heatmap' && hmRecalcVisible) requestAnimationFrame(hmRecalcVisible);
 }
 
 let _xmlFolderHandle  = null;   // File System Access API dirHandle
@@ -1248,7 +1257,7 @@ function buildHeatmap() {
     const ddRel   = ddRaw / 10;                                 // → 2.3%
     const rr      = Math.round((result % 1) * 100) / 10;       // decimal × 10 = RR
     if (wrPct < 20 || wrPct > 100) return null;
-    if (rr < 0.1 || rr > 3.0)    return null;
+    if (rr < 0.1 || rr > 6.0)    return null;
     return { wrPct, rr: Math.round(rr * 10) / 10, ddRel };
   }
 
@@ -1304,7 +1313,7 @@ function buildHeatmap() {
 
   // ── Grid axes (matches benchmark matrix) ──
   const WRS = []; for (let w = 20; w <= 100; w++) WRS.push(w);       // 20–100 %
-  const RRS = []; for (let r = 30; r >= 2; r--) RRS.push(r / 10);    // 3.0 down to 0.2
+  const RRS = []; for (let r = 60; r >= 2; r--) RRS.push(r / 10);    // 6.0 down to 0.2
 
   // ── Bucket all rows by decoded (WR, RR) ──
   const buckets = new Map();
@@ -1314,7 +1323,7 @@ function buildHeatmap() {
     const rr    = row[1];
     if (wrPct === null || rr === null) return;
     if (wrPct < 20 || wrPct > 100) return;
-    if (rr < 0.1 || rr > 5.0) return;
+    if (rr < 0.1 || rr > 6.0) return;
     const wr  = wrPct / 100;
     const result = resultIdx >= 0 ? row[resultIdx] : null;
     const pf     = pfIdx     >= 0 ? row[pfIdx]     : null;
@@ -1413,11 +1422,105 @@ function buildHeatmap() {
     <div class="hm-info">Cell background = theoretical PF tier for that WR×RR. Score % = how close the best result in that cell meets all 4 benchmarks (PF · RF · Sharpe · DD). Dots: <span style="color:#22c55e">●</span> pass <span style="color:#ef4444">●</span> fail <span style="color:#4b5563">●</span> n/a. <span style="color:#4f8ef7">Click to cycle highlight.</span></div>
   `;
 
-  // ── Build table ──
+  // ── Shared helpers (hoisted out of cell loop) ──
+  const tipEl = document.getElementById('hmTooltip');
+  const fmtV  = (v, d = 2) => (typeof v === 'number' && isFinite(v)) ? v.toFixed(d) : '—';
+
+  // Cache tradeAnalysisHTML — only depends on wr × rr, never changes
+  const tradeHTMLCache = new Map();
+  function getCachedTradeHTML(wr, rr) {
+    const k = wr + '|' + rr;
+    if (!tradeHTMLCache.has(k)) tradeHTMLCache.set(k, tradeAnalysisHTML(wr, rr));
+    return tradeHTMLCache.get(k);
+  }
+
+  // ── Pre-build every tooltip at render time (not on hover) ──
+  const tipHTMLCache = new Map();
+  RRS.forEach(rr => {
+    WRS.forEach(wrPct => {
+      const wr   = wrPct / 100;
+      const key  = wrPct + '|' + rr;
+      const cell = cellMap.get(key);
+      const tier = bmTier(wr, rr);
+      const reqPF = bmPF(wr, rr), reqRF = bmMinRF(wr, rr);
+      const reqSR = bmMinSharpe(wr, rr), reqDD = bmMaxDD(wr, rr);
+      let html;
+      if (!cell || cell.total === null) {
+        html = `<strong>WR ${wrPct}% &nbsp;·&nbsp; RR 1:${rr.toFixed(1)}</strong>
+          <span style="color:#64748b;font-size:10px"> &nbsp;${tier.label}</span><br>
+          <span style="color:#64748b">No results decoded to this cell.</span><br>
+          <span style="font-size:10px;color:#475569;margin-top:4px;display:block">Thresholds: PF ${reqPF.toFixed(2)} · RF>${reqRF} · SR>${reqSR} · DD<${reqDD}%</span>
+          ${getCachedTradeHTML(wr, rr)}`;
+      } else {
+        const pct    = Math.round(cell.total * 100);
+        const isFull = pct >= 100;
+        const mk = (lbl, actual, req, pass, invert=false) => {
+          const col = pass === null ? '#64748b' : pass ? '#4ade80' : '#f87171';
+          const sym = pass === null ? '—' : pass ? '✓' : '✗';
+          return `<tr>
+            <td style="color:#64748b;padding-right:8px">${lbl}</td>
+            <td style="font-weight:700;color:${col}">${sym} ${actual}</td>
+            <td style="color:#475569;font-size:10px">${invert ? '<' : '>'} ${req}</td>
+          </tr>`;
+        };
+        html = `<strong>WR ${wrPct}% &nbsp;·&nbsp; RR 1:${rr.toFixed(1)}</strong>
+          <span style="color:#64748b;font-size:10px"> &nbsp;${tier.label}</span>
+          <div style="margin:5px 0 3px;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.04);display:flex;align-items:center;gap:8px">
+            <span style="font-size:9px;color:#64748b">Best score</span>
+            <span style="font-size:18px;font-weight:900;color:${isFull ? '#10b981' : pct>=75 ? '#22c55e' : pct>=50 ? '#eab308' : pct>=25 ? '#f97316' : '#ef4444'}">${pct}%</span>
+            ${isFull ? '<span style="font-size:9px;color:#10b981;font-weight:700">✓ all thresholds met</span>' : ''}
+          </div>
+          <div style="border-top:1px solid #2a2d3a;padding-top:5px;margin-top:2px">
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">Best result: ${cell.result !== null ? cell.result.toFixed(2) : '—'}</div>
+            <table style="border-collapse:collapse;font-size:10px">
+              ${cell.profit !== null && cell.profit !== undefined ? `<tr><td style="color:#64748b;padding-right:8px">Profit</td><td style="font-weight:700;color:#4ade80">$${fmtV(cell.profit, 2)}</td><td></td></tr>` : ''}
+              ${mk('Profit Factor',   fmtV(cell.pf),     reqPF.toFixed(2), cell.pass.pf)}
+              ${mk('Recovery Factor', fmtV(cell.rf),     reqRF,            cell.pass.rf)}
+              ${mk('Sharpe Ratio',    fmtV(cell.sharpe), reqSR,            cell.pass.sharpe)}
+              ${mk('Eq.DD Rel%',      fmtV(cell.dd)+'%', reqDD+'%',        cell.pass.dd, true)}
+              ${cell.trades !== null ? `<tr><td style="color:#64748b;padding-right:8px">Trades</td><td style="font-weight:700;color:#e2e8f0">${cell.trades}</td><td></td></tr>` : ''}
+            </table>
+          </div>
+          ${getCachedTradeHTML(wr, rr)}`;
+      }
+      tipHTMLCache.set(key, html);
+    });
+  });
+
+  // ── Build virtual-scrolled table ──
+  // Only rows within the viewport (± ROW_BUFF) are in the DOM at any time.
+  // Pre-compute HTML strings so DOM nodes are created only for visible rows.
+  const CELL_H_PX = 83;  // td height (82px) + border (1px)
+  const ROW_BUFF  = 5;   // extra buffer rows rendered above/below the viewport
+  const nRows = RRS.length;
+
+  // Build the HTML string for a single cell (no DOM node created yet)
+  function buildCellHTML(wrPct, rr) {
+    const wr   = wrPct / 100;
+    const tier = bmTier(wr, rr);
+    const key  = wrPct + '|' + rr;
+    const cell = cellMap.get(key);
+    if (!cell || cell.total === null) {
+      return `<td class="${tier.cls}" data-hm-key="${key}"><div class="bm-no-data-cell">—</div></td>`;
+    }
+    const pct    = Math.round(cell.total * 100);
+    const isFull = pct >= 100;
+    const bar    = barCls(pct);
+    return `<td class="${tier.cls}" data-hm-key="${key}"><div class="bm-cell-wrap"><div class="bm-score-bar ${bar}" style="width:${Math.min(pct,100)}%"></div><div class="bm-score-main"><div class="bm-score-left"><span class="bm-score-pct${isFull ? ' bm-full' : ''}">${pct}%</span><div class="bm-result-val">${cell.result !== null ? Math.floor(cell.result) : '—'}</div></div><div class="bm-checks"><div class="bm-check-row">${dotHTML(cell.pass.pf,'PF')}${dotHTML(cell.pass.rf,'RF')}</div><div class="bm-check-row">${dotHTML(cell.pass.sharpe,'SR')}${dotHTML(cell.pass.dd,'DD')}</div></div></div></div></td>`;
+  }
+
+  // Pre-compute full inner HTML for every row (th + all tds) — stored as strings, not DOM nodes
+  const rowInnerHTMLs = RRS.map(rr =>
+    `<th class="hm-row-header">1:${rr.toFixed(1)}</th>` +
+    WRS.map(wrPct => buildCellHTML(wrPct, rr)).join('')
+  );
+
+  // ── Table skeleton ──
   const table = document.createElement('table');
   table.className = 'hm-table';
 
-  // Header row
+  // Sticky header row
+  const thead = document.createElement('thead');
   const headTr = document.createElement('tr');
   const cornerTh = document.createElement('th');
   cornerTh.className = 'hm-row-header';
@@ -1428,131 +1531,159 @@ function buildHeatmap() {
     th.textContent = w + '%';
     headTr.appendChild(th);
   });
-  table.appendChild(headTr);
+  thead.appendChild(headTr);
+  table.appendChild(thead);
 
-  // Data rows
-  RRS.forEach(rr => {
-    const tr = document.createElement('tr');
-    const rowTh = document.createElement('th');
-    rowTh.className = 'hm-row-header';
-    rowTh.textContent = '1:' + rr.toFixed(1);
-    tr.appendChild(rowTh);
+  // Tbody: only contains two spacer rows + the current visible window of rows
+  const tbody = document.createElement('tbody');
+  // Top spacer — grows as the user scrolls down
+  const spacerTopTr = document.createElement('tr');
+  const spacerTopTd = document.createElement('td');
+  spacerTopTd.colSpan = WRS.length + 1;
+  Object.assign(spacerTopTd.style, { padding: '0', border: 'none', height: '0' });
+  spacerTopTr.appendChild(spacerTopTd);
+  // Bottom spacer — shrinks as the user scrolls down
+  const spacerBotTr = document.createElement('tr');
+  const spacerBotTd = document.createElement('td');
+  spacerBotTd.colSpan = WRS.length + 1;
+  Object.assign(spacerBotTd.style, { padding: '0', border: 'none', height: '0' });
+  spacerBotTr.appendChild(spacerBotTd);
+  tbody.appendChild(spacerTopTr);
+  tbody.appendChild(spacerBotTr);
+  table.appendChild(tbody);
 
-    WRS.forEach(wrPct => {
-      const td = document.createElement('td');
-      const wr = wrPct / 100;
-      const tier = bmTier(wr, rr);
-      td.className = tier.cls;
+  // ── Delegated event handlers — 3 listeners total instead of ~14,000 ──
+  const hlMap     = new Map();
+  const hlClasses = ['hm-hl-1','hm-hl-2','hm-hl-3','hm-hl-4'];
+  let rafPending  = false;
+  let pendingX    = 0, pendingY = 0;
 
-      const key  = wrPct + '|' + rr;
-      const cell = cellMap.get(key);
-
-      const fmtV = (v, d = 2) => (typeof v === 'number' && isFinite(v)) ? v.toFixed(d) : '—';
-
-      if (!cell || cell.total === null) {
-        td.innerHTML = `<div class="bm-no-data-cell">—</div>`;
-        // Tooltip for empty
-        td.addEventListener('mousemove', e => {
-          const tip = document.getElementById('hmTooltip');
-          const reqPF  = bmPF(wr, rr), reqRF = bmMinRF(wr, rr);
-          const reqSR  = bmMinSharpe(wr, rr), reqDD = bmMaxDD(wr, rr);
-          tip.style.display = 'block';
-          tip.innerHTML = `<strong>WR ${wrPct}% &nbsp;·&nbsp; RR 1:${rr.toFixed(1)}</strong>
-            <span style="color:#64748b;font-size:10px"> &nbsp;${tier.label}</span><br>
-            <span style="color:#64748b">No results decoded to this cell.</span><br>
-            <span style="font-size:10px;color:#475569;margin-top:4px;display:block">Thresholds: PF ${reqPF.toFixed(2)} · RF>${reqRF} · SR>${reqSR} · DD<${reqDD}%</span>
-            ${tradeAnalysisHTML(wr, rr)}`;
-          const tw = tip.offsetWidth, th2 = tip.offsetHeight;
-          tip.style.left = Math.max(4, e.clientX - tw - 14) + 'px';
-          tip.style.top  = Math.max(4, e.clientY - th2 - 14) + 'px';
-        });
-      } else {
-        const pct    = Math.round(cell.total * 100);
-        const isFull = pct >= 100;
-        const bar    = barCls(pct);
-        const reqPF  = bmPF(wr, rr), reqRF = bmMinRF(wr, rr);
-        const reqSR  = bmMinSharpe(wr, rr), reqDD = bmMaxDD(wr, rr);
-
-        td.innerHTML = `
-          <div class="bm-cell-wrap">
-            <div class="bm-score-bar ${bar}" style="width:${Math.min(pct,100)}%"></div>
-            <div class="bm-score-main">
-              <div class="bm-score-left">
-                <span class="bm-score-pct${isFull ? ' bm-full' : ''}">${pct}%</span>
-                <div class="bm-result-val">${cell.result !== null ? Math.floor(cell.result) : '—'}</div>
-              </div>
-              <div class="bm-checks">
-                <div class="bm-check-row">
-                  ${dotHTML(cell.pass.pf,     'PF')}
-                  ${dotHTML(cell.pass.rf,     'RF')}
-                </div>
-                <div class="bm-check-row">
-                  ${dotHTML(cell.pass.sharpe, 'SR')}
-                  ${dotHTML(cell.pass.dd,     'DD')}
-                </div>
-              </div>
-            </div>
-          </div>`;
-
-        // Tooltip
-        td.addEventListener('mousemove', e => {
-          const tip = document.getElementById('hmTooltip');
-          const mk = (lbl, actual, req, pass, invert=false) => {
-            const col = pass === null ? '#64748b' : pass ? '#4ade80' : '#f87171';
-            const sym = pass === null ? '—' : pass ? '✓' : '✗';
-            return `<tr>
-              <td style="color:#64748b;padding-right:8px">${lbl}</td>
-              <td style="font-weight:700;color:${col}">${sym} ${actual}</td>
-              <td style="color:#475569;font-size:10px">${invert ? '<' : '>'} ${req}</td>
-            </tr>`;
-          };
-          tip.style.display = 'block';
-          tip.innerHTML = `<strong>WR ${wrPct}% &nbsp;·&nbsp; RR 1:${rr.toFixed(1)}</strong>
-            <span style="color:#64748b;font-size:10px"> &nbsp;${tier.label}</span>
-            <div style="margin:5px 0 3px;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.04);display:flex;align-items:center;gap:8px">
-              <span style="font-size:9px;color:#64748b">Best score</span>
-              <span style="font-size:18px;font-weight:900;color:${isFull ? '#10b981' : pct>=75 ? '#22c55e' : pct>=50 ? '#eab308' : pct>=25 ? '#f97316' : '#ef4444'}">${pct}%</span>
-              ${isFull ? '<span style="font-size:9px;color:#10b981;font-weight:700">✓ all thresholds met</span>' : ''}
-            </div>
-            <div style="border-top:1px solid #2a2d3a;padding-top:5px;margin-top:2px">
-              <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">Best result: ${cell.result !== null ? cell.result.toFixed(2) : '—'}</div>
-              <table style="border-collapse:collapse;font-size:10px">
-                ${cell.profit !== null && cell.profit !== undefined ? `<tr><td style="color:#64748b;padding-right:8px">Profit</td><td style="font-weight:700;color:#4ade80">$${fmtV(cell.profit, 2)}</td><td></td></tr>` : ''}
-                ${mk('Profit Factor', fmtV(cell.pf),     reqPF.toFixed(2),  cell.pass.pf)}
-                ${mk('Recovery Factor', fmtV(cell.rf),   reqRF,             cell.pass.rf)}
-                ${mk('Sharpe Ratio',  fmtV(cell.sharpe), reqSR,             cell.pass.sharpe)}
-                ${mk('Eq.DD Rel%',    fmtV(cell.dd)+'%', reqDD+'%',         cell.pass.dd, true)}
-                ${cell.trades !== null ? `<tr><td style="color:#64748b;padding-right:8px">Trades</td><td style="font-weight:700;color:#e2e8f0">${cell.trades}</td><td></td></tr>` : ''}
-              </table>
-            </div>
-            ${tradeAnalysisHTML(wr, rr)}`;
-          const tw = tip.offsetWidth, th2 = tip.offsetHeight;
-          tip.style.left = Math.max(4, e.clientX - tw - 14) + 'px';
-          tip.style.top  = Math.max(4, e.clientY - th2 - 14) + 'px';
-        });
-      }
-
-      // Click-to-highlight cycling
-      const hlClasses = ['hm-hl-1','hm-hl-2','hm-hl-3','hm-hl-4'];
-      let _hlState = -1;
-      td.addEventListener('click', () => {
-        if (_hlState >= 0) td.classList.remove(hlClasses[_hlState]);
-        _hlState = (_hlState + 1) < hlClasses.length ? _hlState + 1 : -1;
-        if (_hlState >= 0) td.classList.add(hlClasses[_hlState]);
+  table.addEventListener('mousemove', e => {
+    const td = e.target.closest('td[data-hm-key]');
+    if (!td) { tipEl.style.display = 'none'; return; }
+    const key = td.dataset.hmKey;
+    // Only rebuild innerHTML when entering a new cell
+    if (tipEl._hmKey !== key) {
+      tipEl.innerHTML    = tipHTMLCache.get(key) ?? '';
+      tipEl.style.display = 'block';
+      tipEl._hmKey       = key;
+    }
+    // Throttle position updates to one per animation frame (no forced reflow)
+    pendingX = e.clientX;
+    pendingY = e.clientY;
+    if (!rafPending) {
+      rafPending = true;
+      requestAnimationFrame(() => {
+        rafPending = false;
+        const TIP_W = 374, TIP_H = 430;
+        const x = pendingX - TIP_W - 14 < 4 ? pendingX + 14 : pendingX - TIP_W - 14;
+        const y = pendingY - TIP_H - 14 < 4 ? pendingY + 20 : pendingY - TIP_H - 14;
+        tipEl.style.transform = `translate(${x}px,${y}px)`;
       });
-
-      td.addEventListener('mouseleave', () => { document.getElementById('hmTooltip').style.display = 'none'; });
-      tr.appendChild(td);
-    });
-
-    table.appendChild(tr);
+    }
   });
 
+  // Apply will-change only on the hovered cell so the browser creates a
+  // composite layer just for that cell, not for all 4,698 at once.
+  table.addEventListener('mouseover', e => {
+    const td = e.target.closest('td[data-hm-key]');
+    if (td) td.style.willChange = 'opacity, outline-color';
+  });
+  table.addEventListener('mouseout', e => {
+    const td = e.target.closest('td[data-hm-key]');
+    if (td) td.style.willChange = 'auto';
+  });
+
+  table.addEventListener('mouseleave', () => {
+    tipEl.style.display = 'none';
+    tipEl._hmKey = null;
+  });
+
+  table.addEventListener('click', e => {
+    const td = e.target.closest('td[data-hm-key]');
+    if (!td) return;
+    const key  = td.dataset.hmKey;
+    const cur  = hlMap.get(key) ?? -1;
+    if (cur >= 0) td.classList.remove(hlClasses[cur]);
+    const next = cur + 1 < hlClasses.length ? cur + 1 : -1;
+    hlMap.set(key, next);
+    if (next >= 0) td.classList.add(hlClasses[next]);
+  });
+
+  // Mount into DOM
   container.innerHTML = legendHTML;
   const gridWrap = document.createElement('div');
   gridWrap.className = 'hm-grid-wrap';
   gridWrap.appendChild(table);
   container.appendChild(gridWrap);
+
+  // ── Virtual row renderer ──
+  let vFirst = -1, vLast = -1, scrollRaf = null;
+
+  function renderVirtRows(first, last) {
+    if (first === vFirst && last === vLast) return;
+    vFirst = first;
+    vLast  = last;
+
+    // Resize spacers so the scrollbar reflects the true total height
+    spacerTopTd.style.height = (first * CELL_H_PX) + 'px';
+    spacerBotTd.style.height = ((nRows - 1 - last) * CELL_H_PX) + 'px';
+
+    // Remove all rows between the two spacers
+    while (tbody.children.length > 2) tbody.removeChild(tbody.children[1]);
+
+    // Create and inject the new visible window of rows
+    const html = [];
+    for (let i = first; i <= last; i++) {
+      html.push(`<tr data-hm-row="${i}">${rowInnerHTMLs[i]}</tr>`);
+    }
+    const temp = document.createElement('tbody');
+    temp.innerHTML = html.join('');
+    while (temp.firstChild) tbody.insertBefore(temp.firstChild, spacerBotTr);
+
+    // Re-apply any click-highlight classes that were set before this repaint
+    hlMap.forEach((hlIdx, key) => {
+      if (hlIdx < 0) return;
+      const td = tbody.querySelector(`td[data-hm-key="${CSS.escape(key)}"]`);
+      if (td) td.classList.add(hlClasses[hlIdx]);
+    });
+  }
+
+  function calcVisibleRows() {
+    const tabEl = document.getElementById('tab-heatmap');
+    // Guard: don't calculate while the tab is hidden (getBoundingClientRect returns zeros)
+    if (!tabEl || tabEl.offsetParent === null) return;
+
+    const scrollTop = tabEl.scrollTop;
+    const viewH     = tabEl.clientHeight;
+
+    // Measure where the table's first data row starts within the scroll container
+    const tableRect = table.getBoundingClientRect();
+    const tabRect   = tabEl.getBoundingClientRect();
+    const tableTopInScroll = tableRect.top - tabRect.top + scrollTop;
+    const theadH    = thead.getBoundingClientRect().height || 20;
+    const dataStart = tableTopInScroll + theadH;
+
+    // Convert scroll position to row indices
+    const relTop = scrollTop - dataStart;
+    const first  = Math.max(0,        Math.floor(relTop / CELL_H_PX) - ROW_BUFF);
+    const last   = Math.min(nRows - 1, Math.ceil((relTop + viewH) / CELL_H_PX) + ROW_BUFF);
+
+    renderVirtRows(first, last);
+  }
+
+  // Expose so switchTab can trigger a recalc when the heatmap tab becomes visible
+  hmRecalcVisible = calcVisibleRows;
+
+  // Initial render (deferred one frame so layout is complete)
+  requestAnimationFrame(calcVisibleRows);
+
+  // Throttled scroll listener on the heatmap tab container
+  const hmTabEl = document.getElementById('tab-heatmap');
+  hmTabEl.addEventListener('scroll', () => {
+    if (scrollRaf) return;
+    scrollRaf = requestAnimationFrame(() => { scrollRaf = null; calcVisibleRows(); });
+  }, { passive: true });
 }
 </script>
 </body>
