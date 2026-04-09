@@ -80,7 +80,91 @@
     gap: 6px;
   }
   .file-list-header .file-count { font-size: 11px; color: var(--muted); }
-  .file-list-scroll { max-height: 320px; overflow-y: auto; }
+
+  /* ── Search + Sort bar ── */
+  .file-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .file-search-wrap {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .file-search-icon {
+    position: absolute;
+    left: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    pointer-events: none;
+    line-height: 1;
+  }
+  .file-search-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 5px 8px 5px 26px;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .file-search-input::placeholder { color: var(--muted); }
+  .file-search-input:focus { border-color: var(--accent); }
+  .file-search-clear {
+    position: absolute;
+    right: 7px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    padding: 0;
+    display: none;
+  }
+  .file-search-clear:hover { color: var(--text); }
+  .sort-btn-group {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+  }
+  .sort-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 5px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    line-height: 1.4;
+  }
+  .sort-btn:hover { border-color: #555; color: var(--text); }
+  .sort-btn.active { background: rgba(79,142,247,0.15); border-color: var(--accent); color: var(--accent); }
+  .sort-dir-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 5px;
+    padding: 4px 7px;
+    font-size: 12px;
+    cursor: pointer;
+    line-height: 1.4;
+    transition: color 0.12s;
+  }
+  .sort-dir-btn:hover { color: var(--text); }
+
+  .file-list-scroll { max-height: 300px; overflow-y: auto; }
   .file-list-scroll::-webkit-scrollbar { width: 5px; }
   .file-list-scroll::-webkit-scrollbar-track { background: transparent; }
   .file-list-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -97,7 +181,10 @@
   .xml-file-row:last-child { border-bottom: none; }
   .xml-file-icon { font-size: 14px; flex-shrink: 0; }
   .xml-file-name { flex: 1; font-size: 12px; font-weight: 500; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .xml-file-size { font-size: 11px; color: var(--muted); flex-shrink: 0; }
+  .xml-file-name mark { background: rgba(79,142,247,0.25); color: var(--accent); border-radius: 2px; padding: 0 1px; }
+  .xml-file-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; }
+  .xml-file-size { font-size: 11px; color: var(--muted); }
+  .xml-file-date { font-size: 10px; color: #475569; }
   .xml-file-load-btn {
     background: var(--accent);
     color: #fff;
@@ -108,8 +195,6 @@
     font-weight: 600;
     cursor: pointer;
     flex-shrink: 0;
-    opacity: 0;
-    transition: opacity 0.12s;
   }
   .folder-name-dot {
     width: 7px; height: 7px; border-radius: 50%;
@@ -123,6 +208,7 @@
     50%       { opacity: 0.35; transform: scale(0.7); }
   }
   .file-list-empty { padding: 28px; text-align: center; color: var(--muted); font-size: 12px; }
+  .file-list-no-match { padding: 20px; text-align: center; color: var(--muted); font-size: 12px; font-style: italic; }
 
   #uploadError {
     color: #ef4444;
@@ -419,6 +505,13 @@
   .hm-dim { opacity: 0.10 !important; }
   .hm-dim:hover { opacity: 0.4 !important; }
 
+  /* Top-5 profit: color the score % text */
+  .hm-top-1 .bm-score-pct { color: #ffd700 !important; text-shadow: 0 0 8px #ffd700; }
+  .hm-top-2 .bm-score-pct { color: #c0c0c0 !important; text-shadow: 0 0 8px #c0c0c0; }
+  .hm-top-3 .bm-score-pct { color: #cd7f32 !important; text-shadow: 0 0 8px #cd7f32; }
+  .hm-top-4 .bm-score-pct { color: #7c6bdb !important; text-shadow: 0 0 8px #7c6bdb; }
+  .hm-top-5 .bm-score-pct { color: #4f8ef7 !important; text-shadow: 0 0 8px #4f8ef7; }
+
   .bm-tier-unprof  { background:#2d1212 !important; color:#f87171; }
   .bm-tier-marg    { background:#2d200a !important; color:#fbbf24; }
   .bm-tier-ok      { background:#122510 !important; color:#86efac; }
@@ -432,6 +525,7 @@
   .bm-bar-50 { background:#eab308; }
   .bm-bar-75 { background:#22c55e; }
   .bm-bar-100{ background:#10b981; box-shadow:0 0 4px #10b981; }
+  .bm-bar-over{ background:linear-gradient(90deg,#10b981,#a78bfa); box-shadow:0 0 6px #a78bfa,0 0 2px #10b981; }
 
   .bm-dot-pass { background:#22c55e; }
   .bm-dot-fail { background:#ef4444; }
@@ -504,7 +598,6 @@
   }
   .hm-filter-bar button:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* ── Zone toggle buttons ── */
   .hm-zone-btn {
     background: var(--bg);
     border: 1px solid var(--border);
@@ -527,7 +620,6 @@
   .hm-zone-btn[data-zone="excep"].active  { background:rgba(13,74,34,0.55); border-color:#34d399; color:#34d399; }
   .hm-zone-btn[data-zone="cap"].active    { background:rgba(37,40,64,0.55); border-color:#a5b4fc; color:#a5b4fc; }
 
-  /* ── Score filter input special color ── */
   #hf-minScore { border-color: rgba(16,185,129,0.55) !important; width: 52px !important; }
   #hf-minScore:focus { border-color: #10b981 !important; }
 
@@ -578,6 +670,7 @@
   .bm-score-left { display:flex; flex-direction:column; align-items:flex-start; gap:1px; flex-shrink:0; }
   .bm-score-pct { font-size:22px; font-weight:900; line-height:1; letter-spacing:-1px; font-variant-numeric:tabular-nums; }
   .bm-score-pct.bm-full { text-shadow:0 0 10px currentColor; }
+  .bm-score-pct.bm-over { text-shadow:0 0 12px #a78bfa,0 0 6px #10b981; color:#a78bfa !important; }
   .bm-result-val { font-size:8px; font-weight:700; font-variant-numeric:tabular-nums; opacity:0.75; letter-spacing:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:52px; }
   .bm-checks { display:flex; flex-direction:column; gap:2px; font-size:7px; font-weight:700; flex-shrink:0; }
   .bm-check-row { display:flex; gap:3px; }
@@ -612,8 +705,23 @@
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
           <span id="folderDisplayName">—</span>
         </span>
-        <span class="file-count"><span id="xmlFileCount">0</span> XML files &nbsp;·&nbsp; <button onclick="openXmlFolderPicker()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:11px;padding:0">Change folder</button></span>
+        <span class="file-count"><span id="xmlFileCount">0</span> XML &nbsp;·&nbsp; <button onclick="openXmlFolderPicker()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:11px;padding:0">Change</button></span>
       </div>
+
+      <!-- Search + Sort bar -->
+      <div class="file-search-bar">
+        <div class="file-search-wrap">
+          <span class="file-search-icon">🔍</span>
+          <input class="file-search-input" id="fileSearchInput" type="text" placeholder="Search files…" oninput="onFileSearch()" autocomplete="off" spellcheck="false">
+          <button class="file-search-clear" id="fileSearchClear" onclick="clearFileSearch()" title="Clear search">✕</button>
+        </div>
+        <div class="sort-btn-group">
+          <button class="sort-btn active" id="sortByName" onclick="setSortMode('name')" title="Sort by name">Name</button>
+          <button class="sort-btn" id="sortByDate" onclick="setSortMode('date')" title="Sort by modified date">Date</button>
+          <button class="sort-dir-btn" id="sortDirBtn" onclick="toggleSortDir()" title="Toggle sort direction">↑</button>
+        </div>
+      </div>
+
       <div class="file-list-scroll" id="xmlFileList"></div>
     </div>
   </div>
@@ -693,10 +801,7 @@
 
     <div class="hm-sticky-header">
 
-    <!-- ── Heatmap filter bar ── -->
     <div class="hm-filter-bar" id="hm-filter-bar">
-
-      <!-- Zone toggles -->
       <label>Zones:</label>
       <div style="display:flex;gap:3px;align-items:center;flex-wrap:wrap">
         <button class="hm-zone-btn" data-zone="unprof" title="Unprofitable — EV ≤ 0" onclick="toggleHmZone(this)">Unprof</button>
@@ -710,14 +815,12 @@
 
       <div class="sep"></div>
 
-      <!-- Score filter -->
       <label style="color:#10b981;font-weight:700">Score ≥</label>
       <input type="number" class="hm-filter-inp" id="hf-minScore" value="90" min="0" max="100" step="1" title="Only highlight cells where the best result score meets this % of all thresholds" oninput="onHmFilter()">
       <span style="color:var(--muted);font-size:11px">%</span>
 
       <div class="sep"></div>
 
-      <!-- Metric filters -->
       <label>WR%:</label>
       <input type="number" class="hm-filter-inp min-input" id="hf-minWr" placeholder="min" min="20" max="100" style="width:54px" oninput="onHmFilter()">
       <span style="color:var(--muted);font-size:12px">–</span>
@@ -749,7 +852,6 @@
       <button onclick="clearHmFilters()">✕ Reset</button>
     </div>
 
-    <!-- ── Heatmap stats bar ── -->
     <div class="hm-stats-bar" id="hm-stats-bar">
       <span>Data cells: <b id="hm-stat-total">—</b></span>
       <span id="hm-stat-match-wrap" style="display:none">Highlighted: <b id="hm-stat-match">—</b></span>
@@ -784,7 +886,6 @@ let filtered = [], columnFilters = {};
 let hmRecalcVisible = null;
 let hmApplyDim      = null;
 
-/* ── Heatmap filter defaults ── */
 const ALL_ZONES     = new Set(['unprof','marg','ok','good','great','excep','cap']);
 const DEFAULT_ZONES = new Set(['great','excep']);
 const DEFAULT_MIN_SCORE = 90;
@@ -801,13 +902,8 @@ function _hmVal(id) {
 
 function toggleHmZone(btn) {
   const zone = btn.dataset.zone;
-  if (hmFilters.zones.has(zone)) {
-    hmFilters.zones.delete(zone);
-    btn.classList.remove('active');
-  } else {
-    hmFilters.zones.add(zone);
-    btn.classList.add('active');
-  }
+  if (hmFilters.zones.has(zone)) { hmFilters.zones.delete(zone); btn.classList.remove('active'); }
+  else { hmFilters.zones.add(zone); btn.classList.add('active'); }
   if (hmApplyDim) hmApplyDim();
 }
 
@@ -859,6 +955,68 @@ function switchTab(tab) {
 }
 
 /* ────────────────────────────────────────────────────────────────
+   File picker — search & sort state
+──────────────────────────────────────────────────────────────── */
+let _sortMode = 'name';   // 'name' | 'date'
+let _sortAsc  = true;
+let _fileQuery = '';
+
+function setSortMode(mode) {
+  if (_sortMode === mode) { toggleSortDir(); return; }
+  _sortMode = mode;
+  document.getElementById('sortByName').classList.toggle('active', mode === 'name');
+  document.getElementById('sortByDate').classList.toggle('active', mode === 'date');
+  renderXmlFileList();
+}
+
+function toggleSortDir() {
+  _sortAsc = !_sortAsc;
+  document.getElementById('sortDirBtn').textContent = _sortAsc ? '↑' : '↓';
+  renderXmlFileList();
+}
+
+function onFileSearch() {
+  const inp = document.getElementById('fileSearchInput');
+  _fileQuery = inp.value.trim().toLowerCase();
+  document.getElementById('fileSearchClear').style.display = _fileQuery ? 'block' : 'none';
+  renderXmlFileList();
+}
+
+function clearFileSearch() {
+  document.getElementById('fileSearchInput').value = '';
+  _fileQuery = '';
+  document.getElementById('fileSearchClear').style.display = 'none';
+  renderXmlFileList();
+}
+
+function highlightMatch(name, query) {
+  if (!query) return escapeHtml(name);
+  const idx = name.toLowerCase().indexOf(query);
+  if (idx < 0) return escapeHtml(name);
+  return escapeHtml(name.slice(0, idx)) +
+    '<mark>' + escapeHtml(name.slice(idx, idx + query.length)) + '</mark>' +
+    escapeHtml(name.slice(idx + query.length));
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function fmtDate(file) {
+  if (!file.lastModified) return '';
+  const d = new Date(file.lastModified);
+  return d.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' }) +
+    ' ' + d.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' });
+}
+
+function fmtSize(bytes) {
+  if (!bytes) return '';
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(0) + ' KB';
+  return (bytes/1024/1024).toFixed(1) + ' MB';
+}
+
+/* ────────────────────────────────────────────────────────────────
    Folder / file picker
 ──────────────────────────────────────────────────────────────── */
 let _xmlFolderHandle = null, _xmlFileEntries = [], _xmlKnownNames = new Set();
@@ -901,7 +1059,7 @@ async function _scanXmlFolder() {
     }
   } catch (_) { _stopXmlWatcher(); return; }
   if (!newEntries.length) return;
-  _xmlFileEntries = [..._xmlFileEntries, ...newEntries].sort((a, b) => a.name.localeCompare(b.name));
+  _xmlFileEntries = [..._xmlFileEntries, ...newEntries];
   renderXmlFileList();
 }
 
@@ -914,7 +1072,6 @@ document.getElementById('folderFallbackInput').addEventListener('change', functi
   const xmlFiles = [...e.target.files].filter(f => /\.xml$/i.test(f.name));
   e.target.value = '';
   if (!xmlFiles.length) { showError('No .xml files found in that folder.'); return; }
-  xmlFiles.sort((a, b) => a.name.localeCompare(b.name));
   _xmlFileEntries = xmlFiles.map(f => ({ name: f.name, file: f }));
   _xmlFolderName  = xmlFiles[0].webkitRelativePath.split('/')[0] || 'Folder';
   renderXmlFileList();
@@ -922,23 +1079,55 @@ document.getElementById('folderFallbackInput').addEventListener('change', functi
 
 function renderXmlFileList() {
   document.getElementById('folderDisplayName').textContent = _xmlFolderName;
-  document.getElementById('xmlFileCount').textContent = _xmlFileEntries.length;
   const dot = document.getElementById('folderWatchDot');
   if (dot) dot.style.display = _xmlWatchInterval ? 'inline-block' : 'none';
+
+  /* Filter by search query */
+  let visible = _xmlFileEntries.filter(f =>
+    !_fileQuery || f.name.toLowerCase().includes(_fileQuery)
+  );
+
+  /* Sort */
+  visible = [...visible].sort((a, b) => {
+    let cmp = 0;
+    if (_sortMode === 'date') {
+      const da = a.file.lastModified || 0, db = b.file.lastModified || 0;
+      cmp = da - db;
+    } else {
+      cmp = a.name.localeCompare(b.name);
+    }
+    return _sortAsc ? cmp : -cmp;
+  });
+
+  /* Update count badge to reflect total (not filtered) */
+  document.getElementById('xmlFileCount').textContent = _xmlFileEntries.length;
+
+  /* Build index map so Load button references original array */
+  const indexMap = new Map(visible.map(f => [f.name, _xmlFileEntries.indexOf(f)]));
+
   const listEl = document.getElementById('xmlFileList');
   if (!_xmlFileEntries.length) {
     listEl.innerHTML = '<div class="file-list-empty">No XML files found in this folder.</div>';
+  } else if (!visible.length) {
+    listEl.innerHTML = `<div class="file-list-no-match">No files match "<em>${escapeHtml(_fileQuery)}</em>"</div>`;
   } else {
-    listEl.innerHTML = _xmlFileEntries.map((f, i) => {
-      const kb = f.file.size ? (f.file.size / 1024).toFixed(0) + ' KB' : '';
-      return `<div class="xml-file-row" onclick="loadXmlEntry(${i})">
+    listEl.innerHTML = visible.map(f => {
+      const origIdx = indexMap.get(f.name);
+      const nameFrag = highlightMatch(f.name, _fileQuery);
+      const size = fmtSize(f.file.size);
+      const date = fmtDate(f.file);
+      return `<div class="xml-file-row" onclick="loadXmlEntry(${origIdx})">
         <span class="xml-file-icon">📄</span>
-        <span class="xml-file-name" title="${f.name}">${f.name}</span>
-        <span class="xml-file-size">${kb}</span>
-        <button class="xml-file-load-btn" onclick="event.stopPropagation();loadXmlEntry(${i})">Load</button>
+        <span class="xml-file-name" title="${escapeHtml(f.name)}">${nameFrag}</span>
+        <span class="xml-file-meta">
+          ${size ? `<span class="xml-file-size">${size}</span>` : ''}
+          ${date ? `<span class="xml-file-date">${date}</span>` : ''}
+        </span>
+        <button class="xml-file-load-btn" onclick="event.stopPropagation();loadXmlEntry(${origIdx})">Load</button>
       </div>`;
     }).join('');
   }
+
   document.getElementById('fileListPanel').style.display = 'block';
   document.getElementById('uploadError').style.display   = 'none';
 }
@@ -1050,7 +1239,7 @@ function resetToUpload() {
 }
 
 /* ────────────────────────────────────────────────────────────────
-   Results Table — headers / sort / filter / render
+   Results Table
 ──────────────────────────────────────────────────────────────── */
 function buildHeaders() {
   const hr = document.getElementById('headerRow');
@@ -1222,12 +1411,11 @@ document.getElementById('minWin').oninput       = () => { currentPage = 0; apply
 document.getElementById('maxWin').oninput       = () => { currentPage = 0; applyFilters(); };
 
 /* ────────────────────────────────────────────────────────────────
-   R:R Heatmap (Benchmark Compliance)
+   R:R Heatmap
 ──────────────────────────────────────────────────────────────── */
 function buildHeatmap() {
   const container = document.getElementById('hm-content');
 
-  /* ── Benchmark helpers ── */
   function bmPF(wr, rr)  { return (wr * rr) / (1 - wr); }
   function bmEV(wr, rr)  { return wr * rr - (1 - wr); }
   function bmMinRF(wr, rr) {
@@ -1312,7 +1500,6 @@ function buildHeatmap() {
     </div>`;
   }
 
-  /* ── Column indices ── */
   const customColIdx = HEADERS.findIndex(h => h.toLowerCase() === 'custom');
   const resultIdx    = customColIdx >= 0 ? customColIdx : HEADERS.findIndex(h => h.toLowerCase() === 'result');
   const pfIdx        = HEADERS.findIndex(h => /profit.?factor/i.test(h));
@@ -1327,11 +1514,9 @@ function buildHeatmap() {
     return;
   }
 
-  /* ── Grid axes ── */
   const WRS = []; for (let w = 20; w <= 100; w++) WRS.push(w);
   const RRS = []; for (let r = 60; r >= 2; r--) RRS.push(r / 10);
 
-  /* ── Score helpers ── */
   function r2(v) { return Math.round(v * 100) / 100; }
   function computeScore(wr, rr, pf, rf, sharpe, dd) {
     const reqPF=bmPF(wr,rr), reqRF=bmMinRF(wr,rr), reqSR=bmMinSharpe(wr,rr), reqDD=bmMaxDD(wr,rr);
@@ -1344,7 +1529,6 @@ function buildHeatmap() {
     return { total: scores.reduce((a,b)=>a+b,0)/scores.length, pass };
   }
 
-  /* ── Bucket all rows ── */
   const buckets = new Map();
   DATA.forEach(row => {
     const wrPct=row[0], rr=row[1];
@@ -1381,20 +1565,29 @@ function buildHeatmap() {
 
   const cellMap = new Map();
   buckets.forEach((candidates, key) => {
-    let best=null;
+    let best = null;
     candidates.forEach(c => {
-      if (!best){best=c;return;}
-      const cs=c.total??-1,bs=best.total??-1;
-      if(cs>bs){best=c;return;}if(cs<bs)return;
-      const cr=c.result!=null?Math.round(c.result*100):null;
-      const br=best.result!=null?Math.round(best.result*100):null;
-      if(cr!==null&&br!==null&&cr!==br){if(cr>br)best=c;return;}
-      if(uncappedScore(c)>uncappedScore(best))best=c;
+      if (!best) { best = c; return; }
+      const cs = c.total ?? -1, bs = best.total ?? -1;
+      if (cs > bs) { best = c; return; }
+      if (cs < bs) return;
+      // Same score — pick highest profit
+      const cp = c.profit ?? -Infinity, bp = best.profit ?? -Infinity;
+      if (cp > bp) best = c;
     });
-    if(best)cellMap.set(key,best);
+    if (best) cellMap.set(key, best);
   });
 
-  /* ── Pre-compute tier key for every WR×RR axis point ── */
+  // Top-5 cells by profit — recomputed whenever filters change
+  let top5ProfitMap = new Map();
+  function recomputeTop5() {
+    top5ProfitMap = new Map();
+    const sorted = [...cellMap.entries()]
+      .filter(([key, c]) => c.profit != null && cellPassesZoneScore(key) && cellPassesOtherFilters(key))
+      .sort(([, a], [, b]) => (b.profit ?? -Infinity) - (a.profit ?? -Infinity));
+    sorted.slice(0, 5).forEach(([key], i) => top5ProfitMap.set(key, i + 1));
+  }
+
   const tierKeyCache = new Map();
   RRS.forEach(rr => {
     WRS.forEach(wrPct => {
@@ -1405,134 +1598,92 @@ function buildHeatmap() {
 
   document.getElementById('hm-stat-total').textContent = cellMap.size.toLocaleString();
 
-  /* ────────────────────────────────────────────────────────
-     Filter helpers — split into two tiers:
-       cellPassesZoneScore  → controls whether a cell is RENDERED
-       cellPassesOtherFilters → controls whether a rendered cell is DIMMED
-       cellPassesHmFilters  → combined (used for stats counts)
-  ──────────────────────────────────────────────────────── */
-
-  /* Zone + Score: excluded cells are not rendered at all */
   function cellPassesZoneScore(key) {
     const parts = key.split('|');
     const wrPct = parseFloat(parts[0]);
     const rr    = parseFloat(parts[1]);
-
-    /* ── Zone filter ── */
     if (hmFilters.zones && hmFilters.zones.size < ALL_ZONES.size) {
       const zoneKey = tierKeyCache.get(key) ?? bmTier(wrPct/100, rr).key;
       if (!hmFilters.zones.has(zoneKey)) return false;
     }
-
-    /* ── Score filter ── */
     if (hmFilters.minScore != null && hmFilters.minScore > 0) {
       const cell = cellMap.get(key);
       if (!cell || cell.total === null) return false;
       if (Math.round(cell.total * 100) < hmFilters.minScore) return false;
     }
-
     return true;
   }
 
-  /* Axis range + metric filters: rendered cells are dimmed when they fail */
   function cellPassesOtherFilters(key) {
     const parts = key.split('|');
     const wrPct = parseFloat(parts[0]);
     const rr    = parseFloat(parts[1]);
-
     if (hmFilters.minWr != null && wrPct < hmFilters.minWr) return false;
     if (hmFilters.maxWr != null && wrPct > hmFilters.maxWr) return false;
     if (hmFilters.minRr != null && rr    < hmFilters.minRr) return false;
     if (hmFilters.maxRr != null && rr    > hmFilters.maxRr) return false;
-
     const cell = cellMap.get(key);
     const metricsActive = hmFilters.minPf != null || hmFilters.minRf != null ||
                           hmFilters.minSharpe != null || hmFilters.maxDd != null ||
                           hmFilters.minTrades != null;
     if (!cell || cell.total === null) return !metricsActive;
-
     if (hmFilters.minPf     != null && (cell.pf     === null || cell.pf     < hmFilters.minPf))     return false;
     if (hmFilters.minRf     != null && (cell.rf     === null || cell.rf     < hmFilters.minRf))     return false;
     if (hmFilters.minSharpe != null && (cell.sharpe === null || cell.sharpe < hmFilters.minSharpe)) return false;
     if (hmFilters.maxDd     != null && (cell.dd     === null || cell.dd     > hmFilters.maxDd))     return false;
     if (hmFilters.minTrades != null && (cell.trades === null || cell.trades < hmFilters.minTrades)) return false;
-
     return true;
   }
 
-  /* Combined — used only for stats bar counting */
   function cellPassesHmFilters(key) {
     return cellPassesZoneScore(key) && cellPassesOtherFilters(key);
   }
 
-  /* ── Stats bar + tags update ── */
   function updateHmStats() {
     const matchWrap = document.getElementById('hm-stat-match-wrap');
     const dimWrap   = document.getElementById('hm-stat-dim-wrap');
     const matchEl   = document.getElementById('hm-stat-match');
     const dimEl     = document.getElementById('hm-stat-dim');
     const tagsEl    = document.getElementById('hm-active-filters');
-
-    if (!isHmFilterActive()) {
-      matchWrap.style.display = 'none';
-      dimWrap.style.display   = 'none';
-      tagsEl.innerHTML        = '';
-      return;
-    }
-
+    if (!isHmFilterActive()) { matchWrap.style.display='none'; dimWrap.style.display='none'; tagsEl.innerHTML=''; return; }
     let match = 0;
     cellMap.forEach((_, key) => { if (cellPassesHmFilters(key)) match++; });
     const dim = cellMap.size - match;
-
     matchWrap.style.display = 'inline';
     dimWrap.style.display   = 'inline';
     matchEl.textContent     = match.toLocaleString();
     dimEl.textContent       = dim.toLocaleString();
-
     const tags = [];
     const f = hmFilters;
-
-    /* zone tag */
     if (f.zones && f.zones.size < ALL_ZONES.size) {
       const zoneLabels = { unprof:'Unprof', marg:'Marginal', ok:'OK', good:'Good', great:'Great', excep:'Exceptional', cap:'Overfit?' };
       const shown = [...f.zones].map(z => zoneLabels[z] || z).join(', ');
       tags.push({ lbl: 'Zones: ' + shown, cls: 'zone-tag' });
     }
-    /* score tag */
-    if (f.minScore != null && f.minScore > 0) {
-      tags.push({ lbl: `Score ≥ ${f.minScore}%`, cls: 'score-tag' });
-    }
-    if (f.minWr   != null || f.maxWr  != null) tags.push({ lbl: `WR% ${f.minWr??''}–${f.maxWr??''}`, cls: '' });
-    if (f.minRr   != null || f.maxRr  != null) tags.push({ lbl: `RR ${f.minRr??''}–${f.maxRr??''}`,  cls: '' });
-    if (f.minPf   != null) tags.push({ lbl: `PF ≥ ${f.minPf}`,     cls: '' });
-    if (f.minRf   != null) tags.push({ lbl: `RF ≥ ${f.minRf}`,     cls: '' });
+    if (f.minScore != null && f.minScore > 0) tags.push({ lbl: `Score ≥ ${f.minScore}%`, cls: 'score-tag' });
+    if (f.minWr != null || f.maxWr != null) tags.push({ lbl: `WR% ${f.minWr??''}–${f.maxWr??''}`, cls: '' });
+    if (f.minRr != null || f.maxRr != null) tags.push({ lbl: `RR ${f.minRr??''}–${f.maxRr??''}`,  cls: '' });
+    if (f.minPf != null) tags.push({ lbl: `PF ≥ ${f.minPf}`, cls: '' });
+    if (f.minRf != null) tags.push({ lbl: `RF ≥ ${f.minRf}`, cls: '' });
     if (f.minSharpe != null) tags.push({ lbl: `Sharpe ≥ ${f.minSharpe}`, cls: '' });
-    if (f.maxDd   != null) tags.push({ lbl: `DD ≤ ${f.maxDd}%`,   cls: 'dd-tag' });
+    if (f.maxDd != null) tags.push({ lbl: `DD ≤ ${f.maxDd}%`, cls: 'dd-tag' });
     if (f.minTrades != null) tags.push({ lbl: `Trades ≥ ${f.minTrades}`, cls: '' });
-    tagsEl.innerHTML = tags.map(t =>
-      `<span class="hm-filter-tag${t.cls?' '+t.cls:''}">${t.lbl}</span>`
-    ).join('');
+    tagsEl.innerHTML = tags.map(t => `<span class="hm-filter-tag${t.cls?' '+t.cls:''}">${t.lbl}</span>`).join('');
   }
 
-  /* ── Apply dim / re-render ── */
   function applyHmDimFn() {
-    /* Zone + Score filters: force virtual-row re-render so excluded cells
-       are never inserted into the DOM at all (buildCellHTML skips them). */
+    recomputeTop5();
     vFirst = -1; vLast = -1;
     calcVisibleRows();
-
-    /* Other-metric filters (PF, RF, Sharpe, DD, Trades, WR/RR range):
-       dim/undim the already-rendered cells without a full re-render. */
     hmTbody.querySelectorAll('td[data-hm-key]').forEach(td => {
       td.classList.toggle('hm-dim', !cellPassesOtherFilters(td.dataset.hmKey));
     });
-
     updateHmStats();
   }
 
   hmApplyDim = applyHmDimFn;
+  recomputeTop5();
 
-  /* ── Tooltip cache ── */
   const tipEl = document.getElementById('hmTooltip');
   const fmtV  = (v, d=2) => (typeof v==='number'&&isFinite(v)) ? v.toFixed(d) : '—';
   const tradeHTMLCache = new Map();
@@ -1556,7 +1707,7 @@ function buildHeatmap() {
           <span style="font-size:10px;color:#475569;margin-top:4px;display:block">Thresholds: PF ${reqPF.toFixed(2)} · RF>${reqRF} · SR>${reqSR} · DD<${reqDD}%</span>
           ${getCachedTradeHTML(wr,rr)}`;
       } else {
-        const pct=Math.round(cell.total*100), isFull=pct>=100;
+        const pct=Math.round(cell.total*100), isOver=pct>100, isFull=pct>=100;
         const mk=(lbl,actual,req,pass,inv=false)=>{
           const col=pass===null?'#64748b':pass?'#4ade80':'#f87171';
           const sym=pass===null?'—':pass?'✓':'✗';
@@ -1568,8 +1719,8 @@ function buildHeatmap() {
           <span style="color:#64748b;font-size:10px"> &nbsp;${tier.label}</span>
           <div style="margin:5px 0 3px;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.04);display:flex;align-items:center;gap:8px">
             <span style="font-size:9px;color:#64748b">Best score</span>
-            <span style="font-size:18px;font-weight:900;color:${isFull?'#10b981':pct>=75?'#22c55e':pct>=50?'#eab308':pct>=25?'#f97316':'#ef4444'}">${pct}%</span>
-            ${isFull?'<span style="font-size:9px;color:#10b981;font-weight:700">✓ all thresholds met</span>':''}
+            <span style="font-size:18px;font-weight:900;color:${isOver?'#a78bfa':isFull?'#10b981':pct>=75?'#22c55e':pct>=50?'#eab308':pct>=25?'#f97316':'#ef4444'}">${pct}%</span>
+            ${isOver?'<span style="font-size:9px;color:#a78bfa;font-weight:700">⚡ exceeds all thresholds</span>':isFull?'<span style="font-size:9px;color:#10b981;font-weight:700">✓ all thresholds met</span>':''}
           </div>
           <div style="border-top:1px solid #2a2d3a;padding-top:5px;margin-top:2px">
             <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">Best result: ${cell.result!==null?cell.result.toFixed(2):'—'}</div>
@@ -1588,8 +1739,8 @@ function buildHeatmap() {
     });
   });
 
-  /* ── Score bar helper ── */
   function barCls(pct) {
+    if (pct>100)  return 'bm-bar-over';
     if (pct>=100) return 'bm-bar-100';
     if (pct>=75)  return 'bm-bar-75';
     if (pct>=50)  return 'bm-bar-50';
@@ -1601,7 +1752,6 @@ function buildHeatmap() {
     return `<div class="bm-chk"><div class="bm-chk-dot ${cls}"></div><span class="bm-chk-lbl">${lbl}</span></div>`;
   }
 
-  /* ── Legend ── */
   const legendHTML = `
     <div class="hm-legend" style="flex-wrap:wrap;gap:8px 16px;margin-bottom:8px">
       <span style="font-size:11px;font-weight:600;color:#64748b;">Cell bg = theoretical PF tier:</span>
@@ -1621,34 +1771,35 @@ function buildHeatmap() {
       <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:#eab308"></div> 50–75%</div>
       <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:#22c55e"></div> 75–99%</div>
       <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:#10b981;box-shadow:0 0 4px #10b981"></div> 100% ✓ all met</div>
+      <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:linear-gradient(90deg,#10b981,#a78bfa);box-shadow:0 0 4px #a78bfa"></div> &gt;100% ⚡ exceeds</div>
     </div>
     <div class="hm-info">Cell background = theoretical PF tier. Score % = how close the best result meets all 4 benchmarks. Dots: <span style="color:#22c55e">●</span> pass <span style="color:#ef4444">●</span> fail <span style="color:#4b5563">●</span> n/a. <span style="color:#4f8ef7">Click to cycle highlight.</span> <span style="color:#10b981;font-weight:600">Default: Great + Exceptional zones, score ≥ 90%.</span> Dimmed cells fade to near-invisible.</div>
+    <div class="hm-legend" style="gap:8px 16px;margin-bottom:10px">
+      <span style="font-size:11px;font-weight:600;color:#64748b;">Top profit cells:</span>
+      <div class="hm-legend-item"><div style="width:14px;height:14px;border-radius:3px;border:2px solid #ffd700;background:rgba(255,215,0,0.1)"></div> #1 Gold</div>
+      <div class="hm-legend-item"><div style="width:14px;height:14px;border-radius:3px;border:2px solid #c0c0c0;background:rgba(192,192,192,0.1)"></div> #2 Silver</div>
+      <div class="hm-legend-item"><div style="width:14px;height:14px;border-radius:3px;border:2px solid #cd7f32;background:rgba(205,127,50,0.1)"></div> #3 Bronze</div>
+      <div class="hm-legend-item"><div style="width:14px;height:14px;border-radius:3px;border:2px solid #7c6bdb;background:rgba(124,107,219,0.1)"></div> #4</div>
+      <div class="hm-legend-item"><div style="width:14px;height:14px;border-radius:3px;border:2px solid #4f8ef7;background:rgba(79,142,247,0.1)"></div> #5</div>
+    </div>
   `;
 
-  /* ── Build cell HTML ── */
   function buildCellHTML(wrPct, rr) {
     const wr=wrPct/100, tier=bmTier(wr,rr), key=wrPct+'|'+rr;
-
-    /* Zone / Score filtered out → bare placeholder, no content, no events */
     if (!cellPassesZoneScore(key)) {
       return `<td class="${tier.cls}"></td>`;
     }
-
     const cell=cellMap.get(key);
     if (!cell||cell.total===null) {
       return `<td class="${tier.cls}" data-hm-key="${key}"><div class="bm-no-data-cell">—</div></td>`;
     }
-    const pct=Math.round(cell.total*100), isFull=pct>=100, bar=barCls(pct);
-    return `<td class="${tier.cls}" data-hm-key="${key}"><div class="bm-cell-wrap"><div class="bm-score-bar ${bar}" style="width:${Math.min(pct,100)}%"></div><div class="bm-score-main"><div class="bm-score-left"><span class="bm-score-pct${isFull?' bm-full':''}">${pct}%</span><div class="bm-result-val">${cell.result!==null?Math.floor(cell.result):'—'}</div></div><div class="bm-checks"><div class="bm-check-row">${dotHTML(cell.pass.pf,'PF')}${dotHTML(cell.pass.rf,'RF')}</div><div class="bm-check-row">${dotHTML(cell.pass.sharpe,'SR')}${dotHTML(cell.pass.dd,'DD')}</div></div></div></div></td>`;
+    const pct=Math.round(cell.total*100), isOver=pct>100, isFull=pct>=100, bar=barCls(pct);
+    const rank=top5ProfitMap.get(key), rankCls=rank?` hm-top-${rank}`:'';
+    return `<td class="${tier.cls}${rankCls}" data-hm-key="${key}"><div class="bm-cell-wrap"><div class="bm-score-bar ${bar}" style="width:${Math.min(pct,100)}%"></div><div class="bm-score-main"><div class="bm-score-left"><span class="bm-score-pct${isOver?' bm-over':isFull?' bm-full':''}">${pct}%</span><div class="bm-result-val">${cell.result!==null?Math.floor(cell.result):'—'}</div></div><div class="bm-checks"><div class="bm-check-row">${dotHTML(cell.pass.pf,'PF')}${dotHTML(cell.pass.rf,'RF')}</div><div class="bm-check-row">${dotHTML(cell.pass.sharpe,'SR')}${dotHTML(cell.pass.dd,'DD')}</div></div></div></div></td>`;
   }
 
-  /* rowInnerHTMLs is now computed on-the-fly inside renderVirtRows
-     so zone/score filters are always respected without touching the DOM. */
-
-  /* ── Table skeleton ── */
   const table = document.createElement('table');
   table.className = 'hm-table';
-
   const thead = document.createElement('thead');
   const headTr = document.createElement('tr');
   const cornerTh = document.createElement('th');
@@ -1674,7 +1825,6 @@ function buildHeatmap() {
   hmTbody.appendChild(spacerBotTr);
   table.appendChild(hmTbody);
 
-  /* ── Event handlers ── */
   const hlMap = new Map(), hlClasses = ['hm-hl-1','hm-hl-2','hm-hl-3','hm-hl-4'];
   let rafPending=false, pendingX=0, pendingY=0;
 
@@ -1708,14 +1858,12 @@ function buildHeatmap() {
     if(next>=0) td.classList.add(hlClasses[next]);
   });
 
-  /* ── Mount ── */
   container.innerHTML = legendHTML;
   const gridWrap = document.createElement('div');
   gridWrap.className = 'hm-grid-wrap';
   gridWrap.appendChild(table);
   container.appendChild(gridWrap);
 
-  /* ── Virtual row renderer ── */
   const CELL_H_PX=83, ROW_BUFF=5, nRows=RRS.length;
   let vFirst=-1, vLast=-1, scrollRaf=null;
 
@@ -1728,7 +1876,6 @@ function buildHeatmap() {
     const html=[];
     for(let i=first;i<=last;i++) {
       const rr=RRS[i];
-      /* Build each row fresh — zone/score-excluded cells are bare <td>s (no content) */
       const rowHTML=`<th class="hm-row-header">1:${rr.toFixed(1)}</th>`+
         WRS.map(wrPct=>buildCellHTML(wrPct,rr)).join('');
       html.push(`<tr data-hm-row="${i}">${rowHTML}</tr>`);
@@ -1741,7 +1888,10 @@ function buildHeatmap() {
       const td=hmTbody.querySelector(`td[data-hm-key="${CSS.escape(key)}"]`);
       if(td) td.classList.add(hlClasses[hlIdx]);
     });
-    /* Apply other-metric dim on newly rendered cells (zone/score are already baked in) */
+    top5ProfitMap.forEach((rank,key)=>{
+      const td=hmTbody.querySelector(`td[data-hm-key="${CSS.escape(key)}"]`);
+      if(td) td.classList.add(`hm-top-${rank}`);
+    });
     hmTbody.querySelectorAll('td[data-hm-key]').forEach(td => {
       td.classList.toggle('hm-dim', !cellPassesOtherFilters(td.dataset.hmKey));
     });
@@ -1770,7 +1920,6 @@ function buildHeatmap() {
     scrollRaf=requestAnimationFrame(()=>{ scrollRaf=null; calcVisibleRows(); });
   }, { passive: true });
 
-  /* Apply initial default filters immediately */
   requestAnimationFrame(() => { if(hmApplyDim) hmApplyDim(); });
 }
 </script>
