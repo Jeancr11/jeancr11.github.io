@@ -678,6 +678,94 @@
   .bm-chk-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
   .bm-chk-lbl { font-size:6.5px; font-weight:600; opacity:0.7; }
   .bm-no-data-cell { display:flex; align-items:center; justify-content:center; height:100%; font-size:9px; opacity:0.25; }
+
+  /* ── Rank Tab ── */
+  #tab-rank { overflow: auto; max-height: calc(100vh - 130px); }
+  .rank-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.15s;
+  }
+  .rank-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+  .rank-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .rank-badge {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 900; flex-shrink: 0;
+    letter-spacing: -0.5px;
+  }
+  .rank-badge-1 { background: rgba(255,215,0,0.15); border: 1.5px solid #ffd700; color: #ffd700; box-shadow: 0 0 8px rgba(255,215,0,0.3); }
+  .rank-badge-2 { background: rgba(192,192,192,0.12); border: 1.5px solid #c0c0c0; color: #c0c0c0; }
+  .rank-badge-3 { background: rgba(205,127,50,0.12); border: 1.5px solid #cd7f32; color: #cd7f32; }
+  .rank-badge-n { background: rgba(79,142,247,0.08); border: 1.5px solid rgba(79,142,247,0.4); color: var(--accent); }
+  .rank-cell-label { font-size: 15px; font-weight: 700; color: var(--text); }
+  .rank-cell-sub   { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .rank-score-pill { padding: 2px 9px; border-radius: 4px; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-left: auto; }
+  .rank-card-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0;
+  }
+  .rank-stat {
+    padding: 7px 12px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .rank-stat-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 3px; }
+  .rank-stat-val   { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .rank-stat-val.good { color: #22c55e; }
+  .rank-stat-val.warn { color: #eab308; }
+  .rank-stat-val.bad  { color: #ef4444; }
+  .rank-stat-val.neu  { color: var(--text); }
+  .rank-dot-row { display: flex; gap: 5px; align-items: center; margin-top: 3px; flex-wrap: wrap; }
+  .rank-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .rank-dot-pass { background: #22c55e; }
+  .rank-dot-fail { background: #ef4444; }
+  .rank-dot-na   { background: #4b5563; }
+  .rank-dot-lbl  { font-size: 9px; color: var(--muted); }
+  .rank-profit-bar-wrap { height: 3px; background: var(--border); border-radius: 2px; margin-top: 4px; overflow: hidden; }
+  .rank-profit-bar { height: 100%; border-radius: 2px; }
+  .rank-empty { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
+  .rank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 800px) { .rank-grid { grid-template-columns: 1fr; } }
+  .rank-filter-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px 10px;
+    flex-wrap: wrap;
+  }
+  .rank-filter-bar label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .rank-filter-bar input {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    border-radius: 6px; padding: 5px 8px; font-size: 12px; outline: none; width: 60px;
+  }
+  .rank-filter-bar input:focus { border-color: var(--accent); }
+  .rank-filter-bar input.dd-input  { border-color: rgba(239,68,68,0.45); }
+  .rank-filter-bar input.dd-input:focus { border-color: #ef4444; }
+  .rank-filter-bar input.min-input { border-color: rgba(79,142,247,0.4); }
+  .rank-filter-bar input.min-input:focus { border-color: var(--accent); }
+  .rank-filter-bar select {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    border-radius: 6px; padding: 5px 8px; font-size: 12px; outline: none; cursor: pointer;
+  }
+  .rank-filter-bar button {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    border-radius: 6px; padding: 5px 12px; cursor: pointer; font-size: 12px; white-space: nowrap;
+  }
+  .rank-filter-bar button:hover { border-color: var(--accent); color: var(--accent); }
+  .rank-filter-bar .sep { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -746,6 +834,7 @@
   <div class="tab-bar">
     <button class="tab-btn active" id="tabBtnResults" onclick="switchTab('results')">📋 Results Table</button>
     <button class="tab-btn" id="tabBtnHeatmap" onclick="switchTab('heatmap')">🗺 R:R Heatmap</button>
+    <button class="tab-btn" id="tabBtnRank" onclick="switchTab('rank')">🏅 Rank</button>
   </div>
 
   <!-- Results Tab -->
@@ -872,6 +961,73 @@
       <div class="hm-no-data">Load an XML file to see the heatmap.</div>
     </div>
   </div>
+
+  <!-- Rank Tab -->
+  <div id="tab-rank" style="display:none">
+    <div class="hm-sticky-header">
+      <div class="rank-filter-bar">
+        <label>Zones:</label>
+        <div style="display:flex;gap:3px;align-items:center;flex-wrap:wrap">
+          <button class="hm-zone-btn" data-zone="unprof" onclick="toggleRankZone(this)">Unprof</button>
+          <button class="hm-zone-btn" data-zone="marg"   onclick="toggleRankZone(this)">Marginal</button>
+          <button class="hm-zone-btn" data-zone="ok"     onclick="toggleRankZone(this)">OK</button>
+          <button class="hm-zone-btn" data-zone="good"   onclick="toggleRankZone(this)">Good</button>
+          <button class="hm-zone-btn active" data-zone="great" onclick="toggleRankZone(this)">Great</button>
+          <button class="hm-zone-btn active" data-zone="excep" onclick="toggleRankZone(this)">Exceptional</button>
+          <button class="hm-zone-btn" data-zone="cap"    onclick="toggleRankZone(this)">Overfit?</button>
+        </div>
+        <div class="sep"></div>
+        <label style="color:#10b981;font-weight:700">Score ≥</label>
+        <input type="number" id="rf-minScore" value="90" min="0" max="200" step="1" style="border-color:rgba(16,185,129,0.55)!important;width:52px" oninput="onRankFilter()">
+        <span style="color:var(--muted);font-size:11px">%</span>
+        <div class="sep"></div>
+        <label>WR%:</label>
+        <input type="number" class="min-input" id="rf-minWr" placeholder="min" style="width:54px" oninput="onRankFilter()">
+        <span style="color:var(--muted);font-size:12px">–</span>
+        <input type="number" class="min-input" id="rf-maxWr" placeholder="max" style="width:54px" oninput="onRankFilter()">
+        <div class="sep"></div>
+        <label>RR:</label>
+        <input type="number" class="min-input" id="rf-minRr" placeholder="min" step="0.1" style="width:54px" oninput="onRankFilter()">
+        <span style="color:var(--muted);font-size:12px">–</span>
+        <input type="number" class="min-input" id="rf-maxRr" placeholder="max" step="0.1" style="width:54px" oninput="onRankFilter()">
+        <div class="sep"></div>
+        <label>PF ≥</label>
+        <input type="number" class="min-input" id="rf-minPf" placeholder="—" step="0.01" oninput="onRankFilter()">
+        <label>RF ≥</label>
+        <input type="number" class="min-input" id="rf-minRf" placeholder="—" step="0.1" oninput="onRankFilter()">
+        <label>Sharpe ≥</label>
+        <input type="number" class="min-input" id="rf-minSharpe" placeholder="—" step="0.01" style="width:72px" oninput="onRankFilter()">
+        <label>DD% ≤</label>
+        <input type="number" class="dd-input" id="rf-maxDd" placeholder="—" step="0.1" oninput="onRankFilter()">
+        <label>Trades ≥</label>
+        <input type="number" class="min-input" id="rf-minTrades" placeholder="—" style="width:72px" oninput="onRankFilter()">
+        <div class="sep"></div>
+        <label style="color:var(--muted)">Top</label>
+        <select id="rf-topN" onchange="onRankFilter()">
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="999999">All</option>
+        </select>
+        <div class="sep"></div>
+        <label style="color:var(--muted)">Tie-break&nbsp;±</label>
+        <input type="number" id="rf-tiePct" value="10" min="0" max="100" step="1" style="width:52px" oninput="onRankFilter()">
+        <span style="color:var(--muted);font-size:11px">%</span>
+        <div class="sep"></div>
+        <button onclick="clearRankFilters()">✕ Reset</button>
+      </div>
+      <div class="hm-stats-bar" id="rank-stats-bar">
+        <span>Cells evaluated: <b id="rank-stat-cells">—</b></span>
+        <span>Qualifying: <b id="rank-stat-qualify">—</b></span>
+        <span style="color:var(--muted);font-size:11px">Tie-break within <b id="rank-stat-tiepct">10</b>% profit → higher WR wins</span>
+      </div>
+    </div>
+    <div id="rank-content" style="padding:16px 20px">
+      <div class="rank-empty">Load an XML file to see rankings.</div>
+    </div>
+  </div>
+
 </div>
 
 <div class="hm-tooltip" id="hmTooltip"></div>
@@ -885,6 +1041,7 @@ let sortCol = 0, sortDir = -1, currentPage = 0, pageSize = 100, totalPages = 1;
 let filtered = [], columnFilters = {};
 let hmRecalcVisible = null;
 let hmApplyDim      = null;
+let gCellMap        = new Map(); // shared between heatmap + rank tab
 
 const ALL_ZONES     = new Set(['unprof','marg','ok','good','great','excep','cap']);
 const DEFAULT_ZONES = new Set(['great','excep']);
@@ -949,9 +1106,12 @@ function isDrawdownCol(name) { return DD_PATTERNS.some(p => p.test(name)); }
 function switchTab(tab) {
   document.getElementById('tab-results').style.display = tab === 'results' ? 'block' : 'none';
   document.getElementById('tab-heatmap').style.display  = tab === 'heatmap'  ? 'block' : 'none';
+  document.getElementById('tab-rank').style.display     = tab === 'rank'     ? 'block' : 'none';
   document.getElementById('tabBtnResults').classList.toggle('active', tab === 'results');
   document.getElementById('tabBtnHeatmap').classList.toggle('active', tab === 'heatmap');
+  document.getElementById('tabBtnRank').classList.toggle('active', tab === 'rank');
   if (tab === 'heatmap' && hmRecalcVisible) requestAnimationFrame(hmRecalcVisible);
+  if (tab === 'rank') buildRankTab();
 }
 
 /* ────────────────────────────────────────────────────────────────
@@ -1233,8 +1393,9 @@ function resetToUpload() {
   document.getElementById('uploadScreen').style.display = 'flex';
   document.getElementById('uploadError').style.display  = 'none';
   document.getElementById('loadingMsg').style.display   = 'none';
-  HEADERS = []; DATA = [];
+  HEADERS = []; DATA = []; gCellMap = new Map();
   clearHmFilters();
+  clearRankFilters();
   switchTab('results');
 }
 
@@ -1577,6 +1738,9 @@ function buildHeatmap() {
     });
     if (best) cellMap.set(key, best);
   });
+
+  // Share cellMap globally so the Rank tab can use it without reprocessing
+  gCellMap = cellMap;
 
   // Top-5 cells by profit — recomputed whenever filters change
   let top5ProfitMap = new Map();
@@ -1922,6 +2086,270 @@ function buildHeatmap() {
 
   requestAnimationFrame(() => { if(hmApplyDim) hmApplyDim(); });
 }
-</script>
+
+/* ────────────────────────────────────────────────────────────────
+   Rank Tab
+──────────────────────────────────────────────────────────────── */
+let rankFilters = { zones: new Set(['great','excep']), minScore: 90 };
+
+function _rankVal(id) {
+  const v = parseFloat(document.getElementById(id)?.value);
+  return isNaN(v) ? null : v;
+}
+
+function toggleRankZone(btn) {
+  const zone = btn.dataset.zone;
+  if (rankFilters.zones.has(zone)) { rankFilters.zones.delete(zone); btn.classList.remove('active'); }
+  else { rankFilters.zones.add(zone); btn.classList.add('active'); }
+  buildRankTab();
+}
+
+function onRankFilter() {
+  rankFilters.minScore  = _rankVal('rf-minScore');
+  rankFilters.minWr     = _rankVal('rf-minWr');
+  rankFilters.maxWr     = _rankVal('rf-maxWr');
+  rankFilters.minRr     = _rankVal('rf-minRr');
+  rankFilters.maxRr     = _rankVal('rf-maxRr');
+  rankFilters.minPf     = _rankVal('rf-minPf');
+  rankFilters.minRf     = _rankVal('rf-minRf');
+  rankFilters.minSharpe = _rankVal('rf-minSharpe');
+  rankFilters.maxDd     = _rankVal('rf-maxDd');
+  rankFilters.minTrades = _rankVal('rf-minTrades');
+  buildRankTab();
+}
+
+function clearRankFilters() {
+  rankFilters = { zones: new Set(['great','excep']), minScore: 90 };
+  document.querySelectorAll('#rf-minWr,#rf-maxWr,#rf-minRr,#rf-maxRr,#rf-minPf,#rf-minRf,#rf-minSharpe,#rf-maxDd,#rf-minTrades')
+    .forEach(el => el.value = '');
+  const sc = document.getElementById('rf-minScore');
+  if (sc) sc.value = 90;
+  document.querySelectorAll('.rank-filter-bar .hm-zone-btn').forEach(btn => {
+    btn.classList.toggle('active', ['great','excep'].includes(btn.dataset.zone));
+  });
+  buildRankTab();
+}
+
+function buildRankTab() {
+  const container = document.getElementById('rank-content');
+  if (!DATA.length) { container.innerHTML = '<div class="rank-empty">Load an XML file to see rankings.</div>'; return; }
+  if (!gCellMap.size) { container.innerHTML = '<div class="rank-empty">Heatmap not yet built — try switching to the R:R Heatmap tab first, then come back.</div>'; return; }
+
+  // ── Benchmark helpers (self-contained, matching heatmap logic) ──
+  function _bmPF(wr, rr)  { return (wr * rr) / (1 - wr); }
+  function _bmEV(wr, rr)  { return wr * rr - (1 - wr); }
+  function _bmMinRF(wr, rr) {
+    if (rr <= 0.4) return wr >= 0.84 ? 5 : 3;
+    if (rr <= 0.8) return wr >= 0.80 ? 7 : 5;
+    if (rr <= 1.2) return wr >= 0.74 ? 9 : wr >= 0.55 ? 7 : 5;
+    if (rr <= 1.8) return wr >= 0.55 ? 10 : 7;
+    if (rr <= 2.4) return wr >= 0.55 ? 12 : 9;
+    return 14;
+  }
+  function _bmMinSharpe(wr, rr) {
+    if (rr <= 0.4) return wr >= 0.86 ? 18 : wr >= 0.82 ? 14 : 10;
+    if (rr <= 0.8) return wr >= 0.84 ? 14 : wr >= 0.78 ? 10 : 7;
+    if (rr <= 1.2) return wr >= 0.78 ? 9  : wr >= 0.70 ? 7  : wr >= 0.55 ? 5 : 3;
+    if (rr <= 1.8) return wr >= 0.76 ? 9  : wr >= 0.68 ? 8  : wr >= 0.55 ? 6 : 4;
+    if (rr <= 2.4) return wr >= 0.55 ? 8 : 5;
+    return wr >= 0.55 ? 9 : 6;
+  }
+  function _bmMaxDD(wr, rr) {
+    if (wr >= 0.84) return rr <= 1.0 ? 3.0 : 4.0;
+    if (wr >= 0.78) return rr <= 1.2 ? 4.0 : 5.0;
+    if (wr >= 0.70) return rr <= 1.4 ? 5.0 : 6.0;
+    if (wr >= 0.55) return rr <= 2.0 ? 7.0 : 9.0;
+    return rr <= 2.0 ? 10.0 : 15.0;
+  }
+  function _bmTierKey(wr, rr) {
+    const p = _bmPF(wr, rr), e = _bmEV(wr, rr);
+    if (e <= 0) return 'unprof';
+    if (p < 1.5) return 'marg';
+    if (p < 2.5) return 'ok';
+    if (p < 3.5) return 'good';
+    if (p < 5.0) return 'great';
+    if (p < 6.0) return 'excep';
+    return 'cap';
+  }
+  const TIER_INFO = {
+    unprof: { label:'Unprofitable', color:'#f87171' },
+    marg:   { label:'Marginal',     color:'#fbbf24' },
+    ok:     { label:'Acceptable',   color:'#86efac' },
+    good:   { label:'Good',         color:'#4ade80' },
+    great:  { label:'Great',        color:'#22d55a' },
+    excep:  { label:'Exceptional',  color:'#34d399' },
+    cap:    { label:'⚠ Overfit?',   color:'#a5b4fc' },
+  };
+  function _uncapped(cell, wr, rr) {
+    const reqPF=_bmPF(wr,rr), reqRF=_bmMinRF(wr,rr), reqSR=_bmMinSharpe(wr,rr), reqDD=_bmMaxDD(wr,rr);
+    let s=0, n=0;
+    if (typeof cell.pf==='number'&&isFinite(cell.pf))     { s+=cell.pf/reqPF;       n++; }
+    if (typeof cell.rf==='number'&&isFinite(cell.rf))     { s+=cell.rf/reqRF;       n++; }
+    if (typeof cell.sharpe==='number'&&isFinite(cell.sharpe)) { s+=cell.sharpe/reqSR; n++; }
+    if (typeof cell.dd==='number'&&isFinite(cell.dd)&&cell.dd>0) { s+=reqDD/cell.dd; n++; }
+    return n > 0 ? s / n : -1;
+  }
+
+  // ── Filter each cell in gCellMap ──
+  const qualifying = [];
+  gCellMap.forEach((cell, key) => {
+    const [wrStr, rrStr] = key.split('|');
+    const wrPct = parseFloat(wrStr), rr = parseFloat(rrStr), wr = wrPct / 100;
+
+    // Zone
+    const tierKey = _bmTierKey(wr, rr);
+    if (rankFilters.zones && rankFilters.zones.size > 0 && !rankFilters.zones.has(tierKey)) return;
+
+    // Score
+    const scorePct = cell.total != null ? Math.round(cell.total * 100) : 0;
+    if (rankFilters.minScore != null && scorePct < rankFilters.minScore) return;
+
+    // WR / RR range
+    if (rankFilters.minWr != null && wrPct < rankFilters.minWr) return;
+    if (rankFilters.maxWr != null && wrPct > rankFilters.maxWr) return;
+    if (rankFilters.minRr != null && rr    < rankFilters.minRr) return;
+    if (rankFilters.maxRr != null && rr    > rankFilters.maxRr) return;
+
+    // Metric thresholds
+    if (rankFilters.minPf     != null && (cell.pf     == null || cell.pf     < rankFilters.minPf))     return;
+    if (rankFilters.minRf     != null && (cell.rf     == null || cell.rf     < rankFilters.minRf))     return;
+    if (rankFilters.minSharpe != null && (cell.sharpe == null || cell.sharpe < rankFilters.minSharpe)) return;
+    if (rankFilters.maxDd     != null && (cell.dd     == null || cell.dd     > rankFilters.maxDd))     return;
+    if (rankFilters.minTrades != null && (cell.trades == null || cell.trades < rankFilters.minTrades)) return;
+
+    qualifying.push({ ...cell, wrPct, rr, wr, tierKey });
+  });
+
+  document.getElementById('rank-stat-cells').textContent    = gCellMap.size.toLocaleString();
+  document.getElementById('rank-stat-qualify').textContent  = qualifying.length.toLocaleString();
+
+  if (!qualifying.length) {
+    container.innerHTML = '<div class="rank-empty">No cells pass the current filters. Try relaxing the zone or score requirements.</div>';
+    return;
+  }
+
+  // ── Ranking: profit desc, with configurable tie-break → WR ──
+  const tiePctRaw = parseFloat(document.getElementById('rf-tiePct')?.value);
+  const tiePct = isFinite(tiePctRaw) && tiePctRaw >= 0 ? tiePctRaw : 10;
+  const tieFrac = tiePct / 100;
+  const tieLabelEl = document.getElementById('rank-stat-tiepct');
+  if (tieLabelEl) tieLabelEl.textContent = tiePct;
+  qualifying.sort((a, b) => {
+    const ap = a.profit ?? -Infinity, bp = b.profit ?? -Infinity;
+    if (ap === -Infinity && bp === -Infinity) return 0;
+    const maxP = Math.max(Math.abs(ap), Math.abs(bp));
+    const similar = tieFrac > 0 && maxP > 0 && Math.abs(ap - bp) / maxP <= tieFrac;
+    if (similar) {
+      const aWR = a.wrPct, bWR = b.wrPct;
+      if (Math.abs(aWR - bWR) > 0.001) return bWR - aWR;
+    }
+    return bp - ap;
+  });
+
+  const topN = parseInt(document.getElementById('rf-topN')?.value) || 20;
+  const topList = qualifying.slice(0, topN);
+  const maxProfit = Math.max(...topList.map(c => c.profit ?? 0).filter(isFinite), 1);
+
+  const fmtN = (v, d=2) => (v != null && isFinite(v)) ? v.toFixed(d) : '—';
+  const fmtI = v => (v != null && isFinite(v)) ? Math.round(v).toLocaleString() : '—';
+
+  function scoreColor(pct) {
+    if (pct > 100) return '#a78bfa';
+    if (pct >= 100) return '#10b981';
+    if (pct >= 75)  return '#22c55e';
+    if (pct >= 50)  return '#eab308';
+    return '#f97316';
+  }
+  function dotHtml(pass, lbl) {
+    const cls = pass === null ? 'rank-dot rank-dot-na' : pass ? 'rank-dot rank-dot-pass' : 'rank-dot rank-dot-fail';
+    return `<span class="${cls}" title="${lbl}: ${pass===null?'n/a':pass?'pass':'fail'}"></span><span class="rank-dot-lbl">${lbl}</span>`;
+  }
+  function statValClass(pass) {
+    return pass === true ? 'good' : pass === false ? 'bad' : 'neu';
+  }
+
+  const medals = ['🥇','🥈','🥉'];
+
+  let html = '<div class="rank-grid">';
+  topList.forEach((cell, idx) => {
+    const rank = idx + 1;
+    const tier = TIER_INFO[cell.tierKey] || TIER_INFO.marg;
+    const scorePct  = cell.total != null ? Math.round(cell.total * 100) : 0;
+    const uncapped  = Math.round(_uncapped(cell, cell.wr, cell.rr) * 100);
+    const reqDD     = _bmMaxDD(cell.wr, cell.rr);
+    const reqPF     = _bmPF(cell.wr, cell.rr);
+    const reqRF     = _bmMinRF(cell.wr, cell.rr);
+    const reqSR     = _bmMinSharpe(cell.wr, cell.rr);
+    const isOver    = uncapped > 100;
+    const isFull    = scorePct >= 100;
+    const badgeCls  = rank <= 3 ? `rank-badge-${rank}` : 'rank-badge-n';
+    const profitBarW = cell.profit != null ? Math.min(100, Math.round((Math.max(cell.profit,0) / maxProfit) * 100)) : 0;
+    const rrCls     = cell.rr >= 1.5 ? 'good' : cell.rr >= 0.8 ? 'warn' : 'bad';
+    const wrCls     = cell.wr >= 0.60 ? 'good' : cell.wr >= 0.50 ? 'warn' : 'bad';
+    const ddCls     = cell.dd == null ? 'neu' : cell.dd <= reqDD * 0.7 ? 'good' : cell.dd <= reqDD ? 'warn' : 'bad';
+
+    html += `
+    <div class="rank-card">
+      <div class="rank-card-header">
+        <div class="rank-badge ${badgeCls}">${rank <= 3 ? medals[rank-1] : '#'+rank}</div>
+        <div style="flex:1;min-width:0">
+          <div class="rank-cell-label">WR ${cell.wrPct}% &nbsp;·&nbsp; RR 1:${cell.rr.toFixed(1)}</div>
+          <div class="rank-cell-sub"><span style="color:${tier.color}">${tier.label}</span> &nbsp;·&nbsp; Req PF ${reqPF.toFixed(2)} / RF ${reqRF} / SR ${reqSR} / DD ${reqDD}%</div>
+        </div>
+        <div class="rank-score-pill" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:${scoreColor(scorePct)}">${scorePct}%${isOver?' ⚡':isFull?' ✓':''}</div>
+      </div>
+      <div class="rank-card-body">
+        <div class="rank-stat" style="grid-column:span 2">
+          <div class="rank-stat-label">Profit</div>
+          <div class="rank-stat-val ${cell.profit >= 0 ? 'good' : 'bad'}">${fmtI(cell.profit)}</div>
+          <div class="rank-profit-bar-wrap"><div class="rank-profit-bar" style="width:${profitBarW}%;background:${cell.profit>=0?'#22c55e':'#ef4444'}"></div></div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">Win Rate</div>
+          <div class="rank-stat-val ${wrCls}">${cell.wrPct.toFixed(0)}%</div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">R:R Ratio</div>
+          <div class="rank-stat-val ${rrCls}">1:${cell.rr.toFixed(1)}</div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">Profit Factor</div>
+          <div class="rank-stat-val ${statValClass(cell.pass.pf)}">${fmtN(cell.pf)}</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:1px">req ≥ ${reqPF.toFixed(2)}</div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">Recovery Factor</div>
+          <div class="rank-stat-val ${statValClass(cell.pass.rf)}">${fmtN(cell.rf, 1)}</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:1px">req ≥ ${reqRF}</div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">Sharpe Ratio</div>
+          <div class="rank-stat-val ${statValClass(cell.pass.sharpe)}">${fmtN(cell.sharpe)}</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:1px">req ≥ ${reqSR}</div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">Eq. DD%</div>
+          <div class="rank-stat-val ${ddCls}">${cell.dd != null ? cell.dd.toFixed(1)+'%' : '—'}</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:1px">req ≤ ${reqDD}%</div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">Trades</div>
+          <div class="rank-stat-val neu">${fmtI(cell.trades)}</div>
+        </div>
+        <div class="rank-stat" style="grid-column:span 2;border-right:none">
+          <div class="rank-stat-label">Threshold checks</div>
+          <div class="rank-dot-row">
+            ${dotHtml(cell.pass.pf,'PF')}
+            ${dotHtml(cell.pass.rf,'RF')}
+            ${dotHtml(cell.pass.sharpe,'SR')}
+            ${dotHtml(cell.pass.dd,'DD')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}</script>
 </body>
 </html>
