@@ -234,17 +234,18 @@
                             <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
                                 <span class="flex flex-col items-center">
                                     <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Promedio ($)</span>
-                                    <span id="kpiAvgTrade" class="text-xl lg:text-2xl font-bold leading-none">$0.00</span>
+                                    <span id="kpiAvgTrade" class="text-xl lg:text-2xl font-bold leading-none mt-1">$0.00</span>
                                 </span>
                                 <span class="flex flex-col items-center border-l border-gray-700 pl-4">
                                     <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Trades / Mes</span>
-                                    <span id="kpiTradesPerMonth" class="text-xl lg:text-2xl font-bold leading-none text-blue-400">0.0</span>
+                                    <span id="kpiTradesPerMonth" class="text-xl lg:text-2xl font-bold leading-none text-blue-400 mt-1">0.0</span>
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                    <!-- AQUÍ SE CAMBIÓ A 4 COLUMNAS Y SE AGREGÓ LA NUEVA TARJETA -->
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
                         <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow relative group">
                             <span class="text-gray-400 text-xs uppercase tracking-wide">Profit Factor</span>
                             <span id="kpiProfitFactor" class="text-2xl lg:text-3xl font-bold mt-1 text-white">0.00</span>
@@ -272,9 +273,28 @@
                                 </span>
                             </div>
                         </div>
+
+                        <!-- NUEVA TARJETA DE PROMEDIO DE GANANCIAS NETAS -->
+                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                            <span class="text-gray-400 text-xs uppercase tracking-wide">Promedio Neto</span>
+                            <div class="flex gap-2 lg:gap-4 mt-2 text-xs font-semibold w-full justify-center">
+                                <span class="flex flex-col items-center">
+                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Día</span>
+                                    <span id="kpiAvgDay" class="text-base lg:text-lg font-bold leading-none text-green-400">$0.00</span>
+                                </span>
+                                <span class="flex flex-col items-center border-l border-gray-700 pl-2 lg:pl-4">
+                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Mes</span>
+                                    <span id="kpiAvgMonth" class="text-base lg:text-lg font-bold leading-none text-blue-400">$0.00</span>
+                                </span>
+                                <span class="flex flex-col items-center border-l border-gray-700 pl-2 lg:pl-4">
+                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Año</span>
+                                    <span id="kpiAvgYear" class="text-base lg:text-lg font-bold leading-none text-purple-400">$0.00</span>
+                                </span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-2">
                         <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg flex flex-col w-full relative">
                             <div class="flex justify-between items-start mb-4">
                                 <div>
@@ -1414,6 +1434,16 @@
             }
             const tradesPerMonth = totalTrades > 0 ? (totalTrades / monthsSpan) : 0;
 
+            // CÁLCULO DE PROMEDIOS NETOS POR PERIODO (Día, Mes, Año)
+            let exactDaysSpan = 1;
+            if (totalTrades > 0 && maxDate > minDate) {
+                exactDaysSpan = (maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24);
+                if (exactDaysSpan < 1) exactDaysSpan = 1; // Para evitar infinito si operan menos de 1 día
+            }
+            const avgProfitPerDay = totalTrades > 0 ? (totalProfit / exactDaysSpan) : 0;
+            const avgProfitPerMonth = avgProfitPerDay * 30.416; // Aproximación precisa de días por mes
+            const avgProfitPerYear = avgProfitPerDay * 365.25;  // Aproximación de días por año bisiesto
+
             let maxDayProf = -Infinity; let minDayProf = Infinity;
             let bestDayIndex = 0; let worstDayIndex = 0;
             let hasDataDay = false;
@@ -1436,7 +1466,8 @@
                 maxRealDDMoney, maxRealDDPct, maxRealDDStartDate, maxRealDDEndDate,
                 maxRealDailyDDPct, maxRealDailyDDMoney, maxRealDailyDDDate, avgRealDailyDDPct, avgRealDailyDDMoney,
                 maxCompDDMoney, maxCompDDPct, maxCompDDStartDate, maxCompDDEndDate,
-                maxCompDailyDDPct, maxCompDailyDDMoney, maxCompDailyDDDate, avgCompDailyDDPct, avgCompDailyDDMoney
+                maxCompDailyDDPct, maxCompDailyDDMoney, maxCompDailyDDDate, avgCompDailyDDPct, avgCompDailyDDMoney,
+                avgProfitPerDay, avgProfitPerMonth, avgProfitPerYear
             };
         }
 
@@ -1508,6 +1539,17 @@
             document.getElementById('kpiMaxLossStreak').innerText = metrics.maxLossStreak;
             document.getElementById('kpiAvgWinStreak').innerText = metrics.avgWinStreak.toFixed(0);
             document.getElementById('kpiAvgLossStreak').innerText = metrics.avgLossStreak.toFixed(0);
+
+            // ---> ACTUALIZACIÓN DE LA NUEVA TARJETA
+            document.getElementById('kpiAvgDay').innerText = fmtMoney(metrics.avgProfitPerDay);
+            document.getElementById('kpiAvgDay').className = `text-base lg:text-lg font-bold leading-none ${metrics.avgProfitPerDay >= 0 ? 'text-green-400' : 'text-red-400'}`;
+
+            document.getElementById('kpiAvgMonth').innerText = fmtMoney(metrics.avgProfitPerMonth);
+            document.getElementById('kpiAvgMonth').className = `text-base lg:text-lg font-bold leading-none ${metrics.avgProfitPerMonth >= 0 ? 'text-blue-400' : 'text-red-400'}`;
+
+            document.getElementById('kpiAvgYear').innerText = fmtMoney(metrics.avgProfitPerYear);
+            document.getElementById('kpiAvgYear').className = `text-base lg:text-lg font-bold leading-none ${metrics.avgProfitPerYear >= 0 ? 'text-purple-400' : 'text-red-400'}`;
+            // ---> FIN ACTUALIZACIÓN NUEVA TARJETA
 
             const baseCapital = 10000;
             document.getElementById('kpiLinearFinal').innerText = fmtMoney(baseCapital + metrics.totalProfit, 0);
