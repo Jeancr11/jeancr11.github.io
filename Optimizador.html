@@ -259,30 +259,6 @@
   }
   .btn-reload:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* Tabs Navigation */
-  .tab-bar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 20px;
-    display: flex;
-    gap: 0;
-    flex-shrink: 0;
-  }
-  .tab-btn {
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--muted);
-    padding: 10px 18px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
-    margin-bottom: -1px;
-  }
-  .tab-btn:hover { color: var(--text); }
-  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-
   /* Tab Results Tools */
   .toolbar {
     background: var(--surface);
@@ -396,126 +372,6 @@
     background: var(--bg); border: 1px solid var(--border); color: var(--text);
     border-radius: 6px; padding: 5px 8px; font-size: 12px; outline: none; cursor: pointer;
   }
-
-  /* ──────────────────────────────────────────
-     NUEVOS ESTILOS: TABLA VERTICAL (TOP 5)
-  ────────────────────────────────────────── */
-  .best-container {
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow: hidden;
-    background: var(--bg);
-  }
-  .best-board {
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
-    padding: 24px;
-    overflow-x: auto;
-    overflow-y: auto;
-    flex: 1;
-    align-items: flex-start;
-  }
-  .best-board::-webkit-scrollbar { height: 8px; width: 8px; }
-  .best-board::-webkit-scrollbar-track { background: var(--bg); }
-  .best-board::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-  .best-col {
-    flex: 0 0 320px; /* Ancho fijo por columna */
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  }
-  .best-col-header {
-    background: rgba(79,142,247,0.08);
-    padding: 12px 16px;
-    font-weight: 700;
-    color: var(--accent);
-    border-bottom: 1px solid var(--border);
-    text-align: center;
-    font-size: 14px;
-    letter-spacing: 0.03em;
-  }
-  .best-col-body {
-    display: flex;
-    flex-direction: column;
-  }
-  .best-item {
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(42,45,58,0.5);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    transition: background 0.15s;
-  }
-  .best-item:hover { background: rgba(255,255,255,0.02); }
-  .best-item:last-child { border-bottom: none; }
-  
-  .best-item-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .best-item-rank {
-    font-size: 11px;
-    font-weight: 800;
-    color: var(--muted);
-    background: var(--bg);
-    padding: 3px 6px;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-  }
-  .best-item-pass {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text);
-    flex: 1;
-    margin: 0 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .best-item-val {
-    font-size: 15px;
-    font-weight: 800;
-    color: #10b981;
-  }
-  .best-item-val.bad { color: #ef4444; }
-
-  /* Cuadrícula interna de detalles */
-  .best-item-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5px 8px;
-    font-size: 11px;
-    color: var(--text);
-  }
-  .best-item-grid div {
-    display: flex;
-    justify-content: space-between;
-    background: var(--bg);
-    padding: 4px 8px;
-    border-radius: 4px;
-    border: 1px solid rgba(42,45,58,0.4);
-    font-variant-numeric: tabular-nums;
-  }
-  .best-item-grid .lbl {
-    color: var(--muted);
-    font-weight: 600;
-  }
-  .best-empty {
-    text-align: center;
-    padding: 60px;
-    color: var(--muted);
-    font-size: 14px;
-    width: 100%;
-  }
 </style>
 </head>
 <body>
@@ -580,12 +436,6 @@
     <button class="btn-reload" onclick="resetToUpload()">📁 Lista de Archivos</button>
   </header>
 
-  <!-- Pestañas de Navegación -->
-  <div class="tab-bar">
-    <button class="tab-btn active" id="btnTabResults" onclick="switchTab('results')">📋 Tabla de Resultados</button>
-    <button class="tab-btn" id="btnTabBest" onclick="switchTab('best')">🏆 Mejores por Parámetro (Top 5)</button>
-  </div>
-
   <!-- Contenedor: Tabla de Resultados Clásica -->
   <div id="tab-results" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
     <div class="toolbar">
@@ -626,11 +476,6 @@
     </div>
   </div>
 
-  <!-- Contenedor: Mejores por Parámetro (Board Vertical a lo Ancho) -->
-  <div id="tab-best" class="best-container" style="display: none;">
-    <!-- Los cuadros verticales se generan aquí dinámicamente -->
-  </div>
-
 </div>
 
 <script>
@@ -640,18 +485,6 @@
 let HEADERS = [], DATA = [], NUM_COLS = new Set(), BOOL_COLS = new Set(), DD_COLS = new Set();
 let sortCol = "auto", sortDir = -1, currentPage = 0, pageSize = 100, totalPages = 1;
 let filtered = [], columnFilters = {};
-
-/* ────────────────────────────────────────────────────────────────
-   Tab Switching
-──────────────────────────────────────────────────────────────── */
-function switchTab(tabId) {
-  document.getElementById('tab-results').style.display = tabId === 'results' ? 'flex' : 'none';
-  document.getElementById('tab-best').style.display = tabId === 'best' ? 'flex' : 'none';
-  document.getElementById('btnTabResults').classList.toggle('active', tabId === 'results');
-  document.getElementById('btnTabBest').classList.toggle('active', tabId === 'best');
-  
-  if (tabId === 'best') buildBestTab();
-}
 
 /* ────────────────────────────────────────────────────────────────
    File picker — search & sort state
@@ -922,13 +755,15 @@ function parseXML(text, filename) {
     pageSize = 100;
     columnFilters = {};
 
-    if (profitIdx >= 0) columnFilters[profitIdx] = "10000";
+    if (profitIdx >= 0) columnFilters[profitIdx] = "4000";
 
-    // Filtro a la NUEVA columna Real DD % (quitado del DD viejo)
+    // Filtro a la NUEVA columna Real DD % 
     let realDdIdx = HEADERS.findIndex(h => /^real.?dd/i.test(h));
-    if (realDdIdx >= 0) columnFilters[realDdIdx] = "8";
+    if (realDdIdx >= 0) columnFilters[realDdIdx] = "4";
 
-    // (El otro Equity DD se deja sin filtros intencionalmente)
+    // Filtro al Equity DD original
+    let eqDdIdx = HEADERS.findIndex(h => /^equity.?dd/i.test(h) || /dd%.?rel/i.test(h) || /reducci[oó]n/i.test(h));
+    if (eqDdIdx >= 0) columnFilters[eqDdIdx] = "4";
 
     // Filtros Élite
     let sharpeIdx = HEADERS.findIndex(h => /sharpe/i.test(h));
@@ -948,8 +783,6 @@ function parseXML(text, filename) {
 
     document.getElementById('uploadScreen').style.display = 'none';
     document.getElementById('appScreen').style.display    = 'flex';
-
-    switchTab('results');
 
     buildHeaders();
     applyFilters();
@@ -1126,162 +959,6 @@ function goPage(p) {
 function changePageSize() { pageSize = parseInt(document.getElementById('pageSizeSelect').value); currentPage = 0; renderPage(); }
 
 document.getElementById('globalSearch').oninput = () => { currentPage = 0; applyFilters(); };
-
-
-/* ────────────────────────────────────────────────────────────────
-   TAB: MEJORES POR PARÁMETRO (VISTA VERTICAL DE LADO A LADO)
-──────────────────────────────────────────────────────────────── */
-function buildBestTab() {
-  const container = document.getElementById('tab-best');
-  container.innerHTML = '';
-
-  if (!DATA || DATA.length === 0) {
-    container.innerHTML = '<div class="best-empty">No hay datos cargados.</div>';
-    return;
-  }
-
-  // Parseador robusto para números (MT5 a veces exporta con espacios o comas)
-  const parseNum = v => {
-    if (v === null || v === undefined || v === '') return NaN;
-    if (typeof v === 'number') return v;
-    let s = String(v).replace(/\s/g, '').replace(/,/g, '.');
-    let n = parseFloat(s);
-    return isNaN(n) ? NaN : n;
-  };
-
-  // Identificadores de columnas exactos solicitados + la nueva Real DD
-  const pCols = {
-    realdd: HEADERS.findIndex(h => /^real.?dd/i.test(h)),
-    result: HEADERS.findIndex(h => /^result/i.test(h)),
-    profit: HEADERS.findIndex(h => /^profit/i.test(h) || /^beneficio/i.test(h)),
-    ep: HEADERS.findIndex(h => /expected.?payoff/i.test(h)),
-    pf: HEADERS.findIndex(h => /profit.?factor/i.test(h)),
-    rf: HEADERS.findIndex(h => /recovery.?factor/i.test(h)),
-    sharpe: HEADERS.findIndex(h => /sharpe/i.test(h)),
-    custom: HEADERS.findIndex(h => /^custom/i.test(h)),
-    dd: HEADERS.findIndex(h => /equity.?dd/i.test(h)),
-    trades: HEADERS.findIndex(h => /^trades/i.test(h))
-  };
-
-  // Tolerancia extra por si los encabezados varían ligeramente
-  if (pCols.profit === -1) pCols.profit = HEADERS.findIndex(h => /profit/i.test(h) && !/factor/i.test(h));
-  if (pCols.custom === -1) pCols.custom = HEADERS.findIndex(h => /custom/i.test(h));
-
-  const passColIdx = HEADERS.findIndex(h => /pass|paso/i.test(h));
-
-  // Generamos las columnas verticales, priorizando mostrar Real DD si se extrajo
-  const ddColToUse = pCols.realdd >= 0 ? pCols.realdd : pCols.dd;
-
-  const categories = [
-    { label: '💰 Top 5 - Profit', col: pCols.profit, isMin: false, format: v => '$'+v.toFixed(2) },
-    { label: '🎯 Top 5 - Expected Payoff', col: pCols.ep, isMin: false, format: v => v.toFixed(2) },
-    { label: '⚖️ Top 5 - Profit Factor', col: pCols.pf, isMin: false, format: v => v.toFixed(2) },
-    { label: '📈 Top 5 - Recovery Factor', col: pCols.rf, isMin: false, format: v => v.toFixed(2) },
-    { label: '🛡️ Top 5 - Sharpe Ratio', col: pCols.sharpe, isMin: false, format: v => v.toFixed(2) },
-    { label: '📉 Top 5 - Drawdown', col: ddColToUse, isMin: true, format: v => v.toFixed(2)+'%' },
-    { label: '📊 Top 5 - Result', col: pCols.result, isMin: false, format: v => v.toFixed(2) },
-    { label: '✨ Top 5 - Custom', col: pCols.custom, isMin: false, format: v => v.toFixed(2) },
-    { label: '🔄 Top 5 - Trades', col: pCols.trades, isMin: false, format: v => v.toFixed(0) }
-  ];
-
-  let boardHtml = '<div class="best-board">';
-  let foundAnyData = false;
-
-  categories.forEach(param => {
-    if (param.col < 0) return; // Si la columna no existe en el XML, se ignora
-
-    // Filtrar sólo filas con valores numéricos válidos en esta columna
-    let validRows = DATA.filter(row => !isNaN(parseNum(row[param.col])));
-    if (validRows.length === 0) return;
-
-    foundAnyData = true;
-
-    // Ordenar Top
-    validRows.sort((a, b) => {
-      let va = parseNum(a[param.col]);
-      let vb = parseNum(b[param.col]);
-      return param.isMin ? (va - vb) : (vb - va);
-    });
-
-    let top5 = validRows.slice(0, 5);
-
-    // Contenedor principal de la Columna Vertical
-    let colHtml = `
-      <div class="best-col">
-        <div class="best-col-header">${param.label}</div>
-        <div class="best-col-body">
-    `;
-
-    top5.forEach((row, i) => {
-      // Identificar el "Pass"
-      let passName = `Pase #${row.__origIdx}`;
-      if (passColIdx >= 0 && row[passColIdx] !== null && row[passColIdx] !== '') {
-        passName = `Pass ${row[passColIdx]}`;
-      }
-
-      const mainVal = parseNum(row[param.col]);
-      const isBadMetric = (param.isMin && mainVal > 15) || (!param.isMin && mainVal < 0 && param.col === pCols.profit);
-
-      // Helper para extraer y redondear datos de forma segura
-      const getV = (idx, fmt) => {
-        if (idx >= 0 && row[idx] !== null && row[idx] !== undefined && !isNaN(parseNum(row[idx]))) {
-          return fmt(parseNum(row[idx]));
-        }
-        return '—';
-      };
-
-      const gResult = getV(pCols.result, v => v.toFixed(2));
-      const gProfit = getV(pCols.profit, v => '$'+v.toFixed(2));
-      const gExpPay = getV(pCols.ep, v => v.toFixed(2));
-      const gPF = getV(pCols.pf, v => v.toFixed(2));
-      const gRF = getV(pCols.rf, v => v.toFixed(2));
-      const gSharpe = getV(pCols.sharpe, v => v.toFixed(2));
-      const gCustom = getV(pCols.custom, v => v.toFixed(2));
-      const gDD = getV(pCols.dd, v => v.toFixed(2)+'%');
-      const gRealDD = getV(pCols.realdd, v => v.toFixed(2)+'%');
-      const gTrades = getV(pCols.trades, v => v.toFixed(0));
-
-      const profitColor = parseNum(row[pCols.profit]) >= 0 ? '#10b981' : '#ef4444';
-
-      colHtml += `
-        <div class="best-item">
-          <div class="best-item-top">
-            <span class="best-item-rank">#${i+1}</span>
-            <span class="best-item-pass" title="${passName}">${passName}</span>
-            <span class="best-item-val ${isBadMetric ? 'bad' : ''}">${param.format(mainVal)}</span>
-          </div>
-          <div class="best-item-grid">
-            ${pCols.result >= 0 ? `<div title="Result"><span class="lbl">Result:</span> ${gResult}</div>` : ''}
-            ${pCols.profit >= 0 ? `<div title="Profit"><span class="lbl">Profit:</span> <span style="color: ${profitColor}">${gProfit}</span></div>` : ''}
-            ${pCols.ep >= 0 ? `<div title="Expected Payoff"><span class="lbl">Exp Pay:</span> ${gExpPay}</div>` : ''}
-            ${pCols.pf >= 0 ? `<div title="Profit Factor"><span class="lbl">Prof Fact:</span> ${gPF}</div>` : ''}
-            ${pCols.rf >= 0 ? `<div title="Recovery Factor"><span class="lbl">Rec Fact:</span> ${gRF}</div>` : ''}
-            ${pCols.sharpe >= 0 ? `<div title="Sharpe Ratio"><span class="lbl">Sharpe:</span> ${gSharpe}</div>` : ''}
-            ${pCols.custom >= 0 ? `<div title="Custom"><span class="lbl">Custom:</span> ${gCustom}</div>` : ''}
-            ${pCols.dd >= 0 ? `<div title="Equity DD %"><span class="lbl">Eq DD%:</span> ${gDD}</div>` : ''}
-            ${pCols.realdd >= 0 ? `<div title="Real DD %"><span class="lbl">Real DD%:</span> ${gRealDD}</div>` : ''}
-            ${pCols.trades >= 0 ? `<div title="Trades"><span class="lbl">Trades:</span> ${gTrades}</div>` : ''}
-          </div>
-        </div>
-      `;
-    });
-
-    colHtml += `
-        </div>
-      </div>
-    `;
-    
-    boardHtml += colHtml;
-  });
-
-  boardHtml += '</div>';
-
-  if (!foundAnyData) {
-    container.innerHTML = '<div class="best-empty">No se encontraron datos numéricos. Verifica que los encabezados del XML coincidan con (Result, Profit, Expected Payoff, etc.).</div>';
-  } else {
-    container.innerHTML = boardHtml;
-  }
-}
 
 </script>
 </body>
