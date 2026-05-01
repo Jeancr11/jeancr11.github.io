@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,6 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; }
 
-  /* Upload Screen */
   #uploadScreen {
     min-height: 100vh;
     display: flex;
@@ -205,7 +204,7 @@
   }
   @keyframes pulse-dot {
     0%, 100% { opacity: 1; transform: scale(1); }
-    50%        { opacity: 0.35; transform: scale(0.7); }
+    50%       { opacity: 0.35; transform: scale(0.7); }
   }
   .file-list-empty { padding: 28px; text-align: center; color: var(--muted); font-size: 12px; }
   .file-list-no-match { padding: 20px; text-align: center; color: var(--muted); font-size: 12px; font-style: italic; }
@@ -232,8 +231,7 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   #folderFallbackInput { display: none; }
 
-  /* App Screen */
-  #appScreen { display: none; height: 100vh; flex-direction: column; }
+  #appScreen { display: none; }
   header {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
@@ -243,7 +241,6 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 8px;
-    flex-shrink: 0;
   }
   header h1 { font-size: 15px; font-weight: 700; color: var(--accent); }
   header .meta { color: var(--muted); font-size: 11px; margin-top: 2px; }
@@ -259,49 +256,81 @@
   }
   .btn-reload:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* Tab Results Tools */
+  .tab-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    gap: 0;
+  }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
   .toolbar {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 12px 20px;
+    padding: 8px 20px;
     display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-    flex-shrink: 0;
   }
-  .toolbar label { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .toolbar label { font-size: 12px; color: var(--muted); }
   .toolbar input, .toolbar select {
     background: var(--bg);
     border: 1px solid var(--border);
     color: var(--text);
     border-radius: 6px;
-    padding: 6px 10px;
+    padding: 5px 10px;
     font-size: 12px;
     outline: none;
   }
   .toolbar input:focus, .toolbar select:focus { border-color: var(--accent); }
   .toolbar .sep { width: 1px; height: 22px; background: var(--border); }
+  .toolbar button {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 5px 12px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-export { background: var(--accent) !important; border: none !important; color: #fff !important; }
+  .btn-export:hover { opacity: 0.85; color: #fff !important; }
   .dd-toolbar-inp:focus { border-color: #ef4444 !important; outline: none; }
+  .fl-toolbar-inp:focus { border-color: #f97316 !important; outline: none; }
 
   .stats-bar {
     background: var(--bg);
-    padding: 8px 20px;
+    padding: 6px 20px;
     display: flex;
     gap: 20px;
     border-bottom: 1px solid var(--border);
     font-size: 12px;
     color: var(--muted);
     flex-wrap: wrap;
-    flex-shrink: 0;
   }
   .stats-bar span b { color: var(--text); }
 
-  .table-wrap { flex: 1; overflow: auto; background: var(--bg); }
+  .table-wrap { overflow: auto; max-height: calc(100vh - 215px); }
   table { border-collapse: collapse; width: 100%; }
   thead { position: sticky; top: 0; z-index: 10; background: var(--surface); }
   th {
-    padding: 8px 10px;
+    padding: 7px 10px;
     text-align: left;
     white-space: nowrap;
     cursor: pointer;
@@ -317,7 +346,10 @@
   th:hover { color: var(--accent); background: rgba(79,142,247,0.07); }
   th.sort-asc::after { content: ' ▲'; color: var(--accent); font-size: 10px; }
   th.sort-desc::after { content: ' ▼'; color: var(--accent); font-size: 10px; }
-  th.dd-col { background: rgba(239,68,68,0.06); }
+  th.win-col  { background: rgba(34,197,94,0.06); }
+  th.dd-col   { background: rgba(239,68,68,0.06); }
+  th.fl-col   { background: rgba(249,115,22,0.06); }
+  th.lr-col   { background: rgba(134,239,172,0.06); }
 
   .filter-row th {
     padding: 4px 5px;
@@ -332,34 +364,41 @@
     border: 1px solid var(--border);
     color: var(--text);
     border-radius: 4px;
-    padding: 4px 5px;
+    padding: 3px 5px;
     font-size: 11px;
     outline: none;
   }
   .filter-row input:focus, .filter-row select:focus { border-color: var(--accent); }
   .filter-row input.dd-input { border-color: rgba(239,68,68,0.4); }
   .filter-row input.dd-input:focus { border-color: #ef4444; }
+  .filter-row input.fl-input { border-color: rgba(249,115,22,0.4); }
+  .filter-row input.fl-input:focus { border-color: #f97316; }
   .filter-row input.min-input { border-color: rgba(79,142,247,0.35); }
   .filter-row input.min-input:focus { border-color: var(--accent); }
+  .filter-row input.lr-input { border-color: rgba(134,239,172,0.4); }
+  .filter-row input.lr-input:focus { border-color: #86efac; }
 
   tbody tr { border-bottom: 1px solid var(--border); }
   tbody tr:hover { background: rgba(79,142,247,0.06); }
   tbody tr.even { background: rgba(255,255,255,0.02); }
   tbody tr.even:hover { background: rgba(79,142,247,0.06); }
   td {
-    padding: 6px 10px;
+    padding: 5px 10px;
     white-space: nowrap;
     border-right: 1px solid var(--border);
     font-variant-numeric: tabular-nums;
   }
+  .win-badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 12px; }
+  .win-bar-bg { display: inline-block; width: 46px; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; vertical-align: middle; }
+  .win-bar-fill { height: 100%; border-radius: 3px; }
   .bool-true { color: #22c55e; font-weight: 600; }
   .bool-false { color: #ef4444; font-weight: 600; }
 
   .pagination {
     display: flex; align-items: center; justify-content: center;
-    gap: 8px; padding: 12px;
+    gap: 8px; padding: 10px;
     background: var(--surface); border-top: 1px solid var(--border);
-    flex-shrink: 0;
+    position: sticky; bottom: 0;
   }
   .pagination button {
     background: var(--bg); border: 1px solid var(--border); color: var(--text);
@@ -372,6 +411,377 @@
     background: var(--bg); border: 1px solid var(--border); color: var(--text);
     border-radius: 6px; padding: 5px 8px; font-size: 12px; outline: none; cursor: pointer;
   }
+
+  #tab-heatmap {
+    overflow: auto;
+    max-height: calc(100vh - 130px);
+  }
+  .hm-legend {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .hm-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .hm-legend-dot {
+    width: 11px; height: 11px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .hm-info {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .hm-range-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .hm-range-bar label { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .hm-range-bar span  { font-size: 11px; color: var(--muted); }
+  .hm-no-data {
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+    margin-top: 60px;
+  }
+  .hm-grid-wrap { overflow-x: auto; will-change: scroll-position; }
+  .hm-table { border-collapse: collapse; font-size: 9px; transform: translateZ(0); }
+  .hm-table th {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--muted);
+    padding: 3px 4px;
+    white-space: nowrap;
+    text-align: center;
+    border: none;
+    background: transparent;
+    cursor: default;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .hm-table th.hm-row-header {
+    text-align: right;
+    padding-right: 8px;
+    font-size: 10px;
+    color: var(--text);
+    min-width: 48px;
+    font-weight: 600;
+  }
+  .hm-table td {
+    contain: layout style paint;
+    width: 82px;
+    height: 82px;
+    text-align: left;
+    vertical-align: top;
+    font-size: 8px;
+    font-weight: 600;
+    border: 1px solid #0f1117;
+    cursor: default;
+    padding: 2px 3px;
+    overflow: hidden;
+    font-variant-numeric: tabular-nums;
+    display: table-cell;
+    transition: opacity 0.18s;
+  }
+  .hm-table tr { contain: layout style; }
+  .hm-cell-grid { display: flex; flex-direction: column; gap: 1px; }
+  .hm-metric { display: flex; justify-content: space-between; gap: 3px; line-height: 1.5; }
+  .hm-ml { color: rgba(255,255,255,0.38); font-size: 7px; font-weight: 500; flex-shrink: 0; }
+  .hm-mv { font-size: 7.5px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .hm-mv-pos { color: #86efac; }
+  .hm-mv-neg { color: #f87171; }
+  .hm-mv-dd  { color: #fca5a5; }
+  .hm-mv-fl  { color: #fdba74; }
+  .hm-mv-neu { color: #93c5fd; }
+  .hm-table td:hover { outline: 1.5px solid #e2e8f0; outline-offset: -1px; position: relative; z-index: 2; opacity: 0.85; }
+
+  .hm-dim { opacity: 0.10 !important; }
+  .hm-dim:hover { opacity: 0.4 !important; }
+
+  .hm-top-1 .bm-score-pct { color: #ffd700 !important; text-shadow: 0 0 8px #ffd700; }
+  .hm-top-2 .bm-score-pct { color: #c0c0c0 !important; text-shadow: 0 0 8px #c0c0c0; }
+  .hm-top-3 .bm-score-pct { color: #cd7f32 !important; text-shadow: 0 0 8px #cd7f32; }
+  .hm-top-4 .bm-score-pct { color: #7c6bdb !important; text-shadow: 0 0 8px #7c6bdb; }
+  .hm-top-5 .bm-score-pct { color: #4f8ef7 !important; text-shadow: 0 0 8px #4f8ef7; }
+
+  .bm-tier-unprof  { background:#2d1212 !important; color:#f87171; }
+  .bm-tier-marg    { background:#2d200a !important; color:#fbbf24; }
+  .bm-tier-ok      { background:#122510 !important; color:#86efac; }
+  .bm-tier-good    { background:#163510 !important; color:#4ade80; }
+  .bm-tier-great   { background:#1a4a12 !important; color:#22d55a; }
+  .bm-tier-excep   { background:#0d4a22 !important; color:#34d399; }
+  .bm-tier-cap     { background:#252840 !important; color:#a5b4fc; }
+
+  .bm-bar-0  { background:#ef4444; }
+  .bm-bar-25 { background:#f97316; }
+  .bm-bar-50 { background:#eab308; }
+  .bm-bar-75 { background:#22c55e; }
+  .bm-bar-100{ background:#10b981; box-shadow:0 0 4px #10b981; }
+  .bm-bar-over{ background:linear-gradient(90deg,#10b981,#a78bfa); box-shadow:0 0 6px #a78bfa,0 0 2px #10b981; }
+
+  .bm-dot-pass { background:#22c55e; }
+  .bm-dot-fail { background:#ef4444; }
+  .bm-dot-na   { background:#4b5563; }
+
+  .hm-table td { cursor: pointer; }
+  .hm-hl-1 { box-shadow: inset 0 0 0 3px #ffffff, inset 0 0 8px 1px rgba(255,255,255,0.55), 0 0 6px 2px rgba(255,255,255,0.35) !important; }
+  .hm-hl-2 { box-shadow: inset 0 0 0 3px #3b82f6, inset 0 0 8px 1px rgba(59,130,246,0.55), 0 0 6px 2px rgba(59,130,246,0.45) !important; }
+  .hm-hl-3 { box-shadow: inset 0 0 0 3px #fbbf24, inset 0 0 8px 1px rgba(251,191,36,0.55), 0 0 6px 2px rgba(251,191,36,0.45) !important; }
+  .hm-hl-4 { box-shadow: inset 0 0 0 3px #ef4444, inset 0 0 8px 1px rgba(239,68,68,0.55), 0 0 6px 2px rgba(239,68,68,0.45) !important; }
+
+  .hm-tooltip {
+    position: fixed;
+    left: 0; top: 0;
+    will-change: transform;
+    background: #1a1d27;
+    border: 1px solid #2a2d3a;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #e2e8f0;
+    pointer-events: none;
+    z-index: 9999;
+    display: none;
+    line-height: 1.7;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    min-width: 280px;
+    max-width: 380px;
+  }
+  .hm-tooltip strong { color: #4f8ef7; }
+
+  .hm-sticky-header { position: sticky; top: 0; z-index: 20; }
+
+  .hm-filter-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px 10px;
+    flex-wrap: wrap;
+  }
+  .hm-filter-bar label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .hm-filter-bar input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-size: 12px;
+    outline: none;
+    width: 64px;
+  }
+  .hm-filter-bar input:focus { border-color: var(--accent); }
+  .hm-filter-bar input.dd-input { border-color: rgba(239,68,68,0.45); }
+  .hm-filter-bar input.dd-input:focus { border-color: #ef4444; }
+  .hm-filter-bar input.fl-input { border-color: rgba(249,115,22,0.45); }
+  .hm-filter-bar input.fl-input:focus { border-color: #f97316; }
+  .hm-filter-bar input.min-input { border-color: rgba(79,142,247,0.4); }
+  .hm-filter-bar input.min-input:focus { border-color: var(--accent); }
+  .hm-filter-bar .sep { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; }
+  .hm-filter-bar button {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 5px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .hm-filter-bar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hm-zone-btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 4px;
+    padding: 3px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    flex-shrink: 0;
+  }
+  .hm-zone-btn:hover { border-color: #555; color: var(--text); }
+  .hm-zone-btn[data-zone="unprof"].active { background:rgba(45,18,18,0.55); border-color:#f87171; color:#f87171; }
+  .hm-zone-btn[data-zone="marg"].active   { background:rgba(45,32,10,0.55); border-color:#fbbf24; color:#fbbf24; }
+  .hm-zone-btn[data-zone="ok"].active     { background:rgba(18,37,16,0.55); border-color:#86efac; color:#86efac; }
+  .hm-zone-btn[data-zone="good"].active   { background:rgba(22,53,16,0.55); border-color:#4ade80; color:#4ade80; }
+  .hm-zone-btn[data-zone="great"].active  { background:rgba(26,74,18,0.55); border-color:#22d55a; color:#22d55a; }
+  .hm-zone-btn[data-zone="excep"].active  { background:rgba(13,74,34,0.55); border-color:#34d399; color:#34d399; }
+  .hm-zone-btn[data-zone="cap"].active    { background:rgba(37,40,64,0.55); border-color:#a5b4fc; color:#a5b4fc; }
+
+  #hf-minScore { border-color: rgba(16,185,129,0.55) !important; width: 52px !important; }
+  #hf-minScore:focus { border-color: #10b981 !important; }
+
+  .hm-stats-bar {
+    background: var(--bg);
+    padding: 5px 20px;
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    flex-wrap: wrap;
+    align-items: center;
+    min-height: 28px;
+  }
+  .hm-stats-bar span b { color: var(--text); }
+  .hm-stats-bar .hm-active-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .hm-filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(79,142,247,0.12);
+    border: 1px solid rgba(79,142,247,0.3);
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-size: 11px;
+    color: var(--accent);
+  }
+  .hm-filter-tag.dd-tag {
+    background: rgba(239,68,68,0.1);
+    border-color: rgba(239,68,68,0.3);
+    color: #f87171;
+  }
+  .hm-filter-tag.fl-tag {
+    background: rgba(249,115,22,0.1);
+    border-color: rgba(249,115,22,0.3);
+    color: #fb923c;
+  }
+  .hm-filter-tag.zone-tag {
+    background: rgba(34,213,90,0.08);
+    border-color: rgba(34,213,90,0.28);
+    color: #22d55a;
+  }
+  .hm-filter-tag.score-tag {
+    background: rgba(16,185,129,0.1);
+    border-color: rgba(16,185,129,0.3);
+    color: #10b981;
+  }
+
+  .bm-cell-wrap { display:flex; flex-direction:column; height:100%; }
+  .bm-score-bar { width:100%; height:3px; border-radius:1px; margin-bottom:3px; flex-shrink:0; }
+  .bm-score-main { display:flex; align-items:center; justify-content:space-between; flex:1; gap:2px; padding:0 1px; }
+  .bm-score-left { display:flex; flex-direction:column; align-items:flex-start; gap:1px; flex-shrink:0; }
+  .bm-score-pct { font-size:22px; font-weight:900; line-height:1; letter-spacing:-1px; font-variant-numeric:tabular-nums; }
+  .bm-score-pct.bm-full { text-shadow:0 0 10px currentColor; }
+  .bm-score-pct.bm-over { text-shadow:0 0 12px #a78bfa,0 0 6px #10b981; color:#a78bfa !important; }
+  .bm-result-val { font-size:8px; font-weight:700; font-variant-numeric:tabular-nums; opacity:0.75; letter-spacing:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:52px; }
+  .bm-checks { display:flex; flex-direction:column; gap:2px; font-size:7px; font-weight:700; flex-shrink:0; }
+  .bm-check-row { display:flex; gap:3px; }
+  .bm-chk { display:flex; align-items:center; gap:1px; }
+  .bm-chk-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+  .bm-chk-lbl { font-size:6.5px; font-weight:600; opacity:0.7; }
+  .bm-no-data-cell { display:flex; align-items:center; justify-content:center; height:100%; font-size:9px; opacity:0.25; }
+
+  /* ── Rank Tab ── */
+  #tab-rank { overflow: auto; max-height: calc(100vh - 130px); }
+  .rank-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.15s;
+  }
+  .rank-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+  .rank-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .rank-badge {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 900; flex-shrink: 0;
+    letter-spacing: -0.5px;
+  }
+  .rank-badge-1 { background: rgba(255,215,0,0.15); border: 1.5px solid #ffd700; color: #ffd700; box-shadow: 0 0 8px rgba(255,215,0,0.3); }
+  .rank-badge-2 { background: rgba(192,192,192,0.12); border: 1.5px solid #c0c0c0; color: #c0c0c0; }
+  .rank-badge-3 { background: rgba(205,127,50,0.12); border: 1.5px solid #cd7f32; color: #cd7f32; }
+  .rank-badge-n { background: rgba(79,142,247,0.08); border: 1.5px solid rgba(79,142,247,0.4); color: var(--accent); }
+  .rank-cell-label { font-size: 15px; font-weight: 700; color: var(--text); }
+  .rank-cell-sub   { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .rank-score-pill { padding: 2px 9px; border-radius: 4px; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-left: auto; }
+  .rank-card-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0;
+  }
+  .rank-stat {
+    padding: 7px 12px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .rank-stat-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 3px; }
+  .rank-stat-val   { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .rank-stat-val.good { color: #22c55e; }
+  .rank-stat-val.warn { color: #eab308; }
+  .rank-stat-val.bad  { color: #ef4444; }
+  .rank-stat-val.neu  { color: var(--text); }
+  .rank-dot-row { display: flex; gap: 5px; align-items: center; margin-top: 3px; flex-wrap: wrap; }
+  .rank-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .rank-dot-pass { background: #22c55e; }
+  .rank-dot-fail { background: #ef4444; }
+  .rank-dot-na   { background: #4b5563; }
+  .rank-dot-lbl  { font-size: 9px; color: var(--muted); }
+  .rank-profit-bar-wrap { height: 3px; background: var(--border); border-radius: 2px; margin-top: 4px; overflow: hidden; }
+  .rank-profit-bar { height: 100%; border-radius: 2px; }
+  .rank-empty { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
+  .rank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 800px) { .rank-grid { grid-template-columns: 1fr; } }
+  .rank-filter-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px 10px;
+    flex-wrap: wrap;
+  }
+  .rank-filter-bar label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .rank-filter-bar input {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    border-radius: 6px; padding: 5px 8px; font-size: 12px; outline: none; width: 60px;
+  }
+  .rank-filter-bar input:focus { border-color: var(--accent); }
+  .rank-filter-bar input.dd-input  { border-color: rgba(239,68,68,0.45); }
+  .rank-filter-bar input.dd-input:focus { border-color: #ef4444; }
+  .rank-filter-bar input.fl-input  { border-color: rgba(249,115,22,0.45); }
+  .rank-filter-bar input.fl-input:focus { border-color: #f97316; }
+  .rank-filter-bar input.min-input { border-color: rgba(79,142,247,0.4); }
+  .rank-filter-bar input.min-input:focus { border-color: var(--accent); }
+  .rank-filter-bar select {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    border-radius: 6px; padding: 5px 8px; font-size: 12px; outline: none; cursor: pointer;
+  }
+  .rank-filter-bar button {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    border-radius: 6px; padding: 5px 12px; cursor: pointer; font-size: 12px; white-space: nowrap;
+  }
+  .rank-filter-bar button:hover { border-color: var(--accent); color: var(--accent); }
+  .rank-filter-bar .sep { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -379,7 +789,7 @@
 <div id="uploadScreen">
   <div style="text-align:center">
     <h1>📊 Optimizer Results Viewer</h1>
-    <p>Selecciona una carpeta que contenga las exportaciones XML del optimizador de MetaTrader para listar y analizar los resultados.</p>
+    <p>Choose a folder containing MetaTrader optimizer XML exports — all files will be listed so you can load one at a time.</p>
   </div>
 
   <div class="folder-picker-card">
@@ -387,9 +797,9 @@
       <div class="folder-icon">📁</div>
       <button class="btn-choose-folder" onclick="openXmlFolderPicker()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        Seleccionar Carpeta
+        Choose Folder
       </button>
-      <div class="folder-hint">Compatible con Chrome · Edge · Opera</div>
+      <div class="folder-hint">Works in Chrome · Edge · Opera</div>
     </div>
 
     <div id="fileListPanel">
@@ -399,19 +809,19 @@
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
           <span id="folderDisplayName">—</span>
         </span>
-        <span class="file-count"><span id="xmlFileCount">0</span> XML &nbsp;·&nbsp; <button onclick="openXmlFolderPicker()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:11px;padding:0">Cambiar</button></span>
+        <span class="file-count"><span id="xmlFileCount">0</span> XML &nbsp;·&nbsp; <button onclick="openXmlFolderPicker()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:11px;padding:0">Change</button></span>
       </div>
 
       <div class="file-search-bar">
         <div class="file-search-wrap">
           <span class="file-search-icon">🔍</span>
-          <input class="file-search-input" id="fileSearchInput" type="text" placeholder="Buscar archivos…" oninput="onFileSearch()" autocomplete="off" spellcheck="false">
-          <button class="file-search-clear" id="fileSearchClear" onclick="clearFileSearch()" title="Limpiar búsqueda">✕</button>
+          <input class="file-search-input" id="fileSearchInput" type="text" placeholder="Search files…" oninput="onFileSearch()" autocomplete="off" spellcheck="false">
+          <button class="file-search-clear" id="fileSearchClear" onclick="clearFileSearch()" title="Clear search">✕</button>
         </div>
         <div class="sort-btn-group">
-          <button class="sort-btn active" id="sortByName" onclick="setSortMode('name')" title="Ordernar por nombre">Name</button>
-          <button class="sort-btn" id="sortByDate" onclick="setSortMode('date')" title="Ordenar por fecha">Date</button>
-          <button class="sort-dir-btn" id="sortDirBtn" onclick="toggleSortDir()" title="Cambiar dirección">↑</button>
+          <button class="sort-btn active" id="sortByName" onclick="setSortMode('name')" title="Sort by name">Name</button>
+          <button class="sort-btn" id="sortByDate" onclick="setSortMode('date')" title="Sort by modified date">Date</button>
+          <button class="sort-dir-btn" id="sortDirBtn" onclick="toggleSortDir()" title="Toggle sort direction">↑</button>
         </div>
       </div>
 
@@ -423,7 +833,7 @@
   <div id="uploadError"></div>
   <div id="loadingMsg">
     <div class="spinner"></div>
-    <span id="loadingText">Leyendo archivo…</span>
+    <span id="loadingText">Parsing file…</span>
   </div>
 </div>
 
@@ -433,20 +843,43 @@
       <h1 id="appTitle">Optimizer Results</h1>
       <div class="meta" id="appMeta"></div>
     </div>
-    <button class="btn-reload" onclick="resetToUpload()">📁 Lista de Archivos</button>
+    <button class="btn-reload" onclick="resetToUpload()">📁 File List</button>
   </header>
 
-  <!-- Contenedor: Tabla de Resultados Clásica -->
-  <div id="tab-results" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tabBtnResults" onclick="switchTab('results')">📋 Results Table</button>
+    <button class="tab-btn" id="tabBtnHeatmap" onclick="switchTab('heatmap')">🗺 R:R Heatmap</button>
+    <button class="tab-btn" id="tabBtnRank" onclick="switchTab('rank')">🏅 Rank</button>
+  </div>
+
+  <!-- Results Tab -->
+  <div id="tab-results">
     <div class="toolbar">
-      <label>Búsqueda global:</label>
-      <input type="text" id="globalSearch" placeholder="Cualquier valor…" style="width:160px">
+      <label>Search:</label>
+      <input type="text" id="globalSearch" placeholder="Any value…" style="width:160px">
+      <div class="sep"></div>
+      <label>Win Rate:</label>
+      <input type="number" id="minWin" placeholder="min %" min="0" max="100" style="width:62px">
+      <span style="color:var(--muted)">–</span>
+      <input type="number" id="maxWin" placeholder="max %" min="0" max="100" style="width:62px">
+      <div class="sep"></div>
+      <label style="color:#f87171;font-weight:700">Eq.DD% ≤</label>
+      <input type="number" id="maxEqDD" value="4.3" placeholder="max %" min="0" step="0.1" class="dd-toolbar-inp" style="width:62px;border-color:rgba(239,68,68,0.45)!important" title="Filter rows where Equity DD rel % is ≤ this value">
+      <div class="sep"></div>
+      <label style="color:#fb923c;font-weight:700">Float Loss% ≤</label>
+      <input type="number" id="maxFloatLoss" value="8" placeholder="max %" min="0" step="0.1" class="fl-toolbar-inp" style="width:62px;border-color:rgba(249,115,22,0.45)!important" title="Filter rows where max floating loss % is ≤ this value">
+      <div class="sep"></div>
+      <label style="color:#86efac;font-weight:700">LR Corr ≥</label>
+      <input type="number" id="minLrCorr" placeholder="min" min="0" max="1" step="0.01" style="width:62px;border-color:rgba(134,239,172,0.45)!important" title="Filter rows where LR Correlation is ≥ this value">
+      <div class="sep"></div>
+      <button onclick="clearFilters()">✕ Clear</button>
+      <button class="btn-export" onclick="exportCSV()">⬇ Export CSV</button>
     </div>
 
     <div class="stats-bar">
       <span>Total: <b id="totalRows">0</b></span>
-      <span>Mostrando: <b id="shownRows">0</b></span>
-      <span>Ordenado por: <b id="sortInfo" style="color: var(--accent);">—</b></span>
+      <span>Showing: <b id="shownRows">0</b></span>
+      <span>Sorted by: <b id="sortInfo">—</b></span>
     </div>
 
     <div class="table-wrap">
@@ -465,26 +898,258 @@
       <div class="page-info" id="pageInfo"></div>
       <button id="btnNext" onclick="goPage(currentPage+1)">›</button>
       <button id="btnLast" onclick="goPage(totalPages-1)">»</button>
-      <label style="color:var(--muted);font-size:12px;margin-left:12px">Filas/pág:</label>
+      <label style="color:var(--muted);font-size:12px;margin-left:12px">Rows/page:</label>
       <select id="pageSizeSelect" onchange="changePageSize()">
         <option value="50">50</option>
         <option value="100" selected>100</option>
         <option value="200">200</option>
         <option value="500">500</option>
-        <option value="999999">Todas</option>
+        <option value="999999">All</option>
       </select>
+    </div>
+  </div>
+
+  <!-- Heatmap Tab -->
+  <div id="tab-heatmap" style="display:none">
+
+    <div class="hm-sticky-header">
+
+    <div class="hm-filter-bar" id="hm-filter-bar">
+      <label>Zones:</label>
+      <div style="display:flex;gap:3px;align-items:center;flex-wrap:wrap">
+        <button class="hm-zone-btn" data-zone="unprof" title="Unprofitable — EV ≤ 0" onclick="toggleHmZone(this)">Unprof</button>
+        <button class="hm-zone-btn" data-zone="marg"   title="Marginal — PF < 1.5"   onclick="toggleHmZone(this)">Marginal</button>
+        <button class="hm-zone-btn" data-zone="ok"     title="Acceptable — PF 1.5–2.5" onclick="toggleHmZone(this)">OK</button>
+        <button class="hm-zone-btn" data-zone="good"   title="Good — PF 2.5–3.5"     onclick="toggleHmZone(this)">Good</button>
+        <button class="hm-zone-btn active" data-zone="great" title="Great — PF 3.5–5.0" onclick="toggleHmZone(this)">Great</button>
+        <button class="hm-zone-btn active" data-zone="excep" title="Exceptional — PF 5.0–6.0" onclick="toggleHmZone(this)">Exceptional</button>
+        <button class="hm-zone-btn" data-zone="cap"    title="⚠ Overfit? — PF > 6.0" onclick="toggleHmZone(this)">Overfit?</button>
+      </div>
+
+      <div class="sep"></div>
+
+      <label style="color:#10b981;font-weight:700">Score ≥</label>
+      <input type="number" class="hm-filter-inp" id="hf-minScore" value="90" min="0" max="100" step="1" title="Only highlight cells where the best result score meets this % of all thresholds" oninput="onHmFilter()">
+      <span style="color:var(--muted);font-size:11px">%</span>
+
+      <div class="sep"></div>
+
+      <label>WR%:</label>
+      <input type="number" class="hm-filter-inp min-input" id="hf-minWr" placeholder="min" min="20" max="100" style="width:54px" oninput="onHmFilter()">
+      <span style="color:var(--muted);font-size:12px">–</span>
+      <input type="number" class="hm-filter-inp min-input" id="hf-maxWr" placeholder="max" min="20" max="100" style="width:54px" oninput="onHmFilter()">
+
+      <div class="sep"></div>
+      <label>RR:</label>
+      <input type="number" class="hm-filter-inp min-input" id="hf-minRr" placeholder="min" step="0.1" min="0.2" max="6.0" style="width:54px" oninput="onHmFilter()">
+      <span style="color:var(--muted);font-size:12px">–</span>
+      <input type="number" class="hm-filter-inp min-input" id="hf-maxRr" placeholder="max" step="0.1" min="0.2" max="6.0" style="width:54px" oninput="onHmFilter()">
+
+      <div class="sep"></div>
+      <label>PF ≥</label>
+      <input type="number" class="hm-filter-inp min-input" id="hf-minPf" placeholder="—" step="0.01" oninput="onHmFilter()">
+
+      <label>RF ≥</label>
+      <input type="number" class="hm-filter-inp min-input" id="hf-minRf" placeholder="—" step="0.1" oninput="onHmFilter()">
+
+      <label>Sharpe ≥</label>
+      <input type="number" class="hm-filter-inp min-input" id="hf-minSharpe" placeholder="—" step="0.01" style="width:72px" oninput="onHmFilter()">
+
+      <label style="color:#f87171;font-weight:700">DD% ≤</label>
+      <input type="number" class="hm-filter-inp dd-input" id="hf-maxDd" placeholder="—" step="0.1" oninput="onHmFilter()">
+
+      <label style="color:#fb923c;font-weight:700">Float% ≤</label>
+      <input type="number" class="hm-filter-inp fl-input" id="hf-maxFloat" placeholder="—" step="0.1" oninput="onHmFilter()">
+
+      <label>Trades ≥</label>
+      <input type="number" class="hm-filter-inp min-input" id="hf-minTrades" placeholder="—" style="width:72px" oninput="onHmFilter()">
+
+      <div class="sep"></div>
+      <button onclick="clearHmFilters()">✕ Reset</button>
+    </div>
+
+    <div class="hm-stats-bar" id="hm-stats-bar">
+      <span>Data cells: <b id="hm-stat-total">—</b></span>
+      <span id="hm-stat-match-wrap" style="display:none">Highlighted: <b id="hm-stat-match">—</b></span>
+      <span id="hm-stat-dim-wrap" style="display:none">Dimmed: <b id="hm-stat-dim">—</b></span>
+      <div class="hm-active-filters" id="hm-active-filters"></div>
+    </div>
+    </div>
+
+    <div id="hm-controls" style="padding:10px 20px 0">
+      <div class="hm-range-bar">
+        <label>Heatmap mode:</label>
+        <span style="color:var(--text);font-size:12px;">Threshold compliance — each cell shows best result decoded from <code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;font-size:11px">SCORE_FFF_DDD.LR</code> (<b>Custom</b> column). Default view: <span style="color:#22d55a;font-weight:700">Great</span> + <span style="color:#34d399;font-weight:700">Exceptional</span> zones, score ≥ 90%.</span>
+        <span style="margin-left:auto;color:var(--muted);font-size:11px;">100% = all 4 thresholds met</span>
+      </div>
+    </div>
+
+    <div id="hm-content" style="padding:0 20px 16px">
+      <div class="hm-no-data">Load an XML file to see the heatmap.</div>
+    </div>
+  </div>
+
+  <!-- Rank Tab -->
+  <div id="tab-rank" style="display:none">
+    <div class="hm-sticky-header">
+      <div class="rank-filter-bar">
+        <label>Zones:</label>
+        <div style="display:flex;gap:3px;align-items:center;flex-wrap:wrap">
+          <button class="hm-zone-btn" data-zone="unprof" onclick="toggleRankZone(this)">Unprof</button>
+          <button class="hm-zone-btn" data-zone="marg"   onclick="toggleRankZone(this)">Marginal</button>
+          <button class="hm-zone-btn" data-zone="ok"     onclick="toggleRankZone(this)">OK</button>
+          <button class="hm-zone-btn" data-zone="good"   onclick="toggleRankZone(this)">Good</button>
+          <button class="hm-zone-btn active" data-zone="great" onclick="toggleRankZone(this)">Great</button>
+          <button class="hm-zone-btn active" data-zone="excep" onclick="toggleRankZone(this)">Exceptional</button>
+          <button class="hm-zone-btn" data-zone="cap"    onclick="toggleRankZone(this)">Overfit?</button>
+        </div>
+        <div class="sep"></div>
+        <label style="color:#10b981;font-weight:700">Score ≥</label>
+        <input type="number" id="rf-minScore" value="90" min="0" max="200" step="1" style="border-color:rgba(16,185,129,0.55)!important;width:52px" oninput="onRankFilter()">
+        <span style="color:var(--muted);font-size:11px">%</span>
+        <div class="sep"></div>
+        <label>WR%:</label>
+        <input type="number" class="min-input" id="rf-minWr" placeholder="min" style="width:54px" oninput="onRankFilter()">
+        <span style="color:var(--muted);font-size:12px">–</span>
+        <input type="number" class="min-input" id="rf-maxWr" placeholder="max" style="width:54px" oninput="onRankFilter()">
+        <div class="sep"></div>
+        <label>RR:</label>
+        <input type="number" class="min-input" id="rf-minRr" placeholder="min" step="0.1" style="width:54px" oninput="onRankFilter()">
+        <span style="color:var(--muted);font-size:12px">–</span>
+        <input type="number" class="min-input" id="rf-maxRr" placeholder="max" step="0.1" style="width:54px" oninput="onRankFilter()">
+        <div class="sep"></div>
+        <label>PF ≥</label>
+        <input type="number" class="min-input" id="rf-minPf" placeholder="—" step="0.01" oninput="onRankFilter()">
+        <label>RF ≥</label>
+        <input type="number" class="min-input" id="rf-minRf" placeholder="—" step="0.1" oninput="onRankFilter()">
+        <label>Sharpe ≥</label>
+        <input type="number" class="min-input" id="rf-minSharpe" placeholder="—" step="0.01" style="width:72px" oninput="onRankFilter()">
+        <label style="color:#f87171;font-weight:700">DD% ≤</label>
+        <input type="number" class="dd-input" id="rf-maxDd" value="4.3" step="0.1" oninput="onRankFilter()">
+        <label style="color:#fb923c;font-weight:700">Float% ≤</label>
+        <input type="number" class="fl-input" id="rf-maxFloat" value="8" step="0.1" oninput="onRankFilter()">
+        <label>Trades ≥</label>
+        <input type="number" class="min-input" id="rf-minTrades" placeholder="—" style="width:72px" oninput="onRankFilter()">
+        <div class="sep"></div>
+        <label style="color:var(--muted)">Top</label>
+        <select id="rf-topN" onchange="onRankFilter()">
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="999999">All</option>
+        </select>
+        <div class="sep"></div>
+        <label style="color:var(--muted)">Tie-break&nbsp;±</label>
+        <input type="number" id="rf-tiePct" value="10" min="0" max="100" step="1" style="width:52px" oninput="onRankFilter()">
+        <span style="color:var(--muted);font-size:11px">%</span>
+        <div class="sep"></div>
+        <button onclick="clearRankFilters()">✕ Reset</button>
+      </div>
+      <div class="hm-stats-bar" id="rank-stats-bar">
+        <span>Cells evaluated: <b id="rank-stat-cells">—</b></span>
+        <span>Qualifying: <b id="rank-stat-qualify">—</b></span>
+        <span style="color:var(--muted);font-size:11px">Tie-break within <b id="rank-stat-tiepct">10</b>% profit → higher WR wins</span>
+      </div>
+    </div>
+    <div id="rank-content" style="padding:16px 20px">
+      <div class="rank-empty">Load an XML file to see rankings.</div>
     </div>
   </div>
 
 </div>
 
+<div class="hm-tooltip" id="hmTooltip"></div>
+
 <script>
+/* ────────────────────────────────────────────────────────────────
+   Column index constants for decoded columns
+   Layout: [0]=WinRate, [1]=LRCorr, [2]=EqDDRel, [3]=FloatLoss, [4+]=raw XML cols
+──────────────────────────────────────────────────────────────── */
+const IDX_WR    = 0;
+const IDX_LR    = 1;
+const IDX_DD    = 2;
+const IDX_FL    = 3;
+const RAW_START = 4;
+
 /* ────────────────────────────────────────────────────────────────
    Global state
 ──────────────────────────────────────────────────────────────── */
-let HEADERS = [], DATA = [], NUM_COLS = new Set(), BOOL_COLS = new Set(), DD_COLS = new Set();
-let sortCol = "auto", sortDir = -1, currentPage = 0, pageSize = 100, totalPages = 1;
+let HEADERS = [], DATA = [], NUM_COLS = new Set(), BOOL_COLS = new Set(), DD_COLS = new Set(), FL_COLS = new Set();
+let sortCol = 0, sortDir = -1, currentPage = 0, pageSize = 100, totalPages = 1;
 let filtered = [], columnFilters = {};
+let hmRecalcVisible = null;
+let hmApplyDim      = null;
+let gCellMap        = new Map();
+
+const ALL_ZONES     = new Set(['unprof','marg','ok','good','great','excep','cap']);
+const DEFAULT_ZONES = new Set(['great','excep']);
+const DEFAULT_MIN_SCORE = 90;
+
+let hmFilters = {
+  zones:    new Set(DEFAULT_ZONES),
+  minScore: DEFAULT_MIN_SCORE,
+};
+
+function _hmVal(id) {
+  const v = parseFloat(document.getElementById(id)?.value);
+  return isNaN(v) ? null : v;
+}
+
+function toggleHmZone(btn) {
+  const zone = btn.dataset.zone;
+  if (hmFilters.zones.has(zone)) { hmFilters.zones.delete(zone); btn.classList.remove('active'); }
+  else { hmFilters.zones.add(zone); btn.classList.add('active'); }
+  if (hmApplyDim) hmApplyDim();
+}
+
+function onHmFilter() {
+  hmFilters.minWr     = _hmVal('hf-minWr');
+  hmFilters.maxWr     = _hmVal('hf-maxWr');
+  hmFilters.minRr     = _hmVal('hf-minRr');
+  hmFilters.maxRr     = _hmVal('hf-maxRr');
+  hmFilters.minPf     = _hmVal('hf-minPf');
+  hmFilters.minRf     = _hmVal('hf-minRf');
+  hmFilters.minSharpe = _hmVal('hf-minSharpe');
+  hmFilters.maxDd     = _hmVal('hf-maxDd');
+  hmFilters.maxFloat  = _hmVal('hf-maxFloat');
+  hmFilters.minTrades = _hmVal('hf-minTrades');
+  hmFilters.minScore  = _hmVal('hf-minScore');
+  if (hmApplyDim) hmApplyDim();
+}
+
+function clearHmFilters() {
+  hmFilters = { zones: new Set(DEFAULT_ZONES), minScore: DEFAULT_MIN_SCORE };
+  document.querySelectorAll('.hm-filter-inp').forEach(el => el.value = '');
+  const scoreEl = document.getElementById('hf-minScore');
+  if (scoreEl) scoreEl.value = DEFAULT_MIN_SCORE;
+  document.querySelectorAll('.hm-zone-btn').forEach(btn => {
+    btn.classList.toggle('active', DEFAULT_ZONES.has(btn.dataset.zone));
+  });
+  if (hmApplyDim) hmApplyDim();
+}
+
+function isHmFilterActive() {
+  const zonesFiltered  = hmFilters.zones && hmFilters.zones.size < ALL_ZONES.size;
+  const scoreFiltered  = hmFilters.minScore != null && hmFilters.minScore > 0;
+  const otherFiltered  = ['minWr','maxWr','minRr','maxRr','minPf','minRf','minSharpe','maxDd','maxFloat','minTrades']
+                          .some(k => hmFilters[k] != null);
+  return zonesFiltered || scoreFiltered || otherFiltered;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Tab switching
+──────────────────────────────────────────────────────────────── */
+function switchTab(tab) {
+  document.getElementById('tab-results').style.display = tab === 'results' ? 'block' : 'none';
+  document.getElementById('tab-heatmap').style.display  = tab === 'heatmap'  ? 'block' : 'none';
+  document.getElementById('tab-rank').style.display     = tab === 'rank'     ? 'block' : 'none';
+  document.getElementById('tabBtnResults').classList.toggle('active', tab === 'results');
+  document.getElementById('tabBtnHeatmap').classList.toggle('active', tab === 'heatmap');
+  document.getElementById('tabBtnRank').classList.toggle('active', tab === 'rank');
+  if (tab === 'heatmap' && hmRecalcVisible) requestAnimationFrame(hmRecalcVisible);
+  if (tab === 'rank') buildRankTab();
+}
 
 /* ────────────────────────────────────────────────────────────────
    File picker — search & sort state
@@ -603,9 +1268,9 @@ function _stopXmlWatcher() {
 document.getElementById('folderFallbackInput').addEventListener('change', function(e) {
   const xmlFiles = [...e.target.files].filter(f => /\.xml$/i.test(f.name));
   e.target.value = '';
-  if (!xmlFiles.length) { showError('No se encontraron archivos .xml en la carpeta.'); return; }
+  if (!xmlFiles.length) { showError('No .xml files found in that folder.'); return; }
   _xmlFileEntries = xmlFiles.map(f => ({ name: f.name, file: f }));
-  _xmlFolderName  = xmlFiles[0].webkitRelativePath.split('/')[0] || 'Carpeta';
+  _xmlFolderName  = xmlFiles[0].webkitRelativePath.split('/')[0] || 'Folder';
   renderXmlFileList();
 });
 
@@ -635,9 +1300,9 @@ function renderXmlFileList() {
 
   const listEl = document.getElementById('xmlFileList');
   if (!_xmlFileEntries.length) {
-    listEl.innerHTML = '<div class="file-list-empty">No se encontraron archivos XML.</div>';
+    listEl.innerHTML = '<div class="file-list-empty">No XML files found in this folder.</div>';
   } else if (!visible.length) {
-    listEl.innerHTML = `<div class="file-list-no-match">No hay coincidencias para "<em>${escapeHtml(_fileQuery)}</em>"</div>`;
+    listEl.innerHTML = `<div class="file-list-no-match">No files match "<em>${escapeHtml(_fileQuery)}</em>"</div>`;
   } else {
     listEl.innerHTML = visible.map(f => {
       const origIdx = indexMap.get(f.name);
@@ -651,7 +1316,7 @@ function renderXmlFileList() {
           ${size ? `<span class="xml-file-size">${size}</span>` : ''}
           ${date ? `<span class="xml-file-date">${date}</span>` : ''}
         </span>
-        <button class="xml-file-load-btn" onclick="event.stopPropagation();loadXmlEntry(${origIdx})">Cargar</button>
+        <button class="xml-file-load-btn" onclick="event.stopPropagation();loadXmlEntry(${origIdx})">Load</button>
       </div>`;
     }).join('');
   }
@@ -665,35 +1330,32 @@ function loadXmlEntry(idx) {
   if (!entry) return;
   document.getElementById('uploadError').style.display = 'none';
   document.getElementById('loadingMsg').style.display  = 'flex';
-  document.getElementById('loadingText').textContent   = 'Leyendo archivo…';
+  document.getElementById('loadingText').textContent   = 'Reading file…';
   const reader = new FileReader();
-  reader.onload  = e => { document.getElementById('loadingText').textContent = 'Analizando XML…'; setTimeout(() => parseXML(e.target.result, entry.name), 30); };
-  reader.onerror = () => showError('No se pudo leer el archivo.');
+  reader.onload  = e => { document.getElementById('loadingText').textContent = 'Parsing XML…'; setTimeout(() => parseXML(e.target.result, entry.name), 30); };
+  reader.onerror = () => showError('Could not read file.');
   reader.readAsText(entry.file, 'UTF-8');
 }
 
 /* ────────────────────────────────────────────────────────────────
    XML Parsing
 ──────────────────────────────────────────────────────────────── */
-const DD_PATTERNS = [/drawdown/i, /\bdd\b/i, /equity.?dd/i, /max.?dd/i, /risk/i, /loss/i, /dd%.?rel/i, /reducci[oó]n/i, /real.?dd/i];
-function isDrawdownCol(name) { return DD_PATTERNS.some(p => p.test(name)); }
-
 function parseXML(text, filename) {
   try {
     const parser = new DOMParser();
     const doc    = parser.parseFromString(text, 'application/xml');
-    if (doc.querySelector('parseerror')) { showError('Archivo XML inválido.'); return; }
+    if (doc.querySelector('parseerror')) { showError('Invalid XML file.'); return; }
 
     const getP = tag => doc.querySelector(tag)?.textContent || '';
     const title = getP('Title') || filename;
 
     const rows = Array.from(doc.querySelectorAll('Row'));
-    if (rows.length < 2) { showError('No se encontraron filas de datos en este XML.'); return; }
+    if (rows.length < 2) { showError('No data rows found in this XML.'); return; }
 
-    document.getElementById('loadingText').textContent = `Procesando ${rows.length.toLocaleString()} resultados…`;
+    document.getElementById('loadingText').textContent = `Processing ${rows.length.toLocaleString()} rows…`;
 
     const rawHeaders = Array.from(rows[0].querySelectorAll('Cell')).map(c => c.querySelector('Data')?.textContent || '');
-    if (!rawHeaders.length) { showError('No se encontraron las cabeceras.'); return; }
+    if (!rawHeaders.length) { showError('Could not find column headers.'); return; }
 
     const rawData = [];
     for (let i = 1; i < rows.length; i++) {
@@ -708,86 +1370,79 @@ function parseXML(text, filename) {
       }));
     }
 
-    // Ubicar la columna codificada (Custom o Result) para sacar el Real DD
-    const customIdx = rawHeaders.findIndex(h => /custom|result|resultado/i.test(h));
-    const encIdx = customIdx >= 0 ? customIdx : -1;
+    const customIdx = rawHeaders.findIndex(h => h.toLowerCase() === 'custom');
+    const encIdx    = customIdx >= 0 ? customIdx : rawHeaders.findIndex(h => h.toLowerCase() === 'result');
 
-    HEADERS = ['Real DD %', ...rawHeaders];
-    DATA = rawData.map((row, rIdx) => {
-      let realDD = null;
-      if (encIdx >= 0) {
+    if (encIdx >= 0) {
+      // ── New format: [SCORE][FFF][DDD].[LR] ──────────────────────────
+      // DDD  = Math.floor(enc) % 1000           → /10 = Eq.DD rel %
+      // FFF  = Math.floor(enc / 1000) % 1000    → /10 = Max Float Loss %
+      // SCORE= Math.floor(enc / 1000000)
+      // .LR  = fractional part × 100 → 10 means 1.00, else value as-is
+      // Win Rate is no longer encoded in this format (was 2 digits before).
+      HEADERS = ['Win Rate %', 'LR Corr', 'Eq.DD% Rel', 'Float Loss %', ...rawHeaders];
+      DATA = rawData.map(row => {
         const enc = row[encIdx];
+        let wr = null, lrCorr = null, ddRel = null, floatLoss = null;
         if (typeof enc === 'number' && isFinite(enc) && enc > 0) {
-           // Saca los 3 digitos antes del punto y lo divide por 10 (mismo formato de tu lógica original)
-           const ddRaw = Math.floor(enc) % 1000;
-           realDD = ddRaw / 10;
+          // DDD — equity DD rel
+          const dddRaw = Math.floor(enc) % 1000;
+          if (dddRaw > 0) ddRel = dddRaw / 10;
+          // FFF — max floating loss
+          const fffRaw = Math.floor(enc / 1000) % 1000;
+          if (fffRaw > 0) floatLoss = fffRaw / 10;
+          // LR Correlation: 0.10 encodes 1.00 (max guard), else decimal as-is
+          const lrRaw = Math.round((enc % 1) * 100);
+          lrCorr = lrRaw === 10 ? 1.00 : lrRaw / 100;
         }
-      }
-      let mappedRow = [realDD, ...row];
-      mappedRow.__origIdx = rIdx + 1;
-      return mappedRow;
-    });
+        // Try to find WR from a raw column as fallback (needed for heatmap axes)
+        if (wr === null) {
+          const rawWrIdx = rawHeaders.findIndex(h => /win.?rate|winrate/i.test(h));
+          if (rawWrIdx >= 0 && typeof row[rawWrIdx] === 'number') wr = row[rawWrIdx];
+        }
+        return [wr, lrCorr, ddRel, floatLoss, ...row];
+      });
+    } else {
+      HEADERS = rawHeaders;
+      DATA    = rawData;
+    }
 
-    NUM_COLS = new Set(); BOOL_COLS = new Set(); DD_COLS = new Set();
+    NUM_COLS = new Set(); BOOL_COLS = new Set(); DD_COLS = new Set(); FL_COLS = new Set();
     HEADERS.forEach((h, i) => {
-      // Registrar la nueva columna manualmente
-      if (i === 0 && h === 'Real DD %') {
-         NUM_COLS.add(i);
-         DD_COLS.add(i);
-         return;
-      }
+      // Fixed decoded columns
+      if (i === IDX_WR  && h === 'Win Rate %')   { NUM_COLS.add(i); return; }
+      if (i === IDX_LR  && h === 'LR Corr')      { NUM_COLS.add(i); return; }
+      if (i === IDX_DD  && h === 'Eq.DD% Rel')   { NUM_COLS.add(i); DD_COLS.add(i); return; }
+      if (i === IDX_FL  && h === 'Float Loss %')  { NUM_COLS.add(i); FL_COLS.add(i); return; }
+      // Raw columns
       for (let r = 0; r < Math.min(20, DATA.length); r++) {
         const v = DATA[r][i];
         if (typeof v === 'number') { NUM_COLS.add(i); break; }
         if (v === 'true' || v === 'false') { BOOL_COLS.add(i); break; }
       }
-      if (NUM_COLS.has(i) && isDrawdownCol(h)) DD_COLS.add(i);
+      // Mark raw DD-like columns
+      if (NUM_COLS.has(i) && /drawdown|equity.?dd|max.?dd/i.test(h) && !/recovery/i.test(h)) DD_COLS.add(i);
     });
 
-    // --- ESTABLECER FILTROS Y ORDEN POR DEFECTO ---
-    let profitIdx = HEADERS.findIndex(h => /^profit/i.test(h) || /^beneficio/i.test(h));
-    if (profitIdx === -1) profitIdx = HEADERS.findIndex(h => /profit/i.test(h) && !/factor/i.test(h));
-    
-    // Resetear el estado y ordenar por profit
-    sortCol = profitIdx >= 0 ? profitIdx : 0; 
-    sortDir = -1; 
-    currentPage = 0; 
-    pageSize = 100;
+    sortCol = 0; sortDir = -1; currentPage = 0; pageSize = 100;
     columnFilters = {};
-
-    if (profitIdx >= 0) columnFilters[profitIdx] = "4000";
-
-    // Filtro a la NUEVA columna Real DD % 
-    let realDdIdx = HEADERS.findIndex(h => /^real.?dd/i.test(h));
-    if (realDdIdx >= 0) columnFilters[realDdIdx] = "4";
-
-    // Filtro al Equity DD original
-    let eqDdIdx = HEADERS.findIndex(h => /^equity.?dd/i.test(h) || /dd%.?rel/i.test(h) || /reducci[oó]n/i.test(h));
-    if (eqDdIdx >= 0) columnFilters[eqDdIdx] = "4";
-
-    // Filtros Élite
-    let sharpeIdx = HEADERS.findIndex(h => /sharpe/i.test(h));
-    if (sharpeIdx >= 0) columnFilters[sharpeIdx] = "2.5";
-
-    let recFacIdx = HEADERS.findIndex(h => /recovery.?factor/i.test(h) || /factor.?de.?recuperaci[oó]n/i.test(h));
-    if (recFacIdx >= 0) columnFilters[recFacIdx] = "8";
-    // ---------------------------------------------
 
     document.getElementById('appTitle').textContent = '📊 ' + title;
     document.getElementById('appMeta').textContent  = [
-      getP('Deposit')  ? 'Depósito: ' + getP('Deposit')    : '',
-      getP('Leverage') ? 'Apalancamiento: 1:' + getP('Leverage') : '',
-      getP('Server')   ? 'Servidor: ' + getP('Server')      : '',
-      rawData.length.toLocaleString() + ' resultados'
+      getP('Deposit')  ? 'Deposit: ' + getP('Deposit')    : '',
+      getP('Leverage') ? 'Leverage: 1:' + getP('Leverage') : '',
+      getP('Server')   ? 'Server: ' + getP('Server')      : '',
+      rawData.length.toLocaleString() + ' passes'
     ].filter(Boolean).join('  |  ');
 
     document.getElementById('uploadScreen').style.display = 'none';
-    document.getElementById('appScreen').style.display    = 'flex';
+    document.getElementById('appScreen').style.display    = 'block';
 
     buildHeaders();
     applyFilters();
+    buildHeatmap();
 
-  } catch(err) { showError('Error inesperado: ' + err.message); }
+  } catch(err) { showError('Unexpected error: ' + err.message); }
 }
 
 function resetToUpload() {
@@ -795,11 +1450,14 @@ function resetToUpload() {
   document.getElementById('uploadScreen').style.display = 'flex';
   document.getElementById('uploadError').style.display  = 'none';
   document.getElementById('loadingMsg').style.display   = 'none';
-  HEADERS = []; DATA = [];
+  HEADERS = []; DATA = []; gCellMap = new Map();
+  clearHmFilters();
+  clearRankFilters();
+  switchTab('results');
 }
 
 /* ────────────────────────────────────────────────────────────────
-   Results Table & Sorting Logic
+   Results Table
 ──────────────────────────────────────────────────────────────── */
 function buildHeaders() {
   const hr = document.getElementById('headerRow');
@@ -809,7 +1467,7 @@ function buildHeaders() {
   const rankTh = document.createElement('th');
   rankTh.textContent = '#';
   rankTh.style.cssText = 'width:36px;text-align:center;color:var(--accent);cursor:default;';
-  rankTh.title = 'Rango de la fila en la vista actual';
+  rankTh.title = 'Row rank in current sorted view';
   hr.appendChild(rankTh);
   const rankTf = document.createElement('th');
   rankTf.style.cssText = 'width:36px;';
@@ -817,32 +1475,48 @@ function buildHeaders() {
 
   HEADERS.forEach((h, i) => {
     const th = document.createElement('th');
-    th.textContent = h;
+    th.textContent = h === 'Win Rate %'   ? '🏆 Win Rate'
+                   : h === 'LR Corr'      ? '📈 LR Corr'
+                   : h === 'Eq.DD% Rel'   ? '📉 Eq.DD% Rel'
+                   : h === 'Float Loss %' ? '🌊 Float Loss'
+                   : h;
     th.dataset.col = i;
-    if (DD_COLS.has(i)) th.classList.add('dd-col');
+    if (i === IDX_WR && h === 'Win Rate %')   th.classList.add('win-col');
+    if (i === IDX_LR && h === 'LR Corr')      th.classList.add('lr-col');
+    if (i === IDX_DD && h === 'Eq.DD% Rel')   th.classList.add('dd-col');
+    if (i === IDX_FL && h === 'Float Loss %')  th.classList.add('fl-col');
+    if (i > IDX_FL && DD_COLS.has(i))         th.classList.add('dd-col');
     th.onclick = () => sortBy(i);
     hr.appendChild(th);
 
     const tf = document.createElement('th');
     if (BOOL_COLS.has(i)) {
       const sel = document.createElement('select');
-      sel.innerHTML = '<option value="">Todo</option><option value="true">✓ true</option><option value="false">✗ false</option>';
+      sel.innerHTML = '<option value="">All</option><option value="true">✓ true</option><option value="false">✗ false</option>';
       sel.dataset.col = i;
-      if (columnFilters[i] !== undefined) sel.value = columnFilters[i];
       sel.oninput = () => { columnFilters[i] = sel.value; currentPage = 0; applyFilters(); };
       tf.appendChild(sel);
     } else if (NUM_COLS.has(i)) {
       const inp = document.createElement('input');
       inp.type = 'number'; inp.step = 'any'; inp.dataset.col = i;
-      if (DD_COLS.has(i)) { inp.placeholder = '≤ max'; inp.classList.add('dd-input');  inp.title = 'Mostrar si ' + h + ' es ≤ a este valor'; }
-      else                { inp.placeholder = '≥ min'; inp.classList.add('min-input'); inp.title = 'Mostrar si ' + h + ' es ≥ a este valor'; }
-      if (columnFilters[i] !== undefined) inp.value = columnFilters[i];
+      if (FL_COLS.has(i)) {
+        inp.placeholder = '≤ max'; inp.classList.add('fl-input');
+        inp.title = 'Show rows where Float Loss % is ≤ this value';
+      } else if (DD_COLS.has(i)) {
+        inp.placeholder = '≤ max'; inp.classList.add('dd-input');
+        inp.title = 'Show rows where ' + h + ' is ≤ this value';
+      } else if (i === IDX_LR) {
+        inp.placeholder = '≥ min'; inp.classList.add('lr-input');
+        inp.title = 'Show rows where LR Correlation is ≥ this value';
+      } else {
+        inp.placeholder = '≥ min'; inp.classList.add('min-input');
+        inp.title = 'Show rows where ' + h + ' is ≥ this value';
+      }
       inp.oninput = () => { columnFilters[i] = inp.value.trim(); currentPage = 0; applyFilters(); };
       tf.appendChild(inp);
     } else {
       const inp = document.createElement('input');
       inp.type = 'text'; inp.placeholder = '…'; inp.dataset.col = i;
-      if (columnFilters[i] !== undefined) inp.value = columnFilters[i];
       inp.oninput = () => { columnFilters[i] = inp.value.trim(); currentPage = 0; applyFilters(); };
       tf.appendChild(inp);
     }
@@ -861,18 +1535,59 @@ function sortBy(col) {
 function updateSortIndicators() {
   document.querySelectorAll('#headerRow th').forEach(th => {
     th.classList.remove('sort-asc', 'sort-desc');
-    if (parseInt(th.dataset.col) === sortCol) {
+    if (parseInt(th.dataset.col) === sortCol)
       th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
-    }
   });
-  
   document.getElementById('sortInfo').textContent = (HEADERS[sortCol] || '') + (sortDir === 1 ? ' ▲' : ' ▼');
 }
 
 function applyFilters() {
-  const globalQ  = document.getElementById('globalSearch').value.toLowerCase();
+  const globalQ      = document.getElementById('globalSearch').value.toLowerCase();
+  const minWin       = parseFloat(document.getElementById('minWin').value);
+  const maxWin       = parseFloat(document.getElementById('maxWin').value);
+  const maxEqDD      = parseFloat(document.getElementById('maxEqDD').value);
+  const maxFloatLoss = parseFloat(document.getElementById('maxFloatLoss').value);
+  const minLrCorr    = parseFloat(document.getElementById('minLrCorr').value);
+
+  // Find result/custom col to exclude zero rows
+  const _resultColIdx = (() => {
+    const ci = HEADERS.findIndex(h => h.toLowerCase() === 'custom');
+    return ci >= 0 ? ci : HEADERS.findIndex(h => h.toLowerCase() === 'result');
+  })();
 
   filtered = DATA.filter(row => {
+    // Exclude passes where the optimizer returned 0
+    if (_resultColIdx >= 0) {
+      const rv = row[_resultColIdx];
+      if (rv === 0 || rv === '0' || rv === null || rv === '' || rv === undefined) return false;
+    }
+
+    // Win Rate toolbar filter
+    if (HEADERS[IDX_WR] === 'Win Rate %') {
+      const wr = row[IDX_WR];
+      if (!isNaN(minWin) && (wr === null || wr < minWin)) return false;
+      if (!isNaN(maxWin) && (wr === null || wr > maxWin)) return false;
+    }
+
+    // Equity DD toolbar filter
+    if (!isNaN(maxEqDD) && HEADERS[IDX_DD] === 'Eq.DD% Rel') {
+      const ddVal = Number(row[IDX_DD]);
+      if (isNaN(ddVal) || ddVal > maxEqDD) return false;
+    }
+
+    // Float Loss toolbar filter
+    if (!isNaN(maxFloatLoss) && HEADERS[IDX_FL] === 'Float Loss %') {
+      const flVal = Number(row[IDX_FL]);
+      if (isNaN(flVal) || flVal > maxFloatLoss) return false;
+    }
+
+    // LR Correlation toolbar filter
+    if (!isNaN(minLrCorr) && HEADERS[IDX_LR] === 'LR Corr') {
+      const lrVal = Number(row[IDX_LR]);
+      if (row[IDX_LR] === null || isNaN(lrVal) || lrVal < minLrCorr) return false;
+    }
+
+    // Per-column inline filters
     for (const [ci, fv] of Object.entries(columnFilters)) {
       if (fv === '' || fv === null || fv === undefined) continue;
       const i = parseInt(ci), cell = row[i];
@@ -881,10 +1596,13 @@ function applyFilters() {
         const threshold = parseFloat(fv);
         if (isNaN(threshold)) continue;
         const n = Number(cell);
-        if (DD_COLS.has(i)) { if (n > threshold) return false; }
-        else                { if (n < threshold) return false; }
+        // FL and DD columns filter as ≤ max; LR and rest as ≥ min
+        if (FL_COLS.has(i)) { if (n > threshold) return false; }
+        else if (DD_COLS.has(i)) { if (n > threshold) return false; }
+        else                     { if (n < threshold) return false; }
       } else { if (!String(cell).toLowerCase().includes(fv.toLowerCase())) return false; }
     }
+
     if (globalQ && !row.join(' ').toLowerCase().includes(globalQ)) return false;
     return true;
   });
@@ -899,9 +1617,31 @@ function applyFilters() {
   document.getElementById('shownRows').textContent = filtered.length.toLocaleString();
   totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   if (currentPage >= totalPages) currentPage = 0;
-  
   renderPage();
   updateSortIndicators();
+}
+
+function getWinColor(wr) {
+  if (wr >= 60) return '#22c55e';
+  if (wr >= 50) return '#eab308';
+  return '#ef4444';
+}
+function getLrColor(lr) {
+  if (lr >= 0.99) return '#22c55e';
+  if (lr >= 0.97) return '#86efac';
+  if (lr >= 0.95) return '#eab308';
+  return '#ef4444';
+}
+function getDdColor(v) {
+  if (v > 15) return '#ef4444';
+  if (v > 8)  return '#eab308';
+  return '#22c55e';
+}
+function getFlColor(v) {
+  if (v > 20) return '#ef4444';
+  if (v > 10) return '#f97316';
+  if (v > 5)  return '#eab308';
+  return '#22c55e';
 }
 
 function renderPage() {
@@ -913,40 +1653,56 @@ function renderPage() {
     if (ri % 2 === 1) tr.classList.add('even');
 
     const rankTd = document.createElement('td');
-    const globalRank = currentPage * pageSize + ri + 1;
-    rankTd.textContent = globalRank;
+    rankTd.textContent = currentPage * pageSize + ri + 1;
     rankTd.style.cssText = 'text-align:center;color:var(--accent);font-weight:700;font-size:11px;width:36px;';
-    
     tr.appendChild(rankTd);
 
     row.forEach((val, ci) => {
       const td = document.createElement('td');
-      if (DD_COLS.has(ci)) {
-        if (typeof val === 'number' && isFinite(val)) {
-          td.textContent = val.toFixed(2) + '%';
+
+      if (ci === IDX_WR && HEADERS[IDX_WR] === 'Win Rate %') {
+        if (val !== null) {
+          const c = getWinColor(val);
+          td.innerHTML = `<div class="win-badge"><span style="color:${c}">${val.toFixed(0)}%</span><span class="win-bar-bg"><span class="win-bar-fill" style="width:${Math.min(val,100)}%;background:${c}"></span></span></div>`;
+        } else { td.textContent = '—'; td.style.color = 'var(--muted)'; }
+
+      } else if (ci === IDX_LR && HEADERS[IDX_LR] === 'LR Corr') {
+        if (val !== null && isFinite(val)) {
+          const c = getLrColor(val);
+          td.innerHTML = `<span style="color:${c};font-weight:700">${val.toFixed(2)}</span>`;
           td.style.textAlign = 'right';
-          td.style.fontWeight = '700';
-          td.style.color = val > 15 ? '#ef4444' : val > 8 ? '#eab308' : '#22c55e';
-        } else {
-          td.textContent = val !== null ? val : '—';
-          td.style.textAlign = 'right';
-          td.style.color = 'var(--muted)';
-        }
+        } else { td.textContent = '—'; td.style.textAlign = 'right'; td.style.color = 'var(--muted)'; }
+
+      } else if (ci === IDX_DD && HEADERS[IDX_DD] === 'Eq.DD% Rel') {
+        if (val !== null && isFinite(val)) {
+          td.textContent = val.toFixed(1) + '%';
+          td.style.cssText = 'text-align:right;font-weight:700;color:' + getDdColor(val);
+        } else { td.textContent = '—'; td.style.textAlign = 'right'; td.style.color = 'var(--muted)'; }
+
+      } else if (ci === IDX_FL && HEADERS[IDX_FL] === 'Float Loss %') {
+        if (val !== null && isFinite(val)) {
+          td.textContent = val.toFixed(1) + '%';
+          td.style.cssText = 'text-align:right;font-weight:700;color:' + getFlColor(val);
+        } else { td.textContent = '—'; td.style.textAlign = 'right'; td.style.color = 'var(--muted)'; }
+
       } else if (BOOL_COLS.has(ci)) {
         td.innerHTML = val === 'true' ? '<span class="bool-true">✓ true</span>' : '<span class="bool-false">✗ false</span>';
+
       } else if (typeof val === 'number') {
-        td.textContent = Number.isInteger(val) ? val : val.toFixed(2);
+        td.textContent = Number.isInteger(val) ? val : parseFloat(val.toFixed(5));
         td.style.textAlign = 'right';
-      } else { td.textContent = val !== null ? val : '—'; }
+      } else { td.textContent = val; }
+
       tr.appendChild(td);
     });
     tbody.appendChild(tr);
   });
+
   document.getElementById('btnFirst').disabled = currentPage === 0;
   document.getElementById('btnPrev').disabled  = currentPage === 0;
   document.getElementById('btnNext').disabled  = currentPage >= totalPages - 1;
   document.getElementById('btnLast').disabled  = currentPage >= totalPages - 1;
-  document.getElementById('pageInfo').textContent = `Página ${currentPage+1} de ${totalPages} (${filtered.length.toLocaleString()} filas)`;
+  document.getElementById('pageInfo').textContent = `Page ${currentPage+1} of ${totalPages} (${filtered.length.toLocaleString()} rows)`;
 }
 
 function goPage(p) {
@@ -955,11 +1711,830 @@ function goPage(p) {
   renderPage();
   document.querySelector('.table-wrap').scrollTop = 0;
 }
-
 function changePageSize() { pageSize = parseInt(document.getElementById('pageSizeSelect').value); currentPage = 0; renderPage(); }
 
-document.getElementById('globalSearch').oninput = () => { currentPage = 0; applyFilters(); };
+function clearFilters() {
+  document.getElementById('globalSearch').value  = '';
+  document.getElementById('minWin').value         = '';
+  document.getElementById('maxWin').value         = '';
+  document.getElementById('maxEqDD').value        = '4.3';
+  document.getElementById('maxFloatLoss').value   = '8';
+  document.getElementById('minLrCorr').value      = '';
+  columnFilters = {};
+  document.querySelectorAll('.filter-row input').forEach(el => el.value = '');
+  document.querySelectorAll('.filter-row select').forEach(el => el.value = '');
+  currentPage = 0;
+  applyFilters();
+}
 
+function exportCSV() {
+  const rows = [HEADERS, ...filtered];
+  const csv = rows.map(r => r.map(v =>
+    typeof v === 'string' && (v.includes(',') || v.includes('"')) ? `"${v.replace(/"/g,'""')}"` : v
+  ).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+  a.download = 'optimizer_filtered.csv';
+  a.click();
+}
+
+document.getElementById('globalSearch').oninput  = () => { currentPage = 0; applyFilters(); };
+document.getElementById('minWin').oninput         = () => { currentPage = 0; applyFilters(); };
+document.getElementById('maxWin').oninput         = () => { currentPage = 0; applyFilters(); };
+document.getElementById('maxEqDD').oninput        = () => { currentPage = 0; applyFilters(); };
+document.getElementById('maxFloatLoss').oninput   = () => { currentPage = 0; applyFilters(); };
+document.getElementById('minLrCorr').oninput      = () => { currentPage = 0; applyFilters(); };
+
+/* ────────────────────────────────────────────────────────────────
+   R:R Heatmap
+──────────────────────────────────────────────────────────────── */
+function buildHeatmap() {
+  const container = document.getElementById('hm-content');
+
+  function bmPF(wr, rr)  { return (wr * rr) / (1 - wr); }
+  function bmEV(wr, rr)  { return wr * rr - (1 - wr); }
+  function bmMinRF(wr, rr) {
+    if (rr <= 0.4) return wr >= 0.84 ? 5 : 3;
+    if (rr <= 0.8) return wr >= 0.80 ? 7 : 5;
+    if (rr <= 1.2) return wr >= 0.74 ? 9 : wr >= 0.55 ? 7 : 5;
+    if (rr <= 1.8) return wr >= 0.55 ? 10 : 7;
+    if (rr <= 2.4) return wr >= 0.55 ? 12 : 9;
+    return 14;
+  }
+  function bmMinSharpe(wr, rr) {
+    if (rr <= 0.4) return wr >= 0.86 ? 18 : wr >= 0.82 ? 14 : 10;
+    if (rr <= 0.8) return wr >= 0.84 ? 14 : wr >= 0.78 ? 10 : 7;
+    if (rr <= 1.2) return wr >= 0.78 ? 9  : wr >= 0.70 ? 7  : wr >= 0.55 ? 5 : 3;
+    if (rr <= 1.8) return wr >= 0.76 ? 9  : wr >= 0.68 ? 8  : wr >= 0.55 ? 6 : 4;
+    if (rr <= 2.4) return wr >= 0.55 ? 8 : 5;
+    return wr >= 0.55 ? 9 : 6;
+  }
+  function bmMaxDD(wr, rr) {
+    if (wr >= 0.84) return rr <= 1.0 ? 3.0 : 4.0;
+    if (wr >= 0.78) return rr <= 1.2 ? 4.0 : 5.0;
+    if (wr >= 0.70) return rr <= 1.4 ? 5.0 : 6.0;
+    if (wr >= 0.55) return rr <= 2.0 ? 7.0 : 9.0;
+    return rr <= 2.0 ? 10.0 : 15.0;
+  }
+  function bmTier(wr, rr) {
+    const p = bmPF(wr, rr), e = bmEV(wr, rr);
+    if (e <= 0) return { cls: 'bm-tier-unprof', key: 'unprof', label: 'Unprofitable' };
+    if (p < 1.5) return { cls: 'bm-tier-marg',  key: 'marg',  label: 'Marginal'     };
+    if (p < 2.5) return { cls: 'bm-tier-ok',    key: 'ok',    label: 'Acceptable'   };
+    if (p < 3.5) return { cls: 'bm-tier-good',  key: 'good',  label: 'Good'         };
+    if (p < 5.0) return { cls: 'bm-tier-great', key: 'great', label: 'Great'        };
+    if (p < 6.0) return { cls: 'bm-tier-excep', key: 'excep', label: 'Exceptional'  };
+    return               { cls: 'bm-tier-cap',  key: 'cap',   label: '⚠ Overfit?'   };
+  }
+  function bmMinTrades(wr) { const z=1.96; return Math.ceil(z*z*wr*(1-wr)/(0.05*0.05)); }
+  function bmMinLRC(rr)    { return rr<=0.8 ? 0.990 : rr<=1.4 ? 0.982 : 0.975; }
+  function bmCorrPMFE(rr) {
+    if(rr<=0.4) return [0.35,0.65]; if(rr<=0.6) return [0.42,0.72];
+    if(rr<=0.8) return [0.65,0.85]; if(rr<=1.0) return [0.80,0.92];
+    if(rr<=1.4) return [0.85,0.93]; if(rr<=2.0) return [0.88,0.94];
+    if(rr<=2.6) return [0.89,0.95]; return [0.90,0.96];
+  }
+  function bmCorrPMAE(rr) {
+    if(rr<=0.4) return [0.55,0.90]; if(rr<=0.6) return [0.50,0.85];
+    if(rr<=0.8) return [0.42,0.72]; if(rr<=1.0) return [0.36,0.58];
+    if(rr<=1.4) return [0.30,0.50]; if(rr<=2.0) return [0.25,0.42];
+    if(rr<=2.6) return [0.18,0.32]; return [0.12,0.25];
+  }
+  function bmCorrMM(rr) {
+    if(rr<=0.4) return [0.30,0.68]; if(rr<=0.6) return [0.25,0.60];
+    if(rr<=0.8) return [0.20,0.50]; if(rr<=1.0) return [0.15,0.38];
+    if(rr<=1.4) return [0.10,0.28]; if(rr<=2.0) return [0.05,0.20];
+    if(rr<=2.6) return [0.03,0.12]; return [0.01,0.08];
+  }
+  function corrBar(range, hex) {
+    const lo = (range[0]*100).toFixed(0), wi = ((range[1]-range[0])*100).toFixed(0);
+    return `<div style="flex:1;height:5px;background:#2a2d3a;border-radius:3px;position:relative;margin:0 6px">
+      <div style="position:absolute;left:${lo}%;width:${wi}%;height:100%;border-radius:3px;background:${hex}"></div>
+    </div>`;
+  }
+  function tradeAnalysisHTML(wr, rr) {
+    const mt=bmMinTrades(wr), lrc=bmMinLRC(rr);
+    const pmfe=bmCorrPMFE(rr), pmae=bmCorrPMAE(rr), mm=bmCorrMM(rr);
+    const maxLoss=Math.ceil(Math.log(mt)/Math.log(1/(1-wr)));
+    const corrRow=(lbl,range,hex,valStr) =>
+      `<tr><td style="color:#64748b;padding-right:6px;white-space:nowrap">${lbl}</td>
+            <td style="width:80px">${corrBar(range,hex)}</td>
+            <td style="color:#94a3b8;font-size:9px;white-space:nowrap">${valStr}</td></tr>`;
+    return `<div style="border-top:1px solid #2a2d3a;margin-top:6px;padding-top:5px">
+      <div style="font-size:9px;font-weight:700;color:#64748b;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px">What to expect in trade analysis</div>
+      <table style="border-collapse:collapse;font-size:10px;width:100%">
+        ${corrRow('Corr(Profits,MFE)',pmfe,'#4f8ef7',pmfe[0].toFixed(2)+'–'+pmfe[1].toFixed(2))}
+        ${corrRow('Corr(Profits,MAE)',pmae,'#f97316',pmae[0].toFixed(2)+'–'+pmae[1].toFixed(2))}
+        ${corrRow('Corr(MFE,MAE)',    mm,  '#64748b',mm[0].toFixed(2)+'–'+mm[1].toFixed(2))}
+        <tr><td style="color:#64748b;padding-right:6px">LR Correlation</td>
+            <td>${corrBar([lrc,1.0],'#22c55e')}</td>
+            <td style="color:#94a3b8;font-size:9px">&gt; ${lrc.toFixed(3)}</td></tr>
+        <tr><td style="color:#64748b;padding-right:6px">Max consec. losses</td>
+            <td colspan="2" style="color:#fbbf24;font-size:10px;font-weight:700">≤ ${maxLoss}</td></tr>
+      </table>
+    </div>`;
+  }
+
+  // Find raw column indices (all after RAW_START to avoid hitting our decoded cols)
+  const customColIdx = HEADERS.findIndex(h => h.toLowerCase() === 'custom');
+  const resultIdx    = customColIdx >= 0 ? customColIdx : HEADERS.findIndex(h => h.toLowerCase() === 'result');
+  const pfIdx        = HEADERS.findIndex((h,i) => i >= RAW_START && /profit.?factor/i.test(h));
+  const profitIdx    = HEADERS.findIndex((h,i) => i >= RAW_START && /^profit$/i.test(h));
+  const rfIdx        = HEADERS.findIndex((h,i) => i >= RAW_START && /recovery.?factor/i.test(h));
+  const sharpeIdx    = HEADERS.findIndex((h,i) => i >= RAW_START && /sharpe/i.test(h));
+  const tradesIdx    = HEADERS.findIndex((h,i) => i >= RAW_START && h.toLowerCase() === 'trades');
+  // Raw RR column — search only in raw columns (i >= RAW_START)
+  const rawRrIdx     = HEADERS.findIndex((h,i) => i >= RAW_START && /r[:\s]?r|risk.?reward|reward.?risk/i.test(h));
+
+  if (resultIdx < 0) {
+    container.innerHTML = `<div class="hm-no-data">⚠ No <em>Custom</em> (or <em>Result</em>) column found.<br><span style="font-size:11px;color:#64748b">The heatmap needs a Custom column in SCORE_FFF_DDD.LR format.</span></div>`;
+    return;
+  }
+
+  const WRS = []; for (let w = 20; w <= 100; w++) WRS.push(w);
+  const RRS = []; for (let r = 60; r >= 2; r--) RRS.push(r / 10);
+
+  function r2(v) { return Math.round(v * 100) / 100; }
+  function computeScore(wr, rr, pf, rf, sharpe, dd) {
+    const reqPF=bmPF(wr,rr), reqRF=bmMinRF(wr,rr), reqSR=bmMinSharpe(wr,rr), reqDD=bmMaxDD(wr,rr);
+    const scores=[], pass={pf:null,rf:null,sharpe:null,dd:null};
+    if (typeof pf     === 'number' && isFinite(pf))     { scores.push(Math.min(r2(pf)/reqPF,1));     pass.pf     = pf >= reqPF; }
+    if (typeof rf     === 'number' && isFinite(rf))     { scores.push(Math.min(r2(rf)/reqRF,1));     pass.rf     = rf >= reqRF; }
+    if (typeof sharpe === 'number' && isFinite(sharpe)) { scores.push(Math.min(r2(sharpe)/reqSR,1)); pass.sharpe = sharpe >= reqSR; }
+    if (typeof dd     === 'number' && isFinite(dd))     { const v=r2(dd); scores.push(v<=reqDD?1:reqDD/v); pass.dd = dd <= reqDD; }
+    if (!scores.length) return { total: null, pass };
+    return { total: scores.reduce((a,b)=>a+b,0)/scores.length, pass };
+  }
+
+  const buckets = new Map();
+  DATA.forEach(row => {
+    // WR: prefer decoded col, fallback to raw
+    let wrPct = row[IDX_WR];
+    if (wrPct === null || wrPct === undefined) {
+      const rawWrIdx2 = HEADERS.findIndex((h, i) => i >= RAW_START && /win.?rate|winrate/i.test(h));
+      if (rawWrIdx2 >= 0) wrPct = row[rawWrIdx2];
+    }
+    // RR from raw column
+    let rr = rawRrIdx >= 0 ? row[rawRrIdx] : null;
+    if (wrPct===null||rr===null||wrPct<20||wrPct>100||rr<0.1||rr>6.0) return;
+
+    const wr      = wrPct / 100;
+    const result  = resultIdx >= 0 ? row[resultIdx] : null;
+    const pf      = pfIdx     >= 0 ? row[pfIdx]     : null;
+    const profit  = profitIdx >= 0 ? row[profitIdx] : null;
+    const rf      = rfIdx     >= 0 ? row[rfIdx]     : null;
+    const sharpe  = sharpeIdx >= 0 ? row[sharpeIdx] : null;
+    const trades  = tradesIdx >= 0 ? row[tradesIdx] : null;
+    const floatLoss = (HEADERS[IDX_FL] === 'Float Loss %' && row[IDX_FL] !== null) ? row[IDX_FL] : null;
+
+    // DD: prefer decoded Eq.DD% Rel, fallback to raw encoded, then raw column
+    let dd = null;
+    if (HEADERS[IDX_DD] === 'Eq.DD% Rel' && row[IDX_DD] !== null && isFinite(row[IDX_DD])) {
+      dd = row[IDX_DD];
+    } else if (typeof result === 'number' && isFinite(result) && result > 0) {
+      const dddRaw = Math.floor(result) % 1000;
+      if (dddRaw > 0) dd = dddRaw / 10;
+    }
+
+    const sc     = computeScore(wr, rr, pf, rf, sharpe, dd);
+    const rrKey  = Math.round(rr * 10) / 10;
+    const key    = wrPct + '|' + rrKey;
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key).push({ result, profit, pf, rf, sharpe, dd, floatLoss, trades, wr, rr: rrKey, ...sc });
+  });
+
+  const cellMap = new Map();
+  buckets.forEach((candidates, key) => {
+    let best = null;
+    candidates.forEach(c => {
+      if (!best) { best = c; return; }
+      const cs = c.total ?? -1, bs = best.total ?? -1;
+      if (cs > bs) { best = c; return; }
+      if (cs < bs) return;
+      const cp = c.profit ?? -Infinity, bp = best.profit ?? -Infinity;
+      if (cp > bp) best = c;
+    });
+    if (best) cellMap.set(key, best);
+  });
+
+  gCellMap = cellMap;
+
+  if (!cellMap.size) {
+    container.innerHTML = `<div class="hm-no-data">⚠ Heatmap requires a raw <em>R:R</em> (or <em>Risk Reward</em>) column in the XML data.</div>`;
+    return;
+  }
+
+  let top5ProfitMap = new Map();
+
+  const tierKeyCache = new Map();
+  RRS.forEach(rr => {
+    WRS.forEach(wrPct => {
+      tierKeyCache.set(wrPct+'|'+rr, bmTier(wrPct/100, rr).key);
+    });
+  });
+
+  document.getElementById('hm-stat-total').textContent = cellMap.size.toLocaleString();
+
+  function cellPassesZoneScore(key) {
+    const parts = key.split('|');
+    const wrPct = parseFloat(parts[0]), rr = parseFloat(parts[1]);
+    if (hmFilters.zones && hmFilters.zones.size < ALL_ZONES.size) {
+      const zoneKey = tierKeyCache.get(key) ?? bmTier(wrPct/100, rr).key;
+      if (!hmFilters.zones.has(zoneKey)) return false;
+    }
+    if (hmFilters.minScore != null && hmFilters.minScore > 0) {
+      const cell = cellMap.get(key);
+      if (!cell || cell.total === null) return false;
+      if (Math.round(cell.total * 100) < hmFilters.minScore) return false;
+    }
+    return true;
+  }
+
+  function cellPassesOtherFilters(key) {
+    const parts = key.split('|');
+    const wrPct = parseFloat(parts[0]), rr = parseFloat(parts[1]);
+    if (hmFilters.minWr != null && wrPct < hmFilters.minWr) return false;
+    if (hmFilters.maxWr != null && wrPct > hmFilters.maxWr) return false;
+    if (hmFilters.minRr != null && rr    < hmFilters.minRr) return false;
+    if (hmFilters.maxRr != null && rr    > hmFilters.maxRr) return false;
+    const cell = cellMap.get(key);
+    const metricsActive = hmFilters.minPf != null || hmFilters.minRf != null ||
+                          hmFilters.minSharpe != null || hmFilters.maxDd != null ||
+                          hmFilters.maxFloat != null || hmFilters.minTrades != null;
+    if (!cell || cell.total === null) return !metricsActive;
+    if (hmFilters.minPf     != null && (cell.pf        === null || cell.pf        < hmFilters.minPf))     return false;
+    if (hmFilters.minRf     != null && (cell.rf        === null || cell.rf        < hmFilters.minRf))     return false;
+    if (hmFilters.minSharpe != null && (cell.sharpe    === null || cell.sharpe    < hmFilters.minSharpe)) return false;
+    if (hmFilters.maxDd     != null && (cell.dd        === null || cell.dd        > hmFilters.maxDd))     return false;
+    if (hmFilters.maxFloat  != null && (cell.floatLoss === null || cell.floatLoss > hmFilters.maxFloat))  return false;
+    if (hmFilters.minTrades != null && (cell.trades    === null || cell.trades    < hmFilters.minTrades)) return false;
+    return true;
+  }
+
+  function cellPassesHmFilters(key) {
+    return cellPassesZoneScore(key) && cellPassesOtherFilters(key);
+  }
+
+  function updateHmStats() {
+    const matchWrap = document.getElementById('hm-stat-match-wrap');
+    const dimWrap   = document.getElementById('hm-stat-dim-wrap');
+    const matchEl   = document.getElementById('hm-stat-match');
+    const dimEl     = document.getElementById('hm-stat-dim');
+    const tagsEl    = document.getElementById('hm-active-filters');
+    if (!isHmFilterActive()) { matchWrap.style.display='none'; dimWrap.style.display='none'; tagsEl.innerHTML=''; return; }
+    let match = 0;
+    cellMap.forEach((_, key) => { if (cellPassesHmFilters(key)) match++; });
+    const dim = cellMap.size - match;
+    matchWrap.style.display = 'inline'; dimWrap.style.display = 'inline';
+    matchEl.textContent = match.toLocaleString(); dimEl.textContent = dim.toLocaleString();
+    const tags = [];
+    const f = hmFilters;
+    if (f.zones && f.zones.size < ALL_ZONES.size) {
+      const zoneLabels = { unprof:'Unprof', marg:'Marginal', ok:'OK', good:'Good', great:'Great', excep:'Exceptional', cap:'Overfit?' };
+      tags.push({ lbl: 'Zones: ' + [...f.zones].map(z => zoneLabels[z]||z).join(', '), cls: 'zone-tag' });
+    }
+    if (f.minScore != null && f.minScore > 0) tags.push({ lbl: `Score ≥ ${f.minScore}%`, cls: 'score-tag' });
+    if (f.minWr != null || f.maxWr != null) tags.push({ lbl: `WR% ${f.minWr??''}–${f.maxWr??''}`, cls: '' });
+    if (f.minRr != null || f.maxRr != null) tags.push({ lbl: `RR ${f.minRr??''}–${f.maxRr??''}`,  cls: '' });
+    if (f.minPf     != null) tags.push({ lbl: `PF ≥ ${f.minPf}`,         cls: '' });
+    if (f.minRf     != null) tags.push({ lbl: `RF ≥ ${f.minRf}`,         cls: '' });
+    if (f.minSharpe != null) tags.push({ lbl: `Sharpe ≥ ${f.minSharpe}`, cls: '' });
+    if (f.maxDd     != null) tags.push({ lbl: `DD ≤ ${f.maxDd}%`,        cls: 'dd-tag' });
+    if (f.maxFloat  != null) tags.push({ lbl: `Float ≤ ${f.maxFloat}%`,  cls: 'fl-tag' });
+    if (f.minTrades != null) tags.push({ lbl: `Trades ≥ ${f.minTrades}`, cls: '' });
+    tagsEl.innerHTML = tags.map(t => `<span class="hm-filter-tag${t.cls?' '+t.cls:''}">${t.lbl}</span>`).join('');
+  }
+
+  function applyHmDimFn() {
+    recomputeTop5();
+    vFirst = -1; vLast = -1;
+    calcVisibleRows();
+    hmTbody.querySelectorAll('td[data-hm-key]').forEach(td => {
+      td.classList.toggle('hm-dim', !cellPassesOtherFilters(td.dataset.hmKey));
+    });
+    updateHmStats();
+  }
+
+  function recomputeTop5() {
+    top5ProfitMap = new Map();
+    const sorted = [...cellMap.entries()]
+      .filter(([key]) => cellPassesZoneScore(key) && cellPassesOtherFilters(key))
+      .sort(([, a], [, b]) => (b.profit ?? -Infinity) - (a.profit ?? -Infinity));
+    sorted.slice(0, 5).forEach(([key], i) => top5ProfitMap.set(key, i + 1));
+  }
+
+  hmApplyDim = applyHmDimFn;
+  recomputeTop5();
+
+  const tipEl = document.getElementById('hmTooltip');
+  const fmtV  = (v, d=2) => (typeof v==='number'&&isFinite(v)) ? v.toFixed(d) : '—';
+  const tradeHTMLCache = new Map();
+  function getCachedTradeHTML(wr, rr) {
+    const k=wr+'|'+rr;
+    if(!tradeHTMLCache.has(k)) tradeHTMLCache.set(k, tradeAnalysisHTML(wr,rr));
+    return tradeHTMLCache.get(k);
+  }
+
+  const tipHTMLCache = new Map();
+  RRS.forEach(rr => {
+    WRS.forEach(wrPct => {
+      const wr=wrPct/100, key=wrPct+'|'+rr;
+      const cell=cellMap.get(key), tier=bmTier(wr,rr);
+      const reqPF=bmPF(wr,rr),reqRF=bmMinRF(wr,rr),reqSR=bmMinSharpe(wr,rr),reqDD=bmMaxDD(wr,rr);
+      let html;
+      if (!cell||cell.total===null) {
+        html=`<strong>WR ${wrPct}% &nbsp;·&nbsp; RR 1:${rr.toFixed(1)}</strong>
+          <span style="color:#64748b;font-size:10px"> &nbsp;${tier.label}</span><br>
+          <span style="color:#64748b">No results decoded to this cell.</span><br>
+          <span style="font-size:10px;color:#475569;margin-top:4px;display:block">Thresholds: PF ${reqPF.toFixed(2)} · RF>${reqRF} · SR>${reqSR} · DD<${reqDD}%</span>
+          ${getCachedTradeHTML(wr,rr)}`;
+      } else {
+        const pct=Math.round(cell.total*100), isOver=pct>100, isFull=pct>=100;
+        const mk=(lbl,actual,req,pass,inv=false)=>{
+          const col=pass===null?'#64748b':pass?'#4ade80':'#f87171';
+          const sym=pass===null?'—':pass?'✓':'✗';
+          return `<tr><td style="color:#64748b;padding-right:8px">${lbl}</td>
+            <td style="font-weight:700;color:${col}">${sym} ${actual}</td>
+            <td style="color:#475569;font-size:10px">${inv?'<':'>'} ${req}</td></tr>`;
+        };
+        const flRow = cell.floatLoss !== null
+          ? `<tr><td style="color:#64748b;padding-right:8px">Float Loss</td><td style="font-weight:700;color:#fb923c">${fmtV(cell.floatLoss)}%</td><td></td></tr>`
+          : '';
+        html=`<strong>WR ${wrPct}% &nbsp;·&nbsp; RR 1:${rr.toFixed(1)}</strong>
+          <span style="color:#64748b;font-size:10px"> &nbsp;${tier.label}</span>
+          <div style="margin:5px 0 3px;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.04);display:flex;align-items:center;gap:8px">
+            <span style="font-size:9px;color:#64748b">Best score</span>
+            <span style="font-size:18px;font-weight:900;color:${isOver?'#a78bfa':isFull?'#10b981':pct>=75?'#22c55e':pct>=50?'#eab308':pct>=25?'#f97316':'#ef4444'}">${pct}%</span>
+            ${isOver?'<span style="font-size:9px;color:#a78bfa;font-weight:700">⚡ exceeds all thresholds</span>':isFull?'<span style="font-size:9px;color:#10b981;font-weight:700">✓ all thresholds met</span>':''}
+          </div>
+          <div style="border-top:1px solid #2a2d3a;padding-top:5px;margin-top:2px">
+            <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:4px">Best result: ${cell.result!==null?cell.result.toFixed(2):'—'}</div>
+            <table style="border-collapse:collapse;font-size:10px">
+              ${cell.profit!==null&&cell.profit!==undefined?`<tr><td style="color:#64748b;padding-right:8px">Profit</td><td style="font-weight:700;color:#4ade80">$${fmtV(cell.profit,2)}</td><td></td></tr>`:''}
+              ${mk('Profit Factor',  fmtV(cell.pf),    reqPF.toFixed(2),cell.pass.pf)}
+              ${mk('Recovery Factor',fmtV(cell.rf),    reqRF,           cell.pass.rf)}
+              ${mk('Sharpe Ratio',   fmtV(cell.sharpe),reqSR,           cell.pass.sharpe)}
+              ${mk('Eq.DD% Rel',     fmtV(cell.dd)+'%',reqDD+'%',       cell.pass.dd,true)}
+              ${flRow}
+              ${cell.trades!==null?`<tr><td style="color:#64748b;padding-right:8px">Trades</td><td style="font-weight:700;color:#e2e8f0">${cell.trades}</td><td></td></tr>`:''}
+            </table>
+          </div>
+          ${getCachedTradeHTML(wr,rr)}`;
+      }
+      tipHTMLCache.set(key, html);
+    });
+  });
+
+  function barCls(pct) {
+    if (pct>100)  return 'bm-bar-over';
+    if (pct>=100) return 'bm-bar-100';
+    if (pct>=75)  return 'bm-bar-75';
+    if (pct>=50)  return 'bm-bar-50';
+    if (pct>=25)  return 'bm-bar-25';
+    return 'bm-bar-0';
+  }
+  function dotHTML(pass, lbl) {
+    const cls=pass===null?'bm-dot-na':pass?'bm-dot-pass':'bm-dot-fail';
+    return `<div class="bm-chk"><div class="bm-chk-dot ${cls}"></div><span class="bm-chk-lbl">${lbl}</span></div>`;
+  }
+
+  const legendHTML = `
+    <div class="hm-legend" style="flex-wrap:wrap;gap:8px 16px;margin-bottom:8px">
+      <span style="font-size:11px;font-weight:600;color:#64748b;">Cell bg = theoretical PF tier:</span>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#2d1212"></div> Unprofitable</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#2d200a"></div> Marginal (PF &lt;1.5)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#122510"></div> Acceptable (1.5–2.5)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#163510"></div> Good (2.5–3.5)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#1a4a12"></div> Great (3.5–5.0)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#0d4a22"></div> Exceptional (5.0–6.0)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#252840"></div> ⚠ Overfit? (&gt;6.0)</div>
+      <div class="hm-legend-item"><div class="hm-legend-dot" style="background:#1a1d27;border:1px solid #2a2d3a"></div> No data</div>
+    </div>
+    <div class="hm-legend" style="gap:8px 16px;margin-bottom:10px">
+      <span style="font-size:11px;font-weight:600;color:#64748b;">Score bar:</span>
+      <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:#ef4444"></div> 0–25%</div>
+      <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:#f97316"></div> 25–50%</div>
+      <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:#eab308"></div> 50–75%</div>
+      <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:#22c55e"></div> 75–99%</div>
+      <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:#10b981;box-shadow:0 0 4px #10b981"></div> 100% ✓</div>
+      <div class="hm-legend-item"><div style="width:20px;height:5px;border-radius:2px;background:linear-gradient(90deg,#10b981,#a78bfa)"></div> &gt;100% ⚡</div>
+    </div>
+    <div class="hm-info">Cell bg = PF tier. Score % = threshold compliance. Tooltip shows Float Loss % when available. <span style="color:#4f8ef7">Click to cycle highlight.</span></div>
+    <div class="hm-legend" style="gap:8px 16px;margin-bottom:10px">
+      <span style="font-size:11px;font-weight:600;color:#64748b;">Top profit:</span>
+      <div class="hm-legend-item"><div style="width:14px;height:14px;border-radius:3px;border:2px solid #ffd700;background:rgba(255,215,0,0.1)"></div> #1</div>
+      <div class="hm-legend-item"><div style="width:14px;height:14px;border-radius:3px;border:2px solid #c0c0c0;background:rgba(192,192,192,0.1)"></div> #2</div>
+      <div class="hm-legend-item"><div style="width:14px;height:14px;border-radius:3px;border:2px solid #cd7f32;background:rgba(205,127,50,0.1)"></div> #3</div>
+    </div>
+  `;
+
+  function buildCellHTML(wrPct, rr) {
+    const wr=wrPct/100, tier=bmTier(wr,rr), key=wrPct+'|'+rr;
+    if (!cellPassesZoneScore(key)) return `<td class="${tier.cls}"></td>`;
+    const cell=cellMap.get(key);
+    if (!cell||cell.total===null) {
+      return `<td class="${tier.cls}" data-hm-key="${key}"><div class="bm-no-data-cell">—</div></td>`;
+    }
+    const pct=Math.round(cell.total*100), isOver=pct>100, isFull=pct>=100, bar=barCls(pct);
+    const rank=top5ProfitMap.get(key), rankCls=rank?` hm-top-${rank}`:'';
+    return `<td class="${tier.cls}${rankCls}" data-hm-key="${key}"><div class="bm-cell-wrap"><div class="bm-score-bar ${bar}" style="width:${Math.min(pct,100)}%"></div><div class="bm-score-main"><div class="bm-score-left"><span class="bm-score-pct${isOver?' bm-over':isFull?' bm-full':''}">${pct}%</span><div class="bm-result-val">${cell.result!==null?Math.floor(cell.result):'—'}</div></div><div class="bm-checks"><div class="bm-check-row">${dotHTML(cell.pass.pf,'PF')}${dotHTML(cell.pass.rf,'RF')}</div><div class="bm-check-row">${dotHTML(cell.pass.sharpe,'SR')}${dotHTML(cell.pass.dd,'DD')}</div></div></div></div></td>`;
+  }
+
+  const table = document.createElement('table');
+  table.className = 'hm-table';
+  const thead = document.createElement('thead');
+  const headTr = document.createElement('tr');
+  const cornerTh = document.createElement('th');
+  cornerTh.className = 'hm-row-header';
+  cornerTh.textContent = 'RR \\ WR%';
+  headTr.appendChild(cornerTh);
+  WRS.forEach(w => { const th=document.createElement('th'); th.textContent=w+'%'; headTr.appendChild(th); });
+  thead.appendChild(headTr);
+  table.appendChild(thead);
+
+  const hmTbody = document.createElement('tbody');
+  const spacerTopTr = document.createElement('tr');
+  const spacerTopTd = document.createElement('td');
+  spacerTopTd.colSpan = WRS.length + 1;
+  Object.assign(spacerTopTd.style, { padding:'0', border:'none', height:'0' });
+  spacerTopTr.appendChild(spacerTopTd);
+  const spacerBotTr = document.createElement('tr');
+  const spacerBotTd = document.createElement('td');
+  spacerBotTd.colSpan = WRS.length + 1;
+  Object.assign(spacerBotTd.style, { padding:'0', border:'none', height:'0' });
+  spacerBotTr.appendChild(spacerBotTd);
+  hmTbody.appendChild(spacerTopTr);
+  hmTbody.appendChild(spacerBotTr);
+  table.appendChild(hmTbody);
+
+  const hlMap = new Map(), hlClasses = ['hm-hl-1','hm-hl-2','hm-hl-3','hm-hl-4'];
+  let rafPending=false, pendingX=0, pendingY=0;
+
+  table.addEventListener('mousemove', e => {
+    const td = e.target.closest('td[data-hm-key]');
+    if (!td) { tipEl.style.display='none'; return; }
+    const key = td.dataset.hmKey;
+    if (tipEl._hmKey !== key) { tipEl.innerHTML=tipHTMLCache.get(key)??''; tipEl.style.display='block'; tipEl._hmKey=key; }
+    pendingX=e.clientX; pendingY=e.clientY;
+    if (!rafPending) {
+      rafPending=true;
+      requestAnimationFrame(()=>{
+        rafPending=false;
+        const TIP_W=374, TIP_H=450;
+        const x=pendingX-TIP_W-14<4?pendingX+14:pendingX-TIP_W-14;
+        const y=pendingY-TIP_H-14<4?pendingY+20:pendingY-TIP_H-14;
+        tipEl.style.transform=`translate(${x}px,${y}px)`;
+      });
+    }
+  });
+  table.addEventListener('mouseover',  e => { const td=e.target.closest('td[data-hm-key]'); if(td) td.style.willChange='opacity, outline-color'; });
+  table.addEventListener('mouseout',   e => { const td=e.target.closest('td[data-hm-key]'); if(td) td.style.willChange='auto'; });
+  table.addEventListener('mouseleave', () => { tipEl.style.display='none'; tipEl._hmKey=null; });
+  table.addEventListener('click', e => {
+    const td=e.target.closest('td[data-hm-key]');
+    if(!td)return;
+    const key=td.dataset.hmKey, cur=hlMap.get(key)??-1;
+    if(cur>=0) td.classList.remove(hlClasses[cur]);
+    const next=cur+1<hlClasses.length?cur+1:-1;
+    hlMap.set(key,next);
+    if(next>=0) td.classList.add(hlClasses[next]);
+  });
+
+  container.innerHTML = legendHTML;
+  const gridWrap = document.createElement('div');
+  gridWrap.className = 'hm-grid-wrap';
+  gridWrap.appendChild(table);
+  container.appendChild(gridWrap);
+
+  const CELL_H_PX=83, ROW_BUFF=5, nRows=RRS.length;
+  let vFirst=-1, vLast=-1, scrollRaf=null;
+
+  function renderVirtRows(first, last) {
+    if (first===vFirst && last===vLast) return;
+    vFirst=first; vLast=last;
+    spacerTopTd.style.height=(first*CELL_H_PX)+'px';
+    spacerBotTd.style.height=((nRows-1-last)*CELL_H_PX)+'px';
+    while(hmTbody.children.length>2) hmTbody.removeChild(hmTbody.children[1]);
+    const html=[];
+    for(let i=first;i<=last;i++) {
+      const rr=RRS[i];
+      const rowHTML=`<th class="hm-row-header">1:${rr.toFixed(1)}</th>`+
+        WRS.map(wrPct=>buildCellHTML(wrPct,rr)).join('');
+      html.push(`<tr data-hm-row="${i}">${rowHTML}</tr>`);
+    }
+    const temp=document.createElement('tbody');
+    temp.innerHTML=html.join('');
+    while(temp.firstChild) hmTbody.insertBefore(temp.firstChild, spacerBotTr);
+    hlMap.forEach((hlIdx,key)=>{
+      if(hlIdx<0)return;
+      const td=hmTbody.querySelector(`td[data-hm-key="${CSS.escape(key)}"]`);
+      if(td) td.classList.add(hlClasses[hlIdx]);
+    });
+    top5ProfitMap.forEach((rank,key)=>{
+      const td=hmTbody.querySelector(`td[data-hm-key="${CSS.escape(key)}"]`);
+      if(td) td.classList.add(`hm-top-${rank}`);
+    });
+    hmTbody.querySelectorAll('td[data-hm-key]').forEach(td => {
+      td.classList.toggle('hm-dim', !cellPassesOtherFilters(td.dataset.hmKey));
+    });
+  }
+
+  function calcVisibleRows() {
+    const tabEl=document.getElementById('tab-heatmap');
+    if(!tabEl||tabEl.offsetParent===null) return;
+    const scrollTop=tabEl.scrollTop, viewH=tabEl.clientHeight;
+    const tableRect=table.getBoundingClientRect(), tabRect=tabEl.getBoundingClientRect();
+    const tableTopInScroll=tableRect.top-tabRect.top+scrollTop;
+    const theadH=thead.getBoundingClientRect().height||20;
+    const dataStart=tableTopInScroll+theadH;
+    const relTop=scrollTop-dataStart;
+    const first=Math.max(0,       Math.floor(relTop/CELL_H_PX)-ROW_BUFF);
+    const last =Math.min(nRows-1, Math.ceil((relTop+viewH)/CELL_H_PX)+ROW_BUFF);
+    renderVirtRows(first, last);
+  }
+
+  hmRecalcVisible = calcVisibleRows;
+  requestAnimationFrame(calcVisibleRows);
+
+  const hmTabEl=document.getElementById('tab-heatmap');
+  hmTabEl.addEventListener('scroll', ()=>{
+    if(scrollRaf)return;
+    scrollRaf=requestAnimationFrame(()=>{ scrollRaf=null; calcVisibleRows(); });
+  }, { passive: true });
+
+  requestAnimationFrame(() => { if(hmApplyDim) hmApplyDim(); });
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Rank Tab
+──────────────────────────────────────────────────────────────── */
+let rankFilters = { zones: new Set(['great','excep']), minScore: 90, maxDd: 4.3, maxFloat: 8 };
+
+function _rankVal(id) {
+  const v = parseFloat(document.getElementById(id)?.value);
+  return isNaN(v) ? null : v;
+}
+
+function toggleRankZone(btn) {
+  const zone = btn.dataset.zone;
+  if (rankFilters.zones.has(zone)) { rankFilters.zones.delete(zone); btn.classList.remove('active'); }
+  else { rankFilters.zones.add(zone); btn.classList.add('active'); }
+  buildRankTab();
+}
+
+function onRankFilter() {
+  rankFilters.minScore  = _rankVal('rf-minScore');
+  rankFilters.minWr     = _rankVal('rf-minWr');
+  rankFilters.maxWr     = _rankVal('rf-maxWr');
+  rankFilters.minRr     = _rankVal('rf-minRr');
+  rankFilters.maxRr     = _rankVal('rf-maxRr');
+  rankFilters.minPf     = _rankVal('rf-minPf');
+  rankFilters.minRf     = _rankVal('rf-minRf');
+  rankFilters.minSharpe = _rankVal('rf-minSharpe');
+  rankFilters.maxDd     = _rankVal('rf-maxDd');
+  rankFilters.maxFloat  = _rankVal('rf-maxFloat');
+  rankFilters.minTrades = _rankVal('rf-minTrades');
+  buildRankTab();
+}
+
+function clearRankFilters() {
+  rankFilters = { zones: new Set(['great','excep']), minScore: 90, maxDd: 4.3, maxFloat: 8 };
+  document.querySelectorAll('#rf-minWr,#rf-maxWr,#rf-minRr,#rf-maxRr,#rf-minPf,#rf-minRf,#rf-minSharpe,#rf-minTrades')
+    .forEach(el => el.value = '');
+  const sc = document.getElementById('rf-minScore'); if (sc) sc.value = 90;
+  const ddEl = document.getElementById('rf-maxDd');   if (ddEl) ddEl.value = 4.3;
+  const flEl = document.getElementById('rf-maxFloat'); if (flEl) flEl.value = 8;
+  document.querySelectorAll('.rank-filter-bar .hm-zone-btn').forEach(btn => {
+    btn.classList.toggle('active', ['great','excep'].includes(btn.dataset.zone));
+  });
+  buildRankTab();
+}
+
+function buildRankTab() {
+  const container = document.getElementById('rank-content');
+  if (!DATA.length) { container.innerHTML = '<div class="rank-empty">Load an XML file to see rankings.</div>'; return; }
+  if (!gCellMap.size) { container.innerHTML = '<div class="rank-empty">Heatmap not yet built — try switching to the R:R Heatmap tab first, then come back.</div>'; return; }
+
+  function _bmPF(wr, rr)  { return (wr * rr) / (1 - wr); }
+  function _bmEV(wr, rr)  { return wr * rr - (1 - wr); }
+  function _bmMinRF(wr, rr) {
+    if (rr <= 0.4) return wr >= 0.84 ? 5 : 3;
+    if (rr <= 0.8) return wr >= 0.80 ? 7 : 5;
+    if (rr <= 1.2) return wr >= 0.74 ? 9 : wr >= 0.55 ? 7 : 5;
+    if (rr <= 1.8) return wr >= 0.55 ? 10 : 7;
+    if (rr <= 2.4) return wr >= 0.55 ? 12 : 9;
+    return 14;
+  }
+  function _bmMinSharpe(wr, rr) {
+    if (rr <= 0.4) return wr >= 0.86 ? 18 : wr >= 0.82 ? 14 : 10;
+    if (rr <= 0.8) return wr >= 0.84 ? 14 : wr >= 0.78 ? 10 : 7;
+    if (rr <= 1.2) return wr >= 0.78 ? 9  : wr >= 0.70 ? 7  : wr >= 0.55 ? 5 : 3;
+    if (rr <= 1.8) return wr >= 0.76 ? 9  : wr >= 0.68 ? 8  : wr >= 0.55 ? 6 : 4;
+    if (rr <= 2.4) return wr >= 0.55 ? 8 : 5;
+    return wr >= 0.55 ? 9 : 6;
+  }
+  function _bmMaxDD(wr, rr) {
+    if (wr >= 0.84) return rr <= 1.0 ? 3.0 : 4.0;
+    if (wr >= 0.78) return rr <= 1.2 ? 4.0 : 5.0;
+    if (wr >= 0.70) return rr <= 1.4 ? 5.0 : 6.0;
+    if (wr >= 0.55) return rr <= 2.0 ? 7.0 : 9.0;
+    return rr <= 2.0 ? 10.0 : 15.0;
+  }
+  function _bmTierKey(wr, rr) {
+    const p = _bmPF(wr, rr), e = _bmEV(wr, rr);
+    if (e <= 0) return 'unprof';
+    if (p < 1.5) return 'marg';
+    if (p < 2.5) return 'ok';
+    if (p < 3.5) return 'good';
+    if (p < 5.0) return 'great';
+    if (p < 6.0) return 'excep';
+    return 'cap';
+  }
+  const TIER_INFO = {
+    unprof: { label:'Unprofitable', color:'#f87171' },
+    marg:   { label:'Marginal',     color:'#fbbf24' },
+    ok:     { label:'Acceptable',   color:'#86efac' },
+    good:   { label:'Good',         color:'#4ade80' },
+    great:  { label:'Great',        color:'#22d55a' },
+    excep:  { label:'Exceptional',  color:'#34d399' },
+    cap:    { label:'⚠ Overfit?',   color:'#a5b4fc' },
+  };
+  function _uncapped(cell, wr, rr) {
+    const reqPF=_bmPF(wr,rr), reqRF=_bmMinRF(wr,rr), reqSR=_bmMinSharpe(wr,rr), reqDD=_bmMaxDD(wr,rr);
+    let s=0, n=0;
+    if (typeof cell.pf==='number'&&isFinite(cell.pf))         { s+=cell.pf/reqPF;       n++; }
+    if (typeof cell.rf==='number'&&isFinite(cell.rf))         { s+=cell.rf/reqRF;       n++; }
+    if (typeof cell.sharpe==='number'&&isFinite(cell.sharpe)) { s+=cell.sharpe/reqSR;   n++; }
+    if (typeof cell.dd==='number'&&isFinite(cell.dd)&&cell.dd>0) { s+=reqDD/cell.dd;    n++; }
+    return n > 0 ? s / n : -1;
+  }
+
+  const qualifying = [];
+  gCellMap.forEach((cell, key) => {
+    const [wrStr, rrStr] = key.split('|');
+    const wrPct = parseFloat(wrStr), rr = parseFloat(rrStr), wr = wrPct / 100;
+
+    const tierKey = _bmTierKey(wr, rr);
+    if (rankFilters.zones && rankFilters.zones.size > 0 && !rankFilters.zones.has(tierKey)) return;
+
+    const scorePct = cell.total != null ? Math.round(cell.total * 100) : 0;
+    if (rankFilters.minScore != null && scorePct < rankFilters.minScore) return;
+
+    if (rankFilters.minWr != null && wrPct < rankFilters.minWr) return;
+    if (rankFilters.maxWr != null && wrPct > rankFilters.maxWr) return;
+    if (rankFilters.minRr != null && rr    < rankFilters.minRr) return;
+    if (rankFilters.maxRr != null && rr    > rankFilters.maxRr) return;
+
+    if (rankFilters.minPf     != null && (cell.pf        == null || cell.pf        < rankFilters.minPf))     return;
+    if (rankFilters.minRf     != null && (cell.rf        == null || cell.rf        < rankFilters.minRf))     return;
+    if (rankFilters.minSharpe != null && (cell.sharpe    == null || cell.sharpe    < rankFilters.minSharpe)) return;
+    if (rankFilters.maxDd     != null && (cell.dd        == null || cell.dd        >= rankFilters.maxDd))    return;
+    if (rankFilters.maxFloat  != null && (cell.floatLoss == null || cell.floatLoss >= rankFilters.maxFloat)) return;
+    if (rankFilters.minTrades != null && (cell.trades    == null || cell.trades    < rankFilters.minTrades)) return;
+
+    qualifying.push({ ...cell, wrPct, rr, wr, tierKey });
+  });
+
+  document.getElementById('rank-stat-cells').textContent   = gCellMap.size.toLocaleString();
+  document.getElementById('rank-stat-qualify').textContent = qualifying.length.toLocaleString();
+
+  if (!qualifying.length) {
+    container.innerHTML = '<div class="rank-empty">No cells pass the current filters. Try relaxing the zone or score requirements.</div>';
+    return;
+  }
+
+  const tiePctRaw = parseFloat(document.getElementById('rf-tiePct')?.value);
+  const tiePct = isFinite(tiePctRaw) && tiePctRaw >= 0 ? tiePctRaw : 10;
+  const tieFrac = tiePct / 100;
+  const tieLabelEl = document.getElementById('rank-stat-tiepct');
+  if (tieLabelEl) tieLabelEl.textContent = tiePct;
+
+  qualifying.sort((a, b) => {
+    const ap = a.profit ?? -Infinity, bp = b.profit ?? -Infinity;
+    if (ap === -Infinity && bp === -Infinity) return 0;
+    const maxP = Math.max(Math.abs(ap), Math.abs(bp));
+    const similar = tieFrac > 0 && maxP > 0 && Math.abs(ap - bp) / maxP <= tieFrac;
+    if (similar) {
+      const aWR = a.wrPct, bWR = b.wrPct;
+      if (Math.abs(aWR - bWR) > 0.001) return bWR - aWR;
+    }
+    return bp - ap;
+  });
+
+  const topN = parseInt(document.getElementById('rf-topN')?.value) || 20;
+  const topList = qualifying.slice(0, topN);
+  const maxProfit = Math.max(...topList.map(c => c.profit ?? 0).filter(isFinite), 1);
+
+  const fmtN = (v, d=2) => (v != null && isFinite(v)) ? v.toFixed(d) : '—';
+  const fmtI = v => (v != null && isFinite(v)) ? Math.round(v).toLocaleString() : '—';
+
+  function scoreColor(pct) {
+    if (pct > 100) return '#a78bfa';
+    if (pct >= 100) return '#10b981';
+    if (pct >= 75)  return '#22c55e';
+    if (pct >= 50)  return '#eab308';
+    return '#f97316';
+  }
+  function dotHtml(pass, lbl) {
+    const cls = pass === null ? 'rank-dot rank-dot-na' : pass ? 'rank-dot rank-dot-pass' : 'rank-dot rank-dot-fail';
+    return `<span class="${cls}" title="${lbl}: ${pass===null?'n/a':pass?'pass':'fail'}"></span><span class="rank-dot-lbl">${lbl}</span>`;
+  }
+  function statValClass(pass) { return pass === true ? 'good' : pass === false ? 'bad' : 'neu'; }
+
+  const medals = ['🥇','🥈','🥉'];
+
+  let html = '<div class="rank-grid">';
+  topList.forEach((cell, idx) => {
+    const rank = idx + 1;
+    const tier = TIER_INFO[cell.tierKey] || TIER_INFO.marg;
+    const scorePct  = cell.total != null ? Math.round(cell.total * 100) : 0;
+    const uncapped  = Math.round(_uncapped(cell, cell.wr, cell.rr) * 100);
+    const reqDD     = _bmMaxDD(cell.wr, cell.rr);
+    const reqPF     = _bmPF(cell.wr, cell.rr);
+    const reqRF     = _bmMinRF(cell.wr, cell.rr);
+    const reqSR     = _bmMinSharpe(cell.wr, cell.rr);
+    const isOver    = uncapped > 100;
+    const isFull    = scorePct >= 100;
+    const badgeCls  = rank <= 3 ? `rank-badge-${rank}` : 'rank-badge-n';
+    const profitBarW = cell.profit != null ? Math.min(100, Math.round((Math.max(cell.profit,0) / maxProfit) * 100)) : 0;
+    const rrCls = cell.rr >= 1.5 ? 'good' : cell.rr >= 0.8 ? 'warn' : 'bad';
+    const wrCls = cell.wr >= 0.60 ? 'good' : cell.wr >= 0.50 ? 'warn' : 'bad';
+    const ddCls = cell.dd == null ? 'neu' : cell.dd <= reqDD * 0.7 ? 'good' : cell.dd <= reqDD ? 'warn' : 'bad';
+    const flCls = cell.floatLoss == null ? 'neu'
+                : cell.floatLoss <= 5  ? 'good'
+                : cell.floatLoss <= 10 ? 'warn' : 'bad';
+    const flColor = cell.floatLoss == null ? 'var(--text)'
+                  : cell.floatLoss <= 5  ? '#22c55e'
+                  : cell.floatLoss <= 10 ? '#f97316' : '#ef4444';
+
+    html += `
+    <div class="rank-card">
+      <div class="rank-card-header">
+        <div class="rank-badge ${badgeCls}">${rank <= 3 ? medals[rank-1] : '#'+rank}</div>
+        <div style="flex:1;min-width:0">
+          <div class="rank-cell-label">WR ${cell.wrPct}% &nbsp;·&nbsp; RR 1:${cell.rr.toFixed(1)}</div>
+          <div class="rank-cell-sub"><span style="color:${tier.color}">${tier.label}</span> &nbsp;·&nbsp; Req PF ${reqPF.toFixed(2)} / RF ${reqRF} / SR ${reqSR} / DD ${reqDD}%</div>
+        </div>
+        <div class="rank-score-pill" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:${scoreColor(scorePct)}">${scorePct}%${isOver?' ⚡':isFull?' ✓':''}</div>
+      </div>
+      <div class="rank-card-body">
+        <div class="rank-stat" style="grid-column:span 2">
+          <div class="rank-stat-label">Profit</div>
+          <div class="rank-stat-val ${cell.profit >= 0 ? 'good' : 'bad'}">${fmtI(cell.profit)}</div>
+          <div class="rank-profit-bar-wrap"><div class="rank-profit-bar" style="width:${profitBarW}%;background:${cell.profit>=0?'#22c55e':'#ef4444'}"></div></div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">Win Rate</div>
+          <div class="rank-stat-val ${wrCls}">${cell.wrPct.toFixed(0)}%</div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">R:R Ratio</div>
+          <div class="rank-stat-val ${rrCls}">1:${cell.rr.toFixed(1)}</div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">Profit Factor</div>
+          <div class="rank-stat-val ${statValClass(cell.pass.pf)}">${fmtN(cell.pf)}</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:1px">req ≥ ${reqPF.toFixed(2)}</div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">Recovery Factor</div>
+          <div class="rank-stat-val ${statValClass(cell.pass.rf)}">${fmtN(cell.rf, 1)}</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:1px">req ≥ ${reqRF}</div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">Sharpe Ratio</div>
+          <div class="rank-stat-val ${statValClass(cell.pass.sharpe)}">${fmtN(cell.sharpe)}</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:1px">req ≥ ${reqSR}</div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">Eq.DD% Rel</div>
+          <div class="rank-stat-val ${ddCls}">${cell.dd != null ? cell.dd.toFixed(1)+'%' : '—'}</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:1px">req ≤ ${reqDD}%</div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">🌊 Float Loss</div>
+          <div class="rank-stat-val" style="color:${flColor}">${cell.floatLoss != null ? cell.floatLoss.toFixed(1)+'%' : '—'}</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:1px">max float loss</div>
+        </div>
+        <div class="rank-stat">
+          <div class="rank-stat-label">Trades</div>
+          <div class="rank-stat-val neu">${fmtI(cell.trades)}</div>
+        </div>
+        <div class="rank-stat" style="grid-column:span 2;border-right:none">
+          <div class="rank-stat-label">Threshold checks</div>
+          <div class="rank-dot-row">
+            ${dotHtml(cell.pass.pf,'PF')}
+            ${dotHtml(cell.pass.rf,'RF')}
+            ${dotHtml(cell.pass.sharpe,'SR')}
+            ${dotHtml(cell.pass.dd,'DD')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
 </script>
 </body>
 </html>
