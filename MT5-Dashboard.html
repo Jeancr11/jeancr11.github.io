@@ -139,13 +139,22 @@
                         Gráfico (.csv)
                     </button>
 
+                    <!-- MENÚ DESPLEGABLE DE ARCHIVOS (OCULTA LA LISTA) -->
+                    <div class="custom-select-container relative">
+                        <button id="btnFilesDropdown" onclick="toggleDropdown('dropdownFiles')" class="hidden bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold py-1.5 px-4 rounded-lg shadow-md transition-all flex items-center gap-2">
+                            📂 Archivos <span id="filesCountBadge" class="bg-blue-500 text-white text-[10px] font-bold rounded-full px-2 py-0.5 ml-1">0</span>
+                        </button>
+                        <div id="dropdownFiles" class="custom-select-dropdown hidden absolute top-full right-0 md:left-auto mt-2 w-64 md:w-72 bg-gray-800 border border-gray-600 rounded-md shadow-xl max-h-60 overflow-y-auto filter-scrollbar z-50 p-2">
+                            <div class="text-[10px] text-gray-400 mb-2 uppercase font-semibold border-b border-gray-700 pb-1">Archivos Cargados</div>
+                            <div id="dashFilesList" class="flex flex-col gap-1.5"></div>
+                        </div>
+                    </div>
+
                     <button onclick="clearData()" id="clearBtn" class="hidden bg-red-600 hover:bg-red-500 text-white text-sm font-semibold py-1.5 px-4 rounded-lg shadow-md transition-all">
                         Borrar
                     </button>
                 </div>
             </div>
-
-            <div id="dashFilesList" class="flex flex-wrap gap-3 mb-4"></div>
 
             <div id="dashboardContent" class="hidden fade-in flex flex-col lg:flex-row gap-4 items-stretch">
                 
@@ -205,91 +214,105 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 z-10">
-                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
-                            <span class="text-gray-400 text-xs uppercase tracking-wide">Grand Total (Neto)</span>
-                            <span id="kpiTotalProfit" class="text-2xl lg:text-3xl font-bold mt-1">$0.00</span>
-                            <div class="flex gap-4 mt-2 text-[10px] lg:text-xs font-semibold w-full justify-center">
-                                <span id="kpiGrossProfit" class="text-green-400 flex flex-col"><span>Ganancias</span><span class="mt-1">$0.00</span></span>
-                                <span id="kpiGrossLoss" class="text-red-400 flex flex-col"><span>Pérdidas</span><span class="mt-1">$0.00</span></span>
+                    <!-- ========================================== -->
+                    <!-- CUADRÍCULA DE 10 TARJETAS COMPACTAS  -->
+                    <!-- ========================================== -->
+                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 z-10">
+                        <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                            <span class="text-gray-400 text-[10px] xl:text-xs uppercase tracking-wide">Grand Total</span>
+                            <span id="kpiTotalProfit" class="text-xl lg:text-2xl font-bold mt-0.5">$0.00</span>
+                            <div class="flex gap-3 mt-1.5 text-[9px] lg:text-[10px] font-semibold w-full justify-center">
+                                <span id="kpiGrossProfit" class="text-green-400 flex flex-col"><span>Ganancias</span><span class="mt-0.5">$0.00</span></span>
+                                <span id="kpiGrossLoss" class="text-red-400 flex flex-col border-l border-gray-700 pl-3"><span>Pérdidas</span><span class="mt-0.5">$0.00</span></span>
                             </div>
                         </div>
                         
-                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
-                            <span class="text-gray-400 text-xs uppercase tracking-wide">Cantidad de Trades</span>
-                            <span id="kpiTotalTrades" class="text-2xl lg:text-3xl font-bold mt-1 text-white">0</span>
-                            <div class="flex flex-col items-center mt-2 gap-0.5 w-full">
-                                <span id="kpiSimultaneous" class="text-[10px] lg:text-xs text-purple-400 font-semibold" title="Máxima cantidad de trades abiertos al mismo tiempo">Simultáneos: -</span>
+                        <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                            <span class="text-gray-400 text-[10px] xl:text-xs uppercase tracking-wide">Trades</span>
+                            <span id="kpiTotalTrades" class="text-xl lg:text-2xl font-bold mt-0.5 text-white">0</span>
+                            <div class="flex flex-col items-center mt-1.5 gap-0.5 w-full">
+                                <span id="kpiSimultaneous" class="text-[9px] lg:text-[10px] text-purple-400 font-semibold" title="Máxima cantidad de trades abiertos al mismo tiempo">Simultáneos: -</span>
                             </div>
                         </div>
                         
-                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
-                            <span class="text-gray-400 text-xs uppercase tracking-wide">Win Rate</span>
-                            <span id="kpiWinRate" class="text-2xl lg:text-3xl font-bold mt-1 text-blue-400">0%</span>
-                            <span id="kpiWinRateSub" class="text-[10px] lg:text-xs text-gray-500 mt-2">0 / 0 Victorias</span>
+                        <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                            <span class="text-gray-400 text-[10px] xl:text-xs uppercase tracking-wide">Win Rate</span>
+                            <span id="kpiWinRate" class="text-xl lg:text-2xl font-bold mt-0.5 text-blue-400">0%</span>
+                            <span id="kpiWinRateSub" class="text-[9px] lg:text-[10px] text-gray-500 mt-1.5">0 / 0 Victorias</span>
                         </div>
-                        
-                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
-                            <span class="text-gray-400 text-xs uppercase tracking-wide">Métricas por Trade</span>
-                            <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
-                                <span class="flex flex-col items-center">
-                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Promedio ($)</span>
-                                    <span id="kpiAvgTrade" class="text-xl lg:text-2xl font-bold leading-none mt-1">$0.00</span>
-                                </span>
-                                <span class="flex flex-col items-center border-l border-gray-700 pl-4">
-                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Trades / Mes</span>
-                                    <span id="kpiTradesPerMonth" class="text-xl lg:text-2xl font-bold leading-none text-blue-400 mt-1">0.0</span>
-                                </span>
-                            </div>
+
+                        <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                            <span class="text-gray-400 text-[10px] xl:text-xs uppercase tracking-wide">Profit Factor</span>
+                            <span id="kpiProfitFactor" class="text-xl lg:text-2xl font-bold mt-0.5 text-white">0.00</span>
+                            <span class="text-[9px] lg:text-[10px] text-gray-500 mt-1.5">Ganado / Perdido</span>
+                        </div>
+
+                        <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                            <span class="text-gray-400 text-[10px] xl:text-xs uppercase tracking-wide">Riesgo / Ben.</span>
+                            <span id="kpiRiskReward" class="text-xl lg:text-2xl font-bold mt-0.5 text-white">1:0.00</span>
+                            <span class="text-[9px] lg:text-[10px] text-gray-500 mt-1.5">Win / Loss Prom.</span>
                         </div>
                     </div>
 
-                    <!-- AQUÍ SE CAMBIÓ A 4 COLUMNAS Y SE AGREGÓ LA NUEVA TARJETA -->
-                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
-                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow relative group">
-                            <span class="text-gray-400 text-xs uppercase tracking-wide">Profit Factor</span>
-                            <span id="kpiProfitFactor" class="text-2xl lg:text-3xl font-bold mt-1 text-white">0.00</span>
-                            <span class="text-[10px] lg:text-xs text-gray-500 mt-2">Ganado / Perdido Bruto</span>
-                        </div>
-
-                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
-                            <span class="text-gray-400 text-xs uppercase tracking-wide">Riesgo / Beneficio</span>
-                            <span id="kpiRiskReward" class="text-2xl lg:text-3xl font-bold mt-1 text-white">1:0.00</span>
-                            <span class="text-[10px] lg:text-xs text-gray-500 mt-2">Win Prom. vs Loss Prom.</span>
-                        </div>
-
-                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
-                            <span class="text-gray-400 text-xs uppercase tracking-wide">Análisis de Rachas</span>
-                            <div class="flex gap-4 mt-2 text-xs font-semibold w-full justify-center">
-                                <span class="text-green-400 flex flex-col items-center group cursor-help">
-                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Ganadoras</span>
-                                    <span class="text-xl lg:text-2xl font-bold leading-none"><span id="kpiMaxWinStreak">0</span><span class="text-xs text-gray-500 ml-1">máx</span></span>
-                                    <span class="text-[10px] text-gray-400 mt-1 font-mono tracking-tighter">Promedio: <span id="kpiAvgWinStreak">0</span></span>
+                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mt-3 z-10">
+                        <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                            <span class="text-gray-400 text-[10px] xl:text-xs uppercase tracking-wide">Métricas / Trade</span>
+                            <div class="flex gap-3 mt-1.5 text-xs font-semibold w-full justify-center">
+                                <span class="flex flex-col items-center">
+                                    <span class="text-gray-500 text-[8px] uppercase tracking-widest mb-0.5">Prom. ($)</span>
+                                    <span id="kpiAvgTrade" class="text-sm lg:text-base font-bold leading-none mt-0.5">$0.00</span>
                                 </span>
-                                <span class="text-red-400 flex flex-col items-center border-l border-gray-700 pl-4 group cursor-help">
-                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Perdedoras</span>
-                                    <span class="text-xl lg:text-2xl font-bold leading-none"><span id="kpiMaxLossStreak">0</span><span class="text-xs text-gray-500 ml-1">máx</span></span>
-                                    <span class="text-[10px] text-gray-400 mt-1 font-mono tracking-tighter">Promedio: <span id="kpiAvgLossStreak">0</span></span>
+                                <span class="flex flex-col items-center border-l border-gray-700 pl-3">
+                                    <span class="text-gray-500 text-[8px] uppercase tracking-widest mb-0.5">Mes</span>
+                                    <span id="kpiTradesPerMonth" class="text-sm lg:text-base font-bold leading-none text-blue-400 mt-0.5">0.0</span>
                                 </span>
                             </div>
                         </div>
 
-                        <!-- NUEVA TARJETA DE PROMEDIO DE GANANCIAS NETAS -->
-                        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
-                            <span class="text-gray-400 text-xs uppercase tracking-wide">Promedio Neto</span>
-                            <div class="flex gap-2 lg:gap-4 mt-2 text-xs font-semibold w-full justify-center">
-                                <span class="flex flex-col items-center">
-                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Día</span>
-                                    <span id="kpiAvgDay" class="text-base lg:text-lg font-bold leading-none text-green-400">$0.00</span>
+                        <!-- AQUÍ SE AGREGA EL PROMEDIO DE RACHAS GANADORAS Y PERDEDORAS -->
+                        <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                            <span class="text-gray-400 text-[10px] xl:text-xs uppercase tracking-wide">Rachas</span>
+                            <div class="flex gap-3 mt-1 text-xs font-semibold w-full justify-center">
+                                <span class="text-green-400 flex flex-col items-center group cursor-help">
+                                    <span class="text-gray-500 text-[8px] uppercase tracking-widest mb-0.5">Wins</span>
+                                    <span class="text-sm lg:text-base font-bold leading-none"><span id="kpiMaxWinStreak">0</span><span class="text-[9px] text-gray-500 ml-0.5">mx</span></span>
+                                    <span class="text-[8px] text-gray-400 mt-1">Prom: <span id="kpiAvgWinStreak">0</span></span>
                                 </span>
-                                <span class="flex flex-col items-center border-l border-gray-700 pl-2 lg:pl-4">
-                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Mes</span>
-                                    <span id="kpiAvgMonth" class="text-base lg:text-lg font-bold leading-none text-blue-400">$0.00</span>
+                                <span class="text-red-400 flex flex-col items-center border-l border-gray-700 pl-3 group cursor-help">
+                                    <span class="text-gray-500 text-[8px] uppercase tracking-widest mb-0.5">Losses</span>
+                                    <span class="text-sm lg:text-base font-bold leading-none"><span id="kpiMaxLossStreak">0</span><span class="text-[9px] text-gray-500 ml-0.5">mx</span></span>
+                                    <span class="text-[8px] text-gray-400 mt-1">Prom: <span id="kpiAvgLossStreak">0</span></span>
                                 </span>
-                                <span class="flex flex-col items-center border-l border-gray-700 pl-2 lg:pl-4">
-                                    <span class="text-gray-500 text-[9px] uppercase tracking-widest mb-0.5">Año</span>
-                                    <span id="kpiAvgYear" class="text-base lg:text-lg font-bold leading-none text-purple-400">$0.00</span>
-                                </span>
+                            </div>
+                        </div>
+
+                        <!-- AQUÍ SE AGREGA EL DESGLOSE DE WINS/LOSSES PARA PROMEDIO DIARIO -->
+                        <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                            <span class="text-gray-400 text-[10px] xl:text-xs uppercase tracking-wide">Prom. Diario</span>
+                            <span id="kpiAvgDay" class="text-xl lg:text-2xl font-bold mt-0.5 text-green-400">$0.00</span>
+                            <div class="flex gap-2 mt-1 text-[8px] lg:text-[9px] font-semibold w-full justify-center">
+                                <span id="kpiAvgDayWin" class="text-green-400">+$0.00</span>
+                                <span id="kpiAvgDayLoss" class="text-red-400 border-l border-gray-700 pl-2">-$0.00</span>
+                            </div>
+                        </div>
+
+                        <!-- AQUÍ SE AGREGA EL DESGLOSE DE WINS/LOSSES PARA PROMEDIO MENSUAL -->
+                        <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                            <span class="text-gray-400 text-[10px] xl:text-xs uppercase tracking-wide">Prom. Mensual</span>
+                            <span id="kpiAvgMonth" class="text-xl lg:text-2xl font-bold mt-0.5 text-blue-400">$0.00</span>
+                            <div class="flex gap-2 mt-1 text-[8px] lg:text-[9px] font-semibold w-full justify-center">
+                                <span id="kpiAvgMonthWin" class="text-green-400">+$0.00</span>
+                                <span id="kpiAvgMonthLoss" class="text-red-400 border-l border-gray-700 pl-2">-$0.00</span>
+                            </div>
+                        </div>
+
+                        <!-- AQUÍ SE AGREGA EL DESGLOSE DE WINS/LOSSES PARA PROMEDIO ANUAL -->
+                        <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center shadow">
+                            <span class="text-gray-400 text-[10px] xl:text-xs uppercase tracking-wide">Prom. Anual</span>
+                            <span id="kpiAvgYear" class="text-xl lg:text-2xl font-bold mt-0.5 text-purple-400">$0.00</span>
+                            <div class="flex gap-2 mt-1 text-[8px] lg:text-[9px] font-semibold w-full justify-center">
+                                <span id="kpiAvgYearWin" class="text-green-400">+$0.00</span>
+                                <span id="kpiAvgYearLoss" class="text-red-400 border-l border-gray-700 pl-2">-$0.00</span>
                             </div>
                         </div>
                     </div>
@@ -966,19 +989,35 @@
             initDashboard();
         }
 
+        // ==========================================
+        // NUEVA FUNCIÓN PARA RENDERIZAR ARCHIVOS DENTRO DEL DROPDOWN
+        // ==========================================
         function renderDashFilesTags() {
             const listDiv = document.getElementById('dashFilesList');
+            const btnDropdown = document.getElementById('btnFilesDropdown');
+            const badge = document.getElementById('filesCountBadge');
+
             if (dashFiles.length === 0) {
-                listDiv.innerHTML = '';
+                if(listDiv) listDiv.innerHTML = '<div class="text-xs text-gray-500 text-center py-2">Ningún archivo</div>';
+                if(btnDropdown) btnDropdown.classList.add('hidden');
+                if(badge) badge.innerText = 0;
                 return;
             }
-            listDiv.innerHTML = dashFiles.map(f => `
-                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-600 bg-gray-800 shadow-sm">
-                    <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-                    <span class="text-sm font-semibold truncate max-w-[150px]" title="${f.name}">${f.name}</span>
-                    <button onclick="removeDashFile(${f.id})" class="ml-1 text-gray-400 hover:text-red-500 font-bold">×</button>
-                </div>
-            `).join('');
+            
+            if(btnDropdown) btnDropdown.classList.remove('hidden');
+            if(badge) badge.innerText = dashFiles.length;
+
+            if(listDiv) {
+                listDiv.innerHTML = dashFiles.map(f => `
+                    <div class="flex justify-between items-center px-2 py-1.5 rounded border border-gray-700 bg-gray-900 shadow-sm">
+                        <div class="flex items-center gap-2 truncate pr-2">
+                            <span class="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
+                            <span class="text-xs font-semibold truncate text-gray-300" title="${f.name}">${f.name}</span>
+                        </div>
+                        <button onclick="removeDashFile(${f.id}); event.stopPropagation();" class="text-gray-500 hover:text-red-500 font-bold shrink-0 ml-2 text-sm">×</button>
+                    </div>
+                `).join('');
+            }
         }
 
         function removeDashFile(id) {
@@ -1440,9 +1479,20 @@
                 exactDaysSpan = (maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24);
                 if (exactDaysSpan < 1) exactDaysSpan = 1; // Para evitar infinito si operan menos de 1 día
             }
+            
             const avgProfitPerDay = totalTrades > 0 ? (totalProfit / exactDaysSpan) : 0;
             const avgProfitPerMonth = avgProfitPerDay * 30.416; // Aproximación precisa de días por mes
             const avgProfitPerYear = avgProfitPerDay * 365.25;  // Aproximación de días por año bisiesto
+
+            // GANANCIAS Y PÉRDIDAS ESPECÍFICAS PARA LOS PROMEDIOS (NUEVO)
+            const avgWinPerDay = totalTrades > 0 ? (grossProfit / exactDaysSpan) : 0;
+            const avgLossPerDay = totalTrades > 0 ? (absoluteGrossLoss / exactDaysSpan) : 0;
+
+            const avgWinPerMonth = avgWinPerDay * 30.416;
+            const avgLossPerMonth = avgLossPerDay * 30.416;
+
+            const avgWinPerYear = avgWinPerDay * 365.25;
+            const avgLossPerYear = avgLossPerDay * 365.25;
 
             let maxDayProf = -Infinity; let minDayProf = Infinity;
             let bestDayIndex = 0; let worstDayIndex = 0;
@@ -1467,7 +1517,8 @@
                 maxRealDailyDDPct, maxRealDailyDDMoney, maxRealDailyDDDate, avgRealDailyDDPct, avgRealDailyDDMoney,
                 maxCompDDMoney, maxCompDDPct, maxCompDDStartDate, maxCompDDEndDate,
                 maxCompDailyDDPct, maxCompDailyDDMoney, maxCompDailyDDDate, avgCompDailyDDPct, avgCompDailyDDMoney,
-                avgProfitPerDay, avgProfitPerMonth, avgProfitPerYear
+                avgProfitPerDay, avgProfitPerMonth, avgProfitPerYear,
+                avgWinPerDay, avgLossPerDay, avgWinPerMonth, avgLossPerMonth, avgWinPerYear, avgLossPerYear
             };
         }
 
@@ -1517,7 +1568,7 @@
             const metrics = calculateMetrics(filteredData);
 
             document.getElementById('kpiTotalProfit').innerText = fmtMoney(metrics.totalProfit);
-            document.getElementById('kpiTotalProfit').className = `text-2xl lg:text-3xl font-bold mt-1 ${metrics.totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}`;
+            document.getElementById('kpiTotalProfit').className = `text-xl lg:text-2xl font-bold mt-0.5 ${metrics.totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}`;
             document.getElementById('kpiGrossProfit').lastElementChild.innerText = fmtMoney(metrics.grossProfit);
             document.getElementById('kpiGrossLoss').lastElementChild.innerText = fmtMoney(metrics.absoluteGrossLoss);
             
@@ -1528,28 +1579,36 @@
             document.getElementById('kpiWinRateSub').innerText = `${metrics.winningTrades} / ${metrics.totalTrades} Victorias`;
             
             document.getElementById('kpiAvgTrade').innerText = fmtMoney(metrics.avgTrade);
-            document.getElementById('kpiAvgTrade').className = `text-xl lg:text-2xl font-bold leading-none mt-1 ${metrics.avgTrade >= 0 ? 'text-green-400' : 'text-red-400'}`;
+            document.getElementById('kpiAvgTrade').className = `text-sm lg:text-base font-bold leading-none mt-0.5 ${metrics.avgTrade >= 0 ? 'text-green-400' : 'text-red-400'}`;
             document.getElementById('kpiTradesPerMonth').innerText = metrics.tradesPerMonth.toFixed(1);
 
             document.getElementById('kpiProfitFactor').innerText = metrics.profitFactor === 99.99 ? '∞' : metrics.profitFactor.toFixed(2);
-            document.getElementById('kpiProfitFactor').className = `text-2xl lg:text-3xl font-bold mt-1 ${metrics.profitFactor >= 1.5 ? 'text-green-400' : (metrics.profitFactor >= 1 ? 'text-blue-400' : 'text-red-400')}`;
+            document.getElementById('kpiProfitFactor').className = `text-xl lg:text-2xl font-bold mt-0.5 ${metrics.profitFactor >= 1.5 ? 'text-green-400' : (metrics.profitFactor >= 1 ? 'text-blue-400' : 'text-red-400')}`;
             document.getElementById('kpiRiskReward').innerText = metrics.riskReward === 99.99 ? `1:∞` : `1:${metrics.riskReward.toFixed(2)}`;
             
+            // Rachas
             document.getElementById('kpiMaxWinStreak').innerText = metrics.maxWinStreak;
             document.getElementById('kpiMaxLossStreak').innerText = metrics.maxLossStreak;
             document.getElementById('kpiAvgWinStreak').innerText = metrics.avgWinStreak.toFixed(0);
             document.getElementById('kpiAvgLossStreak').innerText = metrics.avgLossStreak.toFixed(0);
 
-            // ---> ACTUALIZACIÓN DE LA NUEVA TARJETA
+            // Promedio Diario
             document.getElementById('kpiAvgDay').innerText = fmtMoney(metrics.avgProfitPerDay);
-            document.getElementById('kpiAvgDay').className = `text-base lg:text-lg font-bold leading-none ${metrics.avgProfitPerDay >= 0 ? 'text-green-400' : 'text-red-400'}`;
+            document.getElementById('kpiAvgDay').className = `text-xl lg:text-2xl font-bold mt-0.5 ${metrics.avgProfitPerDay >= 0 ? 'text-green-400' : 'text-red-400'}`;
+            document.getElementById('kpiAvgDayWin').innerText = '+' + fmtMoney(metrics.avgWinPerDay);
+            document.getElementById('kpiAvgDayLoss').innerText = '-' + fmtMoney(metrics.avgLossPerDay);
 
+            // Promedio Mensual
             document.getElementById('kpiAvgMonth').innerText = fmtMoney(metrics.avgProfitPerMonth);
-            document.getElementById('kpiAvgMonth').className = `text-base lg:text-lg font-bold leading-none ${metrics.avgProfitPerMonth >= 0 ? 'text-blue-400' : 'text-red-400'}`;
+            document.getElementById('kpiAvgMonth').className = `text-xl lg:text-2xl font-bold mt-0.5 ${metrics.avgProfitPerMonth >= 0 ? 'text-blue-400' : 'text-red-400'}`;
+            document.getElementById('kpiAvgMonthWin').innerText = '+' + fmtMoney(metrics.avgWinPerMonth);
+            document.getElementById('kpiAvgMonthLoss').innerText = '-' + fmtMoney(metrics.avgLossPerMonth);
 
+            // Promedio Anual
             document.getElementById('kpiAvgYear').innerText = fmtMoney(metrics.avgProfitPerYear);
-            document.getElementById('kpiAvgYear').className = `text-base lg:text-lg font-bold leading-none ${metrics.avgProfitPerYear >= 0 ? 'text-purple-400' : 'text-red-400'}`;
-            // ---> FIN ACTUALIZACIÓN NUEVA TARJETA
+            document.getElementById('kpiAvgYear').className = `text-xl lg:text-2xl font-bold mt-0.5 ${metrics.avgProfitPerYear >= 0 ? 'text-purple-400' : 'text-red-400'}`;
+            document.getElementById('kpiAvgYearWin').innerText = '+' + fmtMoney(metrics.avgWinPerYear);
+            document.getElementById('kpiAvgYearLoss').innerText = '-' + fmtMoney(metrics.avgLossPerYear);
 
             const baseCapital = 10000;
             document.getElementById('kpiLinearFinal').innerText = fmtMoney(baseCapital + metrics.totalProfit, 0);
